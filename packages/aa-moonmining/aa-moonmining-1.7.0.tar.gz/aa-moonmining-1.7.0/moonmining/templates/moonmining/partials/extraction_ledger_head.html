@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load humanize %}
+{% load moonmining %}
+
+<div class="row">
+
+    <div class="col-md-6">
+        {% include 'moonmining/partials/extraction_details_head_base.html' %}
+    </div>
+
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>Chunk arrival:</dt>
+            <dd>
+                {% if extraction.status == extraction.Status.CANCELED %}<s>{% endif %}
+                <span title="{{ extraction.chunk_arrival_at|naturaltime }}">
+                    {{ extraction.chunk_arrival_at|datetime }}
+                </span>
+                {% if extraction.status == extraction.Status.CANCELED %}</s>{% endif %}
+            </dd>
+
+            <dt>Total mined volume:</dt>
+            <dd>{{ total_volume|intword }} m3</dd>
+
+            <dt>Total mined value:</dt>
+            <dd>{{ total_value|intword }} ISK</dd>
+        </dl>
+    </div>
+
+</div>

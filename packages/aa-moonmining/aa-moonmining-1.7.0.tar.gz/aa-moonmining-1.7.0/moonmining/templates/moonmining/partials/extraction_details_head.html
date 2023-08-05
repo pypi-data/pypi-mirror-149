@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load humanize %}
+{% load moonmining %}
+
+<div class="row">
+    <div class="col-md-6">
+        {% include 'moonmining/partials/extraction_details_head_base.html' %}
+    </div>
+
+    <div class="col-md-6">
+        <dl class="dl-horizontal">
+            <dt>Status:</dt>
+            <dd>{{ extraction.status_enum.bootstrap_tag_html }}</dd>
+
+            <dt>Started:</dt>
+            <dd>
+                <span title="{{ extraction.started_at|naturaltime }}">
+                    {{ extraction.started_at|datetime }}
+                </span>
+                    by {{ extraction.started_by|default:"?" }}
+            </dd>
+
+            {% if extraction.status == extraction.Status.CANCELED %}
+                <dt>Canceled:</dt>
+                <dd>
+                    <span title="{{ extraction.canceled_at|naturaltime|default:'?' }}">
+                        {{ extraction.canceled_at|datetime|default:"?" }}
+                    </span> by {{ extraction.canceled_by|default:"?" }}
+                </dd>
+            {% endif %}
+
+            <dt>Chunk arrival:</dt>
+            <dd>
+                {% if extraction.status == extraction.Status.CANCELED %}<s>{% endif %}
+                <span title="{{ extraction.chunk_arrival_at|naturaltime }}">
+                    {{ extraction.chunk_arrival_at|datetime }}
+                </span>
+                {% if extraction.status == extraction.Status.CANCELED %}</s>{% endif %}
+            </dd>
+
+            <dt>Auto Fracture:</dt>
+            <dd>
+                {% if extraction.status == extraction.Status.CANCELED %}<s>{% endif %}
+                <span title="{{ extraction.auto_fracture_at|naturaltime }}">
+                    {{ extraction.auto_fracture_at|datetime }}
+                </span>
+                {% if extraction.status == extraction.Status.CANCELED %}</s>{% endif %}
+            </dd>
+
+            <dt>Duration:</dt>
+            <dd>{{ extraction.duration_in_days|floatformat }} days</dd>
+        </dl>
+    </div>
+</div>
