@@ -1,0 +1,21 @@
+[package]
+name = "farmyard_native"
+authors = ["Nathan Michlo <nathanjmichlo@gmail.com>"]
+description = "Farmyard - Native helper library"
+version = "0.0.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "farmyard_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.16.3", features = ["extension-module"] }
+numpy = "0.14.1"
+#ndarray = "0.15.3"
+
+# make sure that the lib called "_farmyard_native" is placed in "farmyard/_native"
+# - we can import it in python from `farmyard._native._farmyard_native`
+[package.metadata.maturin]
+name = "farmyard._native._farmyard_native"

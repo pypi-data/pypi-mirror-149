@@ -1,0 +1,50 @@
+[project]
+    name = "farmyard"
+    description = "The Minimal Reinforcement Learning Framework"
+    version = "0.0.1.dev3"
+    # about:
+    readme = "README.md"
+    license = {file = "LICENSE"}  # {text = "MIT"}
+    urls = {homepage = "https://github.com/nmichlo/farmyard", repository = "https://github.com/nmichlo/farmyard"}
+    authors = [{name = "Nathan Juraj Michlo", email = "NathanJMichlo@gmail.com"}]
+    # tags:
+    classifiers = [
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Rust",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ]
+    # dependencies:
+    requires-python = ">=3.8"
+    dependencies = [
+        "pip>=21",
+        "numpy~=1.20",
+    ]
+
+[project.optional-dependencies]
+    test = [
+        "pytest>=6.2.4",
+        "pytest-cov>=2.12.1",
+    ]
+
+# rust packaging and deployment
+[build-system]
+    requires = ["maturin>=0.11,<0.12"]
+    build-backend = "maturin"
+
+# replace pytest.ini
+[tool.pytest.ini_options]
+    minversion = "6.0"
+    testpaths = [
+        "tests",
+        "farmyard",
+    ]
+    python_files = [
+        "test.py",
+        "test_*.py",
+        "__test__*.py",
+    ]
