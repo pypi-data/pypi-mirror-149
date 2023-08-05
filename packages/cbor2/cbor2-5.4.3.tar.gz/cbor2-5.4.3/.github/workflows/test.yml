@@ -1,0 +1,68 @@
+name: Test suite
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "pypy-3.7", "pypy-3.8"]
+        exclude:
+        - os: macos-latest
+          python-version: "3.8"
+        - os: macos-latest
+          python-version: "3.9"
+        - os: macos-latest
+          python-version: "pypy-3.7"
+        - os: macos-latest
+          python-version: "pypy-3.8"
+        - os: windows-latest
+          python-version: "3.8"
+        - os: windows-latest
+          python-version: "3.9"
+        - os: windows-latest
+          python-version: "pypy-3.7"
+        - os: windows-latest
+          python-version: "pypy-3.8"
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: pip-test-${{ matrix.python-version }}-${{ matrix.os }}
+    - name: Install dependencies
+      run: pip install -e .[test] coveralls
+    - name: Test with pytest
+      run: pytest
+    - name: Upload Coverage
+      run: coveralls --service=github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
+        COVERALLS_PARALLEL: true
+
+  coveralls:
+    name: Finish Coveralls
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: pip install coveralls
+    - name: Notify Coveralls
+      run: coveralls --service=github --finish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
