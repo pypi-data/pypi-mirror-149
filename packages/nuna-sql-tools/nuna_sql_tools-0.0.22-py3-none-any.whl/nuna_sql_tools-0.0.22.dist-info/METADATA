@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: nuna-sql-tools
+Version: 0.0.22
+Summary: Nuna Sql Tools contains utilities to create and manipulate schemas and sql statements.
+Home-page: https://github.com/NunaInc/sql_tools
+Download-URL: https://github.com/NunaInc/sql_tools
+Author: Nuna Inc.
+Author-email: catalin@nuna.com
+License: Apache 2.0
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: SQL
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Developers
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Faker (==8.13.2)
+Requires-Dist: absl-py (==0.13.0)
+Requires-Dist: protobuf (==3.17.3)
+Requires-Dist: numpy (==1.21.2)
+Requires-Dist: pyarrow (==7.0.0)
+Requires-Dist: pandas (==1.3.3)
+Requires-Dist: SQLAlchemy (==1.3.24)
+Requires-Dist: antlr4-python3-runtime (==4.9.3)
+Requires-Dist: graphviz (==0.19.1)
+Requires-Dist: great-expectations (==0.14.12)
+Requires-Dist: pyspark (==3.2.1)
+
+This package contains Python modules for helping developers
+produce and maintain data analysis projects. In particular:
+
+* `dataschema`: a library for defining data schemas using Python
+dataclasses, that that can be easily converted between protobuffers,
+Scala case classes, sql (ClickHouse) create table statements,
+Parquet Arrow schemas and so on, from a central Python based
+representation. Includes facilities to generate sample date and
+compare schemas for validations.
+
+* `sql_analyze`: a library for analyzing SQL statements. In particular
+the raw SQL statments are parsed and converted to a Python based
+data structure. From here, they can be converted to a data graph,
+visualized, and information about the lineage of tables and columns
+can be infered. Support for now SparkSql and ClickHouse dialects
+for parsing.
+
+To try out the SQL Analyze Viewer, which uses the `sql_analyze` library
+to visualize SQL statements, you can run `sql_analyze-viewer` after
+installing.
+
+For more details please check the
+[GitHub project](https://github.com/NunaInc/sql_tools).
+
+
