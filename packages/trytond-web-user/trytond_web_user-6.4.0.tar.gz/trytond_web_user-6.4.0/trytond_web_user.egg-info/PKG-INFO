@@ -1,0 +1,100 @@
+Metadata-Version: 2.1
+Name: trytond-web-user
+Version: 6.4.0
+Summary: Tryton module to manage Web users
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/web_user
+Keywords: web user
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Bulgarian
+Classifier: Natural Language :: Catalan
+Classifier: Natural Language :: Czech
+Classifier: Natural Language :: Dutch
+Classifier: Natural Language :: English
+Classifier: Natural Language :: Finnish
+Classifier: Natural Language :: French
+Classifier: Natural Language :: German
+Classifier: Natural Language :: Hungarian
+Classifier: Natural Language :: Indonesian
+Classifier: Natural Language :: Italian
+Classifier: Natural Language :: Persian
+Classifier: Natural Language :: Polish
+Classifier: Natural Language :: Portuguese (Brazilian)
+Classifier: Natural Language :: Romanian
+Classifier: Natural Language :: Russian
+Classifier: Natural Language :: Slovenian
+Classifier: Natural Language :: Spanish
+Classifier: Natural Language :: Turkish
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Requires-Python: >=3.7
+Provides-Extra: BCrypt
+Provides-Extra: test
+Provides-Extra: html2text
+License-File: LICENSE
+
+Web User Module
+###############
+
+The web_user module provides facilities to manage external user accessing from
+the web.
+
+User
+****
+
+A user is uniquely identified by an email and he is authenticated using a
+hashed password. The user can be linked to a Party.
+
+Two actions are available:
+
+- The *Validate E-mail* which sent an e-mail to the user with a link to an URL
+  that ensures the address exists.
+- The *Reset Password* which sent an e-mail to the user with a link to an URL
+  to set a new password.
+
+Configuration
+*************
+
+The web_user module uses parameters from different sections:
+
+- `web`:
+
+    - `reset_password_url`: the URL to reset the password to which the
+      parameters `email` and `token` will be added.
+
+    - `email_validation_url`: the URL for email validation to which the
+      parameter `token` will be added.
+
+- `email`:
+
+    - `from`: the origin address to send emails.
+
+- `session`:
+
+    - `web_timeout`: defines in seconds the validity of the web session.
+      Default: 30 days.
+
+    - `web_timeout_reset`: in seconds the validity of the reset password token.
+      Default: 1 day.
+
+
