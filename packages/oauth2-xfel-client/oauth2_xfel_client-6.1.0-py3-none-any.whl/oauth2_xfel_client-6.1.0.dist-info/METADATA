@@ -1,0 +1,210 @@
+Metadata-Version: 2.1
+Name: oauth2-xfel-client
+Version: 6.1.0
+Summary: Python OAUTH 2.0 generic Client used for Backend Application strategy authentication on European XFEL Web Applications
+Home-page: https://git.xfel.eu/gitlab/ITDM/oauth2_xfel_client
+Author: Luís Maia
+Author-email: luis.maia@xfel.eu
+Maintainer: Luís Maia, Thomas Kluyver
+Maintainer-email: luis.maia@xfel.eu, thomas.kluyver@xfel.eu
+License: MIT
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.6
+License-File: LICENSE
+License-File: AUTHORS.rst
+Requires-Dist: oauthlib
+Requires-Dist: requests
+Requires-Dist: requests-oauthlib
+Requires-Dist: pytz
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+Requires-Dist: python-dateutil ; extra == 'test'
+Requires-Dist: pytz ; extra == 'test'
+Requires-Dist: pycodestyle ; extra == 'test'
+Requires-Dist: freezegun ; extra == 'test'
+
+Oauth2 Client
+=============
+
+Python library responsible for managing users authentication using
+OAUTH 2.0 Client Backend Application strategy (from non web software to
+web Oauth2 providers)
+
+*Repository:*
+
+- https://git.xfel.eu/gitlab/ITDM/oauth2_xfel_client
+
+*Dependencies:*
+
+- oauthlib (https://pypi.python.org/pypi/oauthlib)
+- requests (https://github.com/kennethreitz/requests)
+- requests-oauthlib (https://github.com/requests/requests-oauthlib)
+- pytz (https://pypi.org/project/pytz/)
+
+Installation
+------------
+
+Python project
+""""""""""""""
+
+1. Install requirements, if never done before
+
+ 1.1. For OS X distributions::
+
+  1.1.1. Homebrew
+
+        brew install python3
+
+  1.1.2 Port
+
+        sudo port install python36
+
+        sudo port select --set python3 python36
+
+        sudo port install py36-pip
+        sudo port select --set pip pip36
+
+ 1.2. For Linux distributions::
+
+    sudo apt-get update
+    sudo apt-get install python3.9
+
+
+2. Make oauth2_xfel_client library available in your python environment
+
+ 2.1. Install it via pip::
+
+    # Install dependencies from local wheels files
+    pip install . --no-index --find-links ./external_dependencies/
+
+    # Install dependencies from the pypi
+    pip install .
+
+ Installing it will place two folders under the current Python installation
+ site-packages folder:
+
+- `oauth2_xfel_client` with the sources;
+- `oauth2_xfel_client-6.1.0.dist-info/` with Wheels configuration files.
+
+ To identify your Python site-packages folder run::
+
+    python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+
+
+Usage
+-----
+
+To use this project you need to import it::
+
+ from oauth2_xfel_client import Oauth2ClientBackend
+
+
+1. Connection to the Oauth2Client (MyMdC example)::
+
+    from oauth2_xfel_client import Oauth2ClientBackend as Oauth2Client
+
+    # Necessary configuration variables to establish a connection
+    # Go to https://in.xfel.eu/metadata/oauth/applications to make generate
+    # or re-use a Client/Secret tokens from the metadata catalogue.
+    user_id = 'PUT_HERE_YOUR_CLIENT_KEY'
+    user_secret = 'PUT_HERE_YOUR_SECRET_KEY'
+    # Go to https://in.xfel.eu/metadata/users/edit and copy "Contact email"
+    user_email = 'luis.maia@xfel.eu'
+
+    # URLs for the metadata catalogue
+    token_url = 'https://in.xfel.eu/metadata/oauth/token'
+    refresh_url = 'https://in.xfel.eu/metadata/oauth/token'
+    auth_url = 'https://in.xfel.eu/metadata/oauth/authorize'
+    scope = ''
+    base_api_url = 'https://in.xfel.eu/metadata/api/'
+
+    # Generate the connection
+    oauth_client_valid = Oauth2Client(client_id=user_id,
+                                      client_secret=user_secret,
+                                      scope=scope,
+                                      token_url=token_url,
+                                      refresh_url=refresh_url,
+                                      auth_url=auth_url,
+                                      session_token=None,
+                                      max_retries=3,
+                                      timeout=12,
+                                      ssl_verify=True)
+
+
+2. Interaction with the oauth2Client:
+
+ 2.1 Example data_group_types::
+
+    current_token = oauth_client_valid.get_session_token()
+
+
+Development & Testing
+---------------------
+
+When developing, and before commit changes, please validate that:
+
+1. All tests continue passing successfully (to validate that run *pytest*)::
+
+    # Go to the source code directory
+    cd oauth2_xfel_client
+
+    # Upgrade package and all its required packages
+    pip install . -U --upgrade-strategy eager
+
+    # Install test dependencies
+    pip install '.[test]' -U --upgrade-strategy eager
+
+    # Run all tests using pytest
+    pytest
+
+    # When running all tests against the standard http application
+    OAUTHLIB_INSECURE_TRANSPORT=1 pytest
+
+    # Run all tests and get information about coverage for all files inside oauth2_xfel_client package
+    pytest --cov oauth2_xfel_client --cov-report term-missing
+
+2. Code keeps respecting pycodestyle code conventions (to validate that run **pycodestyle**)::
+
+    pycodestyle .
+
+3. To generate all the wheels files for the dependencies, execute::
+
+    # Generate Wheels to itself and dependencies
+    pip wheel --wheel-dir=./external_dependencies .
+    pip wheel --wheel-dir=./external_dependencies --find-links=./external_dependencies .
+
+4. Check that you have the desired dependency versions in ``external_dependencies`` folder, since no versions are now set in ``setup.py``.
+
+
+Registering library on https://pypi.org
+---------------------------------------
+
+To register this python library, the following steps are necessary::
+
+    # Install twine
+    python -m pip install --upgrade twine
+
+    # Generates source distribution (.tar.gz) and wheel (.whl) files in the dist/ folder
+    python setup.py sdist
+    python setup.py bdist_wheel
+
+    # Upload new version .egg and .whl files
+    twine upload dist/*
+
+    # In case a test is necessary, it is possible to test it against test.pypi.org
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/* --verbose
+
+
