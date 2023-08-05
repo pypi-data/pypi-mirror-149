@@ -1,0 +1,66 @@
+{%extends "crowdsource.html"%}
+{%block show_block%}
+<table class="table table-bordered">
+    <tbody id="table-query_content_layout">
+    <tr>
+        <td id='0' style="text-align: center;">
+            <img id="{{A}}" src="" width="256px" height="256px">
+        </td>
+        <td id='1' style="text-align: center;">
+            <img id="{{B}}" src="" width="256px" height="256px">
+        </td>
+    </tr>
+    </tbody>
+</table>
+{%end%}
+
+{%block response_block%}
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="select_list" data-toggle="dropdown" conclusion="">
+        LEFT<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="select_list">
+        <li><a href="#">LEFT</a></li>
+        <li><a href="#">RIGHT</a></li>
+    </ul>
+</div>
+{%end%}
+
+{%block trigger_once%}
+// 1.step bind user response click event ()
+$(".dropdown-menu li a").click(function(){
+   var id = $(this).parent().parent().attr('aria-labelledby');
+   $('#'+id + ':first-child').html('{content}<span class="caret"></span>'.format({content: $(this).text()}));
+   $('#'+id).attr('conclusion', $(this).text());
+})
+{%end%}
+
+{%block trigger_before_submit%}
+USER_CONCLUSION = $('#select_list').attr('conclusion');
+{%end%}
+
+{%block trigger_before_next%}
+var rr = Math.random()
+if(rr > 0.5){
+    // random layout
+    var elem_nodes = [];
+    var elem_nodes_parent = [];
+    for(var k in GLOBAL_DATA['PAGE_DATA']){
+        elem_nodes.push($('#'+k))
+        elem_nodes_parent.push($('#'+k).parent())
+    }
+
+    // shuffle layout
+    // 1.step clear parent content
+    for(var p in elem_nodes_parent){
+        elem_nodes_parent[p].empty();
+    }
+
+    // 2.step shuffle
+    elem_nodes = shuffle(elem_nodes)
+    // 3.step layout
+    for(var p in elem_nodes_parent){
+        elem_nodes_parent[p].append(elem_nodes[p])
+    }
+}
+{%end%}

@@ -1,0 +1,224 @@
+# -*- coding: UTF-8 -*-
+# @Time    : {{ModelTime}}
+# @File    : {{ModelName}}_main.py
+# @Author  : {{ModelAuthor}}
+from __future__ import division
+from __future__ import unicode_literals
+from __future__ import print_function
+import os
+import sys
+sys.path.append(os.path.dirname(__file__))
+from antgo.dataflow.common import *
+from antgo.context import *
+from antgo.dataflow.dataset import *
+from antgo.measures import *
+from antgo.measures.base import *
+from antgo.trainer.trainer import *
+from antgo.ant.debug import *
+import antvis.client.mlogger as mlogger
+
+
+'''
+Antgo Machine Learning Running Framework Mechanism
++---------------------------------------------------------------+
+|                                                               |
+|                                                    MLTALKER   |
+|                                                               |
+| +----------------------------+          Experiment Manager    |
+| | AntGO                      |                                |
+| +--------+                   |          Experiment Analyse    |
+| ||Control|      Task         |                                |
+| +-+------+                   |          Experiment Vis        |
+| | |   Datasource    Measure  |                                |
+| | |       +   +        +     |                                |
+| | |       |or |        |     |                   ^            |
++---------------------------------------------------------------+
+  | |       |   v        |     |                   |
+  | |       |  framework |     |                   |
+  | |       |  dataflow  |     |                   |
+  | |       |  pipeline  |     |                   |
+  | |       |   +        |     |                   |
+  | |       v   v        |     |                   |
+  | | Framework Model    |     |                   |
+  | |    optimize        |     |                   |
+  | |       +            |     |                   |
+  | v       v            v     |                   |
+  | +-------+------------+-------------------------^
+  |                            |      Experiment Info
+  |                            |  (performance, and others)
+  |Customised Module           |
+  |   xx_main.py               |
+  +----------------------------+
+
+'''
+
+##################################################
+######## 1.step global interaction handle ########
+##################################################
+ctx = Context()
+
+
+##################################################
+######## 2.step custom model building code  ######
+##################################################
+
+
+##################################################
+######## 2.1.step custom dataset parse code ######
+########    write dataset parse code if     ######
+#####  you want to parse your private dataset ####
+##################################################
+'''
+class {{ModelName}}Dataset(Dataset):
+  def __init__(self, train_or_test, dir=None, params=None):
+    super({{ModelName}}Dataset, self).__init__(train_or_test, dir, params)
+    # train_or_test： 为train（训练集）,val（验证集）或test（测试集）
+    # dir： 为数据集所在目录（factor/YourDataset）
+    self.dataset_list = [None,...]  # 数据
+    self.annotation_list = [{},...] # 标注
+
+  @property
+  def size(self):
+    return len(self.dataset_list)
+
+  def split(self, split_params, split_method):
+    # set how to split dataset into val/test
+    assert (split_method == 'holdout')
+    return self, {{ModelName}}Dataset('val', self.dir, self.ext_params)
+
+  def data_pool(self):
+    for i in range(self.size):
+      yield self.at(i)
+
+  def at(self, id):
+    return self.dataset_list[id], self.annotation_list[id]
+'''
+
+##################################################
+######## 2.2.step custom metric code        ######
+##################################################
+'''
+class {{ModelName}}Measure(AntMeasure):
+  def __init__(self, task):
+    super({{ModelName}}Measure, self).__init__(task, '{{ModelName}}Measure')
+    self.is_support_rank = True
+
+  def eva(self, data, label):
+    if label is not None:
+        data = zip(data, label)
+
+    for predict, gt in data:
+      # predict come from your model
+      # gt come from annotation
+      pass
+
+    value = 0.0
+    return {'statistic': {'name': self.name,
+                          'value': [{'name': self.name, 'value': value, 'type': 'SCALAR'}]}}
+'''
+
+##################################################
+######## 3.step define training process  #########
+##################################################
+def training_callback(data_source, dump_dir):
+  # 第1步：定义日志工具
+  mc = mlogger.Container()
+  mc.loss = mlogger.metric.Simple('model loss')
+
+  # 第2步：定义预处理管线
+  # 切分数据集为训练集和验证集，这里使用holdout方法。
+  train_data_source, val_data_source = data_source.split(split_method='holdout')
+  train_loader = torch.utils.data.DataLoader(
+    dataset=TorchDataset(train_data_source),
+    batch_size=16,
+    shuffle=True,
+    num_workers=1
+  )
+
+  eval_loader = torch.utils.data.DataLoader(
+    dataset=TorchDataset(val_data_source),
+    batch_size=16,
+    shuffle=False,
+    num_workers=1,
+    drop_last=False
+  )
+
+  # 第3步：定义你的分类模型
+  model = None
+  max_epoch = 50
+  for epoch in range(max_epoch):
+    # 启动训练(mc.loss用于记录每次迭代的损失值)
+    model.train(train_loader, mc.loss)
+
+    # 启动预测
+    acc = model.eval(eval_loader)
+    acc = acc.detach().cpu().item()
+    mc.acc.update(acc)
+
+###################################################
+######## 4.step define infer process     ##########
+###################################################
+def infer_callback(data_source, dump_dir):
+  # 定义你的分类模型
+  model = None
+  # 从ctx.from_experiment获得基于哪组实验的目录（其中保存有对应的模型数据）
+  # model.load(os.path.join(ctx.from_experiment, 'train'))
+
+  # 注：考虑到infer_callback将对不同场景进行支持，如页面DEMO，批量处理，指标评估等。
+  # 在这些场景下，测试数据样本数是不固定的，因而这里不采用torch自身的DataLoader进行数据加载
+  data_loader = MultithreadReader(data_source,
+                                   transformers=[],
+                                   num_workers=1,
+                                   buffer_size=1,
+                                   drop_last=False)
+  for data, annotation in data_loader:
+    # 转换到torch.Tensor
+    data = torch.from_numpy(data)
+    # 基于模型预测输出
+    value = model.predict(data)
+    # 获得分类预测标签
+    cls_label = value.detach().cpu().numpy()[0]
+
+    # 定义输出数据
+    # 1：输出数据格式，'name':{'data': ..., 'type': ...}，其中name开发者自己随意定义，
+    # data对应的值表示数据，type对应的值表示数据的类型，目前仅支持['FILE', 'JSON', 'SCALAR', 'STRING', 'IMAGE', 'VIDEO']
+    # 2：'PREDICT', 'GT'是保留名字，用于定义预测数据和GT，并基于此来计算统计指标
+    # 3：'FILE' 类型的数据必须是本地存在的文件路径，例 {'A': {'data': '/Users/jian/Downloads/blog.css', 'type': 'FILE'}}，
+    #    'JSON' 类型的数据必须是可以序列化的数据，例 {'B': {'data': {'a': 'a', 'b':'b'}, 'type': 'JSON'}}
+    #    'SCALAR'类型数据必须是标量数据，例 {'C': {'data': 0.23, 'type': 'SCALAR'}}
+    #    'STRING'类型的数据必须是字符串，例 {'D': {'data': 'hello the world', 'type': 'STRING'}}
+    #    'IMAGE'类型数据必须是HWC格式的uint8或float，例 {'E': {'data': np.random.randint(0, 255, (255, 255)).astype(np.uint8), 'type': 'IMAGE'}}
+    #    'VIDEO'类型的数据必须是列表其中元素是HWC格式的uint8或float, 例 {'F': {'data': [np.random.randint(0, 255, (255, 255)).astype(np.uint8) for _ in range(100)], 'type': 'VIDEO', 'fps': 30}}
+    result = {'PREDICT': {
+        'data': cls_label,
+        'type': "SCALAR"
+      }
+    }
+    if len(annotation) > 0 and 'category_id' in annotation:
+      result.update({
+        'GT': {
+          'data': {'category_id': annotation['category_id'], 'id': annotation['id']}
+        }
+      })
+
+    ctx.recorder.record(result)
+
+
+###################################################
+####### 5.step link training and infer ############
+#######        process to context      ############
+###################################################
+ctx.training_process = training_callback
+ctx.infer_process = infer_callback
+
+
+###################################################
+###########    6.step test run         ############
+###########                            ############
+###################################################
+if __name__ == '__main__':
+  # 1.step debug training process
+  debug_training_process(lambda :(None,None), param_config='{{ModelName}}_param.yaml')
+
+  # 2.step debug infer process
+  debug_infer_process(lambda : (None), param_config='{{ModelName}}_param.yaml')
