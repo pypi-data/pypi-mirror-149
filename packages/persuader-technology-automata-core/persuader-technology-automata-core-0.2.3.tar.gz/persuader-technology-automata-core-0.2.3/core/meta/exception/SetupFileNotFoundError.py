@@ -1,0 +1,2 @@
+class SetupFileNotFoundError(Exception):
+    pass
