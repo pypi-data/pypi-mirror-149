@@ -1,0 +1,693 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keywordspec name="RPA.Excel.Files" type="LIBRARY" format="REST" scope="GLOBAL" generated="2022-05-02T14:49:57Z" specversion="4" source="./src/RPA/Excel/Files.py" lineno="61">
+<version/>
+<doc>The `Excel.Files` library can be used to read and write Excel
+files without the need to start the actual Excel application.
+
+It supports both legacy ``.xls`` files and modern ``.xlsx`` files.
+
+**Note:** To run macros or load password protected worksheets,
+please use the Excel application library.
+
+**Examples**
+
+**Robot Framework**
+
+A common use-case is to load an existing Excel file as a table,
+which can be iterated over later in a Robot Framework keyword or task:
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library    RPA.Tables
+    Library    RPA.Excel.Files
+
+    *** Keywords ***
+    Read orders as table
+        Open workbook    ${ORDERS_FILE}
+        ${worksheet}=    Read worksheet   header=${TRUE}
+        ${orders}=       Create table     ${worksheet}
+        [Return]         ${orders}
+        [Teardown]       Close workbook
+
+Processing all worksheets in the Excel file and checking row count:
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library    RPA.Excel.Files
+
+    *** Variables ***
+    ${EXCEL_FILE}   /path/to/excel.xlsx
+
+    *** Tasks ***
+    Rows in the sheet
+        [Setup]      Open Workbook    ${EXCEL_FILE}
+        @{sheets}=   List Worksheets
+        FOR  ${sheet}  IN   @{sheets}
+            ${count}=  Get row count in the sheet   ${sheet}
+            Log   Worksheet '${sheet}' has ${count} rows
+        END
+
+    *** Keywords ***
+    Get row count in the sheet
+        [Arguments]      ${SHEET_NAME}
+        ${sheet}=        Read Worksheet   ${SHEET_NAME}
+        ${rows}=         Get Length  ${sheet}
+        [Return]         ${rows}
+
+Creating a new Excel file with a dictionary:
+
+.. code-block:: robotframework
+
+    *** Tasks ***
+    Creating new Excel
+        Create Workbook  my_new_excel.xlsx
+        FOR    ${index}    IN RANGE    20
+            &amp;{row}=       Create Dictionary
+            ...           Row No   ${index}
+            ...           Amount   ${index * 25}
+            Append Rows to Worksheet  ${row}  header=${TRUE}
+        END
+        Save Workbook
+
+Creating a new Excel file with a list:
+
+.. code-block:: robotframework
+
+    *** Variables ***
+    @{heading}   Row No   Amount
+    @{rows}      ${heading}
+
+    *** Tasks ***
+    Creating new Excel
+        Create Workbook  my_new_excel.xlsx
+        FOR    ${index}    IN RANGE   1  20
+            @{row}=         Create List   ${index}   ${index * 25}
+            Append To List  ${rows}  ${row}
+        END
+        Append Rows to Worksheet  ${rows}
+        Save Workbook
+
+**Python**
+
+The library can also be imported directly into Python.
+
+.. code-block:: python
+
+    from RPA.Excel.Files import Files
+
+    def read_excel_worksheet(path, worksheet):
+        lib = Files()
+        lib.open_workbook(path)
+        try:
+            return lib.read_worksheet(worksheet)
+        finally:
+            lib.close_workbook()</doc>
+<tags>
+</tags>
+<inits>
+</inits>
+<keywords>
+<kw name="Append Rows To Worksheet" lineno="400">
+<arguments repr="content, name=None, header=False, start=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="content">
+<name>content</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="header=False">
+<name>header</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="start=None">
+<name>start</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Append values to the end of the worksheet.
+
+:param content: Rows of values to append
+:param name:    Name of worksheet to append to
+:param header:  Set rows according to existing header row
+:param start:   Start of data, NOTE: Only required when header is True
+
+The ``content`` argument can be of any tabular format. Typically,
+this is a Table object created by the ``RPA.Tables`` library,
+but it can also be a list of lists, or a list of dictionaries.
+
+If the ``header`` flag is enabled, the existing header in the worksheet
+is used to insert values in the correct columns. This assumes that
+that source data has this data available.
+
+If the header is not on the first row of the worksheet,
+the ``start`` argument can be used to give the correct row index.
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Append an existing Table object
+    Open workbook    orders.xls
+    Append rows to worksheet    ${table}
+
+    # Append to a worksheet with headers on row 5
+    Open workbook    customers.xlsx
+    Append rows to worksheet    ${table}    header=${TRUE}   start=5</doc>
+<shortdoc>Append values to the end of the worksheet.</shortdoc>
+</kw>
+<kw name="Close Workbook" lineno="263">
+<arguments repr="">
+</arguments>
+<doc>Close the active workbook.</doc>
+<shortdoc>Close the active workbook.</shortdoc>
+</kw>
+<kw name="Create Workbook" lineno="201">
+<arguments repr="path=None, fmt=xlsx">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="fmt=xlsx">
+<name>fmt</name>
+<default>xlsx</default>
+</arg>
+</arguments>
+<doc>Create and open a new Excel workbook.
+
+Automatically also creates a new worksheet with the name "Sheet".
+
+:param path: Default save path for workbook
+:param fmt:  Format of workbook, i.e. xlsx or xls
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Create modern format workbook
+    Create workbook    fmt=xlsx
+    Save workbook    orders.xlsx
+
+    # Create legacy format workbook
+    Create workbook    fmt=xls
+    Save workbook    orders.xls</doc>
+<shortdoc>Create and open a new Excel workbook.</shortdoc>
+</kw>
+<kw name="Create Worksheet" lineno="334">
+<arguments repr="name, content=None, exist_ok=False, header=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="name">
+<name>name</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="content=None">
+<name>content</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="exist_ok=False">
+<name>exist_ok</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="header=False">
+<name>header</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Create a new worksheet in the current workbook.
+
+:param name:     Name of new worksheet
+:param content:  Optional content for worksheet
+:param exist_ok: If `False`, raise an error if name is already in use
+:param header:   If content is provided, write headers to worksheet
+
+Examples:
+
+.. code-block:: robotframework
+
+    Open workbook       customers.xlsx
+    Create worksheet    Orders</doc>
+<shortdoc>Create a new worksheet in the current workbook.</shortdoc>
+</kw>
+<kw name="Find Empty Row" lineno="467">
+<arguments repr="name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Find the first empty row after existing content,
+and return the row number.
+
+:param name:    Name of worksheet
+
+Examples:
+
+.. code-block:: robotframework
+
+    Append rows to worksheet     ${rows}
+    ${next}=    Find empty row
+    Insert image to worksheet    ${next}    A    screenshot.png</doc>
+<shortdoc>Find the first empty row after existing content, and return the row number.</shortdoc>
+</kw>
+<kw name="Get Active Worksheet" lineno="309">
+<arguments repr="">
+</arguments>
+<doc>Get the name of the worksheet which is currently active.</doc>
+<shortdoc>Get the name of the worksheet which is currently active.</shortdoc>
+</kw>
+<kw name="Get Cell Value" lineno="484">
+<arguments repr="row, column, name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Get a cell value in the given worksheet.
+
+:param row:     Index of row to read, e.g. 3
+:param column:  Name or index of column, e.g. C or 7
+:param name:    Name of worksheet (optional)
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Read header names
+    ${column1}=    Get cell value    1    A
+    ${column2}=    Get cell value    1    B
+    ${column3}=    Get cell value    1    C</doc>
+<shortdoc>Get a cell value in the given worksheet.</shortdoc>
+</kw>
+<kw name="Get Worksheet Value" lineno="601">
+<arguments repr="row, column, name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Alias for keyword ``Get cell value``, see the original keyword
+for documentation.</doc>
+<shortdoc>Alias for keyword ``Get cell value``, see the original keyword for documentation.</shortdoc>
+</kw>
+<kw name="Insert Image To Worksheet" lineno="563">
+<arguments repr="row, column, path, scale=1.0, name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="scale=1.0">
+<name>scale</name>
+<default>1.0</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Insert an image into the given cell.
+
+The ``path`` argument should be a local file path to the image file.
+
+By default the image is inserted in the original size, but it can
+be scaled with the ``scale`` argument. It's scaled with a factor
+where the value ``1.0`` is the default.
+
+:param row:     Index of row to write
+:param column:  Name or index of column
+:param path:    Path to image file
+:param scale:   Scale of image
+:param name:    Name of worksheet
+
+Examples:
+
+.. code-block:: robotframework
+
+    Create worksheet    Order
+    Append rows to worksheet     ${details}
+    ${last_row}=    Find empty row
+    Insert image to worksheet    ${last_row}    A    screenshot.png</doc>
+<shortdoc>Insert an image into the given cell.</shortdoc>
+</kw>
+<kw name="List Worksheets" lineno="299">
+<arguments repr="">
+</arguments>
+<doc>List all names of worksheets in the given workbook.</doc>
+<shortdoc>List all names of worksheets in the given workbook.</shortdoc>
+</kw>
+<kw name="Open Workbook" lineno="235">
+<arguments repr="path: str, data_only: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
+<name>path</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="data_only: bool = False">
+<name>data_only</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Open an existing Excel workbook.
+
+Opens the workbook in memory and sets it as the active workbook.
+This library can only have one workbook open at a time, and
+any previously opened workbooks are closed first.
+
+The file can be in either ``.xlsx`` or ``.xls`` format.
+
+:param path: path to Excel file
+:param data_only: controls whether cells with formulae have either
+ the formula (default, False) or the value stored the last time Excel
+ read the sheet (True). Affects only ``.xlsx`` files.
+
+Examples:
+
+.. code-block:: robotframework
+
+    Open workbook    path/to/file.xlsx
+    ${table}=    Read worksheet as table</doc>
+<shortdoc>Open an existing Excel workbook.</shortdoc>
+</kw>
+<kw name="Read Worksheet" lineno="357">
+<arguments repr="name=None, header=False, start=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="header=False">
+<name>header</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="start=None">
+<name>start</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Read the content of a worksheet into a list of dictionaries.
+
+Each key in the dictionary will be either values from the header row,
+or Excel-style column letters.
+
+:param name:   Name of worksheet to read
+:param header: If `True`, use the first row of the worksheet
+               as headers for the rest of the rows.
+
+Examples:
+
+.. code-block:: robotframework
+
+    Open Workbook   orders.xlsx
+    ${rows}=        Read Worksheet     header=True
+    Close Workbook</doc>
+<shortdoc>Read the content of a worksheet into a list of dictionaries.</shortdoc>
+</kw>
+<kw name="Read Worksheet As Table" lineno="378">
+<arguments repr="name=None, header=False, trim=True, start=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="header=False">
+<name>header</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="trim=True">
+<name>trim</name>
+<default>True</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="start=None">
+<name>start</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Read the content of a worksheet into a Table container. Allows
+sorting/filtering/manipulating using the ``RPA.Tables`` library.
+
+:param name:   Name of worksheet to read
+:param header: If `True`, use the first row of the worksheet
+               as headers for the rest of the rows.
+:param trim:   Remove all empty rows from the end of the worksheet
+:param start:  Row index to start reading data from (1-indexed)
+
+Examples:
+
+.. code-block:: robotframework
+
+    Open Workbook   orders.xlsx
+    ${table}=       Read Worksheet As Table     header=True
+    Close Workbook</doc>
+<shortdoc>Read the content of a worksheet into a Table container. Allows sorting/filtering/manipulating using the ``RPA.Tables`` library.</shortdoc>
+</kw>
+<kw name="Remove Worksheet" lineno="434">
+<arguments repr="name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Remove a worksheet from the active workbook.
+
+:param name: Name of worksheet to remove
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Remove last worksheet
+    Open workbook    orders.xlsx
+    ${sheets}=       List worksheets
+    Remove worksheet    ${sheets}[-1]</doc>
+<shortdoc>Remove a worksheet from the active workbook.</shortdoc>
+</kw>
+<kw name="Rename Worksheet" lineno="451">
+<arguments repr="src_name, dst_name">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="src_name">
+<name>src_name</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="dst_name">
+<name>dst_name</name>
+</arg>
+</arguments>
+<doc>Rename an existing worksheet in the active workbook.
+
+:param src_name: Current name of worksheet
+:param dst_name: Future name of worksheet
+
+Examples:
+
+.. code-block:: robotframework
+
+    Create workbook
+    Rename worksheet    Sheet    Orders</doc>
+<shortdoc>Rename an existing worksheet in the active workbook.</shortdoc>
+</kw>
+<kw name="Save Workbook" lineno="270">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Save the active workbook.
+
+**Note:** No changes to the workbook are saved to the actual file unless
+this keyword is called.
+
+:param path: Path to save to. If not given, uses path given
+             when opened or created.</doc>
+<shortdoc>Save the active workbook.</shortdoc>
+</kw>
+<kw name="Set Active Worksheet" lineno="314">
+<arguments repr="value">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="value">
+<name>value</name>
+</arg>
+</arguments>
+<doc>Set the active worksheet.
+
+This keyword can be used to set the default worksheet for keywords,
+which removes the need to specify the worksheet name for each keyword.
+It can always be overridden on a per-keyword basis.
+
+:param value: Index or name of worksheet
+
+Examples:
+
+.. code-block:: robotframework
+
+    Open workbook    complex.xlsx
+    Set active worksheet    Customers
+    Append rows to worksheet    ${rows}</doc>
+<shortdoc>Set the active worksheet.</shortdoc>
+</kw>
+<kw name="Set Cell Format" lineno="530">
+<arguments repr="row, column, fmt, name=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="fmt">
+<name>fmt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Set number format for cell.
+
+Does not affect the values themselves, but changes how the values
+are displayed when opening with an external application such as
+Microsoft Excel or LibreOffice Calc.
+
+The ``fmt`` argument accepts all format code values that
+are supported by the aforementioned applications.
+
+Some examples of valid values:
+
+======== ===========
+Format   Explanation
+======== ===========
+0.00     Number with two decimal precision
+0%       Percentage without decimals
+MM/DD/YY Date with month, day, and year
+@        Text value
+BOOLEAN  Boolean value
+======== ===========
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Set value to have one decimal precision
+    Set cell value    2  B    ${value}
+    Set cell format   2  B    00.0</doc>
+<shortdoc>Set number format for cell.</shortdoc>
+</kw>
+<kw name="Set Cell Value" lineno="503">
+<arguments repr="row, column, value, name=None, fmt=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="value">
+<name>value</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="fmt=None">
+<name>fmt</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Set a cell value in the given worksheet.
+
+:param row:     Index of row to write, e.g. 3
+:param column:  Name or index of column, e.g. C or 7
+:param value:   New value of cell
+:param name:    Name of worksheet (optional)
+:param fmt:     Format code for cell (optional)
+
+Examples:
+
+.. code-block:: robotframework
+
+    # Set a value in the first row and column
+    Set cell value    1    1    Some value
+    Set cell value    1    A    Some value
+
+    # Set a value with cell formatting
+    Set cell value    2    B    ${value}    fmt=0%</doc>
+<shortdoc>Set a cell value in the given worksheet.</shortdoc>
+</kw>
+<kw name="Set Worksheet Value" lineno="607">
+<arguments repr="row, column, value, name=None, fmt=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="row">
+<name>row</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="column">
+<name>column</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="value">
+<name>value</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name=None">
+<name>name</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="fmt=None">
+<name>fmt</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Alias for keyword ``Set cell value``, see the original keyword
+for documentation.</doc>
+<shortdoc>Alias for keyword ``Set cell value``, see the original keyword for documentation.</shortdoc>
+</kw>
+<kw name="Worksheet Exists" lineno="304">
+<arguments repr="name">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="name">
+<name>name</name>
+</arg>
+</arguments>
+<doc>Return True if worksheet with given name is in workbook.</doc>
+<shortdoc>Return True if worksheet with given name is in workbook.</shortdoc>
+</kw>
+</keywords>
+<datatypes>
+</datatypes>
+<typedocs>
+<type name="boolean" type="Standard">
+<doc>Strings ``TRUE``, ``YES``, ``ON`` and ``1`` are converted to Boolean ``True``,
+the empty string as well as strings ``FALSE``, ``NO``, ``OFF`` and ``0``
+are converted to Boolean ``False``, and the string ``NONE`` is converted
+to the Python ``None`` object. Other strings and other accepted values are
+passed as-is, allowing keywords to handle them specially if
+needed. All string comparisons are case-insensitive.
+
+Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
+``example`` (used as-is)
+</doc>
+<accepts>
+<type>string</type>
+<type>integer</type>
+<type>float</type>
+<type>None</type>
+</accepts>
+<usages>
+<usage>Open Workbook</usage>
+</usages>
+</type>
+<type name="string" type="Standard">
+<doc>All arguments are converted to Unicode strings.</doc>
+<accepts>
+<type>Any</type>
+</accepts>
+<usages>
+<usage>Open Workbook</usage>
+</usages>
+</type>
+</typedocs>
+</keywordspec>
