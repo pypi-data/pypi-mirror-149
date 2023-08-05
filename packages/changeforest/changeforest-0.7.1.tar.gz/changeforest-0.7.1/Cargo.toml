@@ -1,0 +1,18 @@
+[package]
+name = "changeforest_py"
+version = "0.7.1"
+edition = "2021"
+
+[lib]
+name = "changeforest"
+crate-type = ["cdylib"]
+
+[package.metadata.maturin]
+name = "changeforest"
+
+[dependencies]
+numpy = "0.15"
+changeforest = { path = "local_dependencies/changeforest" }
+ndarray = "0.15.3"
+pyo3 = {version = "0.15", features = ["extension-module"]}
+biosphere = "0.3.0"
