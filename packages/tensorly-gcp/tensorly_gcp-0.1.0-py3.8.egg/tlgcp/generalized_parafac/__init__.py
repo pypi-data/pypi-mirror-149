@@ -1,0 +1,2 @@
+from ._generalized_parafac import generalized_parafac, GCP
+from ._stochastic_generalized_parafac import stochastic_generalized_parafac, Stochastic_GCP
