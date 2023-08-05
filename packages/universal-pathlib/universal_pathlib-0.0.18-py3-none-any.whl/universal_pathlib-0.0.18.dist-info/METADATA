@@ -1,0 +1,71 @@
+Metadata-Version: 2.1
+Name: universal_pathlib
+Version: 0.0.18
+Summary: Pathlib API extended to use fsspec backends
+Home-page: https://github.com/fsspec/universal_pathlib
+License: 
+Keywords: 
+Author: Andrew Fulton
+Author-email: andrewfulton9@gmail.com
+Maintainer: Andrew Fulton
+Maintainer-email: andrewfulton9@gmail.com
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: fsspec
+Requires-Dist: aiohttp ; extra == "test"
+Requires-Dist: flake8 ; extra == "test"
+Requires-Dist: gcsfs ; extra == "test"
+Requires-Dist: hadoop-test-cluster ; extra == "test"
+Requires-Dist: ipython ; extra == "test"
+Requires-Dist: jupyter ; extra == "test"
+Requires-Dist: moto ; extra == "test"
+Requires-Dist: pyarrow ; extra == "test"
+Requires-Dist: pylint ; extra == "test"
+Requires-Dist: pytest ; extra == "test"
+Requires-Dist: requests ; extra == "test"
+Requires-Dist: s3fs ; extra == "test"
+Provides-Extra: dev
+Provides-Extra: doc
+Provides-Extra: test
+
+# Universal Pathlib
+
+Universal Pathlib is a python library that aims to extend Python's built-in [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html) api to use a variety of backend filesystems using [`fsspec`](https://filesystem-spec.readthedocs.io/en/latest/intro.html)
+
+## Installation
+
+### Pypi
+
+```bash
+pip install universal_pathlib
+```
+
+### conda
+
+```bash
+conda install -c conda-forge universal_pathlib
+```
+
+## Basic Usage
+
+```python
+>>> from upath import UPath
+
+>>> path = UPath("file:/some/filepath.py")
+>>> path.name
+filepath.py
+>>> path.stem
+filepath
+>>> path.suffix
+.py
+>>> path.exists()
+True
+```
+
+Some backends may require other dependencies. For example to work with S3 paths, [`s3fs`](https://s3fs.readthedocs.io/en/latest/) is required.
+
+For more examples, see the [example notebook here](notebooks/examples.ipynb)
+
+
+
+
