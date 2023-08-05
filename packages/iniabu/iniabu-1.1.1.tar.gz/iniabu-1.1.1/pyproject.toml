@@ -1,0 +1,59 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "iniabu"
+author = "Reto Trappitsch"
+author-email = "reto@galactic-forensics.space"
+home-page = "https://github.com/galactic-forensics/iniabu"
+requires = ["numpy"]
+requires-python=">=3.6"
+description-file="README.rst"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[tool.flit.metadata.requires-extra]
+dev = [
+    "darglint>=1.5.1",
+    "flake8",
+    "flake8-bandit",
+    "flake8-black",
+    "flake8-bugbear",
+    "flake8-docstrings",
+    "flake8-import-order",
+    "bandit<=1.7.2",
+]
+doc = [
+    "sphinx",
+    "sphinx_rtd_theme"
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-sugar"
+]
+
+[tool.flit.metadata.urls]
+Documentation = "https://iniabu.readthedocs.io"
+
+[tool.flit.sdist]
+exclude = ["dev/"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov=iniabu -v"
+testpaths = "tests"
