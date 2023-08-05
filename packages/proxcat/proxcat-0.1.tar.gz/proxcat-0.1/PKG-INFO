@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: proxcat
+Version: 0.1
+Summary: local htop-like status monitor for remote Proxmox VE servers
+Home-page: https://github.com/aisuneko/proxcat
+Author: aisuneko
+Author-email: iceneko@protonmail.ch
+Maintainer: aisuneko
+Maintainer-email: iceneko@protonmail.ch
+License: MIT
+Keywords: proxmox,proxmoxer,PVE,status,monitor
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: System Administrators
+Classifier: Environment :: Console :: Curses
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: System :: Monitoring
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# proxcat
+A htop-like status monitor for Proxmox VE servers, powered by python curses, with support for multiple nodes, VM (QEMU) and Container (LXC) status and node status.
+
+## Installation
+Install dependencies: `pip install proxmoxer`
+
+Or, clone repository and run `pip install .`. 
+
+## Usage
+1. On your PVE server, create an API token in WebUI under Datacenter -> Permissions -> API Tokens. Remember to deselect "Priviledge Separation" (for this reason, it is recommended to use the app with a dedicated low-level user instead of root).
+2. Create a config file. The app will look for `config.ini` under
+    - `$XDG_CONFIG_HOME/proxcat/` or
+    - `~/.proxcat/`
+
+    Or, you can specify a custom config file with the `-c` / `--config` flag.
+
+    Then fill in the config file like this:
+   ```ini
+   [Account]
+   # address of PVE host
+   Host = 
+   # Username (format: <username>@<realm>)
+   User = 
+   # name of your token
+   TokenName = 
+   # your token value
+   Token = 
+
+   [Settings]
+   # set data update interval (in ms), optional
+   UpdateInterval = 1000
+   ```
+3. run the `proxcat` command.
+
+
+# Changelog
+
+v0.1 (2022/05/02) - Initial release
+
