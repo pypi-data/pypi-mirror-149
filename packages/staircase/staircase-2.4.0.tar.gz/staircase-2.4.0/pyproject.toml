@@ -1,0 +1,88 @@
+# Poetry pyproject.toml: https://python-poetry.org/docs/pyproject/
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "staircase"
+version = "2.4.0"
+description = "A data analysis package based on modelling and manipulation of mathematical step functions. Strongly aligned with pandas."
+readme = "README.md"
+authors = ["Riley Clement <venaturum@gmail.com>"]
+maintainers = ["Riley Clement <venaturum@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/staircase-dev/staircase"
+homepage = "https://staircase.dev"
+documentation = "https://staircase.dev"
+
+keywords=[
+	'Staircase',
+	'Step Functions',
+	'Mathematics', 
+	'Data Analysis',
+	'Analysis',
+	'Data Structures',
+	'Time Signal',
+	'Simulation Output',
+]
+
+classifiers=[
+	'Operating System :: OS Independent',
+	'Intended Audience :: Science/Research',
+	'Programming Language :: Python :: 3.6',
+	'Programming Language :: Python :: 3.7',
+	'Programming Language :: Python :: 3.8',
+	'Programming Language :: Python :: 3.9',
+	'Topic :: Scientific/Engineering',
+]
+
+[tool.poetry.dependencies]
+python = "^3.6.1"
+pandas = "^1"
+numpy = "^1.14"
+matplotlib = ">=2"
+pytz = "*"
+
+
+[tool.poetry.dev-dependencies]
+ipykernel = "^5"
+pytest = "^6"
+pytest-cov = "*"
+sphinx = "*"
+nbsphinx = ">=0.8.5"
+sphinx-autobuild = "*"
+seaborn = ">=0.8.0"
+notebook = ">= 6.0"
+isort = ">=5.8"
+black = {version = "*", python = "^3.6.2"}
+flake8 = ">=3.9"
+pre-commit = {version = ">=2.13", python = "^3.6.1"}
+tox=">=3.15"
+
+
+[tool.poetry.extras]
+codecov = ["codecov"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/staircase-dev/staircase/issues"
+
+[tool.isort]
+# make it compatible with black
+profile = "black"
+multi_line_output = 3
+src_paths = ["staircase", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+addopts = """
+    --junitxml=junit.xml
+    --ignore setup.py
+    --ignore run_test.py
+    --cov-report term-missing
+    --tb native
+    --strict-markers
+    --durations=20
+	"""
+markers = "serial: execute test serially (to avoid race conditions)"
+junit_family = "xunit1"
