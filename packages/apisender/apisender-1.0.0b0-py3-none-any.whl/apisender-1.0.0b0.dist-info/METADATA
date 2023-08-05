@@ -1,0 +1,81 @@
+Metadata-Version: 2.1
+Name: apisender
+Version: 1.0.0b0
+Summary: Sends messages to various APIs for email or discord
+Home-page: https://github.com/Sumiza/apisender/
+Author: Sumiza
+Author-email: sumiza@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/Sumiza/apisender/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+
+# API Sender
+
+Sends messages to various APIs for email or discord
+
+``` python
+from apisender import Apisender
+```
+```
+Supported APIs:
+
+- Discord
+- Mailjet
+- SMTP2GO
+
+Todo:
+- Mailgun
+- Twillo (sms)
+- Telnyx (sms)
+```
+``` python
+Examples:
+
+    fromname = "fromname"
+    fromid = "from@test.com"
+    subject = "test subject"
+    toid = "to@test.com"
+    toname = "toname"
+    bodytext = "test text"
+    bodyhtml = "<h1>test html</h1>"
+    subject = "test subject"
+
+    print(Apisender(fromname=fromname,
+                    bodytext=bodytext).discord().text)
+
+    print(Apisender(fromname=fromname,
+                    fromid=fromid,
+                    toname=toname,
+                    toid=toid,
+                    subject=subject,
+                    bodytext=bodytext,
+                    bodyhtml=bodyhtml).mailjet().text)
+
+    print(Apisender(fromid=fromid,
+                    toid=toid,
+                    subject=subject,
+                    bodytext=bodytext).smtp2go().text)
+```
+
+```
+Notes:
+    - No except checks are done for failed sending.
+    - Check is done if password file is missing.
+    - Requires requests to work.
+    - Returns requests responses.
+    - apisender.json is where you keep your passwords
+```
+
+
+
