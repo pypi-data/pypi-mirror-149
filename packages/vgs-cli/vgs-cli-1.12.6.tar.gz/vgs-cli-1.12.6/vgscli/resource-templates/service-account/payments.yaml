@@ -1,0 +1,11 @@
+apiVersion: 1.0.0
+kind: ServiceAccount
+data:
+  name: payments
+  annotations:
+    "vgs.io/vault-id": "{{ vault_id }}"
+  scopes:
+    - financial-instruments:write
+    - transfers:write
+    - orders:write
+

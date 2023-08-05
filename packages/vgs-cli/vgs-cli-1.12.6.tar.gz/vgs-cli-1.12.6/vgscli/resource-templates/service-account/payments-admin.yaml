@@ -1,0 +1,14 @@
+apiVersion: 1.0.0
+kind: ServiceAccount
+data:
+  name: payments-admin
+  annotations:
+    "vgs.io/vault-id": "{{ vault_id }}"
+  scopes:
+    - financial-instruments:admin
+    - gateways:admin
+    - rules:admin
+    - transfers:admin
+    - orders:admin
+    - 3ds:admin
+    - cards:write
