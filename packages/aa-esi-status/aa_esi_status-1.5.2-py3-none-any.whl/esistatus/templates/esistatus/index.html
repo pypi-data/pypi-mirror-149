@@ -1,0 +1,33 @@
+{% extends 'esistatus/base.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block details %}
+    <div class="aa-esistatus row">
+        {% if has_status_result %}
+            {% translate "Red Endpoints" as translated_header_red %}
+            {% include 'esistatus/partials/endpoints.html' with title=translated_header_red status="red" data=endpoints_red %}
+
+            {% translate "Yellow Endpoints" as translated_header_yellow %}
+            {% include 'esistatus/partials/endpoints.html' with title=translated_header_yellow status="yellow" data=endpoints_yellow %}
+
+            {% translate "Green Endpoints" as translated_header_green %}
+            {% include 'esistatus/partials/endpoints.html' with title=translated_header_green status="green" data=endpoints_green %}
+        {% else %}
+            <p class="alert alert-warning text-center">
+                {% translate "Couldn't read the ESI status. Please try and reload the page. If that doesn't help, it is possible that ESI might be down entirely." %}
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_javascript %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'esistatus/css/esistatus.min.css' %}" type="text/css">
+{% endblock %}
+
+{% block extra_script %}
+{% endblock extra_script %}
