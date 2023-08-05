@@ -1,0 +1,90 @@
+{% from 'tf1x_utils.j2' import batch_normal, build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+{% from 'activations.j2' import activation_function %}
+
+
+{% macro layer_tf2x_fully_connected(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def __init__(self):
+        super().__init__()
+        self._variables = {}
+
+    def call(self, inputs, training=True):
+        """ Takes a tensor as input and feeds it forward through a layer of neurons, returning a newtensor. Invoked by the Keras framework. """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}                
+        input_ = inputs['input']
+        
+        flat_input = self.flatten(input_)
+        linear_output = self.dense(flat_input)
+        
+        {% call indented_if(layer_spec.batch_norm) %}
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='preview') | indent(8) }}            	
+            linear_output = self.batch_norm(linear_output, training=training)
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='output') | indent(8) }}            
+        {% endcall %}
+        {% call indented_if(not layer_spec.batch_norm) %}
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='output') | indent(8) }}
+            preview = output
+        {% endcall %}
+	{% call indented_if(layer_spec.dropout) %}
+            output = self.dropout(output, training=training)
+            preview = output    
+	{% endcall %}
+	
+        self.kernel = self.dense.kernel
+        self.bias = self.dense.bias
+
+        self._variables = {k: v for k, v in locals().items() if can_serialize(v)}
+
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'W': 'self.kernel', 'b': 'self.bias', 'preview': 'preview'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+
+    def build(self, input_shape: Dict[str, tf.TensorShape]) -> None:
+        """ Called by the Keras framework upon the first invocation of the call method
+        
+        Args:
+            input_shape: A dictionary with layer id and its tensor shape        
+        """
+        self.flatten = tf.keras.layers.Flatten()
+        self.dense = tf.keras.layers.Dense(
+            units={{layer_spec.n_neurons}},
+            use_bias=True,
+            kernel_initializer='glorot_uniform',
+            bias_initializer='zeros', 
+            kernel_regularizer=None,
+            bias_regularizer=None,
+        )
+        {% call indented_if(layer_spec.batch_norm) %}	
+            self.batch_norm = tf.keras.layers.BatchNormalization()
+	{% endcall %}
+	{% call indented_if(layer_spec.dropout) %}
+            self.dropout = tf.keras.layers.Dropout(rate={{layer_spec.dropout_rate}})
+	{% endcall %}
+        
+    def get_config(self) -> Dict[str, Picklable]:
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return self._variables
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """    
+        return self.kernel, self.bias
+
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    {# # TODO: deprecate this part! (see work item 1534) #}
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+
