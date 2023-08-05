@@ -1,0 +1,50 @@
+Metadata-Version: 2.1
+Name: we-pyutils
+Version: 0.2.13
+Summary: WingEase Python Utils
+Home-page: https://github.com/WingEase/we_pyutils
+Author: ZENKR
+Author-email: zenkr@qq.com
+License: GPLv3
+Keywords: pip,pyutils
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: requests-toolbelt
+Requires-Dist: Django
+Requires-Dist: django-environ
+Requires-Dist: oss2
+
+# we_pyutils
+
+> WE Python Utils
+
+## 上传
+
+```sh
+python setup.py bdist_egg # 生成类似 edssdk-0.0.1-py2.7.egg，支持 easy_install
+python setup.py sdist     # 生成类似 edssdk-0.0.1.tar.gz，支持 pip
+twine upload dist/we_pyutils-0.2.X.tar.gz
+```
+
+## 配置
+
+初始环境配置
+
+```shell
+py -m pip install --upgrade build
+py -m pip install --upgrade twine
+```
+
+生成并上传
+
+```shell
+py -m build
+#py -m twine upload --repository testpypi dist/*
+py -m twine upload dist/*
+```
+
+
