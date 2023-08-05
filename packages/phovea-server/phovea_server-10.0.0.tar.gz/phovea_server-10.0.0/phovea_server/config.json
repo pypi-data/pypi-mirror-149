@@ -1,0 +1,65 @@
+{
+  "env": "production",
+  "debug": false,
+  "nocache": false,
+  "error_stack_trace": false,
+
+  "port": 80,
+  "address": "0.0.0.0",
+
+  "dir": "./",
+  "dataDir": "${dir}_data",
+  "absoluteDataDir": "${absoluteDir}_data",
+  "restCacheDir": "${dir}_cache",
+  "restCache": false,
+
+  "secret_key": "VERY_SECRET_STUFF_T0IB84wlQrdMH8RVT28w",
+  "max_file_size": 33554432,
+
+  "coldstart": {
+    "mapping": false
+  },
+
+  "disable": {
+    "plugins": [],
+    "extensions": []
+  },
+
+  "logging": {
+    "version": 1,
+    "formatters": {
+      "simple": {
+        "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
+        "datefmt": "%H:%M:%S"
+      },
+      "line": {
+        "format": "%(asctime)s %(levelname)s %(name)s(%(pathname)s:%(lineno)s): %(message)s"
+      }
+    },
+    "handlers": {
+      "console": {
+        "class": "logging.StreamHandler",
+        "formatter": "simple",
+        "stream": "ext://sys.stdout"
+      }
+    },
+    "loggers": {
+      "geventwebsocket.handler": {
+        "level": "WARN",
+        "handlers": [
+          "console"
+        ]
+      }
+    },
+    "root": {
+      "level": "INFO",
+      "handlers": [
+        "console"
+      ]
+    }
+  },
+
+  "_runtime": {
+
+  }
+}
