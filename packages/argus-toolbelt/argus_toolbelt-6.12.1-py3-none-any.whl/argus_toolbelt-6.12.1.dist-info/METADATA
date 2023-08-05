@@ -1,0 +1,80 @@
+Metadata-Version: 2.1
+Name: argus-toolbelt
+Version: 6.12.1
+Summary: A framework for creating interactive commands with Argus' APIs
+License: ISC
+Author: mnemonic
+Author-email: opensource@mnemonic.no
+Requires-Python: >=3.6.2,<4.0.0
+Classifier: License :: OSI Approved
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Provides-Extra: includes
+Requires-Dist: argus-api (>=2.7.3,<3.0.0)
+Requires-Dist: colorama (>=0.4.3,<0.5.0)
+Requires-Dist: colorlog (>=4.7,<5.0)
+Requires-Dist: dateparser (>=1.1.1,<2.0.0)
+Requires-Dist: importlib_metadata; python_version < "3.8"
+Requires-Dist: jinja2 (>=2.11.3)
+Requires-Dist: pyyaml (>=5.4.1,<6.0.0)
+Requires-Dist: pyyaml-include (>=1.2,<2.0); extra == "includes"
+Requires-Dist: requests (>=2.25,<3.0)
+Requires-Dist: terminaltables (>=3.1,<4.0)
+Requires-Dist: tqdm (>=4.56.0,<5.0.0)
+Description-Content-Type: text/markdown
+
+Argus Toolbelt
+==============
+Argus Toolbelt is a framework for unifying commandline tools to interact with
+Argus under one command. This framework also makes it easy for others to develop
+their own commands with a simple pythonic interface.
+
+While any command can be made, Argus is also a first class citizen, meaning that
+a command developer won't have to deal with auth and HTTP requests.
+
+
+Usage
+------------
+As with most other packages, Argus Toolbelt is available on PyPi.
+
+```bash
+pip install argus-toolbelt
+```
+
+After the package has been installed, it can be ran as `argus-cli` on the
+commandline. You'll find 
+
+For a full list of commands, try: 
+
+```bash
+argus-cli --help
+```
+
+If you for example want to check statistics for all cases, you can write:
+
+```bash
+argus-cli cases statistics
+```
+
+Development
+-----------
+This repository is using [Poetry](https://python-poetry.org/) as it's dependency
+system, meaning it has to be installed on your system first.
+
+```bash
+pip install poetry
+```
+
+To install this repository use: 
+
+```bash
+poetry install
+```
+
+Now you should be able to run with: 
+```bash
+poetry run argus-cli
+```
+
