@@ -1,0 +1,117 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="imio.smartweb">
+
+
+  <genericsetup:registerProfile
+      name="upgrade_1007_to_1008"
+      title="Upgrade common from 1007 to 1008"
+      directory="profiles/1007_to_1008"
+      description="Add local manager role and sharing permissions rolemap"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="upgrade_1008_to_1009"
+      title="Upgrade common from 1008 to 1009"
+      directory="profiles/1008_to_1009"
+      description="Hide faceted actions"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeStep
+      title="Configure first official release"
+      description="Run needed registry step"
+      source="1000"
+      destination="1001"
+      handler=".upgrades.reload_registry"
+      profile="imio.smartweb.common:default"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1001"
+      destination="1002"
+      profile="imio.smartweb.common:default">
+    <genericsetup:upgradeDepends
+        title="Install collective.privacy add-on for cookies consent"
+        import_profile="collective.privacy:default"
+        />
+    <genericsetup:upgradeDepends
+        title="Install iaweb.privacy add-on for cookies consent"
+        import_profile="iaweb.privacy:default"
+        />
+    <genericsetup:upgradeDepends
+        title="Install imio.gdpr add-on for legal notice"
+        import_profile="imio.gdpr:default"
+        />
+  </genericsetup:upgradeSteps>
+
+  <genericsetup:upgradeStep
+      title="Reload registry to add view.js to bundle"
+      description=""
+      source="1002"
+      destination="1003"
+      handler=".upgrades.reload_registry"
+      profile="imio.smartweb.common:default"
+      />
+
+  <genericsetup:upgradeStep
+      title="Reload registry to refresh privacy resources"
+      description=""
+      source="1003"
+      destination="1004"
+      handler=".upgrades.reload_registry"
+      profile="imio.smartweb.common:default"
+      />
+
+  <genericsetup:upgradeStep
+      title="Reload actions to hide ical related actions"
+      description=""
+      source="1004"
+      destination="1005"
+      handler=".upgrades.reload_actions"
+      profile="imio.smartweb.common:default"
+      />
+
+  <genericsetup:upgradeDepends
+      title="Reload rolemap to assign 'Access inactive portal content' permission"
+      description=""
+      source="1005"
+      destination="1006"
+      profile="imio.smartweb.common:default"
+      import_steps="rolemap"
+      />
+
+  <genericsetup:upgradeStep
+      title="Reindex SearchableText index to add Subjects"
+      description=""
+      source="1006"
+      destination="1007"
+      handler=".upgrades.reindex_searchable_text"
+      profile="imio.smartweb.common:default"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1007"
+      destination="1008"
+      profile="imio.smartweb.common:default">
+    <genericsetup:upgradeDepends
+        title="Add local manager role and sharing permissions rolemap"
+        import_profile="imio.smartweb.common.upgrades:upgrade_1007_to_1008"
+        import_steps="rolemap"
+        />
+  </genericsetup:upgradeSteps>
+
+  <genericsetup:upgradeSteps
+      source="1008"
+      destination="1009"
+      profile="imio.smartweb.common:default">
+    <genericsetup:upgradeDepends
+        title="Hide faceted actions"
+        import_profile="imio.smartweb.common.upgrades:upgrade_1008_to_1009"
+        import_steps="actions"
+        />
+  </genericsetup:upgradeSteps>
+
+</configure>
