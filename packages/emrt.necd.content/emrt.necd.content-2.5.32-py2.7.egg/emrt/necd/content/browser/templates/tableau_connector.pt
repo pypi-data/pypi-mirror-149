@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EMRT-NECD Tableau Connector</title>
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <script src="${options/portal_url}/++resource++emrt.necd.content/moment.min.js" type="text/javascript"></script>
+    <script src="${options/portal_url}/++resource++emrt.necd.content/tableauwdc-2.3.1.min.js" type="text/javascript"></script>
+  </head>
+
+  <body tal:define="token_c python:here.REQUEST.get('tableau_token', '');">
+
+
+    <script>
+      (function(){
+
+        var myConnector = tableau.makeConnector();
+
+        myConnector.getSchema = function(schemaCallback) {
+          var cols = [
+            {
+              id: 'id',
+              alias: 'ID',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'country',
+              alias: 'Country',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'status',
+              alias: 'Current status',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'author',
+              alias: 'Author',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'ipcc_sector',
+              alias: 'IPCC Sector',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'questions_answered',
+              alias: 'Questions answered',
+              dataType: tableau.dataTypeEnum.int
+            },
+            {
+              id: 'questions_asked',
+              alias: 'Questions asked',
+              dataType: tableau.dataTypeEnum.int
+            },
+            {
+              id: 'review_sector',
+              alias: 'Review sector',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'description_flags',
+              alias: 'Description flags',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'conclusion_flags',
+              alias: 'Conclusion flags',
+              dataType: tableau.dataTypeEnum.string
+            },
+            {
+              id: 'potential_technical_correction',
+              alias: 'Potential technical correction',
+              dataType: tableau.dataTypeEnum.bool
+            },
+            {
+              id: 'timestamp',
+              alias: 'Timestamp',
+              dataType: tableau.dataTypeEnum.datetime
+            },
+            {
+              id: 'modified',
+              alias: 'Modified',
+              dataType: tableau.dataTypeEnum.datetime
+            },
+            {
+              id: 'url',
+              alias: 'URL',
+              dataType: tableau.dataTypeEnum.string
+            }
+          ];
+
+          var tableSchema = {
+            id: 'emrt_necd_observations_feed',
+            alias: 'EMRT-NECD Observations',
+            columns: cols
+          };
+
+          schemaCallback([tableSchema]);
+        };
+
+        function convertData(data) {
+          var tableData = [];
+
+          function tableauDate(isoDate) {
+            return moment(isoDate).format("DD-MMM-YYYY HH:mm:ss");
+          }
+
+          for (var i = 0; i < data.length; i++) {
+            var entry = data[i];
+
+            var _modified = entry['Modified'] || null;
+            var _review_sector = entry['Review sector'];
+            var _description_flags = entry['Description flags'] || null;
+            var _conclusion_flags = entry['Conclusion flags'] || null;
+
+
+            tableData[i] = {
+              id: entry['ID'],
+              country: entry['Country'],
+              status: entry['Current status'],
+              author: entry['Author'],
+              ipcc_sector: entry['IPCC Sector'],
+              questions_answered: entry['Questions answered'],
+              questions_asked: entry['Questions asked'],
+              review_sector: Array.isArray(_review_sector) ? _review_sector.join(', ') : _review_sector,
+              description_flags: Array.isArray(_description_flags) ? _description_flags.join(', ') : _description_flags,
+              conclusion_flags: Array.isArray(_conclusion_flags) ? _conclusion_flags.join(', ') : _conclusion_flags,
+              potential_technical_correction: entry['Potential technical correction'] || null,
+              modified: _modified ? tableauDate(_modified) : _modified,
+              timestamp: tableauDate(entry['Timestamp']),
+              url: entry['URL']
+            }
+          }
+
+          return tableData;
+        }
+
+        function fetchData(callback) {
+          var xhr = new XMLHttpRequest();
+          var url = './tableau-historical.json?tableau_token=' + '${token_c}';
+          xhr.open('GET', url, true);
+
+          xhr.onload = function(resp) {
+            if (xhr.status === 200 && xhr.status < 400) {
+              callback(JSON.parse(xhr.responseText));
+            }
+            else {
+              callback([]);
+              console.log('Server error!');
+            }
+          };
+
+          xhr.onerror = function() {
+            callback([]);
+            console.log('Connection error!');
+          };
+
+          xhr.send();
+        }
+
+        myConnector.getData = function(table, doneCallback) {
+          fetchData(function(jsonData) {
+            var tableData = convertData(jsonData);
+            table.appendRows(tableData);
+            doneCallback();
+          });
+        };
+
+        tableau.registerConnector(myConnector);
+
+        myConnector.connectionName = 'EMRT-NECD Observations feed.';
+        myConnector.init = function(initCallback) {
+          initCallback();
+          tableau.submit();
+        };
+
+      })()
+    </script>
+  </body>
+
+</html>
