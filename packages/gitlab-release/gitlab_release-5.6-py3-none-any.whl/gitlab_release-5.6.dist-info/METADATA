@@ -1,0 +1,148 @@
+Metadata-Version: 2.1
+Name: gitlab-release
+Version: 5.6
+Summary: Utility for use in gitlab ci to upload files (from build) to the current projects release (tag)
+Home-page: https://gitlab.com/alelec/gitlab-release
+Author: Andrew Leech
+Author-email: andrew@alelec.net
+License: MIT
+Platform: UNKNOWN
+License-File: LICENSE
+Requires-Dist: requests
+
+gitlab-release
+===============
+
+This Python utility is used to upload specific release
+files from a gitlab-ci build to the `Releases` / `Tags` page on gitlab.
+
+This allows a file or (generated) zip with arbitrary structure to be added to 
+a release for convenient download, as opposed to the artifacts which are 
+somewhat constrained to always be zipped with a folder structure taken 
+directly from the filesystem.
+
+By default the tool will now upload to the generic package registry for the project.
+If you'd prefer to attach to the tag instead registry use can be disabled with ``--no-registry``
+
+It can be used in a ``.gitlab-ci.yml`` stage like:
+
+::
+
+    release:
+      stage: release
+      image: python3
+      script:
+        - pip3 install gitlab-release
+        - gitlab-release *.zip
+      only:
+        - tags
+
+Or if you want to bundle a bunch of files into a zip and upload that
+
+::
+
+    release:
+      stage: release
+      image: python3
+      script:
+        - pip3 install gitlab-release
+        - gitlab-release --zip "release-${CI_COMMIT_TAG}.zip" *
+      only:
+        - tags
+
+Or if you just want links to your job artifacts added to the release:
+
+::
+
+    release:
+      stage: release
+      image: python3
+      script:
+        - pip3 install gitlab-release
+        - gitlab-release --link-artifact *.zip
+      artifacts:
+        paths:
+          # Must include files passed to gitlab_release
+          - ./*.zip
+      only:
+        - tags
+
+On any tagged release the files specified on the command line will then be
+available on the `Tags` tab of your project.
+
+`gitlab-release` requires Python 3.
+
+
+Setting up the required private token
+---------------------------------------
+
+This tool requires you to put a copy of a ``PRIVATE_TOKEN`` in a
+secret CI variable for the project to give it access to post the files
+back to the project.
+
+For this create a new `Personal Access Token` at
+https://gitlab.com/profile/personal_access_tokens and use that. (You
+could also use your personal token from
+https://gitlab.com/profile/account, but this is `not recommended`.)
+
+Make sure you enable `Access your API` when creating the token. The
+`name` of the token is just for you to remeber what it's for, it wont
+affeect operation.
+
+Add it to a secret variable called ``PRIVATE_TOKEN`` for the project you’re
+building at ``https://gitlab.com/<user>/<project>/settings/ci_cd>``.
+
+
+Usage
+-----
+Note: Version 4 and above use the Gitlab Releases api to include files as release 
+assets by default, whereas version 3 and older added the artifacts as a dot-point 
+list in the tag description. 
+The older behavior can still be used with the ``--link-in-desc`` flag. This flag is 
+also automatically enabled if ``--link-prefix`` is set.
+
+::
+
+    usage: gitlab-release [-h] [--server SERVER] [--project_id PROJECT_ID]
+                      [--release_tag RELEASE_TAG] [--timeout TIMEOUT] [--ignore_cert]
+                      [--job-id JOB_ID] [--artifact-zip] [--zip ZIP]
+                      [--description DESCRIPTION] [--link-prefix LINK_PREFIX] [--link-in-desc]
+                      [--link-type LINK_TYPE] [--link-artifact]
+                      [--no-registry] [--registry-vers REGISTRY_VERS]
+                      [--registry-package-name REGISTRY_PACKAGE_NAME]
+                      [--private-token PRIVATE_TOKEN] [--create-tag]
+                      [files ...]
+
+
+================================================== =====
+positional arguments         
+================================================== =====
+files                                              file names and/or globs of files to upload
+================================================== =====
+
+
+================================================== =====
+optional arguments           
+================================================== =====
+``--server SERVER``                                url of gitlab server (default: $CI_PROJECT_URL)
+``--project_id PROJECT_ID``                        Unique id of project, available in Project Settings/General (default: $CI_PROJECT_ID)
+``--release_tag RELEASE_TAG``                      Tag to upload files against (default: $CI_COMMIT_TAG)
+``--timeout TIMEOUT``                              Timeout for http requests
+``--ignore_cert``                                  Ignore ssl certificate failures
+``--job-id JOB_ID``                                Override the job number used for artifacts
+``--artifact-zip``                                 Link artifacts zip from current job
+``--zip ZIP``                                      Add all files to provided zip name and upload that
+``--description DESCRIPTION``                      Release description to be put in front of the files
+``--link-prefix LINK_PREFIX``                      Prefix text added in front of each file link, eg "* " to create a list
+``--link-in-desc``                                 Add the artifact links to the description. Uses release asset otherwise
+``--link-type LINK_TYPE``                          The type of the link: other, runbook, image, package
+``--link-artifact``                                Link files as artifact from the current job
+``--no-registry``                                  Don't upload artifacts to generic registry, attach to tag description instead
+``--registry-vers REGISTRY_VERS``                  Upload artifacts to generic registry with provided version (default tag version numbers)
+``--registry-package-name REGISTRY_PACKAGE_NAME``  Upload artifacts to generic registry with provided version (default project name)
+``--private-token PRIVATE_TOKEN``                  login token with permissions to commit to repo
+``--create-tag``                                   create the tag if it doesn't already exist
+``-h``, ``--help``                                 show this help message and exit
+================================================== =====
+
+
