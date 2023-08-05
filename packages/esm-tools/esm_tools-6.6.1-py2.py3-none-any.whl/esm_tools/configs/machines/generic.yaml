@@ -1,0 +1,44 @@
+# GENERIC YAML CONFIGURATION FILES
+
+name: generic
+accounting: false
+
+batch_system: "slurm"
+
+jobtype: compute
+
+partition: generic 
+
+choose_partition:
+        generic:
+                partition_name: generic
+                partition_cpn: 8 
+
+partitions:
+        compute:
+                name: ${computer.partition_name}
+                cores_per_node: ${computer.partition_cpn}
+
+logical_cpus_per_core: 2
+
+threads_per_core: 1
+
+pool_directories:
+        focipool: "/path/not/set/for/generic/yaml/"
+        pool: "/path/not/set/for/generic/yaml"
+
+pool_dir:  "/path/not/set/for/generic/yaml/"
+
+# standard environment setup
+module_actions:
+   - "load something"
+
+# some yamls use computer.fc, etc to identify the compiler, so we need to add them
+fc: "unset"
+cc: "unset"
+mpifc: "unset"
+mpicc: "unset"
+cxx: "unset"
+
+further_reading:
+        - batch_system/slurm.yaml
