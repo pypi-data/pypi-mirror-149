@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.default_extensions.Resting_state_and_noise_acquisition.main &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.default_extensions.Resting_state_and_noise_acquisition.main</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+===================================
+Resting state and noise acquisition
+===================================
+
+&quot;&quot;&quot;
+
+from bci_framework.extensions.stimuli_delivery import StimuliAPI, DeliveryInstance
+from bci_framework.extensions.stimuli_delivery.utils import Widgets as w
+from bci_framework.extensions.stimuli_delivery.utils import Tone as t
+from bci_framework.extensions.stimuli_delivery.utils import keypress
+import logging
+
+from browser import document, timer, html
+
+TASKS = {
+
+    &#39;resting_open&#39;: [&#39;Resting with open eyes&#39;,
+                     &#39;&lt;p&gt;Resting with &lt;b&gt;open&lt;/b&gt; eyes&lt;/p&gt;&#39;,
+                     &#39;&lt;p&gt;Press the button and center your eyes on the fixation \
+                     cross, the acquisition begins with the single beep, \
+                     &lt;b&gt;keep this position until listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;resting_close&#39;: [&#39;Resting with close eyes&#39;,
+                      &#39;&lt;p&gt;Resting with &lt;b&gt;close&lt;/b&gt; eyes&lt;/p&gt;&#39;,
+                      &#39;&lt;p&gt;Press the button and close the eyes, the acquisition \
+                      begins with the single beep, &lt;b&gt;keep eyes closed until \
+                      listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;eye_blinking&#39;: [&#39;Eye blinking&#39;,
+                     &#39;&lt;p&gt;Eyes &lt;b&gt;blinking&lt;/b&gt;&lt;/p&gt;&#39;,
+                     &#39;&lt;p&gt;Press the button and starts to blink periodically, \
+                     the acquisition begins with the single beep, &lt;b&gt;keep this \
+                     action until listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;eyeball_up_down&#39;: [&#39;Eyeball movement up/down&#39;,
+                        &#39;&lt;p&gt;Eyeball movement &lt;b&gt;Up&lt;/b&gt; and &lt;b&gt;Down&lt;/b&gt;&lt;/p&gt;&#39;,
+                        &#39;&lt;p&gt;Press the button and move your eyes up and down \
+                        periodically, the acquisition begins with the single \
+                        beep, &lt;b&gt;keep this action until listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;eyeball_left_right&#39;: [&#39;Eyeball movement left/right&#39;,
+                           &#39;&lt;p&gt;Eyeball movement &lt;b&gt;Left&lt;/b&gt; and &lt;b&gt;Right&lt;/b&gt;&lt;/p&gt;&#39;,
+                           &#39;&lt;p&gt;Press the button and move your eyes right and \
+                           left periodically, the acquisition begins with the \
+                           single beep, &lt;b&gt;keep this action until listen two \
+                           beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;head_left_right&#39;: [&#39;Head movement left/right&#39;,
+                        &#39;&lt;p&gt;Head movement &lt;b&gt;Left&lt;/b&gt; and &lt;b&gt;Right&lt;/b&gt;&lt;/p&gt;&#39;,
+                        &#39;&lt;p&gt;Press the button and move your head from left to \
+                        right and right to left periodically, the acquisition \
+                        begins with the single beep, &lt;b&gt;keep this action until \
+                        listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+    &#39;jaw_clenching&#39;: [&#39;Jaw clenching&#39;,
+                      &#39;&lt;p&gt;Jaw &lt;b&gt;clenching&lt;/b&gt;&lt;/p&gt;&#39;,
+                      &#39;&lt;p&gt;Press the button and clench the jaw periodically, the \
+                      acquisition begins with the single beep, &lt;b&gt;keep this \
+                      action until listen two beeps&lt;/b&gt;.&lt;/p&gt;&#39;],
+
+}
+
+
+########################################################################
+<div class="viewcode-block" id="RestingNoiseAcquisition"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition">[docs]</a>class RestingNoiseAcquisition(StimuliAPI):
+    &quot;&quot;&quot;Resting state and noise acquisition&quot;&quot;&quot;
+    DEBUG = True
+
+    # ----------------------------------------------------------------------
+    def __init__(self, *args, **kwargs):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__(*args, **kwargs)
+        self.add_stylesheet(&#39;styles.css&#39;)
+
+        self.show_cross()
+
+        self.dashboard &lt;= w.label(
+            &#39;Resting state and noise acquisition&lt;br&gt;&lt;br&gt;&#39;, &#39;headline4&#39;)
+
+        for i, task_id in enumerate(TASKS):
+            title = TASKS[task_id][0]
+
+            if i &lt; 2:
+                value = 0.1
+            else:
+                value = 0
+            self.dashboard &lt;= w.slider(
+                title, min=0, max=5, step=0.1, value=value, unit=&#39;minutes&#39;, id=task_id)
+
+        self.dashboard &lt;= w.switch(
+            label=&#39;Record EEG&#39;,
+            checked=False,
+            id=&#39;record&#39;,
+        )
+        self.dashboard &lt;= w.switch(
+            label=&#39;External marker synchronizer&#39;,
+            checked=False,
+            on_change=self.synchronizer,
+            id=&#39;synchronizer&#39;,
+        )
+
+        self.dashboard &lt;= w.toggle_button([(&#39;Start run&#39;, self.start), (&#39;Stop run&#39;, self.stop)], id=&#39;run&#39;)
+
+        self.button_start = w.button(
+            &#39;Start (space)&#39;, outlined=True, on_click=self.syncrhonous_trial, id=&#39;syncrhonous-button&#39;)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.start"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.start">[docs]</a>    def start(self) -&gt; None:
+        &quot;&quot;&quot;Start the run.
+
+        A run consist in a consecutive pipeline trials execution.
+        &quot;&quot;&quot;
+        if w.get_value(&#39;record&#39;):
+            self.start_record()
+        self.build_trials()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.stop"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.stop">[docs]</a>    def stop(self) -&gt; None:
+        &quot;&quot;&quot;Stop pipeline execution.&quot;&quot;&quot;
+        self.stop_run()
+        self.stop_pipeline()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.stop_run"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.stop_run">[docs]</a>    def stop_run(self) -&gt; None:
+        &quot;&quot;&quot;Stop pipeline execution.&quot;&quot;&quot;
+        # self.soa()
+        if w.get_value(&#39;record&#39;):
+            timer.set_timeout(self.stop_record, 2000)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.build_trials"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.build_trials">[docs]</a>    def build_trials(self) -&gt; None:
+        &quot;&quot;&quot;Define the `trials` and `pipeline trials`.
+
+        The `trials` consist (in this case) in a list of cues.
+        The `pipeline trials` is a set of couples `(callable, duration)` that
+        define a single trial, this list of functions are executed asynchronously
+        and repeated for each trial.
+        &quot;&quot;&quot;
+        self.trials = []
+        self.pipeline_trial = []
+
+        for trial in TASKS:
+
+            if w.get_value(trial):
+                
+                logging.warning(w.get_value(trial))
+                
+                self.trials.append([{&#39;title&#39;: TASKS[trial][0],
+                                     &#39;label&#39;: TASKS[trial][1],
+                                     &#39;instruction&#39;: TASKS[trial][2],
+                                     }])
+
+                self.pipeline_trial.append([
+                    (&#39;prepare&#39;, 1500),
+                    (&#39;trial&#39;, w.get_value(trial) * 60 * 1000),
+                    (&#39;end_trial&#39;, 1000),
+                ])
+
+        self.trial_instruction(**self.trials[0][0])</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.syncrhonous_trial"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.syncrhonous_trial">[docs]</a>    @DeliveryInstance.rboth
+    def syncrhonous_trial(self) -&gt; None:
+        &quot;&quot;&quot;Start a trial after subject decision.&quot;&quot;&quot;
+
+        if self.mode == &#39;dashboard&#39;:
+            pipeline_trial = self.pipeline_trial.pop(0)
+            trial = self.trials.pop(0)
+            self.run_pipeline(pipeline_trial, trial,
+                              callback=&#39;wrap_trial_instruction&#39;)</div>
+
+    # ----------------------------------------------------------------------
+    def wrap_trial_instruction(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        try:
+            self.trial_instruction(**self.trials[0][0])
+        except:
+            pass
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.trial_instruction"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.trial_instruction">[docs]</a>    @DeliveryInstance.both
+    def trial_instruction(self, title: str, label: str, instruction: str) -&gt; None:
+        &quot;&quot;&quot;Show the trial instructions to the subject.&quot;&quot;&quot;
+        self.stimuli_area.clear()
+        self.show_cross()
+        self.stimuli_area &lt;= w.label(label, &#39;headline2&#39;, id=&#39;hint&#39;)
+        self.stimuli_area &lt;= w.label(instruction, &#39;headline2&#39;, id=&#39;hint2&#39;)
+
+        self.stimuli_area &lt;= self.button_start
+        keypress(self.handle_response, timeout=None)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.handle_response"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.handle_response">[docs]</a>    def handle_response(self, response: str) -&gt; None:
+        &quot;&quot;&quot;Key pressed.&quot;&quot;&quot;
+        if response == &#39; &#39;:
+            self.syncrhonous_trial()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.prepare"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.prepare">[docs]</a>    def prepare(self, title: str, label: str, instruction: str) -&gt; None:
+        &quot;&quot;&quot;A small pause before acquisition.&quot;&quot;&quot;
+        self.stimuli_area.clear()
+        self.show_cross()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.trial"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.trial">[docs]</a>    def trial(self, title: str, label: str, instruction: str) -&gt; None:
+        &quot;&quot;&quot;Full trial.&quot;&quot;&quot;
+        self.beep(1)
+        self.send_marker(f&#39;{title} | Start&#39;)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.end_trial"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.end_trial">[docs]</a>    def end_trial(self, title, label, instruction) -&gt; None:
+        &quot;&quot;&quot;End of trial.&quot;&quot;&quot;
+        self.beep(2)
+        self.send_marker(f&#39;{title} | End&#39;)
+
+        logging.warning(len(self.pipeline_trial))
+        if not len(self.pipeline_trial):
+            self.stop()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.synchronizer"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.synchronizer">[docs]</a>    def synchronizer(self, value: bool) -&gt; None:
+        &quot;&quot;&quot;Show or hide synchronizer.&quot;&quot;&quot;
+        if value:
+            self.show_synchronizer()
+        else:
+            self.hide_synchronizer()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="RestingNoiseAcquisition.beep"><a class="viewcode-back" href="../../../bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.html#bci_framework.default_extensions.Resting_state_and_noise_acquisition.main.RestingNoiseAcquisition.beep">[docs]</a>    def beep(self, n=1) -&gt; None:
+        &quot;&quot;&quot;Play `n` beeps.&quot;&quot;&quot;
+        note = &#39;C#6&#39;
+        gain = 0.1
+        duration = 100
+
+        t(note, duration, gain)
+        if n &gt; 1:
+            for i in range(1, n):
+                timer.set_timeout(
+                    lambda: t(note, duration, gain), (duration + 50) * i)</div></div>
+
+
+if __name__ == &#39;__main__&#39;:
+    RestingNoiseAcquisition()
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.widgets.annotations &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.widgets.annotations</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+===========
+Annotations
+===========
+&quot;&quot;&quot;
+from datetime import datetime
+from typing import Optional
+
+from PySide6.QtWidgets import QTableWidgetItem
+
+
+########################################################################
+<div class="viewcode-block" id="Annotations"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations">[docs]</a>class Annotations:
+    &quot;&quot;&quot;Widget connected with Kafka to stream messages.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.__init__"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.__init__">[docs]</a>    def __init__(self, parent, core):
+        &quot;&quot;&quot;Constructor&quot;&quot;&quot;
+
+        self.parent_frame = parent
+        self.core = core
+        self.connect()</div>
+
+    # ----------------------------------------------------------------------
+    def set_enable(self, enable):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.parent_frame.pushButton_save_annotation.setEnabled(enable)
+        self.parent_frame.pushButton_save_marker.setEnabled(enable)
+        self.parent_frame.pushButton_save_command.setEnabled(enable)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.connect"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.parent_frame.pushButton_save_annotation.clicked.connect(
+            self.save_annotation)
+        self.parent_frame.pushButton_save_marker.clicked.connect(
+            self.save_marker)
+        self.parent_frame.pushButton_save_command.clicked.connect(
+            self.save_command)
+
+        self.parent_frame.pushButton_remove_annotations.clicked.connect(lambda:
+                                                                        self.parent_frame.tableWidget_annotations.setRowCount(0))
+        self.parent_frame.pushButton_remove_markers.clicked.connect(lambda:
+                                                                    self.parent_frame.tableWidget_markers.setRowCount(0))
+        self.parent_frame.pushButton_remove_commands.clicked.connect(lambda:
+                                                                     self.parent_frame.tableWidget_commands.setRowCount(0))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.save_annotation"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.save_annotation">[docs]</a>    def save_annotation(self) -&gt; None:
+        &quot;&quot;&quot;Write the annotation in the streaming.&quot;&quot;&quot;
+        content = self.parent_frame.textEdit_annotations.toPlainText()
+        duration = self.parent_frame.doubleSpinBox_annotation_duration.value()
+
+        data_ = {&#39;duration&#39;: duration,
+                 &#39;description&#39;: content,
+                 &#39;onset&#39;: datetime.now()}
+
+        self.core.thread_kafka.produser.send(&#39;annotation&#39;, data_)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.save_marker"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.save_marker">[docs]</a>    def save_marker(self) -&gt; None:
+        &quot;&quot;&quot;Write the marker in the streaming.&quot;&quot;&quot;
+        marker = self.parent_frame.lineEdit_marker.text()
+        data_ = {&#39;marker&#39;: marker,
+                 &#39;datetime&#39;: datetime.now()}
+        self.core.thread_kafka.produser.send(&#39;marker&#39;, data_)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.save_command"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.save_command">[docs]</a>    def save_command(self) -&gt; None:
+        &quot;&quot;&quot;Write the command in the streaming.&quot;&quot;&quot;
+        command = self.parent_frame.lineEdit_command.text()
+        data_ = {&#39;command&#39;: command,
+                 &#39;datetime&#39;: datetime.now()}
+        self.core.thread_kafka.produser.send(&#39;command&#39;, data_)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.add_annotation"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.add_annotation">[docs]</a>    def add_annotation(self, onset, duration: str, description: str, action: Optional[bool] = True) -&gt; None:
+        &quot;&quot;&quot;Write the annotation in the GUI.&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_annotations.rowCount()
+        self.parent_frame.tableWidget_annotations.insertRow(row)
+
+        item = QTableWidgetItem(onset.strftime(&quot;%x %X&quot;))
+        self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
+        item = QTableWidgetItem(f&quot;{duration}&quot;)
+        self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
+        item = QTableWidgetItem(description)
+        self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
+
+        if description == &#39;start_record&#39;:
+            self.core.records.record_signal(True)
+        elif description == &#39;stop_record&#39;:
+            self.core.records.record_signal(False)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.add_marker"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.add_marker">[docs]</a>    def add_marker(self, onset: str, marker: str, timestamp: Optional[bool] = True) -&gt; None:
+        &quot;&quot;&quot;Write the marker in the GUI.&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_markers.rowCount()
+        self.parent_frame.tableWidget_markers.insertRow(row)
+
+        if timestamp:
+            item = QTableWidgetItem(onset.strftime(&quot;%x %X&quot;))
+        else:
+            item = QTableWidgetItem(onset)
+        self.parent_frame.tableWidget_markers.setItem(row, 0, item)
+        item = QTableWidgetItem(f&quot;{marker}&quot;)
+        self.parent_frame.tableWidget_markers.setItem(row, 1, item)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Annotations.add_command"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.annotations.html#bci_framework.framework.widgets.annotations.Annotations.add_command">[docs]</a>    def add_command(self, onset: str, command: str) -&gt; None:
+        &quot;&quot;&quot;Write the command in the GUI.&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_commands.rowCount()
+        self.parent_frame.tableWidget_commands.insertRow(row)
+
+        item = QTableWidgetItem(onset.strftime(&quot;%x %X&quot;))
+        self.parent_frame.tableWidget_commands.setItem(row, 0, item)
+        item = QTableWidgetItem(f&quot;{marker}&quot;)
+        self.parent_frame.tableWidget_commands.setItem(row, 1, item)</div>
+
+    # ----------------------------------------------------------------------
+    def bulk_annotations(self, annotations):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        columns = [&#39;Onset&#39;, &#39;Duration&#39;, &#39;Description&#39;]
+        self.parent_frame.tableWidget_annotations.clear()
+        self.parent_frame.tableWidget_annotations.setRowCount(0)
+        self.parent_frame.tableWidget_annotations.setColumnCount(
+            len(columns))
+        self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
+            columns)
+        for onset, duration, description in annotations:
+            if not description in [&#39;start_record&#39;, &#39;stop_record&#39;]:
+                self.add_annotation(
+                    onset, duration, description, action=False)
+        self.parent_frame.tableWidget_annotations.sortByColumn(0)
+
+    # ----------------------------------------------------------------------
+    def bulk_markers(self, markers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        columns = [&#39;Datetime&#39;, &#39;Marker&#39;]
+        self.parent_frame.tableWidget_markers.clear()
+        self.parent_frame.tableWidget_markers.setRowCount(0)
+        self.parent_frame.tableWidget_markers.setColumnCount(len(columns))
+        self.parent_frame.tableWidget_markers.setHorizontalHeaderLabels(
+            columns)
+        for marker in markers:
+            for onset in markers[marker]:
+                self.add_marker(f&#39;{onset/1000:.2f} s&#39;,
+                                marker, timestamp=False)
+        self.parent_frame.tableWidget_markers.sortByColumn(0)</div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

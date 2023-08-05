@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Event marker synchronization &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Illustrative example" href="09-ilustrative_example.html" />
+    <link rel="prev" title="Neurofeedback" href="07-neurofeedback.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Event-marker-synchronization">
+<h1>Event marker synchronization<a class="headerlink" href="#Event-marker-synchronization" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Stimuli delivery &gt; Event synchonization
+</pre></div>
+</div>
+<p>Is possible to take advantage of the OpenBCI construction, this board includes a set of analog and digital inputs that can be used to synchronize markers. Other systems will need a piece of additional laboratory equipment like <a class="reference external" href="https://www.neurobs.com/menu_presentation/menu_hardware/labstreamer">LabStreamer</a> that can register time with microseconds precision. In order to use OpenBCI, we will only need an <em>LDR module</em> connected to the pin <strong>D11</strong> (or <strong>A5</strong>) and start the automatic latency
+correction system. This method is similar to the one implemented by <a class="footnote-reference brackets" href="#footcite-davis2020stimulus" id="id1">1</a>.</p>
+<p><img alt="c1fd792acc794616a280e12eb09e8225" src="../_images/marker_sync.gif" /></p>
+<p>This simple latency correction consists of a stimuli delivery with only a marker synchronization area, the <em>LDR module</em> is constantly sensing (the <a class="reference internal" href="02-interface.html#Connection"><span class="std std-ref">boardmode</span></a> must be in <code class="docutils literal notranslate"><span class="pre">analog</span></code>) so the changes on the square signal are compared with streamed markers and then the latency is corrected. The latency correction <strong>only affects the current session</strong>, if the framework is restarted this calibration will lose.</p>
+<p>For hard event synchronization, is prefer to use <a class="reference external" href="80-stimuli_delivery.ipynb#Hardware-based-event-synchonization">the markers synchronization constantly</a> during all run.</p>
+<hr class="docutils" />
+<p id="id2"><dl class="footnote brackets">
+<dt class="label" id="footcite-davis2020stimulus"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Charles E Davis, Jacob G Martin, and Simon J Thorpe. Stimulus onset hub: an open-source, low latency, and opto-isolated trigger box for neuroscientific research replicability and beyond. <em>Frontiers in neuroinformatics</em>, 14:2, 2020.</p>
+</dd>
+</dl>
+</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="07-neurofeedback.html" title="previous chapter">Neurofeedback</a></li>
+      <li>Next: <a href="09-ilustrative_example.html" title="next chapter">Illustrative example</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notebooks/08-event_marker_synchronization.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,804 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Data analysis &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data visualization" href="04-data_visualizations.html" />
+    <link rel="prev" title="Interface description" href="02-interface.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 0;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Data-analysis">
+<h1>Data analysis<a class="headerlink" href="#Data-analysis" title="Permalink to this headline">¶</a></h1>
+<p>This feature able the user to develop real-time data analysis, consist of the complete Python-powered environment, with a set of custom methods for agile development.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Extensions &gt; New Extension &gt; Data analysis
+</pre></div>
+</div>
+<section id="Bare-minimum">
+<h2>Bare minimum<a class="headerlink" href="#Bare-minimum" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Data-stream-access">
+<h2>Data stream access<a class="headerlink" href="#Data-stream-access" title="Permalink to this headline">¶</a></h2>
+<p>The data stream is accessed asynchronously with the <code class="docutils literal notranslate"><span class="pre">loop_consumer</span></code> decorator from <code class="docutils literal notranslate"><span class="pre">bci_framework.extensions.data_analysis</span></code>, this decorator requires the Kafka topics to access.</p>
+<p>There is 2 topics availables for <code class="docutils literal notranslate"><span class="pre">loop_consumer</span></code>: <code class="docutils literal notranslate"><span class="pre">eeg</span></code> and <code class="docutils literal notranslate"><span class="pre">marker</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span><span class="p">,</span> <span class="n">loop_consumer</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">,</span> <span class="s1">&#39;marker&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Incoming data...&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>The decorated method receives 3 optional arguments: <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">topic</span></code> and <code class="docutils literal notranslate"><span class="pre">frame</span></code>.</p>
+<div class="line-block">
+<div class="line"><strong>data:</strong> <code class="docutils literal notranslate"><span class="pre">(eeg,</span> <span class="pre">aux)</span></code> if topic is <code class="docutils literal notranslate"><span class="pre">eeg</span></code>, <code class="docutils literal notranslate"><span class="pre">marker_value</span></code> if topic is <code class="docutils literal notranslate"><span class="pre">marker</span></code></div>
+<div class="line"><strong>kafka_stream:</strong> The <code class="docutils literal notranslate"><span class="pre">stream</span></code> object from Kafka.</div>
+<div class="line"><strong>topic:</strong> The topic of the Kafka stream, this object is available too in the object <code class="docutils literal notranslate"><span class="pre">data.topic</span></code></div>
+<div class="line"><strong>frame:</strong> Incremental flag with the counter of streamed data.</div>
+<div class="line"><strong>latency:</strong> The time bewteen acquisition and read.</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">latency</span><span class="p">):</span>
+    <span class="n">eeg</span><span class="p">,</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incoming data #</span><span class="si">{</span><span class="n">frame</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;EEG</span><span class="si">{</span><span class="n">eeg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AUX</span><span class="si">{</span><span class="n">aux</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Topic: </span><span class="si">{</span><span class="n">topic</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Latency: </span><span class="si">{</span><span class="n">latency</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The above code will execute every data stream input, and the below code will execute only when a marker is streamed.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;marker&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="n">marker_value</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Incoming marker: </span><span class="si">{</span><span class="n">marker_value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Is <strong>not possible</strong>, use the decorator <code class="docutils literal notranslate"><span class="pre">loop_consumer</span></code> in more than one place, so the argument <code class="docutils literal notranslate"><span class="pre">topic</span></code> could be used to create a flow control.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">,</span> <span class="s1">&#39;marker&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">topic</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">topic</span> <span class="o">==</span> <span class="s1">&#39;eeg&#39;</span><span class="p">:</span>
+        <span class="n">eeg</span><span class="p">,</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EEG data incomming..&quot;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">topic</span> <span class="o">==</span> <span class="s1">&#39;marker&#39;</span><span class="p">:</span>
+        <span class="n">marker_value</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Marker incomming..&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Simulate-data-stream">
+<h2>Simulate data stream<a class="headerlink" href="#Simulate-data-stream" title="Permalink to this headline">¶</a></h2>
+<p>Using <code class="docutils literal notranslate"><span class="pre">fake_loop_consumer</span></code> instead of <code class="docutils literal notranslate"><span class="pre">loop_consumer</span></code> is possible to create a fake data stream.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span><span class="p">,</span> <span class="n">fake_loop_consumer</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@fake_loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Incoming data...&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Built-in-methods">
+<h2>Built in methods<a class="headerlink" href="#Built-in-methods" title="Permalink to this headline">¶</a></h2>
+<section id="Buffer-/-Sliding-window">
+<h3>Buffer / Sliding window<a class="headerlink" href="#Buffer-/-Sliding-window" title="Permalink to this headline">¶</a></h3>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">self.create_buffer</span></code> to implement an automatic buffer with a fixed time view, for example, a buffer of 30 seconds:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The data can be accesed with <code class="docutils literal notranslate"><span class="pre">self.buffer_eeg</span></code> and <code class="docutils literal notranslate"><span class="pre">self.buffer_aux</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg</span>
+         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_aux</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">self.create_buffer</span></code> method receives other arguments like <code class="docutils literal notranslate"><span class="pre">aux_shape</span></code>, <code class="docutils literal notranslate"><span class="pre">fill</span></code> and <code class="docutils literal notranslate"><span class="pre">samples</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">aux_shape</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>aux_shape:</strong> The dimension of the auxiliary data, 3 by default.</div>
+<div class="line"><strong>fill:</strong> Initialize buffet with this value, 0 by default.</div>
+<div class="line"><strong>resampling:</strong> This value is used to resampling the data.</div>
+</div>
+</section>
+<section id="Resampling">
+<h3>Resampling<a class="headerlink" href="#Resampling" title="Permalink to this headline">¶</a></h3>
+<p>The resampling is defined when the buffer is created, with the argument <code class="docutils literal notranslate"><span class="pre">resampling</span></code> this value is not strictly used, instead a near and optimal value is calculated based on the sampling rate and the buffer size.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg_resampled</span>
+         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_aux_resampled</span>
+
+         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;EEG</span><span class="si">{</span><span class="n">eeg</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AUX</span><span class="si">{</span><span class="n">aux</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The resampling will not affect the buffer, the both data are accessible all the time.</p>
+</section>
+<section id="Data-slicing-referenced-by-markers">
+<h3>Data slicing referenced by markers<a class="headerlink" href="#Data-slicing-referenced-by-markers" title="Permalink to this headline">¶</a></h3>
+<p>Consist of a method that crops the available data with a marker reference. The decorator <code class="docutils literal notranslate"><span class="pre">&#64;marker_slicing</span></code> do the trick. Receives the <code class="docutils literal notranslate"><span class="pre">markers</span></code>, a <code class="docutils literal notranslate"><span class="pre">t0</span></code> that indicate how many seconds to crop before the marker and the <code class="docutils literal notranslate"><span class="pre">duration</span></code> of the slice.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span><span class="p">,</span> <span class="n">marker_slicing</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Needs to be greater than the duration of the slice.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">aux_shape</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slicing</span><span class="p">()</span>
+
+    <span class="nd">@marker_slicing</span><span class="p">([</span><span class="s1">&#39;Right&#39;</span><span class="p">,</span> <span class="s1">&#39;Left&#39;</span><span class="p">],</span> <span class="n">t0</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">slicing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eeg</span><span class="p">,</span> <span class="n">aux</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">eeg</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">aux</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">timestamp</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>The above code will be executed each time that and slice is available. The <code class="docutils literal notranslate"><span class="pre">buffer</span></code> must be greater than the duration of the desired slice.</p>
+<div class="line-block">
+<div class="line"><strong>eeg:</strong> The EEG data croped (<code class="docutils literal notranslate"><span class="pre">channels,</span> <span class="pre">time</span></code>).</div>
+<div class="line"><strong>aux:</strong> The AUX data croped (<code class="docutils literal notranslate"><span class="pre">aux,</span> <span class="pre">time</span></code>).</div>
+<div class="line"><strong>timestamp:</strong> The <code class="docutils literal notranslate"><span class="pre">timestamp</span></code> vector.</div>
+<div class="line"><strong>marker:</strong> The <code class="docutils literal notranslate"><span class="pre">marker</span></code> that trigger the crop.</div>
+<div class="line"><strong>latency:</strong> The time bewteen acquisition and read.</div>
+</div>
+</section>
+</section>
+<section id="Receive-markers">
+<h2>Receive markers<a class="headerlink" href="#Receive-markers" title="Permalink to this headline">¶</a></h2>
+<p>The markers can be accessed specifying the topic <code class="docutils literal notranslate"><span class="pre">marker</span></code> in the <code class="docutils literal notranslate"><span class="pre">loop_consumer</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;marker&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Send-commands,-annotations-and-feedbacks">
+<h2>Send commands, annotations and feedbacks<a class="headerlink" href="#Send-commands,-annotations-and-feedbacks" title="Permalink to this headline">¶</a></h2>
+<p>The commands are used to communicate outputs into the real world, or other systems, they can also be read in the <strong>Stimuli delivery</strong> to create neurofeedback applications. To activate this feature just add the <code class="docutils literal notranslate"><span class="pre">enable_produser</span></code> argument as <code class="docutils literal notranslate"><span class="pre">True</span></code> into the <code class="docutils literal notranslate"><span class="pre">DataAnalysis</span></code> subclass.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">(</span><span class="n">enable_produser</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Once activate the producer, the methods <code class="docutils literal notranslate"><span class="pre">self.send_command</span></code>, <code class="docutils literal notranslate"><span class="pre">self.send_feedback</span></code> and <code class="docutils literal notranslate"><span class="pre">self.end_annotation</span></code>are available.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg_resampled</span>
+     <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_aux_resampled</span>
+
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>  <span class="c1"># amazing data analysis</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">send_command</span><span class="p">(</span><span class="s1">&#39;MyCommand&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">45</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">self.send_annotation</span></code> also receive the optional argument <code class="docutils literal notranslate"><span class="pre">duration</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">send_annotation</span><span class="p">(</span><span class="s1">&#39;Data record start&#39;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">send_annotation</span><span class="p">(</span><span class="s1">&#39;The subject yawn&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The self.send_feedback receive any kind of Python data structure.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feed</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;var1&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;var2&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;var3&#39;</span><span class="p">:</span> <span class="s1">&#39;Right&#39;</span><span class="p">,</span>
+       <span class="p">}</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">send_feedback</span><span class="p">(</span><span class="o">**</span><span class="n">feed</span><span class="p">)</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">send_feedback</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">2.3</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>A generic producer also is available:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">generic_produser</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Communication-between-analysis-process">
+<h2>Communication between analysis process<a class="headerlink" href="#Communication-between-analysis-process" title="Permalink to this headline">¶</a></h2>
+<p>Let’s build a script that will acts like <strong>Kafka transformer</strong>, this script reads the raw EEG data, calculate their EEG spectrum using Fourier and inject back again into the stream. This can be other advanced processing tasks, like classifications using neural networks.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span><span class="p">,</span> <span class="n">loop_consumer</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions</span> <span class="kn">import</span> <span class="n">properties</span> <span class="k">as</span> <span class="n">prop</span>
+<span class="kn">from</span> <span class="nn">gcpds.utils.processing</span> <span class="kn">import</span> <span class="n">fourier</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+         <span class="n">W</span><span class="p">,</span> <span class="n">EEG</span> <span class="o">=</span> <span class="n">fourier</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">prop</span><span class="o">.</span><span class="n">SAMPLE_RATE</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span> <span class="n">EEG</span><span class="p">,</span>
+                 <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">W</span><span class="p">}</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">generic_produser</span><span class="p">(</span><span class="s1">&#39;spectrum&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">(</span><span class="n">enable_produser</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now, in another script, we will write a <strong>Kafka consumer</strong> this script will consume from the previously created stream.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">DataAnalysis</span><span class="p">,</span> <span class="n">loop_consumer</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions</span> <span class="kn">import</span> <span class="n">properties</span> <span class="k">as</span> <span class="n">prop</span>
+<span class="kn">from</span> <span class="nn">gcpds.utils.processing</span> <span class="kn">import</span> <span class="n">fourier</span>
+
+<span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">DataAnalysis</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;spectrum&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+        <span class="n">EEG</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;amplitude&#39;</span><span class="p">]</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;frequency&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Analysis</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>This examples are available by default in the framework extensions explorer.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">spectrum</span></code> topic must be created before to use the topic:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kafka</span><span class="o">-</span><span class="n">topics</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">create</span> <span class="o">--</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">server</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">2181</span> <span class="o">--</span><span class="n">replication</span><span class="o">-</span><span class="n">factor</span> <span class="mi">1</span> <span class="o">--</span><span class="n">partitions</span> <span class="mi">1</span> <span class="o">--</span><span class="n">topic</span> <span class="n">feedback</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Framework-integration">
+<h2>Framework integration<a class="headerlink" href="#Framework-integration" title="Permalink to this headline">¶</a></h2>
+<p>BCI-Framework can execute any number of scripts as an independent process, the system will handle the interruption and show information about the CPU and memory usage.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Data analysis &gt; Data analysis
+</pre></div>
+</div>
+<p><img alt="97bc14300208444786d7b56bee2c3691" src="../_images/analysis_process.png" /></p>
+</section>
+<section id="Feedbacks">
+<h2>Feedbacks<a class="headerlink" href="#Feedbacks" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">feedbacks</span></code>are used to comunicate the <a class="reference internal" href="#"><span class="doc">Data analysis</span></a> and <a class="reference internal" href="04-data_visualizations.html"><span class="doc">Data visualizations</span></a> with the Stimuli Delivery platform. For this purpose, there is a predefined stream channel called <code class="docutils literal notranslate"><span class="pre">feedback</span></code>. This is useful to develop <a class="reference internal" href="07-neurofeedback.html"><span class="doc">Neurofeedback applications</span></a>.</p>
+<p>The asynchronous handler can be configured with the <code class="docutils literal notranslate"><span class="pre">Feedback</span></code> class:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.stimuli_delivery</span> <span class="kn">import</span> <span class="n">Feedback</span>
+</pre></div>
+</div>
+</div>
+<p>This class needs an <code class="docutils literal notranslate"><span class="pre">ID</span></code> and bind a method:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span> <span class="o">=</span> <span class="n">Feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;my_feedback_id&#39;</span><span class="p">)</span>  <span class="c1"># ID</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">on_feedback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_input_feedback</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>So, this method will be executed asynchronously on each feedback call.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">on_input_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">feedback</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<p>The feedbacks are bidirectional comunications, so, is possible to write messages back to the data rocessor with the method <code class="docutils literal notranslate"><span class="pre">Feedback.write</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-interface.html">Interface description</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Bare-minimum">Bare minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Data-stream-access">Data stream access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Simulate-data-stream">Simulate data stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Built-in-methods">Built in methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Buffer-/-Sliding-window">Buffer / Sliding window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Resampling">Resampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-slicing-referenced-by-markers">Data slicing referenced by markers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Receive-markers">Receive markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Send-commands,-annotations-and-feedbacks">Send commands, annotations and feedbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Communication-between-analysis-process">Communication between analysis process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Framework-integration">Framework integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Feedbacks">Feedbacks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="02-interface.html" title="previous chapter">Interface description</a></li>
+      <li>Next: <a href="04-data_visualizations.html" title="next chapter">Data visualization</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notebooks/03-data_analysis.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

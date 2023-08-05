@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.config_manager &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.config_manager</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=====================
+Configuration Manager
+=====================
+&quot;&quot;&quot;
+
+import os
+import sys
+from configparser import ConfigParser
+from typing import Optional, Dict, TypeVar, Callable
+
+from PySide6 import QtWidgets
+
+WIDGET = TypeVar(&#39;QWidget&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="ConfigManager"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager">[docs]</a>class ConfigManager(ConfigParser):
+    &quot;&quot;&quot;File based configurations manager.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, filename=&#39;.bciframework&#39;):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__()
+
+        if &#39;--local&#39; in sys.argv:
+            user_dir = os.path.join(os.getenv(&#39;BCISTREAM_ROOT&#39;), &#39;assets&#39;)
+            os.makedirs(user_dir, exist_ok=True)
+            self.filename = os.path.join(user_dir, &#39;bciframework.default&#39;)
+        else:
+            if os.path.isabs(filename):
+                self.filename = filename
+            else:
+                user_dir = os.path.join(os.getenv(&#39;BCISTREAM_HOME&#39;))
+                os.makedirs(user_dir, exist_ok=True)
+                self.filename = os.path.join(user_dir, filename)
+
+        self.load()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.load"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.load">[docs]</a>    def load(self) -&gt; None:
+        &quot;&quot;&quot;Load the filename with configirations.&quot;&quot;&quot;
+        assert os.path.exists(
+            self.filename), f&#39;&quot;{self.filename} does not exist!&quot;&#39;
+
+        self.read(self.filename)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.set"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.set">[docs]</a>    def set(self, section: str, option: str, value: Optional[str] = &#39;&#39;, save: Optional[bool] = False) -&gt; None:
+        &quot;&quot;&quot;Write and save configuration option.&quot;&quot;&quot;
+        if not self.has_section(section):
+            self.add_section(section)
+        super().set(section, option, value)
+        if save:
+            self.save()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.get"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.get">[docs]</a>    def get(self, section: str, option: str, default: Optional[str] = None, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Read a configuration value, if not exists then save the default.&quot;&quot;&quot;
+        if self.has_option(section, option):
+            return super().get(section, option, *args, **kwargs)
+        else:
+            self.set(section, option, default)
+            return default</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.save"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.save">[docs]</a>    def save(self) -&gt; None:
+        &quot;&quot;&quot;Save configurations.&quot;&quot;&quot;
+        with open(self.filename, &#39;w&#39;) as configfile:
+            self.write(configfile)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.save_widgets"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.save_widgets">[docs]</a>    def save_widgets(self, section: str, config: Dict[str, WIDGET]) -&gt; None:
+        &quot;&quot;&quot;Automatically save values from widgets.&quot;&quot;&quot;
+        for option in config:
+            widget = config[option]
+
+            # QComboBox
+            if isinstance(widget, QtWidgets.QComboBox):
+                self.set(section, option, widget.currentText())
+
+            # QCheckBox
+            elif isinstance(widget, QtWidgets.QCheckBox):
+                self.set(section, option, str(widget.isChecked()))
+
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                self.set(section, option, str(widget.value()))
+
+            else:
+                widget
+
+        self.save()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.load_widgets"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.load_widgets">[docs]</a>    def load_widgets(self, section: str, config: Dict[str, WIDGET]) -&gt; None:
+        &quot;&quot;&quot;Automatically load values from configurations and set them in widgets.&quot;&quot;&quot;
+        for option in config:
+            widget = config[option]
+
+            if not (self.has_section(section) and self.has_option(section, option)):
+                return
+
+            # QComboBox
+            if isinstance(widget, QtWidgets.QComboBox):
+                widget.setCurrentText(self.get(section, option))
+            # QCheckBox
+            elif isinstance(widget, QtWidgets.QCheckBox):
+                widget.setChecked(self.getboolean(section, option))
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                widget.setValue(int(self.get(section, option)))
+            else:
+                widget</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigManager.connect_widgets"><a class="viewcode-back" href="../../bci_framework.framework.config_manager.html#bci_framework.framework.config_manager.ConfigManager.connect_widgets">[docs]</a>    def connect_widgets(self, method: Callable, config: Dict[str, WIDGET]) -&gt; None:
+        &quot;&quot;&quot;Automatically connect widgets with events.&quot;&quot;&quot;
+        for option in config:
+            widget = config[option]
+
+            # QComboBox
+            if isinstance(widget, QtWidgets.QComboBox):
+                widget.activated.connect(method)
+            # QCheckBox
+            elif isinstance(widget, QtWidgets.QCheckBox):
+                widget.clicked.connect(method)
+            # QSpinBox
+            elif isinstance(widget, QtWidgets.QSpinBox):
+                widget.valueChanged.connect(method)
+            else:
+                widget</div></div>
+
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

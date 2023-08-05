@@ -1,0 +1,164 @@
+{% extends "templates/index.html" %}
+{% autoescape None %}
+
+{% block html_head %}
+
+    <style type="text/css">
+      body {
+          margin: 0px;
+          padding: 0px;
+          overflow: hidden;
+      }
+
+      .bci_dashboard {
+          overflow: auto;
+      }
+
+      .bci_stimuli {
+          position: relative;
+      }
+
+      .bci_dashboard,
+      .bci_stimuli {
+          border: 0px solid;
+          border-radius: 0;
+      }
+
+
+    .cross {
+        background: black;
+        height: 40px;
+        width: 1px;
+        position: absolute;
+        left: 50%;
+        top: calc(50% - 20px);
+        z-index: 99;
+    }
+
+    .cross::after {
+        background: black;
+        content: '';
+        height: 1px;
+        left: -20px;
+        position: absolute;
+        top: 20px;
+        width: 40px;
+        z-index: 99;
+    }
+
+    .cross_contrast {
+        background: white;
+        height: 42px;
+        width: 3px;
+        position: absolute;
+        left: calc(50% - 1px);
+        top: calc(50% - 21px);
+        z-index: 98;
+    }
+
+    .cross_contrast::after {
+        background: white;
+        content: '';
+        height: 3px;
+        left: -21px;
+        position: absolute;
+        top: 20px;
+        width: 42px;
+        z-index: 98;
+    }
+
+      {% if mode == 'stimuli' %}
+
+        .bci_dashboard {
+            display: none;
+        }
+
+        .bci_stimuli {
+            background-color: #f5f5f5;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .run_progressbar {
+            width: 100vw;
+        }
+
+      {% elif mode == 'dashboard' %}
+
+        body {
+        display: inline-flex;
+        }
+
+        .bci_dashboard {
+            padding: 15px;
+            height: calc(100vh - 30px);
+            overflow: auto;
+            width: calc(50vw - 30px);
+        }
+
+        .bci_stimuli {
+            background-color: #f5f5f5;
+            width: calc(50vw - 15px);
+            height: 100vh;
+        }
+
+        .run_progressbar {
+            width: calc(50vw - 16px);
+            margin-left: 1px;
+        }
+
+      {% end %}
+
+    #bci-counter-frame{
+      width: 24vh;
+      height: 24vh;
+      background-color: #b5b4b4;
+      border-radius: 50%;
+      text-align: center;
+      position: absolute;
+      left: calc(50% - 12vh);
+      top: calc(50% - 12vh);
+      z-index: 999999;
+    }
+
+    #bci-counter{
+        font-family: 'Roboto';
+        font-size: 15vh;
+        line-height: 24vh;
+        color: white;
+    }
+
+    .mdc-form-field>label {
+        width: 100%;
+    }
+
+    .mdc-text-field .mdc-text-field__input {
+        color: rgba(0, 0, 0, 0.87);
+        margin-left: 15px;
+    }
+
+    </style>
+{% end %}
+
+
+{% block module_init %}
+import json
+from browser import window, document
+
+# Disable right click
+document.bind('contextmenu', lambda event: event.preventDefault())
+
+window.brython_environ = {{brython_environ}}
+arr = {{class_}}(None, {{python_}})
+if not hasattr(arr, 'DEBUG'): arr.DEBUG = '{{debug}}' == 'True'
+arr._bci_mode = '{{mode}}'
+
+arr.connect(f'{{ip}}', f'{{port}}')
+
+arr._last_init()
+{% end %}
+
+<!--if feedback := getattr(arr, '_feedback', None): feedback.listen_feedbacks()-->
+<!--if arr.DEBUG: print('Debug mode: on')-->
+<!--print('Debug mode: {{debug}}')-->
+<!--print(f'Current mode: {arr._bci_mode}')-->

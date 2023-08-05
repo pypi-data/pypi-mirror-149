@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.extensions_handler &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.extensions_handler</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+===============
+Stream handlers
+===============
+&quot;&quot;&quot;
+
+import os
+import sys
+import json
+import pickle
+from datetime import datetime
+from typing import Optional, List, Callable, TypeVar
+from collections.abc import Sequence
+
+from PySide6.QtUiTools import QUiLoader
+from PySide6.QtCore import QTimer, Qt, QRect
+from PySide6.QtWidgets import QMdiSubWindow, QMenu, QMenuBar
+from PySide6.QtGui import QAction, QActionGroup
+
+from .subprocess_handler import LoadSubprocess
+from .config_manager import ConfigManager
+
+BCIFR_FILE = &#39;bcifr&#39;
+
+PathLike = TypeVar(&#39;PathLike&#39;)
+Event = TypeVar(&#39;QEvent&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="ExtensionWidget"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget">[docs]</a>class ExtensionWidget(QMdiSubWindow):
+    &quot;&quot;&quot;MDIArea with extension.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, mdi_area,
+                 mode: str,
+                 extensions_list: List[str] = [],
+                 autostart: Optional[str] = None,
+                 hide_menu: Optional[bool] = False,
+                 directory: Optional[str] = None):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__(None)
+
+        if mode == &#39;timelock&#39;:
+            ui = os.path.realpath(os.path.join(
+                os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;framework&#39;, &#39;qtgui&#39;, &#39;extension_timelock_widget.ui&#39;))
+        else:
+            ui = os.path.realpath(os.path.join(
+                os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;framework&#39;, &#39;qtgui&#39;, &#39;extension_widget.ui&#39;))
+
+        self.main = QUiLoader().load(ui, self)
+        self.mdi_area = mdi_area
+
+        self.main.DPI = 70
+        self.mode = mode
+        self.current_viz = None
+
+        if autostart:
+            self.extensions_list = [(&#39;name&#39;, autostart)]
+        else:
+            self.extensions_list = extensions_list
+
+        if directory:
+            self.projects_dir = directory
+        else:
+            if &#39;--local&#39; in sys.argv:
+                self.projects_dir = os.path.join(
+                    os.getenv(&#39;BCISTREAM_ROOT&#39;), &#39;default_extensions&#39;)
+            else:
+                self.projects_dir = os.path.join(
+                    os.getenv(&#39;BCISTREAM_HOME&#39;), &#39;default_extensions&#39;)
+
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWidget(self.main)
+        self.config = ConfigManager()
+
+        if not self.is_timeloclk:
+            style = f&quot;&quot;&quot;
+            * {{
+            border: 2px solid {os.getenv(&#39;QTMATERIAL_SECONDARYCOLOR&#39;, &#39;#000000&#39;)};
+            border-width: 0px 2px 2px 2px;
+            }}
+            &quot;&quot;&quot;
+        else:
+            style = &#39;&#39;
+
+        self.setStyleSheet(f&quot;&quot;&quot;
+        {style}
+
+        QMenuBar {{
+        background: {os.getenv(&#39;QTMATERIAL_SECONDARYCOLOR&#39;, &#39;#000000&#39;)};
+        border-width: 0;
+        }}
+        &quot;&quot;&quot;)
+
+        if autostart:
+            self.load_extension(autostart)
+
+        if hide_menu:
+            self.menubar.hide()
+
+    # ----------------------------------------------------------------------
+    @property
+    def is_visualization(self) -&gt; str:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.mode == &#39;visualization&#39;
+
+    # ----------------------------------------------------------------------
+    @property
+    def is_stimuli(self) -&gt; bool:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.mode in [&#39;stimuli&#39;, &#39;delivery&#39;]
+
+    # ----------------------------------------------------------------------
+    @property
+    def is_analysis(self) -&gt; bool:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.mode == &#39;analysis&#39;
+
+    # ----------------------------------------------------------------------
+    @property
+    def is_timeloclk(self) -&gt; bool:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.mode == &#39;timelock&#39;
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.load_extension"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.load_extension">[docs]</a>    def load_extension(self, extension: str, debugger: bool = False) -&gt; None:
+        &quot;&quot;&quot;Load project.&quot;&quot;&quot;
+        self.current_viz = extension
+        module = os.path.join(self.projects_dir, extension, &#39;main.py&#39;)
+        self.stream_subprocess = LoadSubprocess(
+            self.main, module, use_webview=not self.is_analysis, debugger=debugger)
+
+        interact = os.path.join(self.projects_dir, extension, &#39;interact&#39;)
+        if os.path.exists(interact):
+            with open(interact, &#39;r&#39;) as file:
+                interact_contet = [json.loads(c)
+                                   for c in file.read().split(&#39;\n&#39;) if c]
+        else:
+            interact_contet = None
+
+        bcifr = pickle.load(
+            open(os.path.join(self.projects_dir, extension, BCIFR_FILE), &#39;rb&#39;))
+        bcifr[&#39;name&#39;]
+
+        self.update_menu_bar(bcifr[&#39;name&#39;], debugger, interact_contet)
+        # self.update_ip(self.stream_subprocess.port)
+        self.update_ip(&#39;9999&#39;)
+        self.loaded()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.loaded"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.loaded">[docs]</a>    def loaded(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Method to connect events.&quot;&quot;&quot;</div>
+        # keep this
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.update_ip"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.update_ip">[docs]</a>    def update_ip(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Method to connect events.&quot;&quot;&quot;</div>
+        # keep this
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.remove"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.remove">[docs]</a>    def remove(self) -&gt; None:
+        &quot;&quot;&quot;Remove active extension.&quot;&quot;&quot;
+        self.stop_preview()
+        if hasattr(self, &#39;stream_subprocess&#39;):
+            del self.stream_subprocess
+
+        if self.is_visualization:
+            self.deleteLater()
+            QTimer().singleShot(1000 / 50, self.mdi_area.tileSubWindows)
+        elif self.is_stimuli:
+            self.update_menu_bar()
+            self.loaded()
+
+        if hasattr(self, &#39;on_remove_callback&#39;):
+            self.on_remove_callback()</div>
+
+    # ----------------------------------------------------------------------
+    def on_remove(self, callback: Callable) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.on_remove_callback = callback
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.save_img"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.save_img">[docs]</a>    def save_img(self, name: Optional[str] = None) -&gt; PathLike:
+        &quot;&quot;&quot;Save capture of visualization in the project directory.&quot;&quot;&quot;
+        if name is None:
+            name = f&quot;{self.current_viz.replace(&#39; &#39;, &#39;&#39;)} {str(datetime.now()).replace(&#39;:&#39;, &#39;_&#39;)}.jpg&quot;
+        captures_dir = os.path.join(
+            self.projects_dir, self.current_viz, &#39;captures&#39;)
+        filename = os.path.join(captures_dir, name)
+
+        if not os.path.exists(captures_dir):
+            os.makedirs(captures_dir, exist_ok=True)
+
+        if os.path.exists(f&#39;{filename}&#39;):
+            os.remove(f&#39;{filename}&#39;)
+
+        if web_engine := getattr(self.stream_subprocess.main, &#39;web_engine&#39;, False):
+            web_engine.grab().save(filename, &#39;JPG&#39;)
+
+        return filename</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.update_menu_bar"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.update_menu_bar">[docs]</a>    def update_menu_bar(self, visualization: Optional[bool] = None, debugger: bool = False, interact_content: Optional[list] = []) -&gt; None:
+        &quot;&quot;&quot;Create menubar.&quot;&quot;&quot;
+        if self.is_visualization:
+            self.build_menu_visualization(
+                visualization, debugger, interact_content)
+        elif self.is_stimuli:
+            self.build_menu_stimuli(visualization, debugger)
+        elif self.is_timeloclk:
+            self.build_menu_timeloclk(visualization, debugger)
+
+        if not self.is_analysis:
+
+            self.menubar.setStyleSheet(&quot;&quot;&quot;
+            QToolButton:hover,
+            QToolButton:pressed,
+            QToolButton {
+              background-color: transparent;
+            }
+            &quot;&quot;&quot;)
+            # self.resize_menubar()
+            self.main.gridLayout_menubar.setMenuBar(self.menubar)</div>
+
+    # ----------------------------------------------------------------------
+    def resize_menubar(self) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if hasattr(self, &#39;menubar&#39;):
+            self.menubar.setGeometry(
+                QRect(0, 0, self.menubar.parent().rect().width(), 37))
+
+    # ----------------------------------------------------------------------
+    def resizeEvent(self, event: Event) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().resizeEvent(event)
+        self.resize_menubar()
+        # QTimer.singleShot(10, self.resize_menubar)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.stop_preview"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.stop_preview">[docs]</a>    def stop_preview(self) -&gt; None:
+        &quot;&quot;&quot;Stop process.&quot;&quot;&quot;
+        if hasattr(self, &#39;stream_subprocess&#39;):
+            self.stream_subprocess.stop_preview()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.reload"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.reload">[docs]</a>    def reload(self) -&gt; None:
+        &quot;&quot;&quot;Restart process.&quot;&quot;&quot;
+        self.stream_subprocess.reload()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.build_menu_visualization"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.build_menu_visualization">[docs]</a>    def build_menu_visualization(self, visualization: bool, debugger: Optional[bool] = False, interact_content: Optional[list] = []) -&gt; None:
+        &quot;&quot;&quot;Menu for visualizations.&quot;&quot;&quot;
+        self.menubar = QMenuBar(self)
+        self.menubar.clear()
+        # self.menubar.setMinimumWidth(1e4)
+
+        self.accent_menubar = QMenuBar(self)
+
+        # Title
+        if debugger:
+            menu_stimuli = QMenu(f&quot;Debugging: {visualization}&quot;)
+        else:
+            if visualization:
+                menu_stimuli = QMenu(f&#39;{visualization } 🞃&#39;)
+            else:
+                menu_stimuli = QMenu(&#39;Real-time analysis 🞃&#39;)
+
+        # Add visualizations
+        for viz, path in self.extensions_list:
+            if viz != visualization:
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_extension(path)))
+
+        self.accent_menubar.addMenu(menu_stimuli)
+
+        # Menu with accent color
+        self.accent_menubar.setStyleSheet(f&quot;&quot;&quot;
+        QMenuBar::item {{
+            background-color: {os.getenv(&#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;)};
+            color: {os.getenv(&#39;QTMATERIAL_PRIMARYTEXTCOLOR&#39;, &#39;#ffffff&#39;)};
+            }}&quot;&quot;&quot;)
+
+        # Set the menu in first position
+        self.menubar.setCornerWidget(
+            self.accent_menubar, corner=Qt.TopLeftCorner)
+
+        # View
+        menu_view = QMenu(&quot;View&quot;)
+        if visualization:
+
+            menu_view.addAction(
+                QAction(&#39;Reload&#39;, menu_view, triggered=self.reload))
+
+            menu_view.addAction(
+                QAction(&#39;Save capture&#39;, menu_view, triggered=self.save_img))
+            if not debugger:
+                menu_view.addSeparator()
+                menu_view.addAction(
+                    QAction(&#39;Close&#39;, menu_view, triggered=self.remove))
+        else:
+            menu_view.setEnabled(False)
+        self.menubar.addMenu(menu_view)
+
+        # DPI
+        # menu_dpi = QMenu(&quot;DPI (60)&quot;)
+        # if visualization:
+
+            # for dpi in [60, 70, 80, 90, 100, 110, 120, 130]:
+                # menu_dpi.addAction(QAction(
+                    # f&#39;{dpi}&#39;, menu_dpi, checkable=True, triggered=self.set_dpi(menu_dpi, f&#39;{dpi}&#39;, dpi)))
+                # if dpi == 60:
+                    # self.set_dpi(menu_dpi, f&#39;{dpi}&#39;, dpi)()
+        # else:
+            # menu_dpi.setEnabled(False)
+        # self.menubar.addMenu(menu_dpi)
+
+        self.main.INTERACTIVE = {}
+        if interact_content:
+            self.build_interactive(interact_content)</div>
+
+    # ----------------------------------------------------------------------
+    def build_interactive(self, items: Sequence[str, List[str], str, str, bool]) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        for item in items:
+
+            if item[0] == &#39;#&#39;:
+                continue
+
+            name, values, default, _, exclusive = item
+            menu_ = QMenu(f&#39;{name} ({default})&#39;)
+
+            if exclusive:
+                action_group = QActionGroup(menu_)
+                action_group.setExclusive(True)
+
+            for value in values:
+
+                if exclusive:
+                    # action = ag.addAction(QAction(
+                        # f&#39;{value}&#39;, menu_, checkable=True, checked=True))
+                    action = QAction(
+                        f&#39;{value}&#39;, menu_, checkable=True, triggered=self.set_interactive(menu_, name, value))
+                    action_group.addAction(action)
+                else:
+                    action = QAction(f&#39;{value}&#39;, menu_, checkable=True,
+                                     triggered=self.set_interactive_non_exclusive(menu_, name, value))
+                menu_.addAction(action)
+
+                if value == default:
+                    action.setChecked(True)
+                self.main.INTERACTIVE[name] = default
+            self.menubar.addMenu(menu_)
+
+    # ----------------------------------------------------------------------
+    def set_interactive_non_exclusive(self, menu_, name: str, value: int) -&gt; Callable:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        def wrap():
+            if value == &#39;All&#39;:
+                [action.setChecked(False) for action in menu_.actions()]
+                [action.setChecked(True) for action in menu_.actions(
+                ) if action.text() == f&#39;{value}&#39;]
+            else:
+                menu_.actions()[0].setChecked(False)
+
+            self.main.INTERACTIVE[name] = &#39;,&#39;.join([
+                action.text() for action in menu_.actions() if action.isChecked()])
+            menu_.setTitle(f&#39;{name} ({value})&#39;)
+        return wrap
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.set_interactive"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.set_interactive">[docs]</a>    def set_interactive(self, menu_, name: str, value: int) -&gt; Callable:
+        &quot;&quot;&quot;Set the DPI value for matplotlib figures.&quot;&quot;&quot;
+        def wrap():
+            [action.setChecked(False) for action in menu_.actions()]
+            [action.setChecked(
+                True) for action in menu_.actions() if action.text() == f&#39;{value}&#39;]
+            self.main.INTERACTIVE[name] = value
+            menu_.setTitle(f&#39;{name} ({value})&#39;)
+        return wrap</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.build_menu_stimuli"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.build_menu_stimuli">[docs]</a>    def build_menu_stimuli(self, visualization: bool, debugger: bool = False) -&gt; None:
+        &quot;&quot;&quot;Menu for stimuli delivery.&quot;&quot;&quot;
+        self.menubar = QMenuBar(self)
+        self.menubar.clear()
+
+        self.accent_menubar = QMenuBar(self)
+        self.accent_menubar.clear()
+        self.menubar.setMinimumWidth(1e4)
+
+        # Title
+        if debugger:
+            menu_stimuli = QMenu(f&quot;Debugging: {visualization}&quot;)
+        else:
+            if visualization:
+                menu_stimuli = QMenu(visualization + &#39; 🞃&#39;)
+            else:
+                menu_stimuli = QMenu(&#39;Stimuli&#39; + &#39; 🞃&#39;)
+
+        for viz, path in self.extensions_list:
+            if viz != visualization:
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_extension(path)))
+        # self.menubar.addMenu(menu_stimuli)
+        self.accent_menubar.addMenu(menu_stimuli)
+
+        self.accent_menubar.setStyleSheet(f&quot;&quot;&quot;
+        QMenuBar::item {{
+            background-color: {os.getenv(&#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;)};
+            color: {os.getenv(&#39;QTMATERIAL_PRIMARYTEXTCOLOR&#39;, &#39;#ffffff&#39;)};
+        }}
+
+        &quot;&quot;&quot;)
+
+        # self.menubar.addMenu(menu_stimuli)
+        self.menubar.setCornerWidget(
+            self.accent_menubar, corner=Qt.TopLeftCorner)
+
+        # View
+        menu_view = QMenu(&quot;View&quot;)
+        if visualization:
+
+            menu_view.addAction(
+                QAction(&#39;Reload&#39;, menu_view, triggered=self.reload))
+
+            if debugger:
+                menu_view.addAction(
+                    QAction(&#39;Open subwindow delivery&#39;, menu_view, triggered=self.open_subwindow))
+            if not debugger:
+                menu_view.addSeparator()
+                menu_view.addAction(
+                    QAction(&#39;Close&#39;, menu_view, triggered=self.remove))
+        else:
+            menu_view.setEnabled(False)
+        self.menubar.addMenu(menu_view)</div>
+
+    # # ----------------------------------------------------------------------
+    # def set_dpi(self, menu_dpi, text: str, dpi: int) -&gt; Callable:
+        # &quot;&quot;&quot;Set the DPI value for matplotlib figures.&quot;&quot;&quot;
+        # def wrap():
+            # [action.setChecked(False) for action in menu_dpi.actions()]
+            # [action.setChecked(
+                # True) for action in menu_dpi.actions() if action.text() == text]
+            # self.main.DPI = dpi
+            # menu_dpi.setTitle(f&#39;DPI ({dpi})&#39;)
+        # return wrap
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ExtensionWidget.set_extension"><a class="viewcode-back" href="../../bci_framework.framework.extensions_handler.html#bci_framework.framework.extensions_handler.ExtensionWidget.set_extension">[docs]</a>    def set_extension(self, visualization: str) -&gt; Callable:
+        &quot;&quot;&quot;Load extension from menu.&quot;&quot;&quot;
+        def wrap():
+            self.load_extension(visualization)
+        return wrap</div>
+
+    # ----------------------------------------------------------------------
+    def build_menu_timeloclk(self, visualization: bool, debugger: Optional[bool] = False) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.menubar = QMenuBar(self)
+        self.menubar.clear()
+        self.menubar.setMinimumWidth(1e4)
+
+        self.accent_menubar = QMenuBar(self)
+
+        # Title
+        if debugger:
+            menu_stimuli = QMenu(f&quot;Debugging: {visualization}&quot;)
+        else:
+            if visualization:
+                menu_stimuli = QMenu(f&#39;{visualization } 🞃&#39;)
+            else:
+                menu_stimuli = QMenu(&#39;Timelock analysis 🞃&#39;)
+
+        # Add visualizations
+        for viz, path in self.extensions_list:
+            if viz != visualization:
+                menu_stimuli.addAction(QAction(viz, menu_stimuli,
+                                               triggered=self.set_extension(path)))
+
+        self.accent_menubar.addMenu(menu_stimuli)
+
+        # Menu with accent color
+        self.accent_menubar.setStyleSheet(f&quot;&quot;&quot;
+        QMenuBar::item {{
+            background-color: {os.getenv(&#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;)};
+            color: {os.getenv(&#39;QTMATERIAL_PRIMARYTEXTCOLOR&#39;, &#39;#ffffff&#39;)};
+            }}&quot;&quot;&quot;)
+
+        # Set the menu in first position
+        self.menubar.setCornerWidget(
+            self.accent_menubar, corner=Qt.TopLeftCorner)
+
+        # View
+        menu_view = QMenu(&quot;View&quot;)
+        if visualization:
+
+            menu_view.addAction(
+                QAction(&#39;Reload&#39;, menu_view, triggered=self.reload))
+
+            # menu_view.addAction(
+                # QAction(&#39;Save capture&#39;, menu_view, triggered=self.save_img))
+            # if not debugger:
+                # menu_view.addSeparator()
+                # menu_view.addAction(
+                    # QAction(&#39;Close&#39;, menu_view, triggered=self.remove))
+        else:
+            menu_view.setEnabled(False)
+        self.menubar.addMenu(menu_view)</div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

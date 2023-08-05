@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.widgets.records &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.widgets.records</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=======
+Records
+=======
+&quot;&quot;&quot;
+
+import sys
+import os
+import shutil
+from datetime import datetime, timedelta
+
+from PySide6.QtWidgets import QTableWidgetItem, QApplication, QMenu
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QCursor, QIcon, QCursor, QAction
+
+from openbci_stream.utils import HDF5Reader
+
+from ..subprocess_handler import run_subprocess
+from ..dialogs import Dialogs
+
+
+########################################################################
+<div class="viewcode-block" id="Records"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records">[docs]</a>class Records:
+    &quot;&quot;&quot;Widget with rocords and offline streaming.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, parent, core):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+
+        self.parent_frame = parent
+        self.core = core
+        self.current_signal = None
+
+        self.records_dir = os.path.join(
+            os.getenv(&#39;BCISTREAM_HOME&#39;), &#39;records&#39;)
+        os.makedirs(self.records_dir, exist_ok=True)
+
+        self.connect()
+
+        self.parent_frame.label_records_path.setText(self.records_dir)
+        self.parent_frame.label_records_path.setStyleSheet(
+            &#39;*{font-family: &quot;DejaVu Sans Mono&quot;;}&#39;)
+
+        self.parent_frame.widget_record.hide()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.on_focus"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.on_focus">[docs]</a>    def on_focus(self) -&gt; None:
+        &quot;&quot;&quot;Reload records.&quot;&quot;&quot;
+        self.load_records()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.connect"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.parent_frame.tableWidget_records.itemDoubleClicked.connect(
+            self.load_file)
+        self.parent_frame.horizontalSlider_record.valueChanged.connect(
+            self.update_record_time)
+        self.parent_frame.pushButton_play_signal.clicked.connect(
+            self.stream_record)
+        self.parent_frame.pushButton_record.toggled.connect(
+            self.record_signal)
+
+        self.parent_frame.tableWidget_records.itemChanged.connect(
+            self.record_renamed)
+
+        self.parent_frame.pushButton_remove_record.clicked.connect(
+            self.remove_record)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.remove_record"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.remove_record">[docs]</a>    def remove_record(self) -&gt; None:
+        &quot;&quot;&quot;Remove file from records directory.&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_records.currentRow()
+        if row &lt; 0:
+            return
+        filename = self.parent_frame.tableWidget_records.item(
+            row, 2).previous_name
+
+        if Dialogs.remove_file_warning(self.parent_frame, filename):
+            os.remove(os.path.join(self.records_dir,
+                                   f&#39;{filename.replace(&quot;:&quot;, &quot;_&quot;)}.h5&#39;))
+            self.load_records()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.record_renamed"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.record_renamed">[docs]</a>    def record_renamed(self, item) -&gt; None:
+        &quot;&quot;&quot;Rename records file.&quot;&quot;&quot;
+        if not hasattr(item, &#39;previous_name&#39;):
+            return
+
+        old_name = item.previous_name
+        new_name = item.text()
+
+        if old_name != new_name:
+            shutil.move(os.path.join(self.records_dir, f&#39;{old_name}.h5&#39;),
+                        os.path.join(self.records_dir, f&#39;{new_name}.h5&#39;))
+            self.load_records()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.load_records"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.load_records">[docs]</a>    def load_records(self) -&gt; None:
+        &quot;&quot;&quot;Load all records from records directory.&quot;&quot;&quot;
+        self.parent_frame.tableWidget_records.clear()
+        self.parent_frame.tableWidget_records.setRowCount(0)
+        self.parent_frame.tableWidget_records.setColumnCount(3)
+        self.parent_frame.tableWidget_records.setHorizontalHeaderLabels(
+            [&#39;Duration&#39;, &#39;Datetime&#39;, &#39;Name&#39;])
+        records = filter(lambda s: s.endswith(
+            &#39;h5&#39;), os.listdir(self.records_dir))
+
+        i = 0
+        for filename in records:
+            try:
+                metadata = self.get_metadata(filename)[:3]
+            except:
+                continue
+
+            self.parent_frame.tableWidget_records.insertRow(i)
+            for j, value in enumerate(metadata):
+                item = QTableWidgetItem(value)
+                item.previous_name = value
+                if j != (self.parent_frame.tableWidget_records.columnCount() - 1):
+                    item.setFlags(item.flags() &amp; ~Qt.ItemIsEditable)
+                self.parent_frame.tableWidget_records.setItem(i, j, item)
+
+                # item.setContextMenuPolicy(Qt.CustomContextMenu)
+                # header.customContextMenuRequested.connect(self.handleHeaderMenu)
+
+        self.parent_frame.tableWidget_records.sortByColumn(
+            1, Qt.SortOrder.AscendingOrder)
+
+        # header = self.parent_frame.tableWidget_records.horizontalHeader()
+        self.parent_frame.tableWidget_records.setContextMenuPolicy(
+            Qt.CustomContextMenu)
+        self.parent_frame.tableWidget_records.customContextMenuRequested.connect(
+            self.handleHeaderMenu)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.get_metadata"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.get_metadata">[docs]</a>    def get_metadata(self, filename: str, light: bool = True) -&gt; None:
+        &quot;&quot;&quot;Read the record file and load the header.&quot;&quot;&quot;
+        file = None
+        for _ in range(10):
+            try:
+                file = HDF5Reader(os.path.join(self.records_dir, filename))
+                break
+            except:
+                continue
+
+        if file is None:
+            return False
+
+        montage = file.header[&#39;montage&#39;]
+        channels = file.header[&#39;channels&#39;]
+        filename = filename.replace(&#39;.h5&#39;, &#39;&#39;)
+        created = datetime.fromtimestamp(
+            file.header[&#39;datetime&#39;]).strftime(&quot;%x %X&quot;)
+        _, samples = file.header[&#39;shape&#39;]
+        sample_rate = file.header[&#39;sample_rate&#39;]
+        duration = str(timedelta(seconds=int(samples / sample_rate)))
+
+        if not light:
+            annotations = file.annotations
+            markers = file.markers
+        else:
+            annotations = []
+            markers = []
+
+        file.close()
+        return [duration, created, filename, montage, channels, annotations, markers]</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.load_file"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.load_file">[docs]</a>    def load_file(self, item) -&gt; None:
+        &quot;&quot;&quot;Prepare file to stream it in offline mode.&quot;&quot;&quot;
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+
+        self.current_signal = item.row()
+        name = self.parent_frame.tableWidget_records.item(
+            item.row(), 2).text()
+
+        duration, datetime, _, montage, electrodes, annotations, markers = self.get_metadata(
+            f&quot;{name}.h5&quot;, light=False)
+
+        electrodes = list(electrodes.values())
+        electrodes = &#39;\n&#39;.join([&#39;, &#39;.join(electrodes[n:n + 8])
+                                for n in range(0, len(electrodes), 8)])
+
+        self.parent_frame.label_record_name.setText(name)
+        self.parent_frame.label_record_primary.setText(f&quot; [{duration}]&quot;)
+        self.parent_frame.label_record_datetime.setText(datetime)
+        self.parent_frame.label_record_channels.setText(electrodes)
+        self.parent_frame.label_record_montage.setText(montage)
+
+        self.parent_frame.label_record_name.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+        self.parent_frame.label_record_primary.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+        self.parent_frame.label_record_datetime.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+        self.parent_frame.label_record_channels.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+        self.parent_frame.label_record_montage.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+
+        self.core.annotations.bulk_annotations(annotations)
+        self.core.annotations.bulk_markers(markers)
+
+        # self.parent_frame.tableWidget_annotations.clear()
+        # self.parent_frame.tableWidget_annotations.setRowCount(0)
+        # self.parent_frame.tableWidget_annotations.setColumnCount(3)
+
+        # self.parent_frame.tableWidget_annotations.setHorizontalHeaderLabels(
+            # [&#39;Onset&#39;, &#39;Duration&#39;, &#39;Description&#39;])
+
+        # for row, annotation in enumerate(annotations):
+            # self.parent_frame.tableWidget_annotations.insertRow(row)
+            # onset, duration, description = annotation
+
+            # item = QTableWidgetItem(f&quot;{round(onset, 2)}&quot;)
+            # self.parent_frame.tableWidget_annotations.setItem(row, 0, item)
+            # item = QTableWidgetItem(f&quot;{duration}&quot;)
+            # self.parent_frame.tableWidget_annotations.setItem(row, 1, item)
+            # item = QTableWidgetItem(description)
+            # self.parent_frame.tableWidget_annotations.setItem(row, 2, item)
+
+        self.parent_frame.horizontalSlider_record.setValue(0)
+        self.parent_frame.widget_record.show()
+        QApplication.restoreOverrideCursor()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.get_offset"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.get_offset">[docs]</a>    def get_offset(self) -&gt; float:
+        &quot;&quot;&quot;The offset for slider animation.&quot;&quot;&quot;
+        h, m, s = self.parent_frame.label_record_primary.text()[
+            2:-1].split(&#39;:&#39;)
+        seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
+        value = self.parent_frame.horizontalSlider_record.value(
+        ) / self.parent_frame.horizontalSlider_record.maximum()
+        return seconds * value</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.update_record_time"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.update_record_time">[docs]</a>    def update_record_time(self) -&gt; None:
+        &quot;&quot;&quot;Update the value of the current streamed signal.&quot;&quot;&quot;
+        offset = timedelta(seconds=self.get_offset())
+        self.start_play = datetime.now()
+
+        self.parent_frame.label_time_current.setStyleSheet(
+            &quot;*{font-family: &#39;mono&#39;}&quot;)
+        self.parent_frame.label_time_current.setText(
+            str(offset - timedelta(microseconds=offset.microseconds)))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.stream_record"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.stream_record">[docs]</a>    def stream_record(self, toggled) -&gt; None:
+        &quot;&quot;&quot;Start the stream.&quot;&quot;&quot;
+        self.parent_frame.tableWidget_records.selectRow(self.current_signal)
+
+        if toggled:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            self.record_reader = HDF5Reader(os.path.join(
+                self.records_dir, f&#39;{self.parent_frame.label_record_name.text()}.h5&#39;))
+            self.record_reader.eeg  # cached
+            self.record_reader.aux  # cached
+            QApplication.restoreOverrideCursor()
+
+            self.start_streaming = 0
+            self.start_play = datetime.now()
+            self.timer = QTimer()
+            self.timer.setInterval(1000 / 4)
+            self.timer.timeout.connect(self.update_timer)
+            self.timer.start()
+            self.parent_frame.pushButton_play_signal.setIcon(
+                QIcon.fromTheme(&#39;media-playback-pause&#39;))
+
+        else:
+            self.record_reader.close()
+            self.timer.stop()
+            self.parent_frame.pushButton_play_signal.setIcon(
+                QIcon.fromTheme(&#39;media-playback-start&#39;))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.update_timer"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.update_timer">[docs]</a>    def update_timer(self) -&gt; None:
+        &quot;&quot;&quot;Stream data into kafka.&quot;&quot;&quot;
+        now = datetime.now()
+        delta = now - self.start_play + timedelta(seconds=self.get_offset())
+
+        h, m, s = self.parent_frame.label_record_primary.text()[
+            2:-1].split(&#39;:&#39;)
+        seconds = int(h) * 60 * 60 + int(m) * 60 + int(s)
+
+        value = self.parent_frame.horizontalSlider_record.maximum() / \
+            ((seconds / delta.total_seconds()))
+        self.parent_frame.horizontalSlider_record.setValue(int(value))
+
+        end_streaming = int((self.record_reader.eeg.shape[1] * self.parent_frame.horizontalSlider_record.value(
+        )) / self.parent_frame.horizontalSlider_record.maximum())
+
+        if samples := end_streaming - self.start_streaming:
+            if samples &lt; 0:
+                samples = (4 * self.record_reader.eeg.shape[1] / 1000)
+
+            # print(samples, [max([end_streaming - samples, 0]), end_streaming])
+            samples = int(samples)
+
+            context = {
+                &#39;timestamp.binary&#39;: datetime.now().timestamp(),
+                &#39;created&#39;: datetime.now().timestamp(),
+                &#39;samples&#39;: samples,
+            }
+
+            data_ = {&#39;context&#39;: context,
+                     &#39;data&#39;: (self.record_reader.eeg[:, max([end_streaming - samples, 0]): end_streaming],
+                              self.record_reader.aux[:, max([end_streaming - samples, 0]): end_streaming]),
+                     }
+            self.start_streaming = end_streaming
+
+            if produser := getattr(self.core.thread_kafka, &#39;produser&#39;, False):
+                produser.send(&#39;eeg&#39;, data_)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.update_timer_record"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.update_timer_record">[docs]</a>    def update_timer_record(self) -&gt; None:
+        &quot;&quot;&quot;Update the timer to indicate that the records is active.&quot;&quot;&quot;
+        now = datetime.now()
+        delta = now - self.start_record
+        try:
+            n_time = datetime.strptime(str(delta), &#39;%H:%M:%S.%f&#39;).time()
+        except:
+            n_time = datetime.strptime(str(delta), &#39;%H:%M:%S&#39;).time()
+        self.recording_status = f&quot;Recording [{n_time.strftime(&#39;%H:%M:%S&#39;)}]&quot;
+        self.parent_frame.pushButton_record.setText(self.recording_status)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Records.record_signal"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.records.html#bci_framework.framework.widgets.records.Records.record_signal">[docs]</a>    def record_signal(self, toggled: bool) -&gt; None:
+        &quot;&quot;&quot;Start record and start record animation.&quot;&quot;&quot;
+        if toggled:
+            self.start_record = datetime.now()
+            self.timer = QTimer()
+            self.timer.setInterval(1000 / 1)
+            self.timer.timeout.connect(self.update_timer_record)
+            self.timer.start()
+
+            if &#39;--local&#39; in sys.argv:
+                self.subprocess_script = run_subprocess([sys.executable, os.path.join(
+                    os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;kafka_scripts&#39;, &#39;record.py&#39;)])
+            else:
+                self.subprocess_script = run_subprocess([sys.executable, os.path.join(
+                    os.environ[&#39;BCISTREAM_HOME&#39;], &#39;kafka_scripts&#39;, &#39;record.py&#39;)])
+        else:
+            self.recording_status = None
+            self.timer.stop()
+            self.parent_frame.pushButton_record.setText(f&quot;Record&quot;)
+            self.subprocess_script.terminate()
+            QTimer().singleShot(500, self.load_records)</div>
+
+    # ----------------------------------------------------------------------
+    def handleHeaderMenu(self, pos):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_records.currentRow()
+        filename = self.parent_frame.tableWidget_records.item(row, 2).text()
+
+        menu = QMenu()
+
+        jupyter_action = QAction(&#39;Open with Juypter Lab&#39;)
+        jupyter_action.triggered.connect(
+            lambda: self.open_with_jupyter(filename))
+        menu.addAction(jupyter_action)
+
+        edf_action = QAction(&#39;Export to EDF&#39;)
+        edf_action.triggered.connect(lambda: self.export_to_edf(filename))
+        menu.addAction(edf_action)
+
+        numpy_action = QAction(&#39;Export to Numpy (npy)&#39;)
+        numpy_action.triggered.connect(
+            lambda: self.export_to_numpy(filename))
+        menu.addAction(numpy_action)
+
+        menu.addSeparator()
+
+        rm_action = QAction(&#39;Remove&#39;)
+        rm_action.triggered.connect(self.remove_record)
+        menu.addAction(rm_action)
+
+        menu.exec(QCursor.pos())
+
+    # ----------------------------------------------------------------------
+    def export_to_edf(self, filename):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            h5 = os.path.join(self.records_dir, f&#39;{filename}.h5&#39;)
+            with HDF5Reader(h5) as reader:
+                reader.to_edf(h5.replace(&#39;.h5&#39;, &#39;.edf&#39;))
+        finally:
+            QApplication.restoreOverrideCursor()
+
+    # ----------------------------------------------------------------------
+    def export_to_numpy(self, filename):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        try:
+            h5 = os.path.join(self.records_dir, f&#39;{filename}.h5&#39;)
+            with HDF5Reader(h5) as reader:
+                reader.to_npy(h5.replace(&#39;.h5&#39;, &#39;&#39;))
+        finally:
+            QApplication.restoreOverrideCursor()
+
+    # ----------------------------------------------------------------------
+    def open_with_jupyter(self, filename):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        h5 = os.path.join(self.records_dir, f&#39;{filename}.h5&#39;)
+        notebook = os.path.join(
+            os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;assets&#39;, &#39;jupyter.ipynb&#39;)
+
+        notebook_dir = os.path.join(
+            os.environ[&#39;BCISTREAM_HOME&#39;], &#39;notebooks&#39;, &#39;records&#39;)
+        if not os.path.exists(notebook_dir):
+            os.mkdir(notebook_dir)
+
+        notebook_file = os.path.join(notebook_dir, f&#39;{filename}.ipynb&#39;)
+        if not os.path.exists(notebook_file):
+            notebook_template = notebook.replace(&#39;.ipynb&#39;, &#39;.template.ipynb&#39;)
+            with open(notebook_template, &#39;r&#39;) as file:
+                content = file.read()
+                content = content.replace(
+                    &#39;{{BCI-FRAMEWORK:FILENAME}}&#39;, os.path.relpath(h5, notebook_dir))
+            with open(notebook_file, &#39;w&#39;) as file:
+                file.write(content)
+
+        command = f&quot;jupyter-lab --notebook-dir=&#39;{notebook_dir}&#39; {notebook_file}&quot;
+        os.popen(command)</div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

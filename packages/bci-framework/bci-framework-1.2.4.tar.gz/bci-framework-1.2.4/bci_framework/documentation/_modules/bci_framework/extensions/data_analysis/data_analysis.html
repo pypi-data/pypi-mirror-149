@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.extensions.data_analysis.data_analysis &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.extensions.data_analysis.data_analysis</h1><div class="highlight"><pre>
+<span></span>import pickle
+import logging
+import json
+from typing import Optional
+
+import numpy as np
+from kafka import KafkaProducer
+from openbci_stream.utils import interpolate_datetime
+
+from bci_framework.extensions import properties as prop
+# from .utils import loop_consumer, fake_loop_consumer, thread_this, subprocess_this, marker_slice
+
+# Set logger
+logging.root.name = &quot;DataAnalysis&quot;
+logging.getLogger(&#39;matplotlib.font_manager&#39;).disabled = True
+logging.getLogger().setLevel(logging.WARNING)
+
+
+########################################################################
+<div class="viewcode-block" id="Transformers"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.data_analysis.html#bci_framework.extensions.data_analysis.data_analysis.Transformers">[docs]</a>class Transformers:
+    &quot;&quot;&quot;Used to preprocess EEG streams.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Transformers.centralize"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.data_analysis.html#bci_framework.extensions.data_analysis.data_analysis.Transformers.centralize">[docs]</a>    def centralize(self, x: np.array, normalize: bool = False, axis: int = 0) -&gt; np.array:
+        &quot;&quot;&quot;Crentralize array.
+
+        Remove the mean to all axis.
+
+        Parameters
+        ----------
+        x
+            Input array of shape (`channels, time`).
+        normalize
+            Return array with maximun amplitude equal to 1.
+        axis
+            Axis to centralize.
+
+        Returns
+        -------
+        array
+            Centralized array.
+        &quot;&quot;&quot;
+
+        cent = np.nan_to_num(np.apply_along_axis(
+            lambda x_: x_ - x_.mean(), 1, x))
+
+        if normalize:
+            if normalize == True:
+                normalize = 1
+            return np.nan_to_num(np.apply_along_axis(lambda x_: normalize * (x_ / (x_.max() - x_.min())), 1, cent))
+
+        return cent</div></div>
+
+
+########################################################################
+class Feedback:
+    &quot;&quot;&quot;&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, analyser, subscribe):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.main = analyser
+
+        self.main._feedback = self
+        self.name = subscribe
+
+    # ----------------------------------------------------------------------
+    def write(self, kwargs) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        kwargs[&#39;mode&#39;] = &#39;analysis2stimuli&#39;
+        kwargs[&#39;name&#39;] = self.name
+        self.main.generic_produser(&#39;feedback&#39;, kwargs)
+
+    # ----------------------------------------------------------------------
+    def on_feedback(self, fn):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self._on_feedback = fn
+
+
+########################################################################
+class DataAnalysis:
+    &quot;&quot;&quot;&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, enable_produser=False):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        # self._pivot = None
+        if enable_produser:
+            self._enable_commands()
+
+        self.transformers_ = {}
+        self.transformers_aux_ = {}
+        self._feedback = False
+        self._package_size = None
+
+    # ----------------------------------------------------------------------
+    def _enable_commands(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        try:
+            self.kafka_producer = KafkaProducer(
+                bootstrap_servers=[f&#39;{prop.HOST}:9092&#39;],
+                compression_type=&#39;gzip&#39;,
+                value_serializer=pickle.dumps,
+            )
+        except:
+            logging.error(&#39;Commands: Kafka not available!&#39;)
+            self.kafka_producer = None
+
+    # ----------------------------------------------------------------------
+    def send_command(self, command: str, value: Optional[dict] = {}) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if hasattr(self, &#39;kafka_producer&#39;):
+
+            if self.kafka_producer is None:
+                logging.error(&#39;Send command: Kafka not available!&#39;)
+            else:
+                data = {&#39;command&#39;: command,
+                        &#39;value&#39;: data,
+                        }
+                self.kafka_producer.send(&#39;command&#39;, data)
+        else:
+            logging.error(
+                &quot;To send commands add the argument &#39;enable_produser=True&#39; on the declaration of EEGStream&quot;)
+
+    # ----------------------------------------------------------------------
+    def send_annotation(self, description: str, duration: Optional[int] = 0) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if hasattr(self, &#39;kafka_producer&#39;):
+            if self.kafka_producer is None:
+                logging.error(&#39;Send annotation: Kafka not available!&#39;)
+            else:
+                self.kafka_producer.send(&#39;annotation&#39;, {
+                    &#39;action&#39;: &#39;annotation&#39;,
+                    &#39;duration&#39;: duration,
+                    &#39;description&#39;: description,
+                })
+        else:
+            logging.error(
+                &quot;To send commands add the argument &#39;enable_produser=True&#39; on the declaration of EEGStream&quot;)
+
+    # ----------------------------------------------------------------------
+    def send_feedback(self, kwargs) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.generic_produser(&#39;feedback&#39;, kwargs)
+
+    # ----------------------------------------------------------------------
+    def generic_produser(self, topic: str, data: str) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if hasattr(self, &#39;kafka_producer&#39;):
+
+            if self.kafka_producer is None:
+                logging.error(&#39;Produser: Kafka not available!&#39;)
+            else:
+                self.kafka_producer.send(topic, data)
+                # self.kafka_producer.send(topic, 888)
+        else:
+            logging.error(
+                &quot;To send commands add the argument &#39;enable_produser=True&#39; on the declaration of EEGStream&quot;)
+
+    # ----------------------------------------------------------------------
+    def update_buffer(self, eeg: np.ndarray = None, aux: np.ndarray = None, timestamp: float = None) -&gt; None:
+        &quot;&quot;&quot;Uppdate the buffers.
+
+        Parameters
+        ----------
+        eeg
+            The new EEG array
+        aux
+            The new AUX array
+        &quot;&quot;&quot;
+
+        if not eeg is None:
+
+            c = eeg.shape[1]
+
+            self.buffer_eeg_ = np.roll(self.buffer_eeg_, -c, axis=1)
+            self.buffer_eeg_[:, -c:] = eeg
+
+            self.buffer_timestamp_ = np.roll(
+                self.buffer_timestamp_, -c, axis=0)
+            self.buffer_timestamp_[-c:] = np.zeros(eeg.shape[1])
+            self.buffer_timestamp_[-1] = timestamp
+
+            if hasattr(self, &#39;buffer_eeg_split&#39;):
+                self.buffer_eeg_split = np.roll(
+                    self.buffer_eeg_split, -c)
+
+        if not aux is None:
+
+            d = aux.shape[1]
+            self.buffer_aux_ = np.roll(self.buffer_aux_, -d, axis=1)
+            self.buffer_aux_[:, -d:] = aux
+
+            self.buffer_aux_timestamp_ = np.roll(
+                self.buffer_aux_timestamp_, -d, axis=0)
+            self.buffer_aux_timestamp_[-d:] = np.zeros(aux.shape[1])
+            self.buffer_aux_timestamp_[-1] = timestamp
+
+            if hasattr(self, &#39;buffer_aux_split&#39;):
+                self.buffer_aux_split = np.roll(
+                    self.buffer_aux_split, -d)
+
+    # ----------------------------------------------------------------------
+    def _get_factor_near_to(self, x: int, n: Optional[int] = 1000) -&gt; int:
+        &quot;&quot;&quot;Get the integer number factor of `x` nearest to `n`.
+
+        This factor is used to fast resampling.
+
+        Parameters
+        ----------
+        x
+            Samples.
+        n
+            Near factor
+
+        Returns
+        -------
+        int
+            Factor.
+        &quot;&quot;&quot;
+        a = np.array(
+            [(x) / np.arange(max(1, (x // n) - 10), (x // n) + 10)])[0]
+        a[a % 1 != 0] = 0
+        return int(a[np.argmin(np.abs(a - n))])
+
+    # ----------------------------------------------------------------------
+    def _create_resampled_buffer(self, x: int, resampling: Optional[int] = 1000) -&gt; np.ndarray:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        f = self._get_factor_near_to(x, resampling)
+        self.buffer_eeg_split = np.zeros(x)
+        index = np.linspace(0, x, f + 1).astype(int)[:-1]
+        self.buffer_eeg_split[index] = 1
+
+        if prop.CONNECTION == &#39;wifi&#39; and prop.DAISY:
+            x = x * 2
+
+        f = self._get_factor_near_to(x, resampling)
+        self.buffer_aux_split = np.zeros(x)
+        index = np.linspace(0, x, f + 1).astype(int)[:-1]
+        self.buffer_aux_split[index] = 1
+
+    # ----------------------------------------------------------------------
+    def create_buffer(self, seconds: Optional[int] = 30, aux_shape: Optional[int] = 3, fill: Optional[int] = 0, resampling: Optional[int] = 1000):
+        &quot;&quot;&quot;Create a buffer with fixed time length.
+
+        Since the `loop_consumer` iterator only return the last data package, the
+        object `buffer_eeg` and `buffer_aux` will retain a old data.
+
+        Parameters
+        ----------
+        seconds
+            How many seconds will content the buffer.
+        aux_shape
+            Define the shape of aux array.
+        fill
+            Initialize buffet with this value.
+        resampling
+            The resampling size.
+        &quot;&quot;&quot;
+
+        chs = len(prop.CHANNELS)
+        time = prop.SAMPLE_RATE * seconds
+
+        self._create_resampled_buffer(abs(time), resampling=resampling)
+
+        self.buffer_eeg_ = np.empty((chs, time))
+        self.buffer_timestamp_ = np.zeros(time)
+
+        if prop.CONNECTION == &#39;wifi&#39; and prop.DAISY:
+            self.buffer_aux_ = np.empty((aux_shape, time * 2))
+            self.buffer_aux_timestamp_ = np.zeros(time * 2)
+        else:
+            self.buffer_aux_ = np.empty((aux_shape, time))
+            self.buffer_aux_timestamp_ = np.zeros(time)
+
+        self.buffer_eeg_.fill(fill)
+        self.buffer_aux_.fill(fill)
+        # self.buffer_aux_timestamp_ = np.zeros(time)
+
+    # ----------------------------------------------------------------------
+    def set_transformers(self, transformers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.transformers_ = transformers
+
+    # ----------------------------------------------------------------------
+    def add_transformers(self, transformers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        for name in transformers:
+            self.transformers_[name] = transformers[name]
+
+    # ----------------------------------------------------------------------
+    def remove_transformers(self, transformers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        for tr in transformers:
+            if tr in self.transformers_:
+                self.transformers_.pop(tr)
+
+    # ----------------------------------------------------------------------
+    def clear_transformers(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.transformers_ = {}
+
+    # ----------------------------------------------------------------------
+    def set_transformers_aux(self, transformers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.transformers_aux_ = transformers
+
+    # ----------------------------------------------------------------------
+    def add_transformes_aux(self, transformers):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.transformers_aux_.extend(transformers)
+
+    # ----------------------------------------------------------------------
+    def clear_transformers_aux(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.transformers_aux_ = []
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_eeg(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        eeg = self.buffer_eeg_.copy()
+        for tr in self.transformers_.copy():
+            kwargs = self.transformers_[tr][1]
+            eeg = self.transformers_[tr][0](eeg, **kwargs)
+        return eeg
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_aux(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        aux = self.buffer_aux_.copy()
+        for tr in self.transformers_aux_:
+            aux = tr(aux)
+        return aux
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_eeg_resampled(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.buffer_eeg[:, np.argwhere(self.buffer_eeg_split == 1)][:, :, 0]
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_aux_resampled(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return self.buffer_aux[:, np.argwhere(self.buffer_aux_split == 1)][:, :, 0]
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_timestamp_resampled(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        t = self.buffer_timestamp
+        if t.shape[0]:
+            return t[np.argwhere(self.buffer_eeg_split == 1)][:, 0]
+        else:
+            return np.array([])
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_timestamp(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        try:
+            return interpolate_datetime(self.buffer_timestamp_)
+        except:
+            return self.buffer_timestamp_
+
+    # ----------------------------------------------------------------------
+    @property
+    def buffer_aux_timestamp(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        try:
+            return interpolate_datetime(self.buffer_aux_timestamp_)
+        except:
+            return self.buffer_aux_timestamp_
+
+    # ----------------------------------------------------------------------
+    def set_package_size(self, value):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self._package_size = value
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

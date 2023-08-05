@@ -1,0 +1,567 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.editor.editor &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.editor.editor</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=========
+BCIEditor
+=========
+
+&quot;&quot;&quot;
+
+import os
+import ast
+import json
+from typing import Literal, TypeVar
+
+from PySide6.QtWidgets import QTextEdit, QCompleter
+from PySide6.QtGui import QTextOption
+from PySide6.QtCore import Qt
+
+from .highlighters import PythonHighlighter, CSSHighlighter
+
+
+AUTOCOMPLETER = TypeVar(&#39;Autocompleter&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="BCIEditor"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor">[docs]</a>class BCIEditor(QTextEdit):
+    &quot;&quot;&quot;Custom QTextEdit with autocompleter and linenumbers.
+
+    Parameters
+    ----------
+    linenumber
+        QTextEdit object that will be updated with linenumbers.
+    extension
+        To set the highlighter.
+    &quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, linenumber: QTextEdit, extension: Literal[&#39;.py&#39;, &#39;.css&#39;] = &#39;.py&#39;, *args, **kwargs):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__(*args, **kwargs)
+
+        self.set_options()
+        self.linenumber = linenumber
+        self.temporal_vars = []
+
+        if &#39;light&#39; in os.environ.get(&#39;QTMATERIAL_THEME&#39;):
+            font_color = &#39;black&#39;
+        else:
+            font_color = &#39;white&#39;
+
+        f = self.fontMetrics()
+        font_size = f.height()
+
+        self.setStyleSheet(f&quot;&quot;&quot;
+        QTextEdit {{
+        background-color: {os.environ.get(&#39;QTMATERIAL_SECONDARYDARKCOLOR&#39;)};
+        color: {font_color};
+        font-weight: normal;
+        font-family: &#39;DejaVu Sans Mono&#39;;
+        font-size: {font_size}px;
+        line-height: {font_size}px;
+        border: 1px solid {os.environ.get(&#39;QTMATERIAL_SECONDARYDARKCOLOR&#39;)};
+        border-radius: 4px;
+        padding: 0px;
+        padding-top: 8px;
+        }}
+        &quot;&quot;&quot;)
+
+        linenumber.setStyleSheet(f&quot;&quot;&quot;
+        QTextEdit.linenumber {{
+        background-color: {os.environ.get(&#39;QTMATERIAL_SECONDARYDARKCOLOR&#39;)};
+        color: {os.environ.get(&#39;QTMATERIAL_SECONDARYTEXTCOLOR&#39;)};
+        font-weight: normal;
+        font-family: &#39;DejaVu Sans Mono&#39;;
+        font-size: {font_size}px;
+        line-height: {font_size}px;
+        border: 0px solid {os.environ.get(&#39;QTMATERIAL_SECONDARYLIGHTCOLOR&#39;)};
+        border-right: 10px solid {os.environ.get(&#39;QTMATERIAL_SECONDARYLIGHTCOLOR&#39;)};
+        border-radius: 0px;
+        }}
+        &quot;&quot;&quot;)
+
+        if extension == &#39;.py&#39;:
+            PythonHighlighter(self.document())
+        elif extension == &#39;.css&#39;:
+            CSSHighlighter(self.document())
+
+        self.connect_()
+        self.completer = None
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.connect_"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.connect_">[docs]</a>    def connect_(self) -&gt; None:
+        &quot;&quot;&quot;Update linenumber.&quot;&quot;&quot;
+        self.textChanged.connect(self.update_linenumber)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.wheelEvent"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.wheelEvent">[docs]</a>    def wheelEvent(self, evt):
+        &quot;&quot;&quot;Update the offset of the linenumber.&quot;&quot;&quot;
+        if self.linenumber:
+            self.linenumber.wheelEvent(evt)
+        return super().wheelEvent(evt)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.update_linenumber"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.update_linenumber">[docs]</a>    def update_linenumber(self) -&gt; None:
+        &quot;&quot;&quot;Update linenumber.&quot;&quot;&quot;
+        lines = len(self.toPlainText().split(&#39;\n&#39;))
+        lines_ln = len(self.linenumber.toPlainText().split(&#39;\n&#39;))
+
+        if lines != lines_ln:
+            content = [f&#39;{l}&#39; for l in range(1, lines + 1)]
+            self.linenumber.setHtml(
+                f&#39;&lt;p style=&quot;text-align: right&quot;&gt;{&quot;&lt;br&gt;&quot;.join(content)}&lt;/p&gt;&#39;)
+        self.linenumber.verticalScrollBar().setValue(self.verticalScrollBar().value())</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.set_options"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.set_options">[docs]</a>    def set_options(self) -&gt; None:
+        &quot;&quot;&quot;Configure QTextEdit.&quot;&quot;&quot;
+        document = self.document()
+        option = QTextOption()
+
+        document.setDefaultTextOption(option)
+        self.setAcceptRichText(False)
+        self.setLineWrapMode(QTextEdit.LineWrapMode.NoWrap)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.keyPressEvent"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.keyPressEvent">[docs]</a>    def keyPressEvent(self, event):
+        &quot;&quot;&quot;Process key events.&quot;&quot;&quot;
+
+        completionPrefix = self.text_under_cursor()
+        if self.completer and len(completionPrefix) &lt; 3 and self.completer.popup().isVisible():
+            self.completer.popup().hide()
+
+        if event.key() in [Qt.Key_Tab, Qt.Key_Enter, Qt.Key_Enter - 1]:
+            if self.completer and self.completer.popup().isVisible():
+                self.completer.insertText.emit(
+                    self.completer.last_highlighted)
+                self.completer.popup().hide()
+                return
+
+        if event.key() == Qt.Key_Tab:
+            tc = self.textCursor()
+            tc.insertText(&quot; &quot; * 4)
+            return
+
+        # Manage {([ for seleceted text
+        for text, *keys in ([&quot;({})&quot;, Qt.Key_ParenLeft, Qt.Key_ParenRight],
+                            [&quot;[{}]&quot;, Qt.Key_BracketLeft, Qt.Key_BracketRight],
+                            [&quot;{{{}}}&quot;, Qt.Key_BraceLeft, Qt.Key_BraceRight],
+                            ):
+            if event.key() in keys:
+                tc = self.textCursor()
+                start = tc.selectionStart()
+                if selected := tc.selectedText():
+                    tc.removeSelectedText()
+                    tc.insertText(text.format(selected))
+                    if event.key() == keys[0]:
+                        tc.setPosition(start, tc.MoveAnchor)
+                    self.setTextCursor(tc)
+                    return
+
+        # Manage quotation for selected text
+        for text, *keys in ([&#39;&quot;{}&quot;&#39;, Qt.Key_QuoteDbl],
+                            [&quot;&#39;{}&#39;&quot;, Qt.Key_Apostrophe, ]
+                            ):
+            if event.key() in keys:
+                tc = self.textCursor()
+                start = tc.selectionStart()
+                if selected := tc.selectedText():
+                    tc.removeSelectedText()
+                    tc.insertText(text.format(selected))
+                    self.setTextCursor(tc)
+                    return
+
+        # Toggle comment
+        if (event.key() == Qt.Key_Period) and bool(event.modifiers() &amp; Qt.ControlModifier):
+            tc = self.textCursor()
+            # pos = tc.position()
+            tc.select(tc.LineUnderCursor)
+            line = tc.selectedText()
+
+            if line.strip() and line.strip()[0] == &#39;#&#39;:
+                self._remove_symbol(&#39;# &#39;)
+            else:
+                self._insert_symbol(&#39;# &#39;)
+
+        # Comment
+        if (event.key() == Qt.Key_Slash) and bool(event.modifiers() &amp; Qt.ControlModifier):
+            return self._insert_symbol(&#39;# &#39;)
+
+        # Uncomment
+        if (event.key() == Qt.Key_Question) and bool(event.modifiers() &amp; Qt.ControlModifier):
+            return self._remove_symbol(&#39;# &#39;)
+
+        # Unindent
+        if (event.key() == Qt.Key_Less) and bool(event.modifiers() &amp; Qt.ControlModifier):
+            return self._remove_symbol(&#39;    &#39;)
+
+        # Indent
+        if (event.key() == Qt.Key_Greater) and bool(event.modifiers() &amp; Qt.ControlModifier):
+            return self._insert_symbol(&#39;    &#39;)
+
+        # On enter
+        if event.key() in [Qt.Key_Enter, Qt.Key_Enter - 1]:
+            return self._on_enter()
+
+        # On back space
+        if event.key() == Qt.Key_Backspace:
+            return self._on_back_space(event)
+
+        super().keyPressEvent(event)
+
+        if self.completer and event.text():
+            completionPrefix = self.text_under_cursor()
+            if len(completionPrefix) &gt;= 3:
+                self.show_completer(completionPrefix)
+            elif self.completer.popup().isVisible():
+                self.completer.popup().hide()</div>
+
+    # ----------------------------------------------------------------------
+    def _on_back_space(self, event):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        tc = self.textCursor()
+
+        if tc.selectedText():
+            return super().keyPressEvent(event)
+
+        pos = tc.position()
+        tc.movePosition(tc.StartOfLine, tc.KeepAnchor)
+        previous = tc.selectedText()
+
+        if previous[-4:] == &#39;    &#39;:
+            if d := len(previous) % 4:
+                previous = previous[:-d]
+            else:
+                previous = previous[:-4]
+            tc.insertText(previous)
+            return
+        else:
+            return super().keyPressEvent(event)
+
+    # ----------------------------------------------------------------------
+    def _on_enter(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        tc = self.textCursor()
+        pos = tc.position()
+        tc.select(tc.LineUnderCursor)
+        line = tc.selectedText()
+
+        if line.isspace() or line == &quot;&quot;:
+            len_s = len(line)
+        else:
+            normal = line.replace(&quot; &quot;, &quot;&quot;)
+            len_s = line.find(normal[0])
+
+        if line.strip().endswith(&#39;:&#39;):
+            len_s += 4
+
+        tc.setPosition(pos)
+        tc.insertText(&quot;\n&quot; + &quot; &quot; * len_s)
+        return
+
+    # ----------------------------------------------------------------------
+    def _remove_symbol(self, char=&#39;#&#39;):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        tc = self.textCursor()
+
+        if tc.selectedText():
+            start = tc.selectionStart()
+            end = tc.selectionEnd()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
+            start = tc.position()
+
+            tc.setPosition(end, tc.MoveAnchor)
+            tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
+            end = tc.position()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            selected = tc.selectedText()
+            tc.removeSelectedText()
+
+            uncommented = []
+            for line in selected.split(&#39;\u2029&#39;):
+                if line.strip():
+                    start_ = line.find(line.replace(&#39; &#39;, &#39;&#39;)[0])
+
+                    if char.isspace():
+                        uncommented.append(line.replace(f&#39;{char}&#39;, &#39;&#39;, 1))
+                    else:
+                        if line[start_:start_ + len(char)] == f&#39;{char}&#39;:
+                            uncommented.append(
+                                line.replace(f&#39;{char}&#39;, &#39;&#39;, 1))
+                        else:
+                            tc.insertText(selected)
+                            return
+
+                    end -= len(char)
+                else:
+                    uncommented.append(line)
+
+            if uncommented:
+                tc.insertText(&#39;\u2029&#39;.join(uncommented))
+                tc.setPosition(start, tc.MoveAnchor)
+                tc.setPosition(end, tc.KeepAnchor)
+                self.setTextCursor(tc)
+            else:
+                tc.insertText(selected)
+
+        else:
+            tc.select(tc.LineUnderCursor)
+            if line := tc.selectedText():
+                tc.removeSelectedText()
+
+                if char.isspace():
+                    tc.insertText(line.replace(f&#39;{char}&#39;, &#39;&#39;, 1))
+                else:
+                    start = line.find(line.replace(&#39; &#39;, &#39;&#39;)[0])
+                    if line[start:start + len(char)] == f&#39;{char}&#39;:
+                        tc.insertText(line.replace(f&#39;{char}&#39;, &#39;&#39;, 1))
+                    else:
+                        tc.insertText(line)
+
+    # ----------------------------------------------------------------------
+    def _insert_symbol(self, char=&#39;#&#39;):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        tc = self.textCursor()
+
+        if tc.selectedText():
+            start = tc.selectionStart()
+            end = tc.selectionEnd()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.movePosition(tc.StartOfLine, tc.MoveAnchor)
+            start = tc.position()
+
+            tc.setPosition(end, tc.MoveAnchor)
+            tc.movePosition(tc.EndOfLine, tc.MoveAnchor)
+            end = tc.position()
+
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            selected = tc.selectedText()
+            tc.removeSelectedText()
+
+            commented = []
+            for line in selected.split(&#39;\u2029&#39;):
+                if line.strip():
+                    start_ = line.find(line.replace(&#39; &#39;, &#39;&#39;)[0])
+                    commented.append(
+                        &quot; &quot; * start_ + f&#39;{char}&#39; + line[start_:])
+                    end += len(char)
+                else:
+                    commented.append(line)
+            tc.insertText(&#39;\u2029&#39;.join(commented))
+            tc.setPosition(start, tc.MoveAnchor)
+            tc.setPosition(end, tc.KeepAnchor)
+            self.setTextCursor(tc)
+
+        else:
+            tc.select(tc.LineUnderCursor)
+            if line := tc.selectedText():
+                if line.strip():
+                    tc.removeSelectedText()
+                    start = line.find(line.replace(&#39; &#39;, &#39;&#39;)[0])
+                    tc.insertText(&quot; &quot; * start + f&#39;{char}&#39; + line[start:])
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.set_completer"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.set_completer">[docs]</a>    def set_completer(self, completer: AUTOCOMPLETER) -&gt; None:
+        &quot;&quot;&quot;Update the autocompleter used.&quot;&quot;&quot;
+        if self.completer:
+            self.disconnect(self.completer)
+        if not completer:
+            return
+
+        completer.setWidget(self)
+        completer.setCompletionMode(QCompleter.PopupCompletion)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer = completer
+        self.completer.insertText.connect(self.insert_completion)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.insert_completion"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.insert_completion">[docs]</a>    def insert_completion(self, completion: str) -&gt; None:
+        &quot;&quot;&quot;Process and inset the desired option.&quot;&quot;&quot;
+        tc = self.textCursor()
+        self.text_under_cursor(tc)
+        tc.removeSelectedText()
+        pos = tc.position()
+
+        if completion in self.completer.snippets:
+            completion = self.completer.snippets[completion]
+
+        extra = completion
+
+        text_position = extra.find(&quot;[!]&quot;)
+        extra = extra.replace(&quot;[!]&quot;, &quot;&quot;)
+
+        position_in_line = tc.positionInBlock()
+        extra = extra.replace(&quot;\n&quot;, &quot;\n&quot; + &quot; &quot; * position_in_line)
+
+        tc.insertText(extra)
+
+        if text_position &gt; 0:
+            tc.setPosition(pos + text_position +
+                           (4 * extra[:text_position].count(&#39;\n&#39;)))
+
+        self.setTextCursor(tc)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.text_under_cursor"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.text_under_cursor">[docs]</a>    def text_under_cursor(self, tc=None) -&gt; str:
+        &quot;&quot;&quot;Return de text under cursor.&quot;&quot;&quot;
+
+        if tc is None:
+            tc = self.textCursor()
+
+        # word like: cdc|
+        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+
+        # word like: cdc.|
+        if tc.selectedText().startswith(&quot;.&quot;):
+            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+
+        # word like: cdc.pri|
+        tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        if tc.selectedText().startswith(&quot;.&quot;):
+            tc.movePosition(tc.WordLeft, tc.KeepAnchor)
+        else:
+            tc.movePosition(tc.WordRight, tc.KeepAnchor)
+
+        # tc.select(QTextCursor.WordUnderCursor)
+        completionPrefix = tc.selectedText()
+
+        if completionPrefix.endswith(&#39;.&#39;) and completionPrefix.count(&#39;.&#39;) &gt; 1:
+            index = completionPrefix.rfind(
+                &#39;.&#39;, 0, completionPrefix.rfind(&#39;.&#39;))
+            completionPrefix = completionPrefix[index + 1:]
+            for _ in range(tc.selectedText().count(&#39;.&#39;) - 1):
+                tc.movePosition(tc.WordRight, tc.KeepAnchor)
+                tc.movePosition(tc.WordRight, tc.KeepAnchor)
+
+        return completionPrefix</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.focusInEvent"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.focusInEvent">[docs]</a>    def focusInEvent(self, event) -&gt; None:
+        &quot;&quot;&quot;Keep the focus on the editor.&quot;&quot;&quot;
+        if self.completer:
+            self.completer.setWidget(self)
+        QTextEdit.focusInEvent(self, event)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="BCIEditor.show_completer"><a class="viewcode-back" href="../../../bci_framework.framework.editor.editor.html#bci_framework.framework.editor.editor.BCIEditor.show_completer">[docs]</a>    def show_completer(self, completion_prefix: str) -&gt; None:
+        &quot;&quot;&quot;Show better options for current text.&quot;&quot;&quot;
+        # self.completer.set_temporal(self.get_variables())
+        self.completer.setCompletionPrefix(completion_prefix)
+        popup = self.completer.popup()
+        popup.setCurrentIndex(self.completer.completionModel().index(0, 0))
+        cr = self.cursorRect()
+        cr.setWidth(self.completer.popup().sizeHintForColumn(
+            0) + self.completer.popup().verticalScrollBar().sizeHint().width() + 15)
+        cr.setHeight(30)
+
+        self.completer.complete(cr)</div></div>
+
+    # # ----------------------------------------------------------------------
+    # def get_variables(self):
+        # &quot;&quot;&quot;&quot;&quot;&quot;
+        # try:
+            # root = ast.parse(self.toPlainText())
+            # self.temporal_vars = sorted({node.id for node in ast.walk(
+                # root) if isinstance(node, ast.Name)})
+        # except:
+            # pass
+        # return self.temporal_vars
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

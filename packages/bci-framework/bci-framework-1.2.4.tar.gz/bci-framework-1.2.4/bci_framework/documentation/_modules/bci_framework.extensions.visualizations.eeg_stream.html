@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>EEG Stream &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-bci_framework.extensions.visualizations.eeg_stream"></span><section id="eeg-stream">
+<h1>EEG Stream<a class="headerlink" href="#eeg-stream" title="Permalink to this headline">¶</a></h1>
+<p>Reimplementation of <a class="reference external" href="https://figurestream.readthedocs.io/en/latest/">Matplotlib-FigureStream</a> with some renames and a
+preconfigured server.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.EEGStream">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bci_framework.extensions.visualizations.eeg_stream.</span></span><span class="sig-name descname"><span class="pre">EEGStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#EEGStream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.EEGStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matplotlib figure re-implementation.</p>
+<p>This class define some usefull methods to use for simplificate the data
+manipulation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.EEGStream.create_lines">
+<span class="sig-name descname"><span class="pre">create_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'eeg'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'accel'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'analog'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'digital'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'eeg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-</span> <span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cool'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">numpy.nan</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">matplotlib.axes.Axes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">matplotlib.lines</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#EEGStream.create_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.EEGStream.create_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create plot automatically.</p>
+<p>Create and configure a subplot to display figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> – Used for select the axis labels.</p></li>
+<li><p><strong>time</strong> – The time window, can be negative.</p></li>
+<li><p><strong>window</strong> – The number of samples used to draw the figure.</p></li>
+<li><p><strong>cmap</strong> – The matplolib <cite>cmap</cite> to use.</p></li>
+<li><p><strong>fill</strong> – Start signals array with this value.</p></li>
+<li><p><strong>subplot</strong> – The matplolib subplot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>axis</em> – The subplot created.</p></li>
+<li><p><em>time</em> – The time array.</p></li>
+<li><p><em>lines</em> – The matplotlib <cite>lines</cite> object created for each channel.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.MNEObjects">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bci_framework.extensions.visualizations.eeg_stream.</span></span><span class="sig-name descname"><span class="pre">MNEObjects</span></span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#MNEObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.MNEObjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creat MNE handlers using the framework GUI information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_evoked">
+<span class="sig-name descname"><span class="pre">get_mne_evoked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mne.EvokedArray</span></span></span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#MNEObjects.get_mne_evoked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_evoked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the <cite>Evoked</cite> object to use with mne handlers.</p>
+<p>The information is acquired automatically from GUI interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_info">
+<span class="sig-name descname"><span class="pre">get_mne_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mne.Info</span></span></span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#MNEObjects.get_mne_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the <cite>Info</cite> object to use with mne handlers.</p>
+<p>The information is acquired automatically from GUI interface.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_montage">
+<span class="sig-name descname"><span class="pre">get_mne_montage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">mne.channels.DigMontage</span></span></span><a class="reference internal" href="bci_framework/extensions/visualizations/eeg_stream.html#MNEObjects.get_mne_montage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.extensions.visualizations.eeg_stream.MNEObjects.get_mne_montage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the <cite>Montage</cite> object to use with mne handlers.</p>
+<p>The information is acquired automatically from GUI interface.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/_modules/bci_framework.extensions.visualizations.eeg_stream.rst"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
