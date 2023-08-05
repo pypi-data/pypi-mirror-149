@@ -1,0 +1,234 @@
+Version History
+===============
+
+v0.6.2 (2022-05-03)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* Fixed ``get_coords_by_type`` in ``xarray_utils`` to handle non existing coords (#99).
+
+
+v0.6.1 (2022-04-19)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* Added data_node_root in ``roocs.ini`` for C3S-CORDEX and C3S-CMIP5 (#97).
+
+v0.6.0 (2022-04-14)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* Updated default ``roocs.ini`` for C3S-CORDEX (#93, #95).
+* Fix added for `get_bbox <https://github.com/roocs/catalog-maker/issues/11>`_ on C3S-CORDEX (#94).
+
+v0.5.0 (2021-10-26)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* When a project was provided to ``roocs_utils.project_utils.DatasetMapper``, getting the base directory would be skipped, causing an error. This has been resolved.
+* ``roocs_utils.project_utils.DatasetMapper`` can now accept `fixed_path_mappings` that include ".gz" (gzip) files. This is allowed because `Xarray` can read gzipped `netCDF` files.
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Intake catalog maker removed, now in it's own package: `roocs/catalog-maker <https://github.com/roocs/catalog-maker>`_
+* Change to input parameter classes::
+  * Added: ``roocs_utils.parameter.time_components_parameter.TimeComponentsParameter``
+  * Modified input types required for classes::
+    * ``roocs_utils.parameter.time_parameter.TimeParameter``
+    * ``roocs_utils.parameter.level_parameter.LevelParameter``
+  * They both now require their inputs to be one of::
+    * ``roocs_utils.parameter.param_utils.Interval`` - to specify a range/interval
+    * ``roocs_utils.parameter.param_utils.Series`` - to specify a series of values
+
+New Features
+^^^^^^^^^^^^
+* ``roocs_utils.xarray_utils.xarray_utils`` now accepts keyword arguments to pass through to xarray's ``open_dataset`` or ``open_mfdataset``. If the argument provided is not an option for ``open_dataset``, then ``open_mfdataset`` will be used, even for one file.
+* The `roocs.ini` config file can now accept `fixed_path_modifiers` to work together with the `fixed_path_mappings` section. For example, you can specify parameters in the modifiers that will be expanded into the mappings::
+
+    fixed_path_modifiers =
+        variable:cld dtr frs pet pre tmn tmp tmx vap wet
+    fixed_path_mappings =
+        cru_ts.4.04.{variable}:cru_ts_4.04/data/{variable}/*.nc
+        cru_ts.4.05.{variable}:cru_ts_4.05/data/{variable}/cru_ts4.05.1901.2*.{variable}.dat.nc.gz
+
+  In this example, the `variable` parameter will be expanded out to each of the options provided in the list.
+* The ``roocs_utils.xarray_utils.xarray_utils.open_xr_dataset()`` function was improved so that the time units of the first data file are preserved in: ``ds.time.encoding["units"]``. A multi-file dataset has now keeps the time "units" of the first file (if present). This is useful for converting to other formats (e.g. CSV).
+
+Other Changes
+^^^^^^^^^^^^^
+* Python 3.6 no longer tested in GitHub actions.
+
+
+v0.4.2 (2021-05-18)
+-------------------
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Remove abcunit-backend and psycopg2 dependencies from requirements.txt, these must now be manually installed in order to use the catalog maker.
+
+v0.4.0 (2021-05-18)
+-------------------
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* Inventory maker now removed and replaced by intake catalog maker which writes a csv file with the dataset entries and a yaml description file.
+* In ``etc/roocs.ini`` the option ``use_inventory`` has been replaced by ``use_catalog`` and the inventory maker options have been replaced with equivalent catalog options. However, the option to include file paths or not no longer exists.
+* The catalog maker now uses a database backend and creates a csv file so there are 3 new dependencies for the catalog maker: pandas and abcunit-backend and psycopg2.
+This means a database backend must be specified and the paths for the pickle files in ``etc/roocs.ini`` are no longer necessary. For more information see the README.
+
+Other Changes
+^^^^^^^^^^^^^
+* oyaml removed as a dependency
+
+v0.3.0 (2021-03-30)
+-------------------
+New Features
+^^^^^^^^^^^^
+* Added ``AnyCalendarDateTime`` and ``str_to_AnyCalendarDateTime`` to ``utils.time_utils`` to aid in handling date strings that may not exist in all calendar types.
+* Inventory maker will check latitude and longitude of the dataset it is scanning are within acceptable bounds and raise an exception if they are not.
+
+
+v0.2.1 (2021-02-19)
+-------------------
+Bug Fixes
+^^^^^^^^^
+* clean up imports ... remove pandas dependency.
+
+v0.2.0 (2021-02-18)
+-------------------
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+* cf_xarray>=0.3.1 now required due to differing level identification of coordinates between versions.
+* oyaml>=0.9 - new dependency for inventory
+* Interface to inventory maker changed. Detailed instructions for use added in README.
+* Adjusted file name template. Underscore removed before ``__derive__time_range``
+* New dev dependency: GitPython==3.1.12
+
+New Features
+^^^^^^^^^^^^
+* Added ``use_inventory`` option to ``roocs.ini`` config and allow data to be used without checking an inventory.
+* ``DatasetMapper`` class and wrapper functions added to ``roocs_utils.project_utils`` and ``roocs_utils.xarray_utils.xarray_utils`` to resolve all paths and dataset ids in the same way.
+* ``FileMapper`` added in ``roocs_utils.utils.file_utils`` to resolve resolve multiple files with the same directory to their directory path.
+* Fixed path mapping support added in ``DatasetMapper``
+* Added ``DimensionParameter`` to be used with the average operation.
+
+Other Changes
+^^^^^^^^^^^^^
+* Removed submodule for test data. Test data is now cloned from git using GitPython and cached
+* ``CollectionParamter`` accepts an instance of ``FileMapper`` or a sequence of ``FileMapper`` objects
+* Adjusted file name template to include an ``extra`` option before the file extension.
+* Swapped from travis CI to GitHub actions
+
+v0.1.5 (2020-11-23)
+-------------------
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+* Replaced use of ``cfunits`` by ``cf_xarray`` and ``cftime`` (new dependency) in ``roocs_utils.xarray_utils``.
+
+
+v0.1.4 (2020-10-22)
+-------------------
+
+Fixing pip install
+
+
+Bug Fixes
+^^^^^^^^^
+
+
+* Importing and using roocs-utils when pip installing now works
+
+
+v0.1.3 (2020-10-21)
+-------------------
+
+Fixing formatting of doc strings and imports
+
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+
+* Use of ``roocs_utils.parameter.parameterise.parameterise``:
+import should now be ``from roocs_utils.parameter import parameterise``
+and usage should be, for example ``parameters = parameterise(collection=ds, time=time, area=area, level=level)``
+
+
+New Features
+^^^^^^^^^^^^
+
+
+* Added a notebook to show examples
+
+
+
+Other Changes
+^^^^^^^^^^^^^
+
+
+* Updated formatting of doc strings
+
+
+v0.1.2 (2020-10-15)
+-------------------
+
+Updating the documentation and improving the changelog.
+
+
+
+Other Changes
+^^^^^^^^^^^^^
+
+
+* Updated doc strings to improve documentation.
+* Updated documentation.
+
+v0.1.1 (2020-10-12)
+-------------------
+
+Fixing mostly existing functionality to work more efficiently with the other packages in roocs.
+
+
+
+Breaking Changes
+^^^^^^^^^^^^^^^^
+
+
+* ``environment.yml`` has been updated to bring it in line with requirements.txt.
+* ``level`` coordinates would previously have been identified as ``None``. They are now identified as ``level``.
+
+New Features
+^^^^^^^^^^^^
+
+
+* ``parameterise`` function added in ``roocs_utils.parameter`` to use in all roocs packages.
+* ``ROOCS_CONFIG`` environment variable can be used to override default config in ``etc/roocs.ini``.
+  To use a local config file set ``ROOCS_CONFIG`` as the file path to this file. Several file paths can be provided
+  separated by a ``:``
+* Inventory functionality added - this can be used to create an inventory of datasets. See ``README`` for more info.
+* ``project_utils`` added with the following functions to get the project name of a dataset and the base directory for
+  that project.
+* ``utils.common`` and ``utils.time_utils`` added.
+* ``is_level`` implemented in ``xarray_utils`` to identify whether a coordinate is a level or not.
+
+Bug Fixes
+^^^^^^^^^
+
+
+* ``xarray_utils.xarray_utils.get_main_variable`` updated to exclude common coordinates from the search for the
+  main variable. This fixes a bug where coordinates such as ``lon_bounds`` would be returned as the main variable.
+
+Other Changes
+^^^^^^^^^^^^^
+
+
+* ``README`` update to explain inventory functionality.
+* ``Black`` and ``flake8`` formatting applied.
+* Fixed import warning with ``collections.abc``.
+
+v0.1.0 (2020-07-30)
+-------------------
+
+
+* First release.
