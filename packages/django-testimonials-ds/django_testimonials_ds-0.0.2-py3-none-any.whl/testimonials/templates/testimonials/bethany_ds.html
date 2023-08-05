@@ -1,0 +1,46 @@
+{% extends 'testimonials/_common.html' %}
+{% load static %}
+
+{% block testimonials %}
+<!-- ======= Testimonials Section ======= -->
+  <section id="testimonials" class="testimonials section-bg">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="section-title" data-aos="fade-right">
+            <h2>Testimonials</h2>
+            <p>{{ testimonials.subtitle }}</p>
+          </div>
+        </div>
+        <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper-wrapper">
+
+              {% for item in testimonials.stories %}
+              <div class="swiper-slide">
+                <div class="testimonial-item">
+                  {% autoescape off %}
+                  <p>
+                    <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+                    {{ item.desc }}
+                    <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+                  </p>
+                  <img src="{% static 'img/testimonials/'|add:item.photo|add:'.jpg' %}" class="testimonial-img" alt="">
+                  <h3>{{ item.name }}</h3>
+                  <h4>{{ item.job }}</h4>
+                  {% endautoescape %}
+                </div>
+              </div><!-- End testimonial item -->
+              {% endfor %}
+
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End Testimonials Section -->
+{% endblock %}
