@@ -1,0 +1,174 @@
+Metadata-Version: 1.0
+Name: cryptosyspki
+Version: 20.4.0
+Summary: Python interface to CryptoSys PKI (py 3)
+Home-page: https://www.cryptosys.net/pki/
+Author: David Ireland
+Author-email: UNKNOWN
+License: See source code modules
+Description: A Python interface to CryptoSys PKI Pro
+        =======================================
+        
+        This is a Python interface to the **CryptoSys PKI Pro** library. 
+        
+        
+        Requires: Python 3 on Windows platforms only.
+        CryptoSys PKI Pro v20.4 or above must be installed.
+        This is available from
+        
+            https://www.cryptosys.net/pki/.
+        
+        
+        To use in Python's REPL
+        -----------------------
+        
+        
+        .. code-block:: python
+        
+            >>> from cryptosyspki import *
+            >>> Gen.version() # "hello world!" for CryptoSys PKI
+            120400
+            >>> Hash.hex_from_data(b'abc') # compute SHA-1 hash in hex of 'abc' as bytes
+            'a9993e364706816aba3e25717850c26c9cd0d89d'
+            >>> Hash.hex_from_string('abc', Hash.Alg.SHA256)   # same but over a string and using SHA-256
+            'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'
+            >>> h = Hash.data(b'abc')   # h is a byte array (bytes->bytes)
+            >>> print(Cnv.tohex(h))     # display the byte array in hex
+            A9993E364706816ABA3E25717850C26C9CD0D89D
+        
+        If you don't like ``import *`` and find ``cryptosyspki`` a bit long to
+        type each time, try
+        
+        
+        .. code-block:: python
+        
+            >>> import cryptosyspki as pki
+            >>> pki.Gen.version() #  Underlying core PKI dll
+            200400
+            >>> pki.__version__   # cryptosyspki.py package
+            '20.4.0'
+        
+        Examples
+        --------
+        
+        Look in the file ``test\test_pki.py`` and you should find an example of use for almost every available method
+        (perhaps contrived somewhat so they'll work in the test environment, but you should get the idea).
+        See also the main Python web page https://www.cryptosys.net/pki/python.html.
+        
+        Tests
+        -----
+        
+        There is a series of tests in ``test\test_pki.py``. 
+        
+        The tests require certain files to exist in the current working directory and create extra files when they run.
+        To manage this, ``test_pki.py`` creates a temporary subdirectory.
+        It requires a subdirectory ``work`` to exist in the same folder
+        as the ``test_pki.py`` file which should contain all the required test
+        files, available separately in the file ``pkiPythonTestFiles.zip``. The
+        test function then creates a temporary subdirectory which is deleted
+        automatically.
+        
+        ::
+        
+            test/
+              test_pki.py  # this module
+              pkiPythonTestFiles.zip  # spare copies
+              work/        # this _must_ exist
+                <all required test files>
+                pki.tmp.XXXXXXXX/    # created by `setup_temp_dir()`
+                  <copy of all required test files>
+                  <files created by tests>
+        
+        
+        Contact
+        -------
+        
+        For more information or to make suggestions, please contact us at
+        https://cryptosys.net/contact/
+        
+        | David Ireland
+        | DI Management Services Pty Ltd
+        | Australia
+        | <https://www.di-mgt.com.au> <https://www.cryptosys.net>
+        | 5 January 2022
+        
+        
+        Revision History
+        -----------------
+        
+        20.4.0 (2022-05-02)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core CryptoSys PKI DLL module version 20.4.
+        
+        20.3.0 (2022-01-05)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core CryptoSys PKI DLL module version 20.3.
+        
+        20.0.0 (2020-10-19)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core CryptoSys PKI DLL module version 20.0.
+        
+        12.4.0 (2020-05-13)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core CryptoSys PKI DLL module version 12.4.
+        
+        12.3.0 (2020-03-09)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core CryptoSys PKI DLL module version 12.3.
+        
+        12.2.0 (2019-12-27)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Updated for Python 3.
+        * Changes to match main core module version 12.2.
+        * Added new methods ``Cms.*_bytes()`` to handle byte arrays specifically.
+        * The existing ``Cms.*_string()`` methods now handle full UTF-8-encoded strings.
+        * Removed ``Cnv.utf8_to_latin1()`` and ``Cnv.utf8_from_latin1()`` - not relevant with Python 3.
+        * Added ``Hash.hex_from_string()`` and ``Hmac.hex_from_string()`` methods to handle UTF-8 string types.
+        
+        
+        12.1.0 (2018-12-16)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core module versions 12.0 and 12.1.
+        * Added support for RSA-PSS in RSA signatures, CMS signed-data objects and X.509 certificates.
+        * Added support for RSA-OAEP in RSA encryption and CMS enveloped-data objects.
+        * Added support for ECDSA in X.509 certificates.
+        * Added support for ZLIB compression.
+        * Added support for AES-GCM authenticated encryption.
+        * Added functions to read certificate strings from P7 chain files and PFX files.
+        * Added option for quicker single pass in ``Wipe.file()``.
+        * Changed parameter in ``Cms.make_sigdata_*()`` functions from ``Cms.HashAlg`` type to ``Cms.SigAlg``.
+        
+        
+        11.3.0 (2017-10-31)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Changes to match main core module (11.3).
+        
+        11.2.0 (2017-08-11)
+        ^^^^^^^^^^^^^^^^^^^
+        
+        * Synchronized cryptosyspki.py version number with main core module (11.2).
+        * Substantial changes to inline documentation.
+        * Renamed ``Rng.bytes`` to ``Rng.bytestring`` to avoid clashes with Python built-in function.
+        * Changed optional parameters in ``X509.cert_path_is_valid()`` and ``X509.get_cert_count_from_p7()``.
+        
+        
+        0.1.1 (2016-08-27)
+        ^^^^^^^^^^^^^^^^^^
+        
+        * Minor changes.
+        
+        
+        0.1.0 (2016-05-25)
+        ^^^^^^^^^^^^^^^^^^
+        
+        * First release of cryptosyspki.py v0.1.0.
+        
+Platform: Windows
