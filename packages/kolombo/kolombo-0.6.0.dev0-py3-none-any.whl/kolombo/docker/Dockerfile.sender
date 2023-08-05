@@ -1,0 +1,27 @@
+FROM alpine:3.15.4
+LABEL maintainer="Igor Nehoroshev <hi@neigor.me>"
+
+# Install needed software
+RUN apk add --no-cache rsyslog postfix opendkim \
+# Add postfix to opendkim group
+    && addgroup postfix opendkim
+
+# Copy configurations
+COPY docker/sender/rsyslog.conf /etc/rsyslog.conf
+COPY docker/sender/postfix.conf /etc/postfix/main.cf
+COPY docker/sender/opendkim.conf /etc/opendkim/opendkim.conf
+COPY docker/sender/start_sender.sh /bin/start_sender
+
+# Create aliases, so that Postfix stop giving warnings
+RUN touch /etc/postfix/aliases && newaliases
+# Set up OpenDKIM
+RUN mkdir -p /run/opendkim /etc/opendkim/keys \
+    && chown opendkim:postfix /run/opendkim \
+    && chown -R opendkim:opendkim /etc/opendkim \
+    && chmod -R go-wrx /etc/opendkim/keys \
+    && chown opendkim:opendkim /etc/opendkim/opendkim.conf
+
+# 25 for SMTP (send)
+EXPOSE 25/tcp
+
+ENTRYPOINT ["/bin/start_sender"]
