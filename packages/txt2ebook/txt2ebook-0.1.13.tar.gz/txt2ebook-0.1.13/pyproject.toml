@@ -1,0 +1,84 @@
+[tool.poetry]
+name = "txt2ebook"
+version = "0.1.13"
+description = "Console tool to convert txt file to different ebook format"
+authors = ["Kian-Meng Ang <kianmeng@cpan.org>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://github.com/kianmeng/txt2ebook"
+repository = "https://github.com/kianmeng/txt2ebook"
+keywords = ["txt", "ebook", "epub", "cjk"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Natural Language :: Chinese (Simplified)",
+    "Natural Language :: Chinese (Traditional)",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Text Processing :: General",
+]
+include = [
+    "CHANGELOG.md",
+    "LICENSE"
+]
+
+[tool.poetry.dependencies]
+CJKwrap = "^2.2"
+EbookLib = "^0.17.1"
+bs4 = "^0.0.1"
+cchardet = "^2.1.7"
+click = "^8.0.3"
+dotmap = "^1.3.26"
+langdetect = "^1.0.9"
+loguru = "^0.5.3"
+python = "^3.7"
+regex = "^2021.11.10"
+
+[tool.poetry.dev-dependencies]
+bandit = "^1.7.1"
+black = {version = "^21.11b1", allow-prereleases = true}
+flake8 = "^4.0.1"
+flake8-print = "^4.0.0"
+isort = "^5.10.1"
+mypy = "^0.910"
+pep8-naming = "^0.12.1"
+pylint = "^2.11.1"
+pytest = "^7.0"
+pytest-cov = "^3.0.0"
+tox = "^3.25.0"
+tox-poetry = "^0.4.1"
+vulture = "^2.3"
+
+[tool.poetry.scripts]
+txt2ebook = 'txt2ebook.txt2ebook:main'
+tte = 'txt2ebook.txt2ebook:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 80
+target-version = ["py39"]
+
+[tool.mypy]
+ignore_missing_imports = 1
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-vv -s -q -x --cov=txt2ebook --cov-report html tests"
+testpaths = ["tests"]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py37,py38,py39,py310
+
+[testenv]
+commands = pytest
+"""
