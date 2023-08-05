@@ -1,0 +1,303 @@
+Metadata-Version: 2.1
+Name: datalabs
+Version: 0.3.12
+Summary: Datalabs
+Home-page: https://github.com/expressai/datalabs
+Author: expressai
+Author-email: stefanpengfei@gamil.com
+License: Apache 2.0
+Download-URL: https://github.com/expressai/datalabs/tags
+Keywords: dataset
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy (>=1.17)
+Requires-Dist: pyarrow (!=4.0.0,>=3.0.0)
+Requires-Dist: dill
+Requires-Dist: pandas
+Requires-Dist: requests (>=2.19.0)
+Requires-Dist: tqdm (>=4.62.1)
+Requires-Dist: xxhash
+Requires-Dist: multiprocess
+Requires-Dist: pathos
+Requires-Dist: fsspec[http] (>=2021.05.0)
+Requires-Dist: aiohttp
+Requires-Dist: huggingface-hub (<1.0.0,>=0.1.0)
+Requires-Dist: packaging
+Requires-Dist: pymongo[srv]
+Requires-Dist: spacy
+Requires-Dist: checklist
+Requires-Dist: lexicalrichness
+Requires-Dist: sacrebleu
+Requires-Dist: compare-mt
+Requires-Dist: scikit-learn
+Requires-Dist: py7zr
+Requires-Dist: hatesonar
+Requires-Dist: dateparser
+Requires-Dist: seqeval
+Requires-Dist: jieba
+Requires-Dist: torch
+Requires-Dist: dataclasses ; python_version < "3.7"
+Requires-Dist: importlib-metadata ; python_version < "3.8"
+Provides-Extra: apache-beam
+Requires-Dist: apache-beam (>=2.26.0) ; extra == 'apache-beam'
+Provides-Extra: audio
+Requires-Dist: librosa ; extra == 'audio'
+Provides-Extra: benchmarks
+Requires-Dist: numpy (==1.18.5) ; extra == 'benchmarks'
+Requires-Dist: tensorflow (==2.3.0) ; extra == 'benchmarks'
+Requires-Dist: torch (==1.6.0) ; extra == 'benchmarks'
+Requires-Dist: transformers (==3.0.2) ; extra == 'benchmarks'
+Provides-Extra: dev
+Requires-Dist: absl-py ; extra == 'dev'
+Requires-Dist: pytest ; extra == 'dev'
+Requires-Dist: pytest-datadir ; extra == 'dev'
+Requires-Dist: pytest-xdist ; extra == 'dev'
+Requires-Dist: apache-beam (>=2.26.0) ; extra == 'dev'
+Requires-Dist: elasticsearch ; extra == 'dev'
+Requires-Dist: aiobotocore ; extra == 'dev'
+Requires-Dist: boto3 ; extra == 'dev'
+Requires-Dist: botocore ; extra == 'dev'
+Requires-Dist: faiss-cpu (>=1.6.4) ; extra == 'dev'
+Requires-Dist: fsspec[s3] ; extra == 'dev'
+Requires-Dist: moto[s3,server] (==2.0.4) ; extra == 'dev'
+Requires-Dist: rarfile (>=4.0) ; extra == 'dev'
+Requires-Dist: s3fs (==2021.08.1) ; extra == 'dev'
+Requires-Dist: tensorflow (!=2.6.0,!=2.6.1,>=2.3) ; extra == 'dev'
+Requires-Dist: torch ; extra == 'dev'
+Requires-Dist: torchaudio ; extra == 'dev'
+Requires-Dist: transformers ; extra == 'dev'
+Requires-Dist: bs4 ; extra == 'dev'
+Requires-Dist: conllu ; extra == 'dev'
+Requires-Dist: langdetect ; extra == 'dev'
+Requires-Dist: lxml ; extra == 'dev'
+Requires-Dist: mwparserfromhell ; extra == 'dev'
+Requires-Dist: nltk ; extra == 'dev'
+Requires-Dist: openpyxl ; extra == 'dev'
+Requires-Dist: py7zr ; extra == 'dev'
+Requires-Dist: tldextract ; extra == 'dev'
+Requires-Dist: zstandard ; extra == 'dev'
+Requires-Dist: bert-score (>=0.3.6) ; extra == 'dev'
+Requires-Dist: rouge-score ; extra == 'dev'
+Requires-Dist: sacrebleu ; extra == 'dev'
+Requires-Dist: scipy ; extra == 'dev'
+Requires-Dist: seqeval ; extra == 'dev'
+Requires-Dist: scikit-learn ; extra == 'dev'
+Requires-Dist: jiwer ; extra == 'dev'
+Requires-Dist: sentencepiece ; extra == 'dev'
+Requires-Dist: toml (>=0.10.1) ; extra == 'dev'
+Requires-Dist: requests-file (>=1.5.1) ; extra == 'dev'
+Requires-Dist: tldextract (>=3.1.0) ; extra == 'dev'
+Requires-Dist: texttable (>=1.6.3) ; extra == 'dev'
+Requires-Dist: Werkzeug (>=1.0.1) ; extra == 'dev'
+Requires-Dist: six (~=1.15.0) ; extra == 'dev'
+Requires-Dist: pymongo[srv] ; extra == 'dev'
+Requires-Dist: spacy ; extra == 'dev'
+Requires-Dist: checklist ; extra == 'dev'
+Requires-Dist: lexicalrichness ; extra == 'dev'
+Requires-Dist: compare-mt ; extra == 'dev'
+Requires-Dist: wget (>=3.2) ; extra == 'dev'
+Requires-Dist: pytorch-nlp (==0.5.0) ; extra == 'dev'
+Requires-Dist: pytorch-lightning ; extra == 'dev'
+Requires-Dist: fastBPE (==0.1.0) ; extra == 'dev'
+Requires-Dist: fairseq ; extra == 'dev'
+Requires-Dist: black (==21.4b0) ; extra == 'dev'
+Requires-Dist: flake8 (==3.7.9) ; extra == 'dev'
+Requires-Dist: isort (>=5.0.0) ; extra == 'dev'
+Requires-Dist: pyyaml (>=5.3.1) ; extra == 'dev'
+Requires-Dist: importlib-resources ; (python_version < "3.7") and extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: docutils (==0.16.0) ; extra == 'docs'
+Requires-Dist: recommonmark ; extra == 'docs'
+Requires-Dist: sphinx (==3.1.2) ; extra == 'docs'
+Requires-Dist: sphinx-markdown-tables ; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme (==0.4.3) ; extra == 'docs'
+Requires-Dist: sphinxext-opengraph (==0.4.1) ; extra == 'docs'
+Requires-Dist: sphinx-copybutton ; extra == 'docs'
+Requires-Dist: fsspec (<2021.9.0) ; extra == 'docs'
+Requires-Dist: s3fs ; extra == 'docs'
+Requires-Dist: sphinx-panels ; extra == 'docs'
+Requires-Dist: sphinx-inline-tabs ; extra == 'docs'
+Requires-Dist: myst-parser ; extra == 'docs'
+Requires-Dist: Markdown (!=3.3.5) ; extra == 'docs'
+Provides-Extra: quality
+Requires-Dist: black (==21.4b0) ; extra == 'quality'
+Requires-Dist: flake8 (==3.7.9) ; extra == 'quality'
+Requires-Dist: isort (>=5.0.0) ; extra == 'quality'
+Requires-Dist: pyyaml (>=5.3.1) ; extra == 'quality'
+Provides-Extra: s3
+Requires-Dist: fsspec ; extra == 's3'
+Requires-Dist: boto3 ; extra == 's3'
+Requires-Dist: botocore ; extra == 's3'
+Requires-Dist: s3fs ; extra == 's3'
+Provides-Extra: streaming
+Provides-Extra: tensorflow
+Requires-Dist: tensorflow (!=2.6.0,!=2.6.1,>=2.2.0) ; extra == 'tensorflow'
+Provides-Extra: tensorflow_gpu
+Requires-Dist: tensorflow-gpu (!=2.6.0,!=2.6.1,>=2.2.0) ; extra == 'tensorflow_gpu'
+Provides-Extra: tests
+Requires-Dist: absl-py ; extra == 'tests'
+Requires-Dist: pytest ; extra == 'tests'
+Requires-Dist: pytest-datadir ; extra == 'tests'
+Requires-Dist: pytest-xdist ; extra == 'tests'
+Requires-Dist: apache-beam (>=2.26.0) ; extra == 'tests'
+Requires-Dist: elasticsearch ; extra == 'tests'
+Requires-Dist: aiobotocore ; extra == 'tests'
+Requires-Dist: boto3 ; extra == 'tests'
+Requires-Dist: botocore ; extra == 'tests'
+Requires-Dist: faiss-cpu (>=1.6.4) ; extra == 'tests'
+Requires-Dist: fsspec[s3] ; extra == 'tests'
+Requires-Dist: moto[s3,server] (==2.0.4) ; extra == 'tests'
+Requires-Dist: rarfile (>=4.0) ; extra == 'tests'
+Requires-Dist: s3fs (==2021.08.1) ; extra == 'tests'
+Requires-Dist: tensorflow (!=2.6.0,!=2.6.1,>=2.3) ; extra == 'tests'
+Requires-Dist: torch ; extra == 'tests'
+Requires-Dist: torchaudio ; extra == 'tests'
+Requires-Dist: transformers ; extra == 'tests'
+Requires-Dist: bs4 ; extra == 'tests'
+Requires-Dist: conllu ; extra == 'tests'
+Requires-Dist: langdetect ; extra == 'tests'
+Requires-Dist: lxml ; extra == 'tests'
+Requires-Dist: mwparserfromhell ; extra == 'tests'
+Requires-Dist: nltk ; extra == 'tests'
+Requires-Dist: openpyxl ; extra == 'tests'
+Requires-Dist: py7zr ; extra == 'tests'
+Requires-Dist: tldextract ; extra == 'tests'
+Requires-Dist: zstandard ; extra == 'tests'
+Requires-Dist: bert-score (>=0.3.6) ; extra == 'tests'
+Requires-Dist: rouge-score ; extra == 'tests'
+Requires-Dist: sacrebleu ; extra == 'tests'
+Requires-Dist: scipy ; extra == 'tests'
+Requires-Dist: seqeval ; extra == 'tests'
+Requires-Dist: scikit-learn ; extra == 'tests'
+Requires-Dist: jiwer ; extra == 'tests'
+Requires-Dist: sentencepiece ; extra == 'tests'
+Requires-Dist: toml (>=0.10.1) ; extra == 'tests'
+Requires-Dist: requests-file (>=1.5.1) ; extra == 'tests'
+Requires-Dist: tldextract (>=3.1.0) ; extra == 'tests'
+Requires-Dist: texttable (>=1.6.3) ; extra == 'tests'
+Requires-Dist: Werkzeug (>=1.0.1) ; extra == 'tests'
+Requires-Dist: six (~=1.15.0) ; extra == 'tests'
+Requires-Dist: pymongo[srv] ; extra == 'tests'
+Requires-Dist: spacy ; extra == 'tests'
+Requires-Dist: checklist ; extra == 'tests'
+Requires-Dist: lexicalrichness ; extra == 'tests'
+Requires-Dist: compare-mt ; extra == 'tests'
+Requires-Dist: wget (>=3.2) ; extra == 'tests'
+Requires-Dist: pytorch-nlp (==0.5.0) ; extra == 'tests'
+Requires-Dist: pytorch-lightning ; extra == 'tests'
+Requires-Dist: fastBPE (==0.1.0) ; extra == 'tests'
+Requires-Dist: fairseq ; extra == 'tests'
+Requires-Dist: importlib-resources ; (python_version < "3.7") and extra == 'tests'
+Provides-Extra: torch
+Requires-Dist: torch ; extra == 'torch'
+
+<p align="center">
+    <br>
+    <img src="./docs/Resources/figs/readme_logo.png" width="400"/>
+    <br>
+  <a href="https://github.com/expressai/DataLab/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/expressai/DataLab" /></a>
+  <a href="https://github.com/expressai/DataLab/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/expressai/DataLab" /></a>
+  <a href="https://pypi.org/project//"><img alt="PyPI" src="https://img.shields.io/pypi/v/datalabs" /></a>
+  <a href=".github/workflows/ci.yml"><img alt="Integration Tests", src="https://github.com/expressai/DataLab/actions/workflows/ci.yml/badge.svg?event=push" />
+</p>
+
+
+[DataLab](http://datalab.nlpedia.ai/) is a unified platform that allows for NLP researchers to perform a number of data-related tasks in an efficient and easy-to-use manner. In particular, DataLab supports the following functionalities:
+
+    
+
+    
+    
+<p align="center"> 
+<img src="./docs/Resources/figs/datalab_overview.png" width="300"/>
+ </p> 
+
+* **Data Diagnostics**: DataLab allows for analysis and understanding of data to uncover undesirable traits such as hate speech, gender bias, or label imbalance.
+* **Operation Standardization**: DataLab provides and standardizes a large number of data processing operations, including aggregating, preprocessing, featurizing, editing and prompting operations.
+* **Data Search**: DataLab provides a semantic dataset search tool to help identify appropriate datasets given a textual description of an idea.
+* **Global Analysis**: DataLab provides tools to perform global analyses over a variety of datasets.
+
+
+ 
+
+
+## Installation
+DataLab can be installed from PyPi
+```bash
+pip install --upgrade pip
+pip install datalabs
+python -m nltk.downloader omw-1.4 # to support more feature calculation
+```
+or from the source
+```bash
+# This is suitable for SDK developers
+pip install --upgrade pip
+git clone git@github.com:ExpressAI/DataLab.git
+cd Datalab
+pip install .
+python -m nltk.downloader omw-1.4 # to support more feature calculation
+```
+
+## Using DataLab
+Below we give several simple examples to showcase the usage of DataLab:
+
+You can also view documentation:
+* [**Online Tutorial**](https://expressai.github.io/DataLab/)
+* [**Adding Datasets to the SDK**](docs/SDK/add_new_datasets_into_sdk.md)
+* [**Adding a new Task to the SDK**](docs/SDK/add_new_task_schema.md)
+
+
+```python
+# pip install datalabs
+from datalabs import load_dataset
+dataset = load_dataset("ag_news")
+
+
+# Preprocessing operation
+from preprocess import *
+res=dataset["test"].apply(lower)
+print(next(res))
+
+# Featurizing operation
+from featurize import *
+res = dataset["test"].apply(get_text_length) # get length
+print(next(res))
+
+res = dataset["test"].apply(get_entities_spacy) # get entity
+print(next(res))
+
+# Editing/Transformation operation
+from edit import *
+res = dataset["test"].apply(change_person_name) #  change person name
+print(next(res))
+
+# Prompting operation
+from prompt import *
+res = dataset["test"].apply(template_tc1)
+print(next(res))
+
+# Aggregating operation
+from aggregate.text_classification import *
+res = dataset["test"].apply(get_statistics)
+```
+ 
+
+## Acknowledgment
+DataLab originated from a fork of the awesome [Huggingface Datasets](https://github.com/huggingface/datasets) and [TensorFlow Datasets](https://github.com/tensorflow/datasets). We highly thank the Huggingface/TensorFlow Datasets for building this amazing library. More details on the differences between DataLab and them can be found in the section.
+We thank Antonis Anastasopoulos for sharing the mapping data between countries and languages, and thank Alissa Ostapenko, Yulia Tsvetkov, Jie Fu, Ziyun Xu, Hiroaki Hayashi, and Zhengfu He for useful discussion and suggestions for the first version.
+
+
+
+
+
