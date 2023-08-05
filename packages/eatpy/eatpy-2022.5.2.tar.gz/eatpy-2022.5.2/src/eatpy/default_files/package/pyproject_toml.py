@@ -1,0 +1,9 @@
+PYPROJECT_TOML = """\
+[build-system]
+requires = [ "setuptools>=41", "wheel", "setuptools-git-versioning" ]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = "{tag}"
+"""
