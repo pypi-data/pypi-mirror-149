@@ -1,0 +1,29 @@
+DL_POLY: ar-kr
+temperature  300
+pressure 0.001
+steps 10000
+equilibration 000
+#traj 10000 10 1
+seed 2019 2020
+timestep   0.001
+#ensemble npt lang 1.0 1.0
+ensemble nve
+cutoff   12
+no elec
+msdtmp 1000 100
+#ewald precision 0.00001
+io field Ar-Kr.field
+io config Ar-Kr.config
+#io config Arb.config
+io statis statis.yml
+yml_statis
+yml_rdf
+rdf 10
+print rdf
+trajectory 1000 100 2
+print 100
+stats 100
+#l_scr
+job time  10000000
+close time  100
+finish
