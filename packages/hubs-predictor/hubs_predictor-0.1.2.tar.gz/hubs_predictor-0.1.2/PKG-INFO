@@ -1,0 +1,125 @@
+Metadata-Version: 2.1
+Name: hubs_predictor
+Version: 0.1.2
+Summary: Price predictions for 3DHubs
+Home-page: https://github.com/3DHubs/ml-engineer-assignment-bendangnuksung/
+Author: bendangnuksung
+Author-email: bendangnuksungimsong@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+# Price Prediction
+
+## Start Predicting
+* Install the package:
+    ```bash
+    pip install hubs-predictor
+    ```
+
+* How to Use:
+    ```python
+    from hubs_predictor import predict_batch, predict_from_csv
+
+    # IP = 'localhost' if the container is running locally
+    IP = '164.52.192.139' # Hosted in my private server for quick testing
+
+    # Predict using CSV file:
+    csv_path = '/PATH/TO/YOUR/CSV/FILE.csv'
+    result = predict_from_csv(csv_path, ip=IP)
+
+    # Predict as list batches
+    # input format should be list of list [[], []]
+    # eg: data = [['2015-01-09 23:15:03.308', 'cart__4', '27.917', '86.632', '11.022', '247384.01', ....., 'supplier__054'],
+    #             ['2015-01-10 24:15:03.308', 'cart__5', '17.917', '76.632', '10.022', '147384.01', ....., 'supplier__055']]
+    data = [[value1, value2, ...., value16],
+            [value1, value2, ...., value16]]
+    result = predict_batch(data, ip=IP)
+
+    # NOTE: The input data both `csv_file` and `data` should be in the same feature sequence provided in the 'assignment-data.csv'
+    # i.e: ['timestamp', 'cart', 'geometry/bounding_box/depth', 'geometry/bounding_box/width', ......., 'sourcing/supplier_country', 'sourcing/supplier']
+    # which is 16 columns excluding `target/price`, if `target/price` is provided,  it will be ignored internally.
+
+    ```
+    Check Example script: **`test_package_example.py`** for more clarification.
+
+    To build and setup local container please check [Replicate / Reproduce Whole Process](#replicate--reproduce-whole-process) see below.
+<hr /> 
+
+## Replicate / Reproduce Whole Process
+
+### Training Process
+* Pre-requirements:
+    1. Install conda: [link](https://docs.conda.io/en/latest/miniconda.html)
+    2. Install MLFlow:
+        ```bash
+        pip install mlflow
+        ```
+
+* Extract Data: `assignment-data.zip` to `train/data/`
+    ```bash
+    unzip assignment-data.zip -d train/data/
+    ```
+
+* Run Mlflow UI server to track the training experiments:
+    ```bash
+    cd train/
+    mlflow server --backend-store-uri ./mlruns/ &
+
+    # open 'http://localhost:5000/' to see the experiments
+    # To stop mlflow server use `pkill -f mlflow`
+
+    ```
+
+* Train:
+    ```bash
+    # working dir: "ml-engineer-assignment-bendangnuksung/train/"
+
+    # (OPTIONAL) modify "train/MLproject" file, update parameters such as:
+    # 'datapath' -> path to your data CSV file
+    # 'kfolds'   -> N kfolds you want
+    # 'lr'       -> Set your own learning rate
+
+    # Run training 
+    mlflow run --experiment-name hubs_price_prediction .
+    ```
+
+### Deployment Process
+* Pre-requirements: 
+    1. Install Docker. [Link](https://docs.docker.com/engine/install/)
+    2. Install Docker Compose:
+        ```bash
+        pip install docker-compose
+        ```
+
+* Build and Start Docker:
+    ```bash
+    # working dir: "ml-engineer-assignment-bendangnuksung/"
+
+    # (OPTIONAL) Modify "docker-compose.yml" if:
+    # 1. Wants to change PORT
+    # 2. Change the volumes if model stored in different directory. (Default is: "./train/models" because models are stored there after training) 
+
+    docker-compose up
+    ```
+
+* Building package (Optional):
+    ```bash
+    # modify setup.py accordingly
+    python setup.py sdist
+    python setup.py bdist_wheel
+    twine check dist/*
+    twine upload dist/*
+    ```
+
+Now the docker container is Up and Running, you can run the models locally. Just assign `IP = 'localhost'`
+```python
+from hubs_predictor import predict_batch, predict_from_csv
+IP = 'localhost'
+csv_path = '/PATH/TO/YOUR/CSV/FILE.csv'
+result = predict_from_csv(csv_path, ip=IP)
+result = predict_batch(data, ip=IP)
+```
+
