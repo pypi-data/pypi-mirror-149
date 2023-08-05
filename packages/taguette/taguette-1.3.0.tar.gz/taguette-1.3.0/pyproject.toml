@@ -1,0 +1,107 @@
+[tool.poetry]
+name = "taguette"
+version = "1.3.0"
+description = "Document tagger for qualitative analysis"
+
+license = "BSD-3-Clause"
+
+authors = [
+    "Remi Rampin <remi@rampin.org>",
+]
+
+readme = "README.rst"
+
+repository = "https://gitlab.com/remram44/taguette"
+homepage = "https://www.taguette.org/"
+
+keywords = ["qualitative", "document", "text", "tagging", "tags", "highlights", "notes"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: JavaScript",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Text Processing",
+]
+
+include = [
+    "CHANGELOG.md", "tests.py", "CITATION.txt", # LICENSE.txt README.rst
+    "taguette/static/missing.png", "taguette/static/favicon.png",
+    "taguette/static/css/*.css", "taguette/static/*.css.map",
+    "taguette/static/js/*.js", "taguette/static/js/*.js.map",
+    "taguette/static/webfonts/*", "taguette/templates/*.html",
+    "taguette/migrations/env.py", "taguette/migrations/script.py.mako",
+    "taguette/migrations/versions/*.py", "taguette/l10n/*/*/*.mo",
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://gitlab.com/remram44/taguette/-/issues"
+"Documentation" = "https://www.taguette.org/getting-started.html"
+"Chat" = "https://app.element.io/#/room/#taguette:matrix.org"
+"User Mailing List" = "https://groups.io/g/taguette"
+"Open Collective" = "https://opencollective.com/taguette"
+
+# When updating dependencies: update 'translation' stage in Dockerfile
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+
+alembic = ">=1.6,<1.8"
+beautifulsoup4 = "*"
+bleach = ">=3,<5"
+chardet = ">=4,<5"
+html5lib = ">=1,<2"
+jinja2 = ">=3.1,<3.2"
+opentelemetry-api = ">=1.5,<1.11"
+prometheus-async = "*"
+prometheus-client = "*"
+redis = ">=3,<5"
+sentry-sdk = "*"
+SQLAlchemy = ">=1.4,<1.5"
+subtitle-parser = ">=1,<2"
+tornado = ">=6.1"
+XlsxWriter = ">=1.4,<4"
+
+opentelemetry-distro = {version = "*", optional = true}
+opentelemetry-instrumentation-sqlalchemy = {version = ">=0.24b0,<0.26", optional = true}
+opentelemetry-instrumentation-tornado = {version = ">=0.24b0,<0.26", optional = true}
+
+psycopg2 = {version = ">=2.8,<3", optional = true}
+pymysql = {version = ">=1.0,<2", optional = true}
+cryptography = {version = "*", optional = true}
+
+[tool.poetry.dev-dependencies]
+coverage = "*"
+flake8 = "*"
+readme_renderer = "*"
+babel = ">=2.6,<3" # Keep babel and pytz in sync with Dockerfile
+bcrypt = "*"
+aiohttp = ">=3.4,<4"
+selenium = ">=4,<5"
+
+[tool.poetry.extras]
+otel = [
+    "opentelemetry-distro",
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-instrumentation-tornado",
+]
+postgres = [
+    "psycopg2",
+]
+mysql = [
+    "pymysql",
+    "cryptography",
+]
+
+[tool.poetry.scripts]
+taguette = "taguette.main:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
