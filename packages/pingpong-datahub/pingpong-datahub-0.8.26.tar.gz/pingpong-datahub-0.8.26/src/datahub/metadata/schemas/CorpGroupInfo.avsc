@@ -1,0 +1,95 @@
+{
+  "type": "record",
+  "name": "CorpGroupInfo",
+  "namespace": "com.linkedin.pegasus2avro.identity",
+  "doc": "group of corpUser, it may contains nested group",
+  "fields": [
+    {
+      "name": "displayName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "The name to use when displaying the group.",
+      "default": null,
+      "Searchable": {
+        "fieldType": "TEXT_PARTIAL"
+      }
+    },
+    {
+      "name": "email",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "email of this group",
+      "default": null
+    },
+    {
+      "name": "admins",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "owners of this group",
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "corpUser"
+          ],
+          "name": "OwnedBy"
+        }
+      }
+    },
+    {
+      "name": "members",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "List of ldap urn in this group.",
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "corpUser"
+          ],
+          "name": "IsPartOf"
+        }
+      }
+    },
+    {
+      "name": "groups",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "List of groups in this group.",
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "corpGroup"
+          ],
+          "name": "IsPartOf"
+        }
+      }
+    },
+    {
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "A description of the group.",
+      "default": null,
+      "Searchable": {
+        "fieldType": "TEXT_PARTIAL"
+      }
+    }
+  ],
+  "Aspect": {
+    "EntityUrns": [
+      "com.linkedin.pegasus2avro.common.CorpGroupUrn"
+    ],
+    "name": "corpGroupInfo"
+  }
+}

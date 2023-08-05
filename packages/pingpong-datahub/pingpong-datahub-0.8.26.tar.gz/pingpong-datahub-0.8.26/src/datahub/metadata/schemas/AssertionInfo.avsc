@@ -1,0 +1,359 @@
+{
+  "type": "record",
+  "name": "AssertionInfo",
+  "namespace": "com.linkedin.pegasus2avro.assertion",
+  "doc": "Information about an assertion",
+  "fields": [
+    {
+      "name": "customProperties",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "Custom property bag.",
+      "default": {},
+      "Searchable": {
+        "/*": {
+          "queryByDefault": true
+        }
+      }
+    },
+    {
+      "name": "externalUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "URL where the reference exist",
+      "default": null,
+      "java": {
+        "class": "com.linkedin.pegasus2avro.common.url.Url",
+        "coercerClass": "com.linkedin.pegasus2avro.common.url.UrlCoercer"
+      }
+    },
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "AssertionType",
+        "symbols": [
+          "DATASET"
+        ]
+      },
+      "doc": "Type of assertion. Assertion types can evolve to span Datasets, Flows (Pipelines), Models, Features etc."
+    },
+    {
+      "name": "datasetAssertion",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "DatasetAssertionInfo",
+          "doc": "Assertion attributes that are applicable to Dataset Assertions\n",
+          "fields": [
+            {
+              "name": "scope",
+              "type": [
+                "null",
+                {
+                  "type": "enum",
+                  "name": "DatasetAssertionScope",
+                  "symbols": [
+                    "DATASET_COLUMN",
+                    "DATASET_ROWS",
+                    "DATASET_SCHEMA"
+                  ],
+                  "symbolDocs": {
+                    "DATASET_COLUMN": "This assertion applies to dataset columns",
+                    "DATASET_ROWS": "This assertion applies to entire rows of the dataset",
+                    "DATASET_SCHEMA": "This assertion applies to the schema of the dataset"
+                  }
+                }
+              ],
+              "doc": "Scope of the Assertion. What part of the dataset does this assertion apply to?\nDeclared optional to make it convenient to inline into other aspects like AssertionInfo without requiring\nadditional nesting. Semantically required, if this is a Dataset Assertion.\n",
+              "default": null
+            },
+            {
+              "name": "columnAssertion",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "DatasetColumnAssertion",
+                  "doc": "Assertion on column of a dataset",
+                  "fields": [
+                    {
+                      "name": "stdOperator",
+                      "type": {
+                        "type": "enum",
+                        "name": "AssertionStdOperator",
+                        "symbols": [
+                          "BETWEEN",
+                          "LESS_THAN",
+                          "LESS_THAN_OR_EQUAL_TO",
+                          "GREATER_THAN",
+                          "GREATER_THAN_OR_EQUAL_TO",
+                          "EQUAL_TO",
+                          "NOT_NULL",
+                          "CONTAIN",
+                          "END_WITH",
+                          "START_WITH",
+                          "IN",
+                          "_NATIVE_"
+                        ],
+                        "symbolDocs": {
+                          "BETWEEN": "Value being asserted is between min_value and max_value",
+                          "CONTAIN": "Value being asserted contains value",
+                          "END_WITH": "Value being asserted ends with value",
+                          "EQUAL_TO": "Value being asserted is equal to value",
+                          "GREATER_THAN": "Value being asserted is greater than min_value",
+                          "GREATER_THAN_OR_EQUAL_TO": "Value being asserted is greater than or equal to min_value",
+                          "IN": "Value being asserted is one of the array values",
+                          "LESS_THAN": "Value being asserted is less than max_value",
+                          "LESS_THAN_OR_EQUAL_TO": "Value being asserted is less than or equal to max_value",
+                          "NOT_NULL": "Value being asserted is not null",
+                          "START_WITH": "Value being asserted starts with value",
+                          "_NATIVE_": "Other"
+                        }
+                      },
+                      "doc": "Standardized assertion operator"
+                    },
+                    {
+                      "name": "nativeOperator",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native assertion operator",
+                      "default": null
+                    },
+                    {
+                      "name": "stdAggFunc",
+                      "type": {
+                        "type": "enum",
+                        "name": "DatasetColumnStdAggFunc",
+                        "symbols": [
+                          "IDENTITY",
+                          "MEAN",
+                          "MEDIAN",
+                          "UNIQUE_COUNT",
+                          "UNIQUE_PROPOTION",
+                          "NULL_COUNT",
+                          "NULL_PROPORTION",
+                          "STDDEV",
+                          "MIN",
+                          "MAX",
+                          "_NATIVE_"
+                        ],
+                        "symbolDocs": {
+                          "IDENTITY": "Assertion is applied on individual column value",
+                          "MAX": "Assertion is applied on column std deviation",
+                          "MEAN": "Assertion is applied on column mean ",
+                          "MEDIAN": "Assertion is applied on column median",
+                          "MIN": "Assertion is applied on column min",
+                          "NULL_COUNT": "Assertion is applied on number of null values in column",
+                          "NULL_PROPORTION": "Assertion is applied on proportion of null values in column",
+                          "STDDEV": "Assertion is applied on column std deviation",
+                          "UNIQUE_COUNT": "Assertion is applied on number of distinct values in column",
+                          "UNIQUE_PROPOTION": "Assertion is applied on proportion of distinct values in column",
+                          "_NATIVE_": "Other"
+                        }
+                      },
+                      "doc": "Standardized aggrgation function applied on column values"
+                    },
+                    {
+                      "name": "nativeAggFunc",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native aggrgation function applied on column values",
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "doc": "Assertion details when scope is DATASET_COLUMN",
+              "default": null
+            },
+            {
+              "name": "rowsAssertion",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "DatasetRowsAssertion",
+                  "doc": "Assertion on rows of a dataset",
+                  "fields": [
+                    {
+                      "name": "stdOperator",
+                      "type": "AssertionStdOperator",
+                      "doc": "Standardized assertion operator"
+                    },
+                    {
+                      "name": "nativeOperator",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native assertion operator",
+                      "default": null
+                    },
+                    {
+                      "name": "stdAggFunc",
+                      "type": {
+                        "type": "enum",
+                        "name": "DatasetRowsStdAggFunc",
+                        "symbols": [
+                          "ROW_COUNT",
+                          "_NATIVE_"
+                        ],
+                        "symbolDocs": {
+                          "ROW_COUNT": "Assertion is applied on number of rows",
+                          "_NATIVE_": "Other"
+                        }
+                      },
+                      "doc": "Standardized aggrgation function applied on rows"
+                    },
+                    {
+                      "name": "nativeAggFunc",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native aggrgation function applied on rows",
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "doc": "Assertion details when scope is DATASET_ROWS",
+              "default": null
+            },
+            {
+              "name": "schemaAssertion",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "DatasetSchemaAssertion",
+                  "doc": "Assertion on schema of a dataset",
+                  "fields": [
+                    {
+                      "name": "stdOperator",
+                      "type": "AssertionStdOperator",
+                      "doc": "Standardized assertion operator"
+                    },
+                    {
+                      "name": "nativeOperator",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native assertion operator",
+                      "default": null
+                    },
+                    {
+                      "name": "stdAggFunc",
+                      "type": {
+                        "type": "enum",
+                        "name": "DatasetSchemaStdAggFunc",
+                        "symbols": [
+                          "COLUMNS",
+                          "COLUMN_COUNT",
+                          "_NATIVE_"
+                        ],
+                        "symbolDocs": {
+                          "COLUMNS": "Assertion is applied on all columns",
+                          "COLUMN_COUNT": "Assertion is applied on number of columns",
+                          "_NATIVE_": "Other"
+                        }
+                      },
+                      "doc": "Standardized aggrgation function applied on rows"
+                    },
+                    {
+                      "name": "nativeAggFunc",
+                      "type": [
+                        "null",
+                        "string"
+                      ],
+                      "doc": "Native aggrgation function applied on rows",
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "doc": "Assertion details when scope is DATASET_SCHEMA",
+              "default": null
+            },
+            {
+              "name": "fields",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": "string"
+                }
+              ],
+              "doc": "One or more dataset schema fields that are targeted by this assertion",
+              "default": null,
+              "Relationship": {
+                "/*": {
+                  "entityTypes": [
+                    "schemaField"
+                  ],
+                  "name": "Asserts"
+                }
+              }
+            },
+            {
+              "name": "datasets",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": "string"
+                }
+              ],
+              "doc": "One or more datasets that are targeted by this assertion",
+              "default": null,
+              "Relationship": {
+                "/*": {
+                  "entityTypes": [
+                    "dataset"
+                  ],
+                  "name": "Asserts"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "doc": "Dataset Assertion information when type is DATASET",
+      "default": null
+    },
+    {
+      "name": "assertionLogic",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "parameters",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "string"
+        }
+      ],
+      "doc": "Parameters required for the assertion. e.g. min_value, max_value, value, columns",
+      "default": null
+    }
+  ],
+  "Aspect": {
+    "name": "assertionInfo"
+  }
+}
