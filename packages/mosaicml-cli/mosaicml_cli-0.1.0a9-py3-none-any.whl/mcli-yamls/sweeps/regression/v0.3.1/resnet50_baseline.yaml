@@ -1,0 +1,37 @@
+name: regressions-v0-3-1-scratch
+image: mosaicml/pytorch_internal
+git_repo: git@github.com:mosaicml/composer.git
+git_branch: v0.3.1
+models:
+  - resnet50
+# accuracy_instance:
+#   - cota-g8-3080
+timing_instance:
+  - cota-g8-3080
+  # - g4dn.metal
+  # - a2-highgpu-8g-a100-8
+algorithms:
+  - scale_schedule
+command: >-
+  rm -rf /workspace/src/composer
+
+  git clone {{ git_repo }} /workspace/src/composer
+
+  cd /workspace/src/composer
+
+  echo 'Checking out composer branch {{ git_branch }}'
+
+  git checkout {{ git_branch }}
+
+  pip install -e .[all]
+
+  composer -n {{ parameters['_n_gpus'] }} examples/run_mosaic_trainer.py -f /mnt/config/grid.yaml
+grid:
+  algorithms.scale_schedule.ratio:
+    # - 1.0
+    # - 0.8
+    # - 0.67
+    # - 0.5
+    # - 0.34
+    - 0.25
+parameters:

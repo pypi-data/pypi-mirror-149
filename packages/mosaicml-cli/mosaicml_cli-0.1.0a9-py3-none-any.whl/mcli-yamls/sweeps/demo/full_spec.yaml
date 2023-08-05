@@ -1,0 +1,48 @@
+instance: cota-g1-3080
+models: classify_mnist
+name: mnist-full-spec
+parameters: # Copied directly from composer/yamls/models/classify_mnist.yaml
+  train_dataset:
+    mnist:
+      is_train: true
+      datadir: /root/mnist # MODIFIED: Set this for the instance requested
+      download: true
+      shuffle: true
+      drop_last: true
+  val_dataset:
+    mnist:
+      is_train: false
+      datadir: /root/mnist # MODIFIED: Set this for the instance requested
+      download: true
+      shuffle: false
+      drop_last: false
+  optimizer:
+    sgd:
+      lr: 0.1
+      momentum: 0.9
+      weight_decay: 1.0e-4
+  schedulers:
+    - cosine_decay: {}
+  model:
+    mnist_classifier:
+      initializers:
+        - kaiming_normal
+        - bn_uniform
+      num_classes: 10
+  loggers:
+    - tqdm: {}
+  max_duration: 10ep
+  train_batch_size: 2048
+  eval_batch_size: 1000
+  seed: 17
+  device:
+    gpu: {}
+  dataloader:
+    pin_memory: true
+    timeout: 0
+    prefetch_factor: 2
+    persistent_workers: true
+    num_workers: 8
+  validate_every_n_epochs: 1
+  grad_accum: 1
+  precision: amp

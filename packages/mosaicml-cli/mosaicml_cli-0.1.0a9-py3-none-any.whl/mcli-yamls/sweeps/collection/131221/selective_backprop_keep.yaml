@@ -1,0 +1,27 @@
+name: collection-131221-scratch
+image: mosaicml/pytorch_internal
+git_repo: git@github.com:mosaicml/composer.git
+git_branch: v0.3.1
+algorithms:
+  - selective_backprop
+  - scale_schedule
+models:
+  - resnet50
+accuracy_instance:
+  - cota-g8-3080
+# timing_instance:
+#   - cota-g8-3080
+#   - a2-highgpu-8g-a100-8
+grid:
+  algorithms.selective_backprop.keep:
+    - 0.6
+    # - 0.5
+    # - 0.4
+  algorithms.scale_schedule.ratio:
+    # - 1.0
+    # - 0.8
+    # - 0.67
+    # - 0.5
+    # - 0.34
+    - 0.25
+parameters:
