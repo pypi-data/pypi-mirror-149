@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "space-classy"
+version = "0.2"
+description = "classification tool for minor bodies using reflectance spectra and visual albedos"
+authors = ["Max Mahlke <max.mahlke@oca.eu>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/maxmahlke/classy"
+documentation = "https://classy.readthedocs.io/en/latest/"
+repository = "https://github.com/maxmahlke/classy.git"
+packages = [{'include' = 'classy'}]
+include = ["data/mixnorm", 'data/gmm', 'data/mcfa']
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+sphinx = {version = "^3", optional = true}
+sphinx-redactor-theme = {version = "^0.0.1", optional = true}
+sphinx-hoverxref = {version = "*", optional = true}
+jinja2 = {version = "<3.1", optional = true}
+mcfa = "^0.1"
+pandas = "^1.4.2"
+numpy = "^1.22.3"
+click = "^8.1.2"
+rich = "^12.2.0"
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinx-redactor-theme"]
+
+[tool.poetry.dev-dependencies]
+sphinx-redactor-theme = "^0.0.1"
+sphinx-hoverxref = {version = "*", optional = true}
+jinja2 = "<3.1"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=classy --cov-report html"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
