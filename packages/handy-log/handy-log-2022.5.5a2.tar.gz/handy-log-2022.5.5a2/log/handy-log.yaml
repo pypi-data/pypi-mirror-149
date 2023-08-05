@@ -1,0 +1,103 @@
+version: 1
+
+handy-log:
+  style: "{"
+
+
+formatters:
+
+  bare:
+    format: "{message}"
+    style: "{"
+
+  simple:
+    format: "{asctime} {threadName}-{thread} {levelname}: {message}"
+    style: "{"
+
+  simple=:
+    format: "{asctime} {threadName}-{thread} {levelname}: ========== {message}"
+    style: "{"
+
+  detail:
+    format: "{asctime} {processName}:{process} {threadName}-{thread} {name}:{pathname}:{lineno:03d} {levelname}: {message}"
+    style: "{"
+
+  detail=:
+    format: "{asctime} {processName}:{process} {threadName}-{thread} {name}:{pathname}:{lineno:03d} {levelname}: ========== {message}"
+    style: "{"
+
+
+handlers:
+
+  console_bare:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: bare
+    stream: ext://sys.stdout
+
+  console_simple:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+  console_detail:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: detail
+    stream: ext://sys.stdout
+
+  console_simple=:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple=
+    stream: ext://sys.stdout
+
+  console_detail=:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: detail=
+    stream: ext://sys.stdout
+
+  console_stderr_bare:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: bare
+    stream: ext://sys.stderr
+
+  console_stderr_simple:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stderr
+
+  console_stderr_detail:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: detail
+    stream: ext://sys.stderr
+
+  console_stderr_simple=:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple=
+    stream: ext://sys.stderr
+
+  console_stderr_detail=:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: detail=
+    stream: ext://sys.stderr
+
+
+loggers:
+
+  log:
+    level: INFO
+    handlers: [console_simple]
+    propagate: no
+
+
+root:
+  level: INFO
+  handlers: [console_simple]
