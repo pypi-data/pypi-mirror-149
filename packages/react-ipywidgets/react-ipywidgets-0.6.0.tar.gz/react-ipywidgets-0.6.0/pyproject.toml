@@ -1,0 +1,49 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+
+
+[project]
+name = "react-ipywidgets"
+authors = [{name = "Maarten A. Breddels", email = "maartenbreddels@gmail.com"}]
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+    "ipywidgets",
+    "rich",
+    "typing_extensions"
+]
+
+[tool.flit.module]
+name = "react_ipywidgets"
+
+[tool.flit.sdist]
+include = ["react_ipywidgets/py.typed"]
+
+
+[project.optional-dependencies]
+dev = [
+    "pyproject-flake8",
+    "flake8",
+    "black",
+    "mypy",
+    "pre-commit",
+    "coverage",
+    "pytest",
+    "pytest-cov",
+    "bqplot",
+    "numpy",
+    "ipyvuetify",
+    "bump2version",
+]
+
+[project.urls]
+Home = "https://www.github.com/widgetti/react-ipywidgets"
+
+[tool.black]
+line-length = 160
+
+[tool.isort]
+profile = "black"
