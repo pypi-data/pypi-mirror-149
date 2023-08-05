@@ -1,0 +1,47 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2022 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% extends "invenio_communities/details/members/base.html" %}
+
+{% if permissions.can_members_manage %}
+  {% set bundle = webpack['invenio-communities-members-manager.js'] %}
+  {% set search_endpoint = community["links"]["members"] %}
+{% elif permissions.can_members_search %}
+  {% set bundle = webpack['invenio-communities-members.js'] %}
+  {% set search_endpoint = community["links"]["members"] %}
+{% elif permissions.can_members_search_public %}
+  {% set bundle = webpack['invenio-communities-members-public.js'] %}
+  {% set search_endpoint = community["links"]["public_members"] %}
+{% endif %}
+
+
+{% block javascript %}
+{{ super() }}
+{% if permissions.can_members_manage %}
+  {{ webpack['invenio-communities-members-manager.js'] }}
+{% elif permissions.can_members_search %}
+  {{ webpack['invenio-communities-members.js'] }}
+{% elif permissions.can_members_search_public %}
+  {{ webpack['invenio-communities-members-public.js'] }}
+{% endif %}
+{% endblock javascript %}
+
+{% set active_menu_item = 'members' %}
+{% set active_menu_tab = 'members' %}
+
+{% block settings_body %}
+<div class="thirteen wide column">
+    <div id="community-members-search-root"
+      data-invenio-search-config='{{ search_app_communities_members_config(app_id="community-members-search", endpoint=search_endpoint) | tojson }}'
+      data-communities-roles='{{ config.COMMUNITIES_ROLES | tojson }}'
+      data-community='{{ community | tojson }}'
+      data-permissions='{{ permissions | tojson }}'
+    ></div>
+</div>
+{%- endblock settings_body %}
