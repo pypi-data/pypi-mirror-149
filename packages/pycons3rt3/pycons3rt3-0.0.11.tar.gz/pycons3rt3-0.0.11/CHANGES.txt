@@ -1,0 +1,66 @@
+
+0.0.11
+=======
+
+* Added queries for listing test assets
+* Added a query for getting dependent assets
+* Added ec2util functions for getting a list of IpPermission objects from domain names
+* Added network.py and new function for getting IPs froma list of hostnames
+
+0.0.10
+=======
+
+* Fixed a bug reporting errors with servicerunner
+* Added a method to power on multiple runs
+* Optimized queries to retrieve DR details from the multiple run host action workflow
+* Significantly power action delay times, these are handled on the server side
+* Added the --config CLI arg to specify which config file to use
+* Added the --assets CLI arg to generate team reports for assets used by active DRs
+* Added the "cons3rt team managers" and optionally "--id=ID" to generate a list of team managers
+* Added remoteaccesscontroller.py and a new ractl CLI command for easy execution
+* Added an export/import script to help migrate assets between CONS3RT sites
+* Improved the asset import/update CLI logic, and added the "asset updateonly" subcommand
+* Added the option to pass --id to the "asset update" command (e.g. asset update --id=12345)
+* Added CLI command to get project members: cons3rt project members list --id=123
+* Added CLI commands to create cloud and register a cloudspace
+* Updated the template registration auto-discovery
+* Added force delete for assets
+
+0.0.9
+=====
+
+* Removed GPU from template registraiton/subscription to react to CONS3Rt changes
+* Added the s3organizer CLI command and tool for helping organize, move, and delete items in S3 buckets
+* Added logic for finding and deleting orphan snapshots in AWS accounts
+* Added the ability to create and update IAM roles and policies
+* Added the ability to generate STS login tokens with or without MFA when assuming roles in other accounts
+* Added the deployment subcommand: cons3rt deployment list, or cons3rt deployment run list/delete/release
+* Added a module for encryption/decrption with ansible-vault
+* Added the `asset download --id=ASSET_ID` command to easily download assets from the CLI
+
+0.0.8
+=====
+
+* Added CLI calls to power on/off runs, and corresponding methods
+* Added an option to keep the asset zip files after import/update
+* Added ssh.scp_file method for getting and putting files over SSH using paramiko and scp
+* Added route53 util for creating public/private hosted zones and adding/deleting DNS records
+* Added a --keep flag for the asset command, to keep the asset zip after import, and added project to the asset_data.yml that gets saved on import/update into a site
+* Added methods to the Deployment class to return a boolean if the deployment is in AWS, Azure, Openstack, or VCloud
+* Added StsUtil and StsUtilError classes, to get informationa about the AWS caller
+* Added red-hat as a possible name for Red Hat templates when auto-configuring
+* Added the beginning of a multi-site config file for Cons3rtApi
+
+0.0.7
+=====
+
+* Added the "cons3rt run" CLI command, and added options for snapshotting all hosts in a run, or restoring
+ all hosts in a run from snapshots
+* Updated the SSH generation methods to allow various key types, and added a method to ECDSA keys
+* Added new methods of encryption/decryption for openssl smime
+* Added Arcus site configurations, and removed old site configurations
+
+0.0.1
+=====
+
+* Initial python3 port of pycons3rt and pycons3rtapi
