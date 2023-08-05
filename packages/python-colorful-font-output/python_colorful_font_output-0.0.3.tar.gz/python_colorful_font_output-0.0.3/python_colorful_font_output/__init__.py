@@ -1,0 +1,1 @@
+"""This is a library to make your terminal more beautiful!"""
