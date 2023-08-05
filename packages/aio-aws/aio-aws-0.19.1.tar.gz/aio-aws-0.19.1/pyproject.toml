@@ -1,0 +1,115 @@
+[tool.poetry]
+name = "aio-aws"
+version = "0.19.1"
+description = "aio-aws"
+authors = [
+    "Darren Weber <dazza-codes@github.com>",
+]
+license = "Apache-2.0"
+
+readme = "README.md"  # Markdown files are supported
+repository = "https://github.com/dazza-codes/aio-aws.git"
+homepage = "https://github.com/dazza-codes/aio-aws"
+
+keywords = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+
+include = ["aio_aws/**/*"]
+exclude = ["tests/**/*"]
+
+packages = [
+    {include = "aio_aws"}
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.7.1,<4.0.0"
+
+# follow s3fs at https://github.com/fsspec/s3fs/blob/main/requirements.txt
+aiobotocore = {version = "~2.1.0", extras = ["boto3"]}
+
+# Include a compatible version of s3fs, since this helps to
+# resolve the dependency tree when s3fs is also required.
+s3fs = "^2022.1.1"
+
+# Use AWS SDK libs compatible with current AWS lambda python runtime.
+# For AWS Lambda, the latest versions are listed at:
+# https://docs.aws.amazon.com/lambda/latest/dg/lambda-python.html
+# As of 2022-03-11:
+#'boto3': '1.20.32',
+#'botocore': '1.23.32',
+boto3 = "^1.20.0"
+botocore = "^1.23.0"
+
+aiofiles = "^0.7.0"
+
+pydantic = "^1.8.2"
+PyYAML = "^5.2"
+requests = "^2.23.0"
+tinydb = "^3.15"
+
+#
+# Optional packages
+#
+
+awscli = {version = "^1.22.0", optional = true}
+
+aioredis = {extras = ["hiredis"], version = "^2.0", optional = true}
+databases = {extras = ["postgresql", "mysql", "sqlite"], version = "*", optional = true}
+
+# Optional docs pages for readthedocs builds
+Sphinx = {version = "^4.0.0", optional = true}
+sphinx-autoapi = {version = "^1.5", optional = true}
+sphinx-autodoc-typehints = {version = "^1.11", optional = true}
+sphinx-rtd-theme = {version = "^1.0.0", optional = true}
+ipython = {version = "^7.24.1", optional = true}
+
+[tool.poetry.extras]
+
+all = [
+    "aioredis",
+    "databases",
+]
+
+aioredis = ["aioredis"]
+
+databases = ["databases"]
+
+# it's generally advised that awscli is installed separately
+# into a system installation rather than a venv installation,
+# so it's not included in the `all` extras here
+awscli = ["awscli"]
+
+# readthedocs can use this optional dependency to build docs;
+# the optional docs dependencies are also in py-dev-deps
+docs = [
+    "Sphinx",
+    "sphinx-autoapi",
+    "sphinx-autodoc-typehints",
+    "sphinx-rtd-theme",
+    "ipython"
+]
+
+[tool.poetry.dev-dependencies]
+
+pytest-aiomoto = {version = "^0.4.0", extras = ["s3fs"]}
+
+# py-dev-deps is used as a common denominator for many
+# development dependencies
+py-dev-deps = "^0.3.0"
+pytest-redis = "^2.1.1"
+
+
+[tool.isort]
+profile = "black"
+force_single_line = true
+
+
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"
