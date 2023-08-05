@@ -1,0 +1,99 @@
+
+
+# General configuration. for some basic configuration 
+general:
+  daemonize: false                       # Whether Janus-sentinel should run as a daemon
+                                         # or not (default=run in foreground)
+
+# config of the monitored janus server
+janus:
+
+  #server_name: ""                      # the name of the monitored janus-server. By default, sentinel would
+                                        # choose a uuid.
+  server_ip: "127.0.0.1"                # the local ip address of the janus-server for Sentinel monitor, 
+                                        # default is "127.0.0.1".
+
+  public_ip: ""                         # the ip address of the janus-server for the public access, Sentinel would
+                                        # report this public ip to ouside system. default is empty.
+                                        # If it's empty, Sentinel would probe the ip of the local host. 
+                                        # For some IaaS (like aliyun, aws), the host would binds a public ip different from 
+                                        # the local ip of the host's NIC
+
+  ws_port: 8188                         # the business API WebSocket port of the monitored janus-server, default is 8188
+
+  admin_ws_port: 0                      # the admin API WebSocket port of the monitored janus-server, default is 0.
+                                        # if admin port connection failed, Sentinel never report the handle number of
+                                        # the monitored janus server to outside. if admin_ws_port is 0, the admin_ws of
+                                        # the monitored janus server has been disabled
+
+  pingpong_interval: 5                  # how often the Sentinel send the "ping" request to the monitor janus server,
+                                        # default is 5 secs
+
+  statistic_interval: 10                # how often the Sentinel acquire the statistic data by admin API from the
+                                        # monitor janus server, default is 10 secs
+
+  request_timeout: 10                   # how long to wait for reply from the monitored janus server, default is 10 secs
+
+  hwm_threshold: 1                      # if the round-trip time of ping-pong is over hwm_threshold (unit: sec), mark
+                                        # this Janus server status HWM(High Water Mark). Default is 0, means
+                                        # not enable hwm check
+  admin_secret: ""                      # if non-empty, Sentinel includes this admin_secret for all admin API request.
+                                        # Default is empty
+
+  location: ""                          # Location id for this janus-server, default is empty, means unknown. 
+                                        # It's used for orchestration
+
+  isp: ""                               # ISP (Internet Service Provider) id for this janus-server,  default is empty, 
+                                        # means all ISP available. It's used for orchestration
+
+proc_watcher:
+  cmdline: ""                           # command line to start up janus-server. default is empty, means not enable
+                                        # the process watcher of Sentinel. If janus server process is launched and
+                                        # supervised by Sentinel, janus server must run in foreground (not as a daemon).
+  error_restart_interval: 10            # how many seconds to restart janus server after the old process exit with error
+                                        # default is 10
+
+  poll_interval: 1                      # interval to check process status, default is 1
+
+videoroom_sweeper:
+  enable: true                          # if true, turn on the videoroom sweeper, the sweeper would check janus-server
+                                        # at intervals, and destroy all the idle rooms. Default is true
+
+  check_interval: 30                    # the interval seconds for check, default is 10 sec
+  
+  room_auto_destroy_timeout: 600        # the idle room would be destroyed automatically
+                                        # after "room_auto_destroy_timeout" sec. default is 600 sec
+										
+  des_filter: "januscloud-"             # only the rooms with description started with the given string 
+                                        # would auto destroyed. 
+
+log:
+  log_to_stdout: true                   # Whether the Janus output should be written
+                                        # to stdout or not (default=true)
+  log_to_file: "/var/log/janus-sentinel.log" # Whether to use a log file or not, if empty
+                                        # means not to log to a file
+  debug_level: 'DEBUG'                  # Debug/logging level, valid values are
+                                        # DEBUG/INFO/WARN/ERROR/FATAL, default is DEBUG
+
+  log_file_size: 10485760               # max size for one log file, default is 10M
+  log_file_rotate: 10                   # rotate number for log file, default is 10
+
+# Configuration about the RESTful api of janus-sentinel.
+admin_api:
+  json: "indented"                      # Whether the JSON messages should be indented (default),
+  # plain (no indentation) or compact (no indentation and no spaces)
+  http_listen: '0.0.0.0:8200'           # REST API server listen addr
+
+
+posters:
+  -
+    post_type: 'http'                                       # state poster type/protocol, only support 'http' by now
+    name: ''
+    post_urls: ["http://127.0.0.1:8100/sentinel_callback"]  # http url to post the current state, if there are multi urls,
+                                                            # this poster would post to each by round robin mode
+    expire: 60                                              # the expire time for each post. The poster would post the latest
+                                                            # state of the monitored janus-server at the interval of 1/3
+                                                            # expire time. default is 60 seconds
+    http_timeout: 10                                        # http request timeout, default is 10 sec
+
+
