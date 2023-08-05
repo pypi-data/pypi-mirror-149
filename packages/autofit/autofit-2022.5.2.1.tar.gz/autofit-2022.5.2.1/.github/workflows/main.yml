@@ -1,0 +1,70 @@
+name: Run unittests
+
+on: [push]
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9, '3.10']  # 3.9 not supported on numba as of 2020-02-11
+    steps:
+    - name: Checkout PyAutoConf
+      uses: actions/checkout@v2
+      with:
+        repository: rhayes777/PyAutoConf
+        path: PyAutoConf
+    - name: Checkout PyAutoFit
+      uses: actions/checkout@v2
+      with:
+        path: PyAutoFit
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/cache@v2
+      id: cache-pip
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Extract branch name
+      shell: bash
+      run: |
+        cd PyAutoFit
+        echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+    - name: Change to same branch if exists in deps
+      shell: bash
+      run: |
+        export PACKAGES=("PyAutoConf")
+        export BRANCH="${{ steps.extract_branch.outputs.branch }}"
+        for PACKAGE in ${PACKAGES[@]}; do
+          pushd $PACKAGE
+          export existed_in_remote=$(git ls-remote --heads origin ${BRANCH})
+          if [[ -z ${existed_in_remote} ]]; then
+            echo "Branch $BRANCH did not exist in $PACKAGE"
+          else
+            echo "Branch $BRANCH did exist in $PACKAGE"
+            git checkout $BRANCH
+          fi
+          popd
+        done
+    - name: Install dependencies
+ #     if: steps.cache-pip.outputs.cache-hit != 'true'
+      run: |
+        pip3 install --upgrade pip
+        pip3 install setuptools
+        pip3 install wheel
+        pip3 install pytest
+        pip3 install -r PyAutoConf/requirements.txt
+        pip3 install -r PyAutoFit/requirements.txt
+        pip3 install -r PyAutoFit/build_requirements.txt
+    - name: Run tests
+      run: |
+        export ROOT_DIR=`pwd`
+        export PYTHONPATH=$PYTHONPATH:$ROOT_DIR/PyAutoConf
+        export PYTHONPATH=$PYTHONPATH:$ROOT_DIR/PyAutoFit
+        pushd PyAutoFit
+        pytest
