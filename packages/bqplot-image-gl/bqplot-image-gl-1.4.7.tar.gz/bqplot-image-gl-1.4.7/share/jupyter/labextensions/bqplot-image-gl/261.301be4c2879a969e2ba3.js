@@ -1,0 +1,1 @@
+(self.webpackChunkbqplot_image_gl=self.webpackChunkbqplot_image_gl||[]).push([[261],{6261:(e,t,i)=>{var a=i(1568),g=i(7145);e.exports={id:"bqplot-image-gl",requires:[g.IJupyterWidgetRegistry],activate:function(e,t){t.registerWidget({name:"bqplot-image-gl",version:a.version,exports:a})},autoStart:!0}}}]);
