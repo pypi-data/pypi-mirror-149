@@ -1,0 +1,72 @@
+{% extends "reviewpanel/base.html" %}
+{% load rputils %}
+{% load static %}
+
+{% block title %}
+  {% if program %}{{ program.name }}{% else %}Programs{% endif %}
+{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static "css/reviewpanel.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="center-fixed">
+  <div style="margin-bottom: 2em; width: 100%;">
+    <div style="display: inline-block;">&nbsp;</div>
+    
+    <div style="float: right;">
+      <a href="{% url 'logout' %}?next=/">log out</a>
+    </div>
+  </div>
+  
+  {% for program, forms in forms|items %}
+    <div style="margin-bottom: 2em;">
+      Program: {{ program.name }}
+    </div>
+    
+    <table class="index">
+    <thead>
+      <tr>
+        <th>form</th><th>scored (active)</th><th>scored (complete)</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for form_slug, form in forms|items %}
+      {% url 'plugins:reviewpanel:form_index' program.slug form_slug as f_url %}
+      <tr>
+        <td>{{ form.name }}</td>
+        <td>
+        {% if form.active_scored %}
+          <a href="{{ f_url }}">{{ form.active_scored }}</a>
+        {% else %}
+          0
+        {% endif %}
+        </td>
+        <td>
+        {% if form.completed_scored %}
+          <a href="{{ f_url }}?completed">{{ form.completed_scored }}</a>
+        {% else %}
+          0
+        {% endif %}
+        </td>
+        <td>
+        {% if form.active %}
+          <a href="{% url 'plugins:reviewpanel:form' program.slug form_slug %}">
+            review
+          </a>
+        {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+  
+  {% if program %}
+  <div style="margin-bottom: 1em;">
+    <a href="{% url 'plugins:reviewpanel:index' %}">&lt; all programs</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
