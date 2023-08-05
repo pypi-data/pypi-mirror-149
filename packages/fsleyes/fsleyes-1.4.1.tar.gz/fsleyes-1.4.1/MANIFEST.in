@@ -1,0 +1,21 @@
+include           README.rst
+include           LICENSE
+include           COPYRIGHT
+include           requirements.txt
+include           requirements-dev.txt
+include           requirements-extra.txt
+include           requirements-notebook.txt
+recursive-include fsleyes/assets *
+
+# Source (e.g. .xcf) files for some image files
+recursive-exclude fsleyes/assets/icons/splash/sources *
+recursive-exclude fsleyes/assets/icons/sources        *
+recursive-exclude fsleyes/assets/icons/app_icon       *
+
+# Tests and docs are too big for pypi
+recursive-exclude fsleyes/tests *
+recursive-exclude userdoc       *
+recursive-exclude apidoc        *
+
+global-exclude *.py[cod]
+global-exclude __pycache__
