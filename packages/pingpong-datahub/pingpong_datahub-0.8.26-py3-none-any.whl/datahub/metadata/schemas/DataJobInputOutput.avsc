@@ -1,0 +1,79 @@
+{
+  "type": "record",
+  "name": "DataJobInputOutput",
+  "namespace": "com.linkedin.pegasus2avro.datajob",
+  "doc": "Information about the inputs and outputs of a Data processing job",
+  "fields": [
+    {
+      "name": "inputDatasets",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "Input datasets consumed by the data job during processing",
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "dataset"
+          ],
+          "name": "Consumes"
+        }
+      },
+      "Searchable": {
+        "/*": {
+          "fieldName": "inputs",
+          "fieldType": "URN",
+          "numValuesFieldName": "numInputDatasets",
+          "queryByDefault": false
+        }
+      }
+    },
+    {
+      "name": "outputDatasets",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "doc": "Output datasets produced by the data job during processing",
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "dataset"
+          ],
+          "name": "Produces"
+        }
+      },
+      "Searchable": {
+        "/*": {
+          "fieldName": "outputs",
+          "fieldType": "URN",
+          "numValuesFieldName": "numOutputDatasets",
+          "queryByDefault": false
+        }
+      }
+    },
+    {
+      "name": "inputDatajobs",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ],
+      "doc": "Input datajobs that this data job depends on",
+      "default": null,
+      "Relationship": {
+        "/*": {
+          "entityTypes": [
+            "dataJob"
+          ],
+          "name": "DownstreamOf"
+        }
+      }
+    }
+  ],
+  "Aspect": {
+    "name": "dataJobInputOutput"
+  }
+}
