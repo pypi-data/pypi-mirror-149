@@ -1,0 +1,475 @@
+#!/bin/bash
+
+# NOTES: requirements
+# gcloud components install kubectl
+# gcloud auth configure-docker
+#
+
+set -e
+
+ARGS=$@
+
+VERSION=
+PROG=$(basename $0)
+DO_TEST=1
+SHOW_IP=
+TARGET_ENV=
+PYMCONFIG_ARGS=
+ROLLBACK=
+
+check_rc() {
+    RC=$1
+    CMD=$2
+    if [ "$RC" -ne 0 ]; then
+        echo "ERROR: Command \'${CMD}\' failed - deploy aborted"
+        exit 1
+    fi
+}
+
+usage() {
+    cat << EOF
+USAGE: $PROG [--no-test] [--rollback] <version>
+
+Deploy a pymacaron Docker image to a GKE cluster and optionally run acceptance
+tests afterward. If --env is specified, will deploy to the environment defined
+in the 'pym-config.<env>.yaml' file associated to that environment. If not
+environment is specified, defaults to using the file 'pym-config.yaml'.
+
+EXAMPLES:
+  pymgke 200415-0819-953-b3548e --env live
+  pymgke 200415-0819-953-b3548e --no-test --env staging
+  pymgke --env live --ip
+
+OPTIONS:
+  --env ENV       Which pym-config.<ENV>.yaml, aka environment, to deploy to
+  --no-test       Skip tests, but still deploy to staging first, then live.
+  --ip            Print the given environment and exit.
+  --rollback      Rollback to the given version (an extra fast deploy, without
+                  testing or waiting for resource readiness)
+  --debug         Debug verbosity.
+  --help          This text.
+
+EOF
+}
+
+parse_args() {
+    while [ "$1" != "" ]; do
+        case $1 in
+            "--env")           shift; export TARGET_ENV=$1;;
+            "--no-test")       export DO_TEST=;;
+            "--rollback")      export ROLLBACK=1;;
+            "--ip")            export SHOW_IP=1;;
+            "--debug")         set -x; DEBUG='true';;
+            "-h" | "--help")   usage; exit 0;;
+            *)                 VERSION=$1;;
+        esac
+        shift
+    done
+}
+
+parse_args $ARGS
+
+ROOTDIR=$(git rev-parse --show-toplevel | sed -e 's|^/private||')
+if [ "$PWD" != "$ROOTDIR" ]; then
+    echo "ERROR: current dir is not the clone's root directory"
+    exit 1
+fi
+
+if [ -z "$VERSION" -a -z "$SHOW_IP" ]; then
+    echo "ERROR: please specify a docker image version"
+    exit -1
+fi
+
+# All global variables
+PYMCONFIG_ARGS=""
+PYM_ENV=live
+if [ ! -z "$TARGET_ENV" ]; then
+    PYMCONFIG_ARGS="--env $TARGET_ENV"
+    PYM_ENV=$TARGET_ENV
+fi
+APP_NAME=$(pymconfig $PYMCONFIG_ARGS --name)
+CLUSTER_NAME=${APP_NAME}
+if [ ! -z "$TARGET_ENV" ]; then
+    CLUSTER_NAME=${APP_NAME}-${TARGET_ENV}
+fi
+DOMAIN=$(pymconfig $PYMCONFIG_ARGS --host)
+DOCKER_ROOT_REPO=$(pymconfig $PYMCONFIG_ARGS --docker-repo)
+DOCKER_REPO=$DOCKER_ROOT_REPO/$APP_NAME
+GCP_PROJECT=$DOCKER_ROOT_REPO
+GCP_REGION=$(pymconfig $PYMCONFIG_ARGS --gcp-region)
+MEMORY_LIMIT=$(pymconfig $PYMCONFIG_ARGS --memory-limit | tail -n 1)
+
+setup_gcloud() {
+    echo "=> Configuring gcloud for $GCP_PROJECT/$GCP_REGION/$CLUSTER_NAME..."
+    gcloud config set project $GCP_PROJECT
+    gcloud config set compute/region $GCP_REGION
+    gcloud config set container/cluster $CLUSTER_NAME
+
+    # Using --zone since the staging environment is supposed to be in one zone only
+    LOCATION=$(gcloud container clusters list 2>/dev/null | grep "$CLUSTER_NAME " | awk '{ print $2 }')
+    echo "=> Cluster is in $LOCATION"
+    gcloud container clusters get-credentials $CLUSTER_NAME --zone $LOCATION --project $GCP_PROJECT
+}
+
+get_ip() {
+    echo $(kubectl get ingress --namespace=$APP_NAME | grep "${APP_NAME}-${TARGET_ENV}-ingress " | awk '{ print $4 }')
+}
+
+do_create_namespace() {
+    CNT=$(kubectl get namespace | grep "$APP_NAME " | wc -l)
+    if [ $CNT -eq 0 ]; then
+        echo "=> Creating namespace $APP_NAME"
+        kubectl create namespace $APP_NAME
+    fi
+    echo "=> Using namespace $APP_NAME"
+    kubectl config set-context --current --namespace=$APP_NAME
+}
+
+do_apply_deployment() {
+    # Deploy the container to run on port 8080
+    NAMESPACE=$2
+
+    CONTAINER_NAME=container-$APP_NAME
+
+    echo "=> Creating pod config"
+    DEP_FILE=.pym/deployment-$CLUSTER_NAME.yaml
+    cat <<EOF > $DEP_FILE
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $CLUSTER_NAME
+  namespace: $APP_NAME
+  labels:
+    app: $CLUSTER_NAME
+    version: $VERSION
+spec:
+  selector:
+    matchLabels:
+      run: $CLUSTER_NAME
+      app: $CLUSTER_NAME
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 5
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        run: $CLUSTER_NAME
+        app: $CLUSTER_NAME
+        version: $VERSION
+    spec:
+      terminationGracePeriodSeconds: 180
+      containers:
+      - name: $CONTAINER_NAME
+        image: gcr.io/$DOCKER_REPO:${VERSION}
+        resources:
+          requests:
+            memory: "${MEMORY_LIMIT}Mi"
+            cpu: "250m"
+          limits:
+            memory: "${MEMORY_LIMIT}Mi"
+            cpu: "500m"
+        readinessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 5
+          httpGet:
+            path: /ping
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          failureThreshold: 3
+          timeoutSeconds: 10
+          httpGet:
+            path: /ping
+            port: 8080
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash", "-c", "sleep 60"]
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: VERSION
+          value: "${VERSION}"
+        - name: PYM_ENV
+          value: "${PYM_ENV}"
+EOF
+
+    for VAR in $(pymconfig $PYMCONFIG_ARGS --env-secrets)
+    do
+        echo "   Adding $VAR"
+        # Notice '-f 2-' in cut to only cut left of the 1st occurence of =
+        VALUE=$(env | grep "^$VAR=" | cut -d '=' -f 2-)
+        if [ -z "$VALUE" ]; then
+            echo "ERROR: variable $VAR has no value in env"
+            exit 1
+        fi
+        echo "        - name: $VAR" >> $DEP_FILE
+        echo "          value: \"$VALUE\"" >> $DEP_FILE
+    done
+
+    echo "=> Checking if deployment exists or is new..."
+    IS_DEPLOYED=$(kubectl get deployment | grep "$CLUSTER_NAME " | wc -l)
+
+    if [ "$IS_DEPLOYED" -eq "1" ]; then
+        echo "=> Deployment already exists. Applying change..."
+        kubectl apply -f $DEP_FILE --namespace=$APP_NAME
+        check_rc $? 'kubectl apply'
+    else
+        echo "=> Deployment is new. Creating it..."
+        kubectl create --save-config -f $DEP_FILE --namespace=$APP_NAME
+        check_rc $? 'kubectl create'
+    fi
+}
+
+do_apply_ingress() {
+    # Deploy an ingress opening port 80 and 443, redirected to the container's port 8080
+    # Accept HTTPS traffic on port 443 via a managed SSL certificate
+    if [ -z "$DOMAIN" ]; then
+        echo "BUG!! set DOMAIN please!"
+        exit -1
+    fi
+
+    IS_DEPLOYED=$(kubectl get ingress -o wide | grep "$CLUSTER_NAME " | wc -l)
+
+    if [ "$IS_DEPLOYED" -eq "1" ]; then
+        echo "=> The ingress already exists"
+        return
+    fi
+
+    # Create a managed cert
+    # See: https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+    echo "=> Applying managed certificate (domain: ${DOMAIN})..."
+    YAML_FILE=.pym/cert-$CLUSTER_NAME.yaml
+    cat <<EOF > $YAML_FILE
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: $DOMAIN-certificate
+spec:
+  domains:
+    - $DOMAIN
+EOF
+    kubectl apply -f $YAML_FILE --namespace=$APP_NAME
+    check_rc $? 'kubectl apply'
+
+    # NOTE: waiting for cert is only interesting the first time it's generated,
+    # and even then, the cert won't become active until the ingress starts
+    # using it, and then with a delay of up to 15 min. So waiting won't help us
+    # get around that downtime delay...
+    # See: https://stackoverflow.com/questions/53886750/google-managed-ssl-certificate-stuck-on-failed-not-visible
+    # NOTE: leaving his code here as a reminder to self on how to check certificate status
+    #
+    # # Wait for certificate to be provisioned
+    # echo "=> Waiting for certificate to be provisioned"
+    # STATUS='Provisioning'
+    # while [ "$STATUS" != "Active" ]; do
+    #     sleep 1;
+    #     STATUS=$(kubectl get managedcertificates ${DOMAIN}-certificate -o jsonpath='{..certificateStatus}' | tr -s '[[:space:]]' '\n')
+    #     echo -n '*'
+    # done
+    # echo ''
+
+    # Configure the timeout and connection draining of the GCP load balancer
+    # See: https://cloud.google.com/kubernetes-engine/docs/how-to/configure-backend-service#creating_a_backendconfig
+    # https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-features#direct_health
+    echo "=> Applying backend..."
+    YAML_FILE=.pym/backend-$CLUSTER_NAME.yaml
+
+    cat <<EOF > $YAML_FILE
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: $CLUSTER_NAME-backend
+spec:
+  healthCheck:
+    checkIntervalSec: 45
+    timeoutSec: 45
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /ping
+    port: 8080
+EOF
+
+    kubectl apply -f $YAML_FILE --namespace=$APP_NAME
+    check_rc $? 'kubectl apply'
+
+    # Proceed setting up the ingress
+    echo "=> Applying service..."
+    YAML_FILE=.pym/nodeport-$CLUSTER_NAME.yaml
+    cat <<EOF > $YAML_FILE
+apiVersion: v1
+kind: Service
+metadata:
+  name: $CLUSTER_NAME-service
+  namespace: $APP_NAME
+  labels:
+    app: $CLUSTER_NAME
+    version: $VERSION
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"8080":"$CLUSTER_NAME-backend"}}'
+spec:
+  type: NodePort
+  selector:
+    app: $CLUSTER_NAME
+    run: $CLUSTER_NAME
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+EOF
+    kubectl apply -f $YAML_FILE --namespace=$APP_NAME
+    check_rc $? 'kubectl apply'
+
+    # Define an Ingress, which GKE uses to create a google HTTP(S) Load
+    # Balancer. Note that this load balancer automatically inherit the
+    # health-check parameters of the BackendConfig above.
+
+    # Verify the backend settings with:
+    # gcloud compute backend-services list -> find the backend
+    # gcloud compute backend-services describe <BACKEND_NAME> --global
+
+    # Note: relevant articles are:
+    # template taken from: https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs
+    # also read: https://cloud.google.com/kubernetes-engine/docs/concepts/ingress
+    echo "=> Applying ingress..."
+    YAML_FILE=.pym/ingress-$CLUSTER_NAME.yaml
+    cat <<EOF > $YAML_FILE
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: $CLUSTER_NAME-ingress
+  namespace: $APP_NAME
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: $CLUSTER_NAME-ip
+    networking.gke.io/managed-certificates: $DOMAIN-certificate
+    kubernetes.io/ingress.class: "gce"
+spec:
+  defaultBackend:
+    service:
+      name: $CLUSTER_NAME-service
+      port:
+        number: 8080
+EOF
+
+    kubectl apply -f $YAML_FILE --namespace=$APP_NAME
+    check_rc $? 'kubectl apply'
+}
+
+do_wait_for_rollout() {
+    # A deployment is rolling out: wait till we can reach it on the staging/live IP
+    echo "=> Waiting for deployment rollout..."
+    kubectl rollout status deployment/$CLUSTER_NAME
+    check_rc $? 'kubectl rollout'
+
+    # Then wait for rollout to be complete
+    echo "=> Waiting for all pods to run new image..."
+    COUNT=2
+    while [ "$COUNT" -ne 1 ]; do
+        sleep 1
+        echo -n '*'
+        COUNT=$(kubectl get pods -o jsonpath='{range .items[*]}{@.metadata.labels.version}{" "}{@..phase}{"\n"}{end}' --namespace $APP_NAME | grep Running | sort | uniq | wc -l)
+    done
+    echo ''
+
+    # Wait for external IP to be assigned
+    echo "=> Waiting for external IP..."
+    IP=""
+    while [ -z "$IP" ]; do
+        sleep 1
+        IP=$(get_ip)
+    done
+    echo ''
+
+    echo "=> $CLUSTER_NAME is now live at $IP"
+}
+
+# ------------------------------------------------------------------------------
+#
+# MAIN
+#
+# ------------------------------------------------------------------------------
+
+setup_gcloud
+
+# Stop previous versions?
+# gcloud config set app/stop_previous_version true
+
+if [ ! -z "$SHOW_IP" ]; then
+    get_ip
+    exit 0
+fi
+
+# ------------------------------------------------------------------------------
+#
+# DEPLOY/ROLLBACK
+#
+# ------------------------------------------------------------------------------
+
+if [ ! -z "$ROLLBACK" ]; then
+    echo ""
+    echo "***********************************************"
+    echo "*                                             *"
+    echo "* ROLLING BACK TO VERSION $VERSION"
+    echo "*                                             *"
+    echo "***********************************************"
+    echo ""
+else
+    echo ""
+    echo "***********************************************"
+    echo "*                                             *"
+    echo "* DEPLOYING VERSION $VERSION"
+    echo "*                                             *"
+    echo "***********************************************"
+    echo ""
+fi
+
+echo "=> Creating tmp dir .pym/"
+mkdir -p .pym
+
+echo ""
+echo "=> Deploying $VERSION to $CLUSTER_NAME"
+
+# And create/apply deployment, service and ingress, when needed
+do_create_namespace
+do_apply_deployment
+do_apply_ingress
+if [ -z "$ROLLBACK" ]; then
+    do_wait_for_rollout
+else
+    echo "ROLLBACK: not waiting for staging to be ready"
+fi
+
+# ------------------------------------------------------------------------------
+#
+# RUN ACCEPTANCE TESTS
+#
+# ------------------------------------------------------------------------------
+
+cd $ROOTDIR
+if [ ! -z "$DO_TEST" ]; then
+    if [ -z "$ROLLBACK" ]; then
+        echo ""
+        echo "=> Executing tests against $IP:$TEST_PORT"
+        TEST_PORT=$(pymconfig --port)
+        pymtest --host $IP --port $TEST_PORT --no-ssl-check
+
+        RC=$?
+        if [ "$RC" -ne 0 ]; then
+            echo "ERROR: Acceptance tests failed against $IP - deploy aborted"
+            exit 1
+        fi
+
+    else
+        echo "ROLLBACK: skip staging tests"
+    fi
+fi
+
+echo "=> Done."
