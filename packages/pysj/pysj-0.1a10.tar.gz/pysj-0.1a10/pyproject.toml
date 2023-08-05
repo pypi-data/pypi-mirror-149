@@ -1,0 +1,48 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pysj"
+authors = [{name = "Sondre S. Ødegård"}]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development"
+]
+dynamic = ["version", "description"]
+
+[project.urls]
+Source = "https://github.com/sondreod/pysj"
+Documentation = "https://github.com/sondreod/pysj"
+
+[dev-dependencies]
+black = {}
+"hypothesis[cli]" = {}
+pytest = {}
+pytest-cov = {}
+coverage = {}
+numpy = {}
+tox = {}
+flit = {}
+doit = {}
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+envlist = py{38,39}
+
+[testenv]
+deps = 
+    pytest
+    numpy
+    black
+    isort
+commands =
+    black .
+    isort .
+    pytest
+"""
