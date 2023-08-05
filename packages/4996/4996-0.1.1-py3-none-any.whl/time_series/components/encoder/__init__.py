@@ -1,0 +1,1 @@
+from .tcn import TCNAdapterForRNN as TCN
