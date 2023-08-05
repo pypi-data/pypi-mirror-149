@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ansible_cry"
+version = '1.0.2'
+description = "Encrypt and decrypt ansible-vault string/file: Perfect for external tools."
+authors = ["Pierre-Yves Langlois"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/pylanglois/ansible-cry"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+plumbum = "*"
+ansible = "*"
+
+[tool.poetry.scripts]
+cry = "ansible_cry.cli:CRY.run"
