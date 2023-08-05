@@ -1,0 +1,309 @@
+<!--
+  This Basic theme serves as an example for how to create other
+  themes by demonstrating the features with minimal HTML and CSS.
+  Comments like this will be through the code to explain briefly
+  what each feature is and point you to the MkDocs documentation
+  to find out more.
+-->
+<!DOCTYPE html>
+<html lang="{{ config.theme.locale|default('en') }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  {% if page and page.is_homepage %}<meta name="description" content="{{ config['site_description'] }}">{% endif %}
+  {% if config.site_author %}<meta name="author" content="{{ config.site_author }}">{% endif %}
+  {% if page and page.canonical_url %}<link rel="canonical" href="{{ page.canonical_url }}">{% endif %}
+  <!--
+    Just add a favicon.ico image to the docs.
+  -->
+  <link rel="shortcut icon" href="{{ 'img/favicon.ico'|url }}">
+  <!--
+    The page_title contains the title for a page as shown in the navigation.
+    Site name contains the name as defined in the mkdocs.yml
+  -->
+  <title>{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
+  <!--
+    You can include external assets of course, but be aware that it means the
+    documentation may not work well offline.
+  -->
+  <link rel="stylesheet" href="{{ 'css/normalize.css'|url }}">
+  <link rel="stylesheet" href="{{ 'css/skeleton.css'|url }}">
+  <link rel="stylesheet" href="{{ 'css/pigments.css'|url }}">
+  <link rel="stylesheet" href="{{ 'css/theme.css'|url }}">
+  <link rel="stylesheet" href="{{ 'css/footer.css'|url }}">
+
+  <!--
+    extra_ess contains paths to CSS files in the users
+    documentation directory or a list of CSS files defined in
+    their mkdocs.yml.
+
+    http://www.mkdocs.org/user-guide/configuration/#extra_css
+  -->
+  {% for path in config.extra_css %}
+    <link href="{{ path|url }}" rel="stylesheet">
+  {% endfor %}
+
+  {% block extrahead %}
+    <script>var base_url = '{{ base_url }}';</script>
+  {% endblock %}
+
+  <!--
+    extra_javascript contains paths to JavaScript files in the
+    users documentation directory or a list of JavaScript files
+    defined in their mkdocs.yml.
+
+    http://www.mkdocs.org/user-guide/configuration/#extra_javascript
+  -->
+  {% for path in config.extra_javascript %}
+    <script src="{{ path|url }}"></script>
+  {% endfor %}
+
+</head>
+
+<body>
+  <header class="header">
+    <div class="top-bar">
+      <div class="platform-heading">
+        <div class="platform-logo">
+          <img src="{{ base_url }}/img/piattaforma-genpat-logo.svg" alt="Logo">
+        </div>
+        <div class="platform-title">
+          {% if config.extra.platform_title %}
+            <h1>{{ config.extra.platform_title }}</h1>
+          {% else %}
+            <h1>Platform title</h1>
+          {% endif %}
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="tool tool-docs-navigation">
+          <div class="tool-label">
+            {% if config.extra.header_tool_label %}
+              {{ config.extra.header_tool_label }}
+            {% else %}
+              Wiki
+            {% endif %}
+          </div>
+          <div class="tool-trigger" onclick="toggleDocsNav()">
+            <img src="{{ base_url }}/img/iconic/menu-white.svg" alt="Navigation icon">
+          </div>
+        </div>
+        <div class="tool tool-search">
+          <div class="tool-label">
+            {% if config.extra.header_tool_label_mobile %}
+              {{ config.extra.header_tool_label_mobile }}
+            {% else %}
+              Wiki
+            {% endif %}
+          </div>
+          <div class="tool-trigger" onclick="toggleModalSearch()">
+            <img src="{{ base_url }}/img/iconic/search-white.svg" alt="Search icon">
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="main">
+    <div class="container">
+      <div class="row">
+        <div class="two columns columns-docs-navigation">
+          <div class="docs-navigation">
+            <div class="close" onclick="toggleDocsNav()">
+              <img src="{{ base_url }}/img/iconic/close-white.svg" alt="Close">
+            </div>
+            {% if 'izsam-search' in config['plugins'] %}
+              <div class="search" role="search">
+                <form action="{{ 'search.html'|url }}" method="get">
+                  <input id="side-menu-search" type="search" name="q" placeholder="Search...">
+                </form>
+              </div>
+            {% endif %}
+            <!--
+              Create the navigation for the documentation.
+
+              Because we don't know how many levels deep the navigation is, it needs to
+              be included in it's own file so it can be recursive. Otherwise the theme
+              can also only support a specific number of levels.
+
+              See the nav.html file for more details about how this works.
+            -->
+            <h6 id="docs-topics-title">Topics</h6>
+            <ul>
+            {% for nav_item in nav %}
+              {% include "nav.html" %}
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="eight columns columns-contents">
+          <div class="contents">
+            {% block content %}
+              {{ page.content }}
+            {% endblock %}
+          </div>
+        </div>
+        <div class="two columns columns-table-of-contents">
+          <div class="table-of-contents">
+            {% if page.toc %}
+            <h6 id="page-contents-title">Contents</h6>
+            <ul>
+            {% for toc_item in page.toc %}
+                <li><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
+                {% for toc_item in toc_item.children %}
+                  <ul>
+                    <li><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></li>
+                  </ul>
+                {% endfor %}
+            {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    Create a search form that sends the user to the search.html file - this is
+    the other file in the template which adds search to the theme. The only
+    requirement here is that there is a text input with the name 'q' and the
+    action and methods match below.
+  -->
+  {% if 'izsam-search' in config['plugins'] %}
+  <div class="modal modal-search">
+    <div class="modal-inner-box">
+      <div class="close" onclick="toggleModalSearch()">
+        <img src="{{ base_url }}/img/iconic/close-circle.svg" alt="Close modal">
+      </div>
+      <div class="modal-inner-content search" role="search">
+        <h4 id="modal-search-title">Search within the documentation</h4>
+        <form action="{{ 'search.html'|url }}" method="get">
+          <input id="modal-search" type="search" name="q" placeholder="Use keywords..." onkeyup="toggleButton()">
+          <button type="submit" disabled>Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="modal modal-img">
+    <div class="modal-inner-box">
+      <div class="close" onclick="toggleModalImg()">
+        <img src="{{ base_url }}/img/iconic/close-circle.svg" alt="Close modal">
+      </div>
+      <div class="modal-inner-content" id="modal-inner-content-image">
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Implement the previous and next links to cycle through the pages.
+  -->
+  {% if page.next_page or page.previous_page %}
+  <section class="internal-nav">
+    <div class="container">
+      <div class="internal-nav-links">
+        <div class="internal-nav-link internal-nav-link-previous">
+          {% if page.previous_page %}
+          <a href="{{ page.previous_page.url|url }}" title="{{ page.previous_page.title }}">
+            <div class="internal-nav-previous">
+              <div class="arrow arrow-left">
+                <img src="{{ base_url }}/img/iconic/arrow-left-white.svg" alt="Left arrow icon">
+              </div>
+              <div class="internal-nav-link-previous-label">
+                <h6>Previous</h6>
+                {% if page.previous_page.parent %}
+                <h5>{{ page.previous_page.parent.title }}, {{ page.previous_page.title }}</h5>
+                {% else %}
+                <h5>{{ page.previous_page.title }}</h5>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+        <div class="internal-nav-link internal-nav-link-next">
+          {% if page.next_page %}
+          <a href="{{ page.next_page.url|url }}" title="{{ page.next_page.title }}">
+            <div class="internal-nav-next">
+              <div class="internal-nav-link-next-label">
+                <h6>Next</h6>
+                {% if page.next_page.parent %}
+                <h5>{{ page.next_page.parent.title }}, {{ page.next_page.title }}</h5>
+                {% else %}
+                <h5>{{ page.next_page.title }}</h5>
+                {% endif %}
+              </div>
+              <div class="arrow arrow-right">
+                <img src="{{ base_url }}/img/iconic/arrow-right-white.svg" alt="Right arrow icon">
+              </div>
+            </div>
+          </a>
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+  <div class="overlay-utility" onclick="toggleDocsNav()"></div>
+
+  {% include "footer.html" %}
+
+  <!--
+  MkDocs version      : {{ mkdocs_version }}
+  Docs Build Date UTC : {{ build_date_utc }}
+  -->
+
+  <!--
+
+    Support extra data from configuration
+
+    {% if config.extra.pippo %}
+    <ul>
+    {% for link in config.extra.pippo %}
+        <li>{{ link }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+  -->
+
+  <!--
+    Support repo URL
+
+    {% if page and page.edit_url %}
+    <h2>Link to the source</h2>
+      <a href="{{ page.edit_url }}">Edit on {{ config.repo_name }}</a>
+    {% elif config.repo_url %}
+      <a href="{{ config.repo_url }}">{{ config.repo_name }}</a>
+    {% endif %}
+  -->
+
+  <!--
+    To include static assets from our theme, just add
+    {{ base_url }} beforehand which will be the relative path to
+    the root of the documentation.
+  -->
+  {% if config.theme.locale %}
+    {% set js_path = 'js/theme-languages/theme-loc-' ~ config.theme.locale ~ '.js' %}
+    <script src="{{ js_path|url }}"></script>
+    <script src="{{ 'js/theme-localization.js'|url }}"></script>
+  {% endif %}
+  <script src="{{ 'search/search_config.js'|url }}"></script>
+  <script src="{{ 'search/search_docs.js'|url }}"></script>
+  <script src="{{ 'js/lunr.js'|url }}"></script>
+  {% if config.theme.locale and not 'en' in config.theme.locale %}
+    <script src="{{ 'js/lunr-languages/lunr.stemmer.support.js'|url }}"></script>
+    {% set js_path = 'js/lunr-languages/lunr.' ~ config.theme.locale ~ '.js' %}
+    <script src="{{ js_path|url }}"></script>
+  {% endif %}
+  <script src="{{ 'js/search.js'|url }}"></script>
+  <script src="{{ 'js/zoom-img.js'|url }}"></script>
+  <script src="{{ 'js/theme.js'|url }}"></script>
+</body>
+</html>
