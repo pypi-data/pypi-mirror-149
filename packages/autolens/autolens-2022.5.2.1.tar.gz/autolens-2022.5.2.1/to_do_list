@@ -1,0 +1,56 @@
+__Tasks__
+
+- Build Server: Sort Authentification issues.
+- Logging: DISPLAY EVERYTHING (PSF SIZE, IMAGER SIZE, MASK STUFF, IT WILL STOP BUGS).
+- GUI code is horrific, clean up, CHECK IF INUT IS SCALED OR PIXELS.
+- Simulating lenses is slow because the iterate grid is used for all visualization. Make a "sub_size_1" grid property.
+
+__Features__
+
+- Mass visualization for large runs in single folder, which works for database runs.
+- Automated check of deflection angles against integration during lens modeling.
+- DM many subhalo sims.
+
+
+__Image To Source Mapping__
+
+Mapping image arrays (e.g. the data) to the source plane so we can compare how the source-plane appears.
+
+- Do for simple rectangular grid, then add subgrid, interpolation.
+- Make magnification equivalent.
+
+
+__Clump API__
+
+- Scripts describing what a clump is.
+- Example scripts showing how every clump maker task relates to autofit model composition.
+- Point Source Models via PointModel API.
+- Gradually build examples of increasing complexity (e.g. using elliptical measurements, luminosity / scaling relations,
+hierarchical models, prior passing).
+- Rich: API for fitting model sub components one by one, built into clump API.
+- Multiwavelength 0_0.
+
+__Point Source__
+
+- Point source visusliazation, RMS of point source.
+
+
+__Documentation__
+
+- Search chaining readthedocs.
+- add https://arxiv.org/abs/2012.04665 where applicable.
+- FAQ My reconstruction is a demagnified solution.
+
+__Refactor__
+
+- Revert to SciPy quad, remove pyquad not installed.
+
+
+__Bugs__
+
+- Raise exception if mask not applied to imaging and it is passed to analysis.
+- No positions analysis bug, need to remove copy or something.
+- Point source raises exception if solver grid smaller than data in analysi class.
+- Sanity checks on datastructures wherer possible (e.g. output grid index is 2).
+- Sanity checks on things like mapper uitil, inversion util, where a user may input an incorrect array (e.g. an unasked
+noise map) and not get an error as an index limit is never hit.
