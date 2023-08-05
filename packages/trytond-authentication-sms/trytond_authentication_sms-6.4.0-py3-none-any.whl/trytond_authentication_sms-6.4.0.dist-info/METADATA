@@ -1,0 +1,104 @@
+Metadata-Version: 2.1
+Name: trytond-authentication-sms
+Version: 6.4.0
+Summary: Tryton module to authenticate users via SMS
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/authentication_sms
+Keywords: tryton sms authentication two-factor 2FA
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Bulgarian
+Classifier: Natural Language :: Catalan
+Classifier: Natural Language :: Czech
+Classifier: Natural Language :: Dutch
+Classifier: Natural Language :: English
+Classifier: Natural Language :: Finnish
+Classifier: Natural Language :: French
+Classifier: Natural Language :: German
+Classifier: Natural Language :: Hungarian
+Classifier: Natural Language :: Indonesian
+Classifier: Natural Language :: Italian
+Classifier: Natural Language :: Persian
+Classifier: Natural Language :: Polish
+Classifier: Natural Language :: Portuguese (Brazilian)
+Classifier: Natural Language :: Romanian
+Classifier: Natural Language :: Russian
+Classifier: Natural Language :: Slovenian
+Classifier: Natural Language :: Spanish
+Classifier: Natural Language :: Turkish
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: trytond (<6.5,>=6.4)
+Provides-Extra: test
+
+Authentication SMS Module
+#########################
+
+The `SMS <https://en.wikipedia.org/wiki/Short_Message_Service>`_ authentication
+module allows users to authenticate via SMS.  It adds a new authentication
+method `sms`, which can be used in the list of `authentications` in the
+`session` section of the configuration file.
+
+The `sms` method just sends a code via SMS to the user. Then the user needs to
+transcribe the code into the login dialog.
+
+This method requires that the user has the correct *Mobile* phone number
+defined otherwise it will not be possible for them to authenticate.
+
+Configuration
+*************
+
+The configuration of the module is set in the `authentication_sms` section.
+
+function
+--------
+
+The fully qualified name of the method to send SMS. It must take three
+arguments: text, to and from.
+This method is required to send SMS.
+
+from
+----
+
+The number from which the SMS are sent.
+
+length
+------
+
+The length of the generated code.
+Default: 6
+
+ttl
+---
+
+The time to live for the generated codes in seconds.
+Default: 300
+
+name
+----
+
+The name used in the SMS text.
+Default: Tryton
+
+
