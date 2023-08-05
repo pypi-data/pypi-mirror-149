@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 108
+
+[tool.coverage.run]
+command_line = "-m pytest -vxs"
+source = ["kisters"]
+
+[tool.isort]
+profile = "black"
+line_length = 108
+known_first_party = "kisters"

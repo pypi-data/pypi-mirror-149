@@ -1,0 +1,31 @@
+{
+	"type": "WISKI",
+	"url": "http://vm-w7test-srv-1.kisters.de:7480",
+	"clientid": "b5dee7ac-76d4-435b-9403-0fa65619eb12",
+	"clientsecret": "AKOS3kMrUxofyW3DMpdClP9861-uF34GT1-9Fitu3J_zqVQxO7ToS5Pgu6SwjMCZz6dJaIZdm4rlHWNiTFsPDts",
+	"user": "Admin",
+	"password": "12years",
+
+	"rules": [{
+			"rulename": "threshold",
+			"tsfilter": "W7AgentTest/2000*/S/cmd",
+			"ruleparams": {
+				"threshold": 2.0
+			},
+			"tsparams": {
+			},
+			"invalidquality": 200
+		}, {
+			"rulename": "value_sequence",
+			"tsfilter": "W7AgentTest/2000*/S/cmd",
+			"ruleparams": {
+				"groupsize": 3,
+				"tolrange": 0.01,
+				"lowres": 0.001,
+				"highres": 0.001
+			},
+			"tsparams": {},
+			"invalidquality": 200
+		}
+	]
+}
