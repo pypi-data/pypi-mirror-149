@@ -1,0 +1,73 @@
+[build-system]
+requires = ["poetry-core>=1.0.7"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+balanced_wrapping = true
+default_section = "THIRDPARTY"
+force_grid_wrap = 0
+include_trailing_comma = true
+known_first_party = "pytest_cache_assert"
+length_sort = false
+line_length = 120
+multi_line_output = 5
+
+[tool.calcipy.test]
+pythons = ["3.7", "3.9"]
+args_diff = "--fail-under=85"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "2.0.0"
+version_files = ["pyproject.toml", "pytest_cache_assert/__init__.py"]
+
+[tool.poetry]
+name = "pytest_cache_assert"
+version = "2.0.0"
+description = "Cache assertion data to simplify regression testing of complex serializable data"
+license = "MIT"
+authors = ["Kyle King <dev.act.kyle@gmail.com>"]
+maintainers = []
+repository = "https://github.com/kyleking/pytest_cache_assert"
+documentation = "https://github.com/kyleking/pytest_cache_assert/docs"
+readme = "docs/README.md"
+include = ["LICENSE.md"]
+keywords = []
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Testing",
+] # https://pypi.org/classifiers/
+
+[tool.poetry.plugins."pytest11"]
+# Register as a Pytest Plugin
+# Docs: https://docs.pytest.org/en/latest/how-to/writing_plugins.html#making-your-plugin-installable-by-others
+pytest_cache_assert = "pytest_cache_assert.plugin"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/kyleking/pytest_cache_assert/issues"
+"Changelog" = "https://github.com/kyleking/pytest_cache_assert/blob/main/docs/docs/CHANGELOG.md"
+
+[tool.poetry.dependencies]
+python = "^3.7.6"
+attrs-strict = ">=0.2"
+beartype = ">=0.10.0"
+dictdiffer = ">=0.9"   # Alternative: https://pypi.org/project/deepdiff/
+implements = ">=0.3.0"
+pendulum = ">=2.1.2"
+punq = ">=0.6.2"
+pytest = ">=5.0.0"
+ujson = ">=5.1.0"      # FIXME: Implement ujson as a faster alternative to json
+
+# FYI: New dev-dependencies need to be copied to noxfile.py
+[tool.poetry.dev-dependencies]
+calcipy = { version = ">=0.14.5", extras = ["dev", "lint", "test"] }
+moto = ">=3.0.6"
+pydantic = ">=1.8.2"
