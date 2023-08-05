@@ -1,0 +1,199 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+{% load storage_tags %}
+
+{% block title %}Object Storage - {{ project_name }}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
+{% endblock %}
+
+{% block content_title %}Object Storage{% endblock %}
+
+{% block content_top %}
+  {% if prefix %}
+  <a class="btn btn-primary btn-sm" href="{% url 'upload' project=project_name container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary btn-sm" href="{% url 'upload' project=project_name container=container %}">
+  {% endif %}
+  <i class="fa fa-upload"></i>&nbsp;&nbsp;Upload&nbsp;Object</a>
+
+  {% if prefix %}
+  <a class="btn btn-primary btn-sm" href="{% url 'create_pseudofolder' project=project_name container=container prefix=prefix %}">
+  {% else %}
+  <a class="btn btn-primary btn-sm" href="{% url 'create_pseudofolder' project=project_name container=container %}">
+  {% endif %}
+  <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Create&nbsp;pseudofolder</a>
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url 'containerview' project_name %}">Containers</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url 'objectview' project=project_name container=container  %}">{{ container }}</a>
+  {% else %}
+    <span>{{ container }}</span>
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+  {% block search %}{% endblock %}
+
+  {% storage_tools %}
+
+  <div class="box-table">
+    <table class="items-list table">
+      <thead>
+        <tr>
+          <th style="width: 3%"></th>
+          <th>Name</th>
+          <th>Created</th>
+          <th>Size</th>
+          <th style="width: 5%">&nbsp;</th>
+          <th style="width: 5%">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for obj in objects %}
+        {% if 'prefix' in obj %}
+        <tr>
+          <td><i class="fas fa-folder-open"></i></td>
+          <td>
+            <a href="{% url 'objectview' project=project_name container=container prefix=obj.prefix %}">
+              <strong>{{obj.prefix|lastpart}}</strong>
+            </a>
+          </td>
+          <td></td>
+          <td></td>
+          <td>
+            <button class="btn-meta btn btn-sm btn-light" title="Pseudofolder Metadata"
+              data-name="{{ obj.name }}"
+              data-preview-url="{% url 'preview' project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url 'metadata' project=project_name container=container objectname=obj.name %}">
+              <i class="fas fa-list-alt"></i>
+            </button>
+          </td>
+          <td>
+
+            <div class="dropdown">
+              <a href="#" class="btn-config btn btn-sm btn-light dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-cog icon-white"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end">
+                <a href="{% url 'delete_pseudofolder' project=project_name container=container pseudofolder=obj.name %}"
+                   class="dropdown-item"
+                   onclick="return confirm('Delete pseudofolder {{obj.name}}?');">
+                  {% trans 'Delete pseudofolder' %}
+                </a>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td>
+            <i class="fa fa-file"></i>
+          </td>
+          <td>
+            <span class="block"><a href='{% url "object" project=project_name container=container objectname=obj.name %}'>{{obj.name|lastpart}}</a></span>
+            <button class="btn-copy-url btn btn-sm" id="copy-button" data-clipboard-text="{{ obj.public_url }}"
+                    title="{% trans 'Click to copy URL' %}">Copy URL</button>
+          </td>
+          <td>
+            {{obj.last_modified|dateconv|date:"SHORT_DATETIME_FORMAT"}}
+          </td>
+          <td>
+            {{obj.bytes|filesizeformat}}
+          </td>
+          <td>
+            <button class="btn-meta btn btn-sm btn-light" title="Object Metadata"
+              data-name="{{ obj.name }}"
+              data-preview-url="{% url 'preview' project=project_name container=container objectname=obj.name %}"
+              data-meta-url="{% url 'metadata' project=project_name container=container objectname=obj.name %}">
+              <i class="fas fa-list-alt"></i>
+            </button>
+          </td>
+          <td>
+
+            <div class="dropdown">
+              <a href="#" class="btn-config btn btn-sm btn-light dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog icon-white"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end">
+                 <a href="#modal-cache-control" class="dropdown-item btn-cache-control" data-target="#modal-cache-control" data-bs-toggle="modal"
+                   data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=obj.name %}">
+                  {% trans 'Edit Cache-Control' %}
+                </a>
+                <a href="{% url 'delete_object' project=project_name container=container objectname=obj.name %}"
+                   class="dropdown-item"
+                   onclick="return confirm('Delete object {{ obj.name }}?');">
+                  {% trans 'Delete object' %}
+                </a>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+        {% endif %}
+      {% endfor %}
+
+      {% if not objects %}
+        <tr>
+          <th colspan="6" class="center">
+            <strong><center>There are no objects in this container yet. Upload new objects by clicking the "Upload Object" button.<center></strong>
+          </th>
+        </tr>
+      {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  {% block pagination %}
+  <nav class="mb-5">
+    <ul class="pagination">
+      {% if marker %}
+      <li class="page-item">
+        <a class="page-link" href="?marker={{ marker }}">
+          {% trans 'next page' %} &rsaquo;
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endblock %}
+
+{% include "modal_cache_control.html" %}
+
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script>
+var clipboard = new Clipboard('.btn-copy-url');
+clipboard.on('success', function(e) {
+  Base.Messages.setMessage({
+    description: '{% trans "URL copied!" %}',
+    type: 'success'
+  });
+  e.clearSelection();
+});
+</script>
+<script src="{% static 'vault/js/metadata.js' %}"></script>
+<script>
+  Metadata.init();
+  Metadata.CacheControl.init();
+  Base.Paginator.init();
+</script>
+{% endblock %}

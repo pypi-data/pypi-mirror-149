@@ -1,0 +1,35 @@
+{% extends "vault/base_bare.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Project Error' %}{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid project-error">
+  <div class="row">
+    <div class="col-md-12">
+
+      <div class="vault-error">
+        <h1>{% trans 'Error' %}</h1>
+        <h2>
+          {% if inexistent_project %}
+            {% blocktrans %}Project "{{ inexistent_project }}" doesn't exist{% endblocktrans %}
+          {% else %}
+            {% trans 'Vault Error' %}
+          {% endif %}
+        </h2>
+
+        {% if project_name %}
+        <a href="{% url 'dashboard' project_name %}">
+          {% blocktrans %}Return to Home{% endblocktrans %}
+        </a>
+        {% endif %}
+
+        <a href="{% url 'change_project' %}">
+          {% trans "Select a different project" %}
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

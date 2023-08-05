@@ -1,0 +1,206 @@
+#sidebar,
+.sidebar-container {
+  position: relative;
+  width: 256px;
+  min-width: 256px;
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #285dc1 url(../img/bg-sidebar.svg) scroll no-repeat top left;
+  background-size: 100%;
+  height: 100vh;
+  padding: 0 15px 60px;
+  color: white;
+  overflow-y: auto;
+}
+
+#sidebar .vault-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+#sidebar .vault-logo img {
+  width: 55%;
+}
+
+#sidebar .sidebar-base {
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 256px;
+  padding: 15px;
+  padding-right: 0;
+  background-color: #2251a9a3;
+  backdrop-filter: blur(5px);
+}
+
+#sidebar .help-link {
+  flex-grow: 1;
+  position: relative;
+  width: auto;
+  color: white;
+  font-size: 1.1em;
+  padding: 8px 15px 8px 43px;
+  border-radius: 25px 0 0 25px;
+}
+
+#sidebar .help-link .icon {
+  position: absolute;
+  font-size: 1.8em;
+  top: 6px;
+  left: 6px;
+  opacity: 0.75;
+}
+
+#sidebar .help-link:hover {
+  background-color: rgba(26, 62, 127, 0.75);
+}
+
+#sidebar .help-link:hover .icon {
+  opacity: 0.95;
+}
+
+#sidebar .current-project {
+  height: 40px;
+  width: 100%;
+}
+
+#sidebar .current-project button {
+  background-color: #1a3e7f;
+  border: none;
+  font-size: 14px;
+}
+
+#sidebar .current-project button.p-name {
+  width: 75%;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  border-radius: 4px 0 0 4px;
+  box-shadow: none;
+}
+
+#sidebar .current-project button.p-options {
+  border-radius: 0 4px 4px 0;
+  box-shadow: none;
+}
+
+#sidebar .separator {
+  margin: 0 0 15px;
+  padding-left: 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+#sidebar .icon {
+  display: inline-block;
+  width: 25px;
+}
+
+#sidebar ul {
+  padding: 0;
+  list-style: none;
+  margin-bottom: 30px;
+}
+
+#sidebar li {
+  margin: 0;
+  margin-right: -15px;
+  margin-bottom: 5px;
+}
+
+#sidebar li a,
+#sidebar li span {
+  position: relative;
+  font-size: 13px;
+  font-weight: bold;
+  padding-left: 10px;
+  display: block;
+  line-height: 30px;
+  color: #fff;
+  text-decoration: none;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+#sidebar li a::after {
+  position: absolute;
+  top: 14px;
+  right: 32px;
+}
+
+#sidebar li span {
+  color: #444;
+}
+
+#sidebar li a:hover {
+  color: #fff;
+  background-color: rgba(26, 62, 127, 0.75);
+}
+
+#sidebar ul.sub-menu {
+  margin: 0;
+  margin-left: 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.1s ease-out;
+}
+
+#sidebar .submenu-active ul.sub-menu {
+  max-height: 50vh;
+  transition: max-height 0.3s ease-in;
+}
+
+#sidebar ul.sub-menu .icon {
+  width: 15px;
+}
+
+#sidebar ul.sub-menu li {
+  margin: 5px 0 5px 10px;
+}
+
+#sidebar ul.sub-menu li a,
+#sidebar ul.sub-menu li span {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+#sidebar .sidebar-secrets {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+}
+
+#sidebar .sidebar-secrets .vault-env {
+  font-size: 32px;
+  font-weight: bolder;
+  text-align: center;
+  opacity: 0.15;
+  text-transform: uppercase;
+  color: white;
+}
+
+.dummy-menu-item span {
+  animation-name: menu-pulse;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes menu-pulse {
+  from {
+    background-color: rgba(26, 62, 127, 0.15);
+  }
+  50% {
+    background-color: rgba(26, 62, 127, 0.55);
+  }
+  to {
+    background-color: rgba(26, 62, 127, 0.15);
+  }
+}

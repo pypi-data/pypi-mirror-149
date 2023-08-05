@@ -1,0 +1,105 @@
+{% extends "vault/base_bare.html" %}
+{% load i18n static %}
+
+{% block css %}
+  {{ form.media }}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/login.css' %}">
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} {% trans 'login' %}{% endblock %}
+
+{% block content_top %}
+<div class="logo">
+  <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+</div>
+{% endblock %}
+
+{% block content %}
+
+  {% if form.errors and not form.non_field_errors %}
+    <div class="errornote alert alert-danger">
+      {% if form.errors.items|length == 1 %}
+        {% trans "Please correct the error below." %}
+      {% else %}
+        {% trans "Please correct the errors below." %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="row justify-content-center">
+    <div class="col-6">
+
+      {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+          <div class="errornote alert alert-danger">
+            {{ error }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="box login-box">
+        {% if user.is_authenticated %}
+          <div class="errornote alert alert-warning">
+            {% blocktrans trimmed %}
+              You are authenticated as {{ username }}, but are not authorized to access this page. Would you like to login to a different account?
+            {% endblocktrans %}
+          </div>
+        {% endif %}
+
+        <h3>Login</h3>
+
+        <section class="d-flex justify-content-center">
+          <form action="{{ app_path }}" method="post" id="login-form" class="d-flex flex-column">
+            {% csrf_token %}
+
+            {% block contrib_auth_form %}
+              <div class="form-group">
+                {{ form.username.errors }}
+                {{ form.username }}
+              </div>
+
+              <div class="form-group">
+                {{ form.password.errors }}
+                {{ form.password }}
+                <input type="hidden" name="next" value="{{ next }}">
+              </div>
+
+              {% url 'admin_password_reset' as password_reset_url %}
+              {% if password_reset_url %}
+                <div class="password-reset-link">
+                  <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+                </div>
+              {% endif %}
+
+              <input type="submit" class="btn btn-primary btn-block" value="{% trans 'Login' %}">
+            {% endblock %}
+
+            {% if providers %}
+              {% block form_separator %}
+                <hr class="hr-separator">
+              {% endblock %}
+
+              {% block provider_list %}
+                <div class="providers d-flex flex-column">
+                  {% for provider in providers %}
+                    <a href="{{ provider.url }}" class="btn btn-outline-secondary btn-block mb-3">{{ provider.name }}</a>
+                  {% endfor %}
+                </div>
+              {% endblock %}
+            {% endif %}
+          </form>
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script>
+  localStorage.clear();
+</script>
+{% endblock %}

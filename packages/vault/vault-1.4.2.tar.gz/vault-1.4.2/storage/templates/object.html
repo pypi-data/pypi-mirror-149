@@ -1,0 +1,189 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+{% load pagination storage_tags %}
+
+{% block title %}Object Storage &rsaquo; {% trans "Object" %}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
+{% endblock %}
+
+{% block content_title %}Object{% endblock %}
+
+{% block content_top %}
+  <a class="btn btn-primary btn-sm" href="{% url 'preview' project=project_name container=container objectname=objectname %}" target="_blank">
+  <i class="fa fa-folder-open"></i>&nbsp;&nbsp;Open</a>
+
+  <a class="btn btn-primary btn-sm" href="{% url 'download' project=project_name container=container objectname=objectname %}" download>
+  <i class="fa fa-download"></i>&nbsp;&nbsp;Download</a>
+
+  <a class="btn btn-primary btn-sm" href="{{ public_url }}" target="_blank">
+  <i class="fa fa-link"></i>&nbsp;&nbsp;Public&nbsp;URL</a>
+
+  <a class="btn btn-danger btn-sm" href="{% url 'delete_object' project=project_name container=container objectname=objectname %}" onclick="return confirm('Delete object {{ objectname }}?');">
+  <i class="fa fa-trash-alt"></i>&nbsp;&nbsp;Delete</a>
+{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url 'containerview' project_name %}">{% trans "Containers" %}</a>
+
+  {% if prefix %}
+    <a class="u" href="{% url 'objectview' project=project_name container=container  %}">{{ container }}</a>
+  {% else %}
+    <span>{{ container }}</span>
+  {% endif %}
+
+  {% for prefix in prefixes %}
+    {% if forloop.counter < prefixes|length %}
+      <a href="{% url 'objectview' project=project_name container=container prefix=prefix.full_name %}">{{prefix.display_name}}</a>
+    {% else %}
+      {{ prefix.display_name }}
+    {% endif %}
+  {% endfor %}
+
+{% endblock %}
+
+{% block content %}
+
+<h3>Headers</h3>
+<br>
+
+<div class="box-table table-metadata">
+  <table class="items-list table">
+    <thead>
+      <tr>
+        <th style="width: 30%">Name</th>
+        <th>Value</th>
+        <th style="width: 20%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for key, value in system_headers.items %}
+      <tr>
+        <td>
+          {% if key == 'Cache-Control' %}
+            <a href="#modal-cache-control"
+               class="btn-cache-control"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
+              {{ key }}
+            </a>
+          {% else %}
+            {{ key }}
+          {% endif %}
+        </td>
+        <td>
+          {% if key == 'Cache-Control' %}
+            <span class="cache-control">{{ value }}</span>
+          {% else %}
+            {{ value }}
+          {% endif %}
+        </td>
+        <td>
+          {% if key == 'Cache-Control' %}
+            {% if value == '' %}
+            <a href="#modal-cache-control"
+               class="btn-cache-control add btn btn-sm btn-primary"
+               title="Add Cache-Control"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
+              <i class="fas fa-plus-square"></i> Add Cache-Control
+            </a>
+            {% else %}
+            <a href="#modal-cache-control"
+               class="btn-cache-control add btn btn-sm btn-primary"
+               title="Edit Cache-Control"
+               data-bs-target="#modal-cache-control"
+               data-bs-toggle="modal"
+               data-cache-control-url="{% url 'cache_control' project=project_name container=container objectname=objectname %}">
+              <i class="fas fa-edit"></i>
+            </a>
+            {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<h3>{% trans 'Optionals' %}</h3>
+<br>
+<div id="x-delete-at"></div>
+
+
+<h3>{% trans 'Custom Metadata' %}</h3>
+<br>
+
+<div style="margin-bottom: 15px;">
+  <a class="btn btn-primary btn-sm btn-custom-metadata" href="javascript:void(0);">
+    <i class="fas fa-plus"></i>&nbsp;Add new header
+  </a>
+</div>
+
+<div class="form-box table-custom-metadata"
+     data-custom-meta-url="{% url 'edit_custom_metadata' project=project_name container=container objectname=objectname %}">
+  <div class="content">
+    <table class="items-list table">
+      <thead>
+        <tr>
+          <th style="width: 30%">Name</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in custom_headers.items %}
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+              <span>x-object-meta-</span>
+              <input type="text" class="form-control" value="{{ key }}" />
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; justify-content: space-around;">
+              <input type="text" class="form-control" value="{{ value }}" />
+              <i class="fa fa-trash-alt" style="width: 1%;margin: 8px;"></i>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="base">
+    <a class="btn btn-primary btn-save" href="javascript:void(0);">Save</a>
+  </div>
+</div>
+
+{% include "modal_cache_control.html" %}
+{% endblock %}
+
+{% block js_bottom %}
+<script src="{% static 'vault/js/metadata.js' %}"></script>
+<script src="{% static 'storage/js/storage.tools.js' %}"></script>
+<script>
+  Storage.Object.init();
+  Metadata.CacheControl.init({
+    'callBack': function(callback) {
+      var cache_control = document.getElementsByClassName("cache-control");
+      var cache_control_link = document.getElementsByClassName("btn-cache-control add");
+      var cache_control_icon = cache_control_link[0].getElementsByTagName('i');
+      cache_control_link[0].title = 'Edit Cache-Control';
+      cache_control_icon[0].className = 'fas fa-edit';
+      cache_control[0].textContent = callback;
+    }
+  });
+</script>
+
+<script>
+  const OPTIONAL_HEADERS_URL = "{% url 'optional_headers' project=project_name container=container objectname=objectname %}";
+  const METADATA_URL = "{% url 'metadata' project=project_name container=container objectname=objectname %}";
+</script>
+<script src="{% static 'storage/js/x-delete-at.js' %}"></script>
+{% endblock %}

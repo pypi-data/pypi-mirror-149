@@ -1,0 +1,39 @@
+{% extends "vault/base.html" %}
+
+{% load i18n %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Object Storage{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Object Storage</a>
+<a href="{% url 'storage_cache' project_name %}">Cache</a>
+<span>{% trans 'Remover do Cache' %}</span>
+{% endblock %}
+
+{% block content %}
+  <form method="POST" action="{% url "remove_from_cache" project_name %}" class="form-box project-form">
+    {% csrf_token %}
+    <fieldset class="content">
+      <div class="col-xl-12">
+        <p class="help-block mb-2">
+          {% trans 'Insira todas as URLs que precisam ser removidas do cache. Uma por linha.' %}
+        </p>
+        <div class="form-group">
+          {{ form.urls }}
+          {{ form.urls.errors }}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="col-md-12">
+        <button class="btn btn-primary" type="submit">
+          {% trans "Remover do Cache" %}
+        </button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+{% endblock %}

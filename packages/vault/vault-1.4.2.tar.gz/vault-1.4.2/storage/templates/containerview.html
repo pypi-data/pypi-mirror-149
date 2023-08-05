@@ -1,0 +1,207 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static pagination %}
+
+{% block title %}Object Storage &rsaquo; {% trans "Containers" %}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'storage/css/storage.css' %}" />
+{% endblock %}
+
+{% block content_title %}{% trans "Containers" %}{% endblock %}
+
+{% block content_top %}
+  <a href="{% url 'create_container' project_name %}" class="btn btn btn-primary btn-sm">
+    {% trans 'New Container'%}
+  </a>
+{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Object Storage</a>
+<span>{% trans "Containers" %}</span>
+{% endblock %}
+
+{% block content %}
+
+<div class="box-table">
+  <table id="container-list" class="items-list table">
+    <thead>
+      <tr>
+        <th style="width: 3%"></th>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Objects' %}</th>
+        <th>{% trans 'Size' %}</th>
+        <th style="width: 5%">&nbsp;</th>
+        <th style="width: 5%">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for container in containers %}
+      <tr>
+        <td>
+          <i class="fas fa-inbox"></i>
+        </td>
+        <td>
+          <strong>
+            <a href="{% url 'objectview' project=project_name container=container.name %}" class="block">
+              {{container.name}}
+            </a>
+          </strong>
+        </td>
+        <td>
+          {{container.count}}
+        </td>
+        <td>
+          {{container.bytes|filesizeformat}}
+        </td>
+        <td>
+          <button class="btn-meta btn btn-sm btn-light" title="Container Metadata"
+                  data-name="{{ container.name }}"
+                  data-sub-content-title="{% trans 'Container Metadata' %}"
+                  data-meta-url="{% url 'metadata' project=project_name container=container.name %}">
+            <i class="fas fa-list-alt"></i>
+          </button>
+        </td>
+        <td>
+          <button class="btn-options btn btn-sm btn-light" title="Container Options"
+                  data-container-id="container-{{ forloop.counter }}">
+            <i class="fas fa-cog icon-white"></i>
+          </button>
+
+          {% block container_options %}
+          <script type="text/html" id="html-container-{{ forloop.counter }}">
+            <div id="options-container-{{ forloop.counter }}" class="container-options"
+                 data-status-urls='[{ "elementId": "#container-{{ forloop.counter }}-trash", "url": "{% url "container_trash_status" project=project_name container=container.name %}" },
+                                    { "elementId": "#container-{{ forloop.counter }}-acl", "url": "{% url "container_acl_status" project=project_name container=container.name %}" },
+                                    { "elementId": "#container-{{ forloop.counter }}-backup", "url": "{% url "container_backup_status" project=project_name container=container.name %}" }]'>
+
+              <span class="container-options-name">{{ container.name }}</span>
+
+              <ul class="container-options-items">
+                {% url 'edit_cors' project=project_name container=container.name as edit_cors_url %}
+                {% if edit_cors_url %}
+                  <li>
+                    <a href="{{ edit_cors_url }}" class="config-cors config-item">
+                      <span><i class="icon fa fa-random"></i>{% trans 'Set CORS' %}</span>
+                    </a>
+                  </li>
+                {% endif %}
+
+                <li>
+                  <a href="{% url 'object_versioning' project=project_name container=container.name %}" class="config-versioning config-item">
+                    <span><i class="icon fa fa-history"></i>{% trans 'Versioning' %}</span>
+                  </a>
+                </li>
+
+                {% comment %}
+                {% url "edit_acl" project=project_name container=container.name as edit_acl_url %}
+                {% if edit_acl_url %}
+                  <li>
+                    <a href="{{ edit_acl_url }}" class="config-acls config-item">
+                      <span><i class="icon fa fa-user"></i>{% trans 'Edit ACLs' %}</span>
+                    </a>
+                  </li>
+                {% endif %}
+                {% endcomment %}
+
+                <li>
+                  <a href="#" id="container-{{ forloop.counter }}-acl" class="config-acl config-item"
+                     data-setup-url="{% url "container_acl_update" project=project_name container=container.name %}"
+                     data-msg-enable="{% trans 'Your container will become public. All objects will be accessible by anyone' %}. Continue?"
+                     data-msg-disable="{% trans 'Your container will become private. Authentication token will be required to access any object' %}. Continue?"
+                     data-current-status="">
+                    <span class="item-verifying"><i class="icon fa fa-spinner fa-pulse"></i>{% trans 'Checking ACL' %}</span>
+                    <span class="item-enabled"><i class="icon fa fa-unlock"></i>{% trans 'Set as private' %}</span>
+                    <span class="item-disabled"><i class="icon fa fa-lock"></i>{% trans 'Set as public' %}</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="#" id="container-{{ forloop.counter }}-trash" class="config-trash config-item"
+                     data-setup-url="{% url "config_trash_container" project=project_name container=container.name %}"
+                     data-msg-enable="{% blocktrans %}This will enable the Trash for container {{ container.name }}. Continue?{% endblocktrans %}"
+                     data-msg-disable="{% trans 'By disabling the Trash, it will no longer be possible to restore deleted objects. Continue?' %}"
+                     data-current-status="">
+                    <span class="item-verifying"><i class="icon fa fa-spinner fa-pulse"></i>{% trans 'Checking Trash' %}</span>
+                    <span class="item-enabled"><i class="icon fa fa-toggle-on"></i>{% trans 'Disable Trash' %}</span>
+                    <span class="item-disabled"><i class="icon fa fa-toggle-off"></i>{% trans 'Enable Trash' %}</span>
+                  </a>
+                </li>
+
+                {% if backup_obj %}
+                <li>
+                  <a href="#" id="container-{{ forloop.counter }}-backup" class="config-backup config-item"
+                     data-setup-url="{% url "config_backup_container" project=project_name container=container.name %}"
+                     data-msg-enable="{% trans 'This will enable Backups for container' %} {{ container.name }}. Continue?"
+                     data-msg-disable="{% trans 'This container will no longer perform backups' %}. Continue?"
+                     data-current-status="">
+                    <span class="item-verifying"><i class="icon fa fa-spinner fa-pulse"></i>{% trans 'Checking Backup' %}</span>
+                    <span class="item-enabled"><i class="icon fa fa-toggle-on"></i>{% trans 'Disable Backup' %}</span>
+                    <span class="item-disabled"><i class="icon fa fa-toggle-off"></i>{% trans 'Enable Backup' %}</span>
+                  </a>
+                </li>
+                {% endif %}
+
+                <li>
+                  <a href="#" id="container-{{ forloop.counter }}-delete" class="btn-delete-container"
+                     data-delete-url="{% url "delete_container" project=project_name container=container.name %}"
+                     data-msg-delete="{% blocktrans %}Delete container {{container.name}}?{% endblocktrans %}">
+                    <span><i class="icon fas fa-trash"></i>{% trans 'Delete Container' %}</span>
+                  </a>
+                </li>
+              </ul>
+
+            </div> <!-- .container-options -->
+          </script>
+          {% endblock %}
+
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center">
+          <strong>There are no containers in this account yet. Create a new container by clicking the "Create Container" button.</strong>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="6" class="center">
+          {{ account_stat.x_account_bytes_used|filesizeformat }}
+          {% if account_stat.x_account_meta_quota_bytes %}
+            of {{account_stat.x_account_meta_quota_bytes|filesizeformat}}
+          {% endif %}
+          used
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{% block pagination %}
+<nav class="mb-5">
+  <ul class="pagination">
+    {% if marker %}
+    <li class="page-item">
+      <a class="page-link" href="?marker={{ marker }}">
+        {% trans 'next page' %} &rsaquo;
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}
+
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script src="{% static 'vault/js/metadata.js' %}"></script>
+<script src="{% static 'storage/js/storage.tools.js' %}"></script>
+<script>
+  Metadata.init({ 'showPreview': false });
+  Storage.Container.init();
+  Base.Paginator.init();
+</script>
+{% endblock %}

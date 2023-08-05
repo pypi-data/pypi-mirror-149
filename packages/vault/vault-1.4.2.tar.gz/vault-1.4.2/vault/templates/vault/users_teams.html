@@ -1,0 +1,65 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content_title %}{% trans 'List Teams and Users' %}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/users_teams.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <div id="search-user-team">
+    <div class="controls">
+      <div class="field-team">
+        <span>&nbsp;{% trans "Team" %}</span>
+        <select class="groups">
+          <option value="All">{% trans 'All' %}</option>
+          {% for group in groups %}
+            <option value="{{ group.id }}">{{ group.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field-users">
+        <span>&nbsp;{% trans 'User' %}</span>
+        <input type="text" class="users" name="" />
+      </div>
+    </div>
+
+    <div class="box-users-teams">
+      <table class="related-users" style="display: table;">
+        <thead>
+          <tr>
+            <th width="25%">{% trans 'Team' %}</th>
+            <th width="50%">{% trans 'User' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+          <tr>
+            <td class="grp">{{ group.name }}</td>
+            <td class="grp">
+              <ul style="padding-left: 20px;">
+              {% for user in group.users %}
+                <li>{{ user.email }}</li>
+              {% endfor %}
+              </ul>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'vault/js/users_teams_list.js' %}"></script>
+<script>
+Team.Users.init();
+</script>
+{% endblock %}

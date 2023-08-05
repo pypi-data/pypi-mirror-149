@@ -1,0 +1,40 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static vault_tags %}
+
+{% block title %}
+  {% trans "Cloud Migration" %} &rsaquo;
+  {% trans "Project Migration Status" %} &rsaquo;
+  {{ project.name }}
+{% endblock %}
+
+{% block some_top_info %}{% trans "Cloud Migration" %}{% endblock %}
+
+{% block content_title %}{% trans "Project Migration Status" %}{% endblock %}
+
+{% block content_breadcrumb %}
+<span>{% trans 'Cloud Migration' %}</span>
+<span>{% trans "Project Migration Status" %}</span>
+<span>{{ project.name }}</span>
+{% endblock %}
+
+{% block content %}
+<div id="project-migration-status-app"></div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+const PROJECT = {
+  id: "{{ project.id }}",
+  name: "{{ project.name }}",
+  metadata: JSON.parse('{{ metadata|escapejs }}'),
+  status: "{{ status }}"
+};
+const MIGRATE_URL = "{% url 'swift_cloud_migrate' %}";
+const REMOVAL_URL = "{% url 'swift_cloud_removal' %}";
+const PRICE_PREVIEW_URL = "{% url 'swift_cloud_price_preview' %}";
+const MIGRATION_DATA = JSON.parse('{{ migration_data|escapejs }}');
+const ENVIRON = "{% get_vault_env %}";
+</script>
+<script src="{% static 'vault/js/swift_cloud/project_status.js' %}"></script>
+{% endblock %}

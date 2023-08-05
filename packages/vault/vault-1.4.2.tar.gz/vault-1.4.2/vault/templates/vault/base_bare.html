@@ -1,0 +1,121 @@
+{% load static i18n vault_tags %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block metatags %}{% endblock %}
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/css/font-awesome-all.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vault/css/base.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vault/css/custom-bootstrap.css' %}">
+    {% block css %}{% endblock %}
+
+    <title>Vault - {% block title %}{% endblock %}</title>
+
+    <script src="{% static 'vendor/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'vault/js/base.js' %}"></script>
+  </head>
+
+  <body class="bare {% block bodyclass %}{% endblock %}">
+    {% block main_content %}
+    <main role="main">
+      <section class="main-content">
+
+        <div class="container-fluid">
+
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+
+              <div class="content-top">
+                {% block content_top %}
+
+                  <div class="bare-head-left">
+                    <a href="{% url 'main' %}">
+                      <img class="logo" src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+                    </a>
+                  </div>
+
+                  <div class="bare-head-right">
+                    {% include 'vault/user_info.html' %}
+                  </div>
+
+                  <div class="flex-break"></div>
+
+                  <div class="bare-title-left">
+                    <h2>{% block title_left %}{% endblock %}</h2>
+                  </div>
+
+                  <div class="bare-title-right">
+                    {% block title_right %}{% endblock %}
+                  </div>
+
+                {% endblock %}
+              </div>
+
+              <div class="content-body">
+                {% block content %}{% endblock %}
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+    {% endblock %}
+
+    <!-- debug -->
+    {% if DEBUG %}
+      {% include "vault/debug.html" %}
+    {% endif %}
+
+    <!-- messages -->
+    <ul class="messages"></ul>
+
+    <script src="{% static 'vendor/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/js/tools.bundle.js' %}"></script>
+    <script src="{% static 'vendor/js/bootbox.all.min.js' %}"></script>
+    <script src="{% static 'vendor/js/vue.js' if DEBUG else 'vendor/js/vue.min.js' %}"></script>
+    <script src="{% url 'translations_js' %}"></script>
+
+    <script>
+      Base.init();
+    </script>
+
+    <script>
+      bootbox.setDefaults({
+        backdrop: true,
+        locale: 'en',
+        centerVertical: true
+      });
+    </script>
+
+    {% if messages %}
+    <script>
+      let messages = {};
+    {% for message in messages %}
+      if (!messages['{{message|safe|capfirst}}']) {
+        messages['{{message|safe|capfirst}}'] = {
+          'type': '{% if message.tags %}{{ message.tags }}{% endif %}',
+          'count': 1
+        };
+      } else {
+        messages['{{message|safe|capfirst}}'].count += 1;
+      }
+    {% endfor %}
+      Object.keys(messages).forEach(m => {
+        Base.Messages.setMessage({
+          description: messages[m].count == 1 ? m : m + " (" + messages[m].count + ")",
+          type: messages[m].type
+        });
+      });
+    </script>
+    {% endif %}
+
+    {% block js_bottom %}{% endblock %}
+  </body>
+</html>

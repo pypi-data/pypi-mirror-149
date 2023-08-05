@@ -1,0 +1,56 @@
+{% extends "vault/base.html" %}
+{% load i18n %}
+{% load pagination %}
+
+{% block title %}{% trans 'Users' %}{% endblock %}
+
+{% block content_title %}Identity{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Identity</a>
+<span>{% trans 'Users' %}</span>
+{% endblock %}
+
+{% block content_top %}
+  <a href="{% url 'admin_add_user' project=project_name %}" class="create-user btn btn-primary btn-sm">
+    {% trans 'New User' %}
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="box-table">
+  <table class="items-list table">
+    <thead>
+      <tr>
+        <th width="30%">{% trans 'User' %}</th>
+        <th width="30%">{% trans 'Email' %}</th>
+        <th>{% trans 'Enabled' %}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.enabled }}</td>
+        <td class="text-end">
+          <a href="{% url 'edit_user' project=project_name user_id=user.id %}"
+             title="Edit" class="edit-item btn btn-sm btn-light">
+            <i class="fas fa-edit"></i> {% trans 'edit' %}
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% pagination users %}
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script>
+  Base.Paginator.init();
+</script>
+{% endblock %}

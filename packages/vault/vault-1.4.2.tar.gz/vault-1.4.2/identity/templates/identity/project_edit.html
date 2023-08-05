@@ -1,0 +1,115 @@
+{% extends "vault/base.html" %}
+{% load i18n static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block title %}{% trans 'Edit Project' %}{% endblock %}
+{% block content_title %}{% trans 'Edit Project' %}{% endblock %}
+
+{% block content_breadcrumb %}
+<a href="#">Identity</a>
+<span>{% trans 'Edit Project' %}</span>
+{% endblock %}
+
+{% block content_top %}
+  {% block delete_project_btn %}
+    <a href="{% url 'delete_project' project=project_name project_id=identity_project_id %}" class="btn btn-sm btn-danger">
+      <i class="fas fa-trash"></i>&nbsp;{% trans 'Delete Project' %}
+    </a>
+  {% endblock %}
+{% endblock %}
+
+{% block content %}
+  <form action="" class="form-box project-form" method="POST">
+    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+    {{ form.id }}
+    {{ form.action }}
+
+    <fieldset class="content">
+      <div class="row">
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+
+          {% if user_project %}
+            <div class="form-group mb-3">
+              <label>{% trans 'Project User:' %}</label>
+              <input type='text' name='user_project' class="form-control" readonly="readonly" value='{{ user_project }}' />
+            </div>
+
+            {% block reset_pass_btn %}
+            <div class="form-group">
+              <button class="reset-pass btn btn-primary mb-3">{% trans 'Reset Password' %}</button>
+              <div class="reset-loading">
+                <i class="fas fa-cog fa-pulse"></i>
+              </div>
+              <div class="reset-info">
+                {% trans 'New password:' %} <span class="new-pass"></span>
+              </div>
+            </div>
+            {% endblock %}
+            <hr>
+          {% endif %}
+
+          <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {{ form.description.errors }}
+          </div>
+
+          <div class="form-group">
+            {{ form.enabled.label_tag }}
+            {{ form.enabled }}
+            {{ form.enabled.errors }}
+          </div>
+
+          <div class="form-group">
+            {{ form.group.label_tag }}<br />
+            {{ form.group }}
+            {{ form.group.errors }}
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          {% if show_roles %}
+            {% include "identity/_project_members.html" %}
+          {% endif %}
+
+          {% include "identity/_project_metadata.html" %}
+        </div>
+
+      </div> <!-- .row -->
+    </fieldset>
+
+    <fieldset class="base">
+      <div class="row">
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit">{% trans 'Save Project' %}</button>
+        </div>
+      </div>
+    </fieldset>
+
+  </form>
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+  {% block show_roles_script %}
+    <script src="{% static 'identity/js/project.js' %}"></script>
+    <script>
+    Project.Users.init({
+      'projectId': '{{ identity_project_id }}',
+      'addUrl': '{% url "project_add_user" project_name %}',
+      'deleteUrl': '{% url "project_delete_user" project_name %}',
+      'listUrl': '{% url "project_list_users" project_name %}',
+      'resetPassUrl': '{% url "update_pass" project_name %}'
+    });
+    </script>
+  {% endblock %}
+{% endblock %}

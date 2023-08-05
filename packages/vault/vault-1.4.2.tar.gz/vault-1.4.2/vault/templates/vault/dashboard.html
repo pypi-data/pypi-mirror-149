@@ -1,0 +1,63 @@
+{% extends "vault/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vault/css/dashboard.css' %}" />
+{% endblock %}
+
+{% block some_top_info %}{% trans 'Dashboard' %}{% endblock %}
+{% block content_title %}{{ project_name }}{% endblock %}
+
+{% block breadcrumb %}{% endblock %}
+
+{% block content_top %}
+  {{ block.super }}
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-xl-8">
+      <div id="dashboard-widgets"></div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="box dashboard-info">
+        <div class="useful-links">
+          {% block extra_links %}{% endblock %}
+          <a class="item" href="{% url 'update_teams_users' project_name %}">
+            <i class="icon fas fa-users-cog"></i>
+            <span class="text">
+              <strong class="item-title">{% trans 'Manage my Team' %}</strong>
+              <span class="item-text">{% trans 'Add or remove someone in your team' %}</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="last-login">
+          <h4>{% trans 'Last Login' %}</h4>
+          <span>{{ last_login }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% if has_team %}
+<script src="{% static 'vault/js/vault-dashboard.js' %}"></script>
+<script>VaultDashboard('{% url "apps_info" %}', '{{ project_id }}');</script>
+{% endif %}
+
+<script>
+const lastLogin = document.querySelector('.last-login > span');
+lastLogin.innerText = new Intl.DateTimeFormat('{{ LANGUAGE_CODE }}', {
+  dateStyle: "long",
+  timeStyle: "short",
+}).format(new Date('{{ last_login }}'))
+</script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "vault/base.html" %}
+
+{% load storage_tags %}
+
+{% block title %}Storage - {{ project_name }}{% endblock %}
+
+{% block content_title %}Storage{% endblock %}
+
+{% block content_breadcrumb %}
+  <a href="{% url "containerview" project_name %}">Containers</a>
+  <span>Set CORS to container {{ container }}</span>
+{% endblock %}
+
+{% block content_top %}
+  <a class="btn btn-primary btn-sm" href="#addcors_modal" data-bs-target="#addcors_modal" data-bs-toggle="modal">
+    <i class="fas fa-server"></i>&nbsp;&nbsp;Add Host
+  </a>
+{% endblock %}
+
+{% block content %}
+  {% include "addcors_modal.html" %}
+
+  <div class="box-table">
+    <table class="items-list table">
+      <thead>
+        <tr>
+          <th style="width: 3%"></th>
+          <th>Name</th>
+          <th style="width: 5%"></th>
+        </tr>
+      </thead>
+
+    <tbody>
+    {% for host in cors %}
+      <tr>
+        <td><i class="fa fa-server"></i></td>
+        <td>
+          {{ host }}
+        </td>
+        <td>
+          <a class="btn btn-sm btn-danger" href="{% url 'edit_cors' project=project_name container=container%}?delete={{ host }}">
+            <i class="fas fa-trash icon-white"></i>
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">
+          <strong><center>There are no CORS for this container yet. Add a new host by clicking the red button.<center></strong>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block jsadd %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("a").tooltip({ 'selector': '', 'placement': 'bottom' });
+  });
+</script>
+{% endblock %}

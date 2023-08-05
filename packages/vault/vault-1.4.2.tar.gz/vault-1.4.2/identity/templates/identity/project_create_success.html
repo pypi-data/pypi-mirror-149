@@ -1,0 +1,122 @@
+{% extends "vault/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Project Created' %}{% endblock %}
+{% block content_title %}{% trans 'Project Created' %}{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'identity/css/project.css' %}" />
+{% endblock %}
+
+{% block breadcrumb %}
+  {% trans 'Save the information below to access the services' %}
+{% endblock %}
+
+{% block content %}
+  <div class="form-box credentials">
+
+    <div class="content">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <h4>{% trans 'Credentials' %}</h4>
+
+        <table class="table items-list">
+          <tr>
+            <th width="15%">{% trans 'Project' %}</th>
+            <td>{{ project_info.project_name }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Username' %}</th>
+            <td>{{ project_info.user_name }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Password' %}</th>
+            <td>{{ project_info.user_password }}</td>
+          </tr>
+          <tr>
+            <th>{% trans 'Authentication URL' %}</th>
+            <td>{{ project_info.auth_url }}</td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    </div>
+
+    <div class="base">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <button class="btn btn-info btn-sm btn-copy-clipboard" data-copied-msg="{% trans 'Copied to clipboard.' %}" id="btn-copy-clipboard">
+          {% trans 'Copy to Clipboard' %}
+        </button>
+
+        <button class="btn btn-info btn-sm btn-download" id="btn-download">
+          {% trans 'Download Credentials' %}
+        </button>
+
+      </div>
+    </div>
+
+    </div>
+
+  </div>
+
+  <div class="box credentials">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <h4>{% trans 'Object Storage Endpoints' %}</h4>
+
+        <table class="items-list table">
+          <tr>
+            <th width="15%">Admin URL</th>
+            <td>{{ project_info.endpoints.object_store.adminURL }}</td>
+          </tr>
+          <tr>
+            <th>Public URL</th>
+            <td>{{project_info.endpoints.object_store.publicURL }}</td>
+          </tr>
+          <tr>
+            <th>Internal URL</th>
+            <td>{{ project_info.endpoints.object_store.internalURL }}</td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+
+{% block js_bottom %}
+{{ block.super }}
+<script type="text/javascript">
+  var jsonData = JSON.stringify({
+    "project": "{{ project_info.project_name }}",
+    "username": "{{ project_info.user_name }}",
+    "password": "{{ project_info.user_password|safe }}",
+    "auth_url": "{{ project_info.auth_url }}"
+  });
+  var btnClipboard = document.getElementById('btn-copy-clipboard');
+  var btnDownload = document.getElementById('btn-download');
+  var copiedMsg = btnClipboard.dataset.copiedMsg;
+  var clipboard = new Clipboard('.btn-copy-clipboard', {
+      text: function(trigger) { return jsonData; }
+  });
+
+  clipboard.on('success', function(e) {
+      Base.Messages.setMessage({ description: copiedMsg, type: 'success' });
+      e.clearSelection();
+  });
+
+  btnDownload.onclick = () => {
+      Base.Download.json('credentials.json', jsonData);
+  }
+</script>
+{% endblock %}

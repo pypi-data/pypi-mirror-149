@@ -1,0 +1,93 @@
+{% load i18n static vault_tags %}
+
+<nav id="sidebar">
+  <a href="{% url 'main' %}" class="vault-logo">
+    <img src="{% static 'vault/img/logo-white.svg' %}" alt="Vault">
+  </a>
+
+  <div class="dropdown current-project btn-group">
+  {% if project_name and project_id %}
+    <button class="btn btn-primary p-name" type="button" title="{{ project_name }}">
+      {{ project_name }}
+    </button>
+    <button class="btn btn-primary p-options dropdown-toggle dropdown-toggle-split" id="dropdownMenuProjects"
+            type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuProjects">
+      <a class="dropdown-item" href="{% url 'change_project' %}">{% trans "Change Project" %}</a>
+      <a class="dropdown-item" href="{% url 'edit_project' project_name project_id %}">{% trans "Edit Project" %}</a>
+    </div>
+  {% endif %}
+  </div>
+
+  <div class="sidebar-secrets">
+    <div class="vault-env {% get_vault_env %}">{% get_vault_env %}</div>
+  </div>
+
+  <div class="separator">
+    <span>{% trans 'Main' %}</span>
+  </div>
+
+  <ul class="app-menus mb-0">
+    <li>
+      <a href="{% url 'main' %}" title="{% trans 'Home' %}">
+        <i class="icon fa fa-home"></i> {% trans 'Home' %}
+      </a>
+    </li>
+  </ul>
+
+  <div id="sidebar-app-menus"></div>
+
+  <div class="separator">
+    <span>{% trans 'Settings' %}</span>
+  </div>
+
+  <ul class="admin-menus" id="sidebar-admin-menus">
+    <li>
+      <a href="{% url 'update_teams_users' project_name %}" title="{% trans 'Manage Team' %}">
+        <i class="icon fas fa-users-cog"></i> {% trans 'Manage my Team' %}
+      </a>
+    </li>
+    {% if user.is_staff %}
+    <li>
+      <a href="{% url 'team_users' project_name %}" title="Teams and Users">
+        <i class="icon fa fa-building"></i> {% trans 'Teams and Users' %}
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'admin:index' %}" title="{% trans 'Settings' %}">
+        <i class="icon fa fa-cog"></i> {% trans 'Vault Admin' %}
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+
+  {% if SWIFT_CLOUD_ENABLED %}
+  <div class="separator">
+    <span>{% trans 'Cloud Migration' %}</span>
+  </div>
+  <ul>
+    {% if user.is_staff %}
+    <li>
+      <a href="{% url 'swift_cloud_report' %}" title="{% trans 'General Report' %}">
+        <i class="icon fas fa-file-alt"></i> {% trans 'General Report' %}
+      </a>
+    </li>
+    {% endif %}
+    <li>
+      <a href="{% url 'swift_cloud_status' %}" title="{% trans 'Migration Status' %}">
+        <i class="icon fas fa-cloud-upload-alt"></i> {% trans 'Migration Status' %}
+      </a>
+    </li>
+  </ul>
+  {% endif %}
+
+  {% if HELP_URL %}
+  <div class="sidebar-base">
+    <a class="help-link" href="{{ HELP_URL }}">
+      <i class="icon fas fa-question-circle"></i> {% trans 'Vault Help' %}
+    </a>
+  </div>
+  {% endif %}
+</nav>
