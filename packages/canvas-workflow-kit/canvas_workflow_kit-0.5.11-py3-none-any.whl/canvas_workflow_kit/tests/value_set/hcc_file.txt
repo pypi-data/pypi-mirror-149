@@ -1,0 +1,52 @@
+from protocols.value_set.value_set import ValueSet
+
+
+class HCCConditions(ValueSet):
+
+    VALUE_SET_NAME = 'HCC Conditions'
+    EXPANSION_VERSION = 'CanvasHCC Update 18-10-08'
+
+    ICD10CM = {
+        'COD01','COD02','COD03','COD04',
+    }
+
+    LABELS = {
+        'COD01': {
+            'HCC': 'HCC 01',
+            'ICD10': "Descri'tion 01",
+            'CommunityRAF': 0.123,
+        },
+        'COD02': {
+            'HCC': 'HCC 02',
+            'ICD10': 'Description 02',
+            'CommunityRAF': 0.223,
+        },
+        'COD03': {
+            'HCC': "HCC'03",
+            'ICD10': 'Description 03',
+            'CommunityRAF': 0.133,
+        },
+        'COD04': {
+            'HCC': 'HCC 04',
+            'ICD10': 'Description 04',
+            'CommunityRAF': 0.124,
+        },
+    }
+
+    @staticmethod
+    def label_hdcc_for(idc10) -> str:
+        if idc10 in HCCConditions.LABELS:
+            return HCCConditions.LABELS[idc10]['HCC']
+        return ''
+
+    @staticmethod
+    def label_idc10_for(idc10) -> str:
+        if idc10 in HCCConditions.LABELS:
+            return HCCConditions.LABELS[idc10]['ICD10']
+        return ''
+
+    @staticmethod
+    def raf_for(idc10) -> float:
+        if idc10 in HCCConditions.LABELS:
+            return HCCConditions.LABELS[idc10]['CommunityRAF']
+        return 0
