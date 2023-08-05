@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "pycsw-rpi"
+version = "0.1.1"
+description = "PyCSW monkey patched for Slovak national catalogue service"
+authors = ["Peter Mozolík <petermozolik@gmail.com>"]
+license = "MIT"
+readme = "Readme.md"
+repository = "https://gitlab.com/mzpsr/minzp/geocloud.sk/applications/pycsw-rpi"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pycsw = "^2.6"
+SQLAlchemy = "^1.4"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+pytest = "^7.1.2"
+isort = "^5.10.1"
+
+[tool.poetry.scripts]
+pycsw_rpi-admin = "pycsw_rpi.admin:run"
+
+[tool.black]
+# made black default line-length explicit
+line-length = 88
+
+[tool.isort]
+# make isort compatible with black i.e.
+# mods made by isort is not reformated by black
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#isort
+profile = "black"
+# keep sync with tool.black.line-length 
+line_length = 88
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
