@@ -1,0 +1,50 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+
+
+{% macro layer_custom(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def call(self, inputs, training=True):
+        """ Takes a tensor as input and feeds it forward through a layer of an operation written by the user. """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}                
+        input_ = inputs['input']
+        output = input_
+        
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'preview': 'output'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """
+        return tf.constant(0), tf.constant(0)
+    
+    def build(self, input_shape: Dict[str, tf.TensorShape]) -> None:
+        """ Called by the Keras framework upon the first invocation of the call method
+        
+        Args:
+            input_shape: A dictionary with layer id and its tensor shape        
+        """
+        return
+
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+
+

@@ -1,0 +1,36 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+
+
+{% macro layer_tf2x_rescale(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer):
+    def call(self, inputs, training=True):
+        """ Takes a tensor and rescales it """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}               
+        input_ = inputs['input']
+        output = tf.image.resize(input_, [{{layer_spec.height}}, {{layer_spec.width}}])
+        
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'preview': 'output'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+	
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Return`:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+        
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+

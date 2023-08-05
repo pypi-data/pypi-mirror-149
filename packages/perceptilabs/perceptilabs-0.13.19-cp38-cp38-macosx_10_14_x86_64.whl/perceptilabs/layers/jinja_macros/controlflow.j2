@@ -1,0 +1,17 @@
+{% macro indented_if(condition) %}
+    {% filter remove_lspaces(4) -%}                
+        {% if condition -%}
+            {{ caller() }}
+        {%- endif -%}
+    {% endfilter -%}    
+{% endmacro %}
+
+
+{% macro indented_loop(items) %}
+    {% filter remove_lspaces(4) -%}                
+        {% for item in items: -%}
+            {{ caller(item) }}
+        {%- endfor -%}
+    {% endfilter -%}    
+{% endmacro %}
+

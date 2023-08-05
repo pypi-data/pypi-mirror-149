@@ -1,0 +1,110 @@
+{% from 'tf1x_utils.j2' import batch_normal, build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+{% from 'activations.j2' import activation_function %}
+
+
+{% macro layer_tf2x_recurrent(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def __init__(self):
+        super().__init__()
+        self._scope = '{{layer_spec.sanitized_name}}'
+        self._variables = {}
+        self._neurons = {{layer_spec.n_neurons}}
+        self._weights = None
+        self._biases = None
+        self._dropout = {{layer_spec.dropout}}
+        self._keep_prob = {{layer_spec.keep_prob}}
+        self._training = None
+        self._activation = None
+
+    def call(self, inputs, training=True):
+        """ Takes a tensor as input and feeds it forward through a layer of neurons, returning a newtensor. Invoked by the Keras framework. """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}                
+        input_ = inputs['input']
+        self._training = training
+
+        {% call indented_if(layer_spec.activation == 'LeakyReLU') %}
+            input_ = tf.keras.layers.LeakyReLU()(input_)
+        {% endcall %}
+
+        output = self.recurrent(input_)
+        weights = self.recurrent.weights
+
+        self.kernel = weights[0]
+        self.bias = weights[-1]
+
+        {% call indented_if(layer_spec.return_sequence == True) %}
+            output = output[-1]
+        {% endcall %}
+
+        preview = output
+
+	    {% call indented_if(layer_spec.dropout) %}
+            output = self.dropout(output, training=self._training)
+            preview = output	    
+	    {% endcall %}	
+
+        self._variables = {k: v for k, v in locals().items() if can_serialize(v)}
+        
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'W': 'self.kernel', 'b': 'self.bias', 'preview': 'output'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        
+        return self._outputs
+
+    def build(self, input_shape: Dict[str, tf.TensorShape]) -> None:
+        """ Called by the Keras framework upon the first invocation of the call method
+        
+        Args:
+            input_shape: A dictionary with layer id and its tensor shape        
+        """
+        {% call indented_if(layer_spec.dropout) %}
+            training = tf.constant(True) if self._training is None else self._training 
+            self.dropout = tf.keras.layers.Dropout(rate=(1 - self._keep_prob) * tf.cast(training, tf.float32))
+	    {% endcall %}
+
+        {% call indented_if(layer_spec.activation != 'LeakyReLU' and layer_spec.activation != 'None') %}
+            self._activation = '{{layer_spec.activation}}'.lower()
+        {% endcall %}
+
+        {% call indented_if(layer_spec.activation == 'None' or layer_spec.activation == 'LeakyReLU') %}
+            self._activation = None
+        {% endcall %}
+
+        {% call indented_if(layer_spec.version == 'RNN') %}
+            self.recurrent = tf.keras.layers.SimpleRNN(units=self._neurons, activation=self._activation, kernel_initializer='glorot_uniform', return_sequences={{layer_spec.return_sequence}})
+        {% endcall %}
+
+        {% call indented_if(layer_spec.version == 'GRU') %}
+            self.recurrent = tf.keras.layers.GRU(units=self._neurons, activation=self._activation, kernel_initializer='glorot_uniform', return_sequences={{layer_spec.return_sequence}})
+        {% endcall %}
+
+        {% call indented_if(layer_spec.version == 'LSTM') %}
+            self.recurrent = tf.keras.layers.LSTM(units=self._neurons, activation=self._activation, kernel_initializer='glorot_uniform', return_sequences={{layer_spec.return_sequence}})
+        {% endcall %}      
+
+    def get_config(self) -> Dict[str, Picklable]:
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return self._variables
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """
+        return self.kernel, self.bias
+        
+
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+
