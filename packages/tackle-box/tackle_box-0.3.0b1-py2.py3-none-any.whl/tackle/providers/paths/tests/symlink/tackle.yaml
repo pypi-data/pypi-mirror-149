@@ -1,0 +1,40 @@
+
+sym:
+  ->: symlink
+  src: src.yaml
+  dst: dst.yaml
+  overwrite: true
+
+chmod_:
+  ->: chmod
+  path: dst.yaml
+  mode: 0o644
+
+read:
+  ->: yaml
+  path: dst.yaml
+
+path:
+  ->: path_join
+  paths:
+    - somedir
+    - src.yaml
+
+read_dir:
+  ->: yaml
+  path: "{{ path }}"
+
+sym2:
+  ->: symlink
+  src: "{{ path }}"
+  dst: dst.yaml
+  overwrite: true
+
+read_dir2:
+  ->: yaml
+  path: "{{ path }}"
+
+
+
+#rm:
+#  ->: remove
