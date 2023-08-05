@@ -1,0 +1,119 @@
+Metadata-Version: 2.1
+Name: nodepool
+Version: 6.0.0
+Summary: Node pool management for a distributed test infrastructure
+Home-page: https://zuul-ci.org/
+Author: Zuul Team
+Author-email: zuul-discuss@lists.zuul-ci.org
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >= 3.7
+Requires-Dist: Paste
+Requires-Dist: PrettyTable (<0.8,>=0.6)
+Requires-Dist: PyYAML
+Requires-Dist: WebOb (>=1.8.1)
+Requires-Dist: azure-mgmt-compute (<17.0.0)
+Requires-Dist: azure-mgmt-network (<16.0.0)
+Requires-Dist: azure-mgmt-resource (<15.0.0)
+Requires-Dist: boto3 (>=1.20.0)
+Requires-Dist: diskimage-builder (>=3.20.2)
+Requires-Dist: extras
+Requires-Dist: google-api-python-client
+Requires-Dist: ibm-cos-sdk (>=2.11.0)
+Requires-Dist: ibm-platform-services
+Requires-Dist: ibm-vpc
+Requires-Dist: kazoo (>=2.8.0)
+Requires-Dist: openshift (<0.14.0,>=0.13.1)
+Requires-Dist: openstacksdk (!=0.28.0,!=0.29.0,!=0.30.0,!=0.31.0,!=0.31.1,!=0.31.2,<1.0.0,>=0.27.0)
+Requires-Dist: paramiko (>=2.0.1)
+Requires-Dist: pbr (>=1.3)
+Requires-Dist: python-daemon (>=2.0.4)
+Requires-Dist: statsd (>=3.0)
+Requires-Dist: urllib3 (>=1.26.0)
+Requires-Dist: voluptuous
+Provides-Extra: nodepool_base
+Requires-Dist: objgraph ; extra == 'nodepool_base'
+Requires-Dist: python-logstash-async ; extra == 'nodepool_base'
+Requires-Dist: yappi ; extra == 'nodepool_base'
+Provides-Extra: test
+Requires-Dist: coverage ; extra == 'test'
+Requires-Dist: fixtures (>=0.3.12) ; extra == 'test'
+Requires-Dist: flake8 ; extra == 'test'
+Requires-Dist: mock (>=1.0) ; extra == 'test'
+Requires-Dist: moto ; extra == 'test'
+Requires-Dist: python-subunit ; extra == 'test'
+Requires-Dist: responses (>=0.12.1) ; extra == 'test'
+Requires-Dist: stestr (>=1.0.0) ; extra == 'test'
+Requires-Dist: testscenarios ; extra == 'test'
+Requires-Dist: testtools (>=0.9.27) ; extra == 'test'
+
+Nodepool
+========
+
+Nodepool is a system for managing test node resources. It supports launching
+single-use test nodes from cloud providers as well as managing access to
+pre-defined pre-existing nodes. Nodepool is part of a suite of tools that form
+a comprehensive test system, including Zuul.
+
+The latest documentation for Nodepool is published at:
+https://zuul-ci.org/docs/nodepool/
+
+The latest documentation for Zuul is published at:
+https://zuul-ci.org/docs/zuul/
+
+Getting Help
+------------
+
+There are two Zuul-related mailing lists:
+
+`zuul-announce <http://lists.zuul-ci.org/cgi-bin/mailman/listinfo/zuul-announce>`_
+  A low-traffic announcement-only list to which every Zuul operator or
+  power-user should subscribe.
+
+`zuul-discuss <http://lists.zuul-ci.org/cgi-bin/mailman/listinfo/zuul-discuss>`_
+  General discussion about Zuul, including questions about how to use
+  it, and future development.
+
+You will also find Zuul developers in the `#zuul` channel on Freenode
+IRC.
+
+Contributing
+------------
+
+To browse the latest code, see: https://opendev.org/zuul/nodepool
+To clone the latest code, use `git clone https://opendev.org/zuul/nodepool`
+
+Bugs are handled at: https://storyboard.openstack.org/#!/project/zuul/nodepool
+
+Code reviews are handled by gerrit at https://review.opendev.org
+
+After creating a Gerrit account, use `git review` to submit patches.
+Example::
+
+    # Do your commits
+    $ git review
+    # Enter your username if prompted
+
+Join `#zuul` on Freenode to discuss development or usage.
+
+License
+-------
+
+Nodepool is free software, licensed under the Apache License, version 2.0.
+
+Python Version Support
+----------------------
+
+Nodepool requires Python 3. It does not support Python 2.
+
+
+

@@ -1,0 +1,166 @@
+#!/bin/bash
+
+echo "*** fake-image-create: start"
+
+echo "arguments:"
+echo "----"
+echo $*
+echo "----"
+
+if [[ "${DIB_RELEASE}" != "21" ]]; then
+    echo "DIB_RELEASE not set correctly"
+    exit 1
+fi
+
+# test passing of real-life env-vars
+if [[ "${TMPDIR}" != "/opt/dib_tmp" ]]; then
+    echo "TMPDIR not set"
+    exit 1
+fi
+
+if [[ "${DIB_IMAGE_CACHE}" != "/opt/dib_cache" ]]; then
+    echo "DIB_IMAGE_CACHE not set"
+    exit 1
+fi
+
+if [[ "${DIB_CLOUD_IMAGES}" != "http://download.fedoraproject.org/pub/fedora/linux/releases/test/21-Beta/Cloud/Images/x86_64/" ]]; then
+    echo "DIB_CLOUD_IMAGES not set"
+    exit 1
+fi
+
+if [[ "${BASE_IMAGE_FILE}" != "Fedora-Cloud-Base-20141029-21_Beta.x86_64.qcow2" ]]; then
+    echo "BASE_IMAGE_FILE not set"
+    exit 1
+fi
+
+outfile=
+outtypes=("qcow2")
+
+TEMP=$(getopt -o xo:t: --long qemu-img-options:,no-tmpfs,checksum -- "$@")
+if [ $? -ne 0 ]; then
+    echo "Invalid option"
+    exit 1
+fi
+eval set -- "$TEMP"
+while true ; do
+    case "$1" in
+        --checksum)
+            echo " -> set --checksum"; shift 1;;
+        --no-tmpfs)
+            echo " -> set --no-tmpfs"; shift 1;;
+        --qemu-img-options)
+            echo " -> qemu-img-options: $2"; shift 2;;
+        -o) outfile=$2; shift 2;;
+        -t) IFS="," read -a outtypes <<< "$2"; shift 2;;
+        -x) echo " -> debugging enabled"; shift;;
+        --) shift ; break ;;
+        *) echo "Unknown option : $1"; exit 1;;
+    esac
+done
+
+ELEMENTS="$@"
+
+if [ -z "$outfile" ]; then
+    echo "No output file specified."
+    exit 1
+fi
+
+#
+#  WTF is this testing?  That we merge abstract diskimages correctly
+#  into children and append/override variables correctly.  The two
+#  images in the test config file
+#  (/nodepool/tests/fixtures/node_diskimage_parents.yaml) set
+#  PARENT_TEST_FLAG which we gate on here so we only run this for that
+#  test.  The diskimage layout when hitting this path is roughly like
+#  this:
+#
+#           %%%%% abstract-base %%%%%
+#           elements: fedora
+#           env:  TMPDIR, DIB_IMAGE_... (and so on)
+#                 PARENT_TEST_ENV_OVERRIDE=abstract-base
+#                  |       |
+#          |-------+        +-------|
+#          |                        |
+#          |                        |
+#          |     %%%%% abstract-intermediate %%%%%
+#          |     elements: intermediate
+#          |     env: PARENT_TEST_ENV_INTERMEDIATE=abstract-intermediate
+#          |                               |
+#          |                               |
+# %%%%% parent-image-1 %%%%%     %%%%% parent-image-2 %%%%%%
+# elements: vm                   elements: vm
+# env:  PARENT_TEST_FLAG=base   env:  PARENT_TEST_FLAG=intermediate
+#                                     PARENT_TEST_ENV_OVERRIDE=parent-image-2
+#
+# So for parent-image-1 we want to see elements "fedora vm" and for
+# parent-image-2 we want to see "fedora intermediate vm"; and similar
+# updates/overrides for the env-vars.
+#
+if [[ -n "${PARENT_TEST_FLAG}" ]]; then
+
+    if [[ "${PARENT_TEST_FLAG}" == "base" ]]; then
+        # Note we've already tested the base-defined env-vars like
+        # TMPDIR, DIB_*, etc. are merged because they're tested above.
+        if [[ "${ELEMENTS}" != "fedora vm" ]]; then
+            echo "Elements list did not merge correctly"
+            exit 1
+        else
+            echo "  -> Base elements list correctly merged"
+        fi
+
+    elif [[ "${PARENT_TEST_FLAG}" == "intermediate" ]]; then
+
+        if [[ "${ELEMENTS}" != "fedora intermediate vm" ]]; then
+            echo "Elements list did not merge correctly"
+            exit 1
+        else
+            echo "  -> Intermediate elements list correctly merged"
+        fi
+
+        if [[ "${PARENT_TEST_ENV_INTERMEDIATE}" != "abstract-intermediate" ]]; then
+            echo "Did not see intermediate env value in final job"
+            exit 1
+        else
+            echo "  -> Intermediate env value correctly merged"
+        fi
+
+        if [[ "${PARENT_TEST_ENV_OVERRIDE}" != "parent-image-2" ]]; then
+            echo "Final job did not override PARENT_TEST_ENV_OVERRIDE correctly"
+            exit 1
+        else
+            echo "  -> Env override correct"
+        fi
+    else
+        echo "Invalid PARENT_TEST_IMAGE?"
+        exit 1
+    fi
+
+fi
+
+# Tests can pause this script by creating this file before it runs.
+# No dib files should be created yet at the pause point.
+tmpdir=$(dirname $outfile)
+pause_file="$tmpdir/fake-image-create.pause"
+while [ -f "$pause_file" ]
+do
+    sleep .1
+done
+
+for outtype in ${outtypes[@]} ; do
+    echo "fake-data" > $outfile.$outtype
+    echo "10da41d43d4bd6d67db763616c18b72f" > $outfile.$outtype.md5
+    echo "0033e9d444953d11689b5fa6a6dba32bf901582f62b0825bc35f593190b1f7dc" > $outfile.$outtype.sha256
+done
+
+# Emulate manifest creation
+mkdir $outfile.d
+
+if [[ "${SHOULD_FAIL}" == 'true' ]]; then
+    echo "Should fail is set, exiting with status 127"
+    exit 127
+fi
+
+echo "*** fake-image-create: done"
+
+# Tests might need to know when this process is completed
+touch $tmpdir/fake-image-create.done

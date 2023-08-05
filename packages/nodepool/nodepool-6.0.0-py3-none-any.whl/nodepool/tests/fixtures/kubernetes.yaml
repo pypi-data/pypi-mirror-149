@@ -1,0 +1,34 @@
+zookeeper-servers:
+  - host: {zookeeper_host}
+    port: {zookeeper_port}
+    chroot: {zookeeper_chroot}
+
+zookeeper-tls:
+  ca: {zookeeper_ca}
+  cert: {zookeeper_cert}
+  key: {zookeeper_key}
+
+tenant-resource-limits:
+  - tenant-name: tenant-1
+    max-cores: 1024
+
+labels:
+  - name: pod-fedora
+  - name: kubernetes-namespace
+
+providers:
+  - name: kubespray
+    driver: kubernetes
+    context: admin-cluster.local
+    pools:
+      - name: main
+        max-servers: 2
+        node-attributes:
+          key1: value1
+          key2: value2
+        labels:
+          - name: kubernetes-namespace
+            type: namespace
+          - name: pod-fedora
+            type: pod
+            image: docker.io/fedora:28

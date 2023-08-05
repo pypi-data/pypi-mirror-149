@@ -1,0 +1,37 @@
+zookeeper-servers:
+  - host: null
+    port: null
+    chroot: null
+
+tenant-resource-limits:
+  - tenant-name: tenant-1
+    max-cores: 1024
+
+labels:
+  - name: debian-stretch-f1-micro
+
+providers:
+  - name: gcloud-provider
+    driver: gce
+    project: gcloud-project
+    region: us-central1
+    zone: us-central1-a
+    cloud-images:
+      - name: debian-stretch
+        image-project: debian-cloud
+        image-family: debian-9
+        username: zuul
+        key: ssh-rsa something zuul
+    pools:
+      - name: main
+        max-servers: 8
+        use-internal-ip: True
+        node-attributes:
+          key1: value1
+          key2: value2
+        labels:
+          - name: debian-stretch-f1-micro
+            instance-type: f1-micro
+            cloud-image: debian-stretch
+            volume-type: standard
+            volume-size: 10
