@@ -1,0 +1,123 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/@@main_template/macros/master"
+      i18n:domain="imio.smartweb">
+<body>
+
+<metal:main fill-slot="main">
+
+    <!-- fix some css for usage in Plone  -->
+    <style type="text/css">
+     #spotlight .header { padding-right: 120px !important; }
+     #content-core a { border-bottom: 0px solid transparent !important;}
+    </style>
+
+    <h1 class="documentFirstHeading" tal:content="context/Title" />
+
+    <p class="documentDescription" tal:content="structure context/@@description" />
+
+    <tal:check tal:condition="view/has_leadimage"
+               tal:define="scale_func context/@@images;
+                           scaled_image python: scale_func.scale('image', scale='affiche')">
+        <img tal:replace="structure python: scaled_image.tag(css_class='figure-img img-fluid')" />
+    </tal:check>
+
+    <p class="site_url"
+       tal:condition="context/site_url"><a target="_blank" tal:attributes="href context/site_url" tal:content="context/site_url" /></p>
+
+    <div class="text"
+         tal:content="structure context/text/output | nothing">
+    </div>
+
+    <div class="" tal:condition="context/video_url"
+         tal:content="structure view/get_embed_video" />
+
+    <ul>
+        <li tal:condition="context/facebook">
+          <span i18n:translate="">Facebook</span> :
+          <span itemprop="facebook" class="facebook"><a target="_blank" href="" tal:attributes="href context/facebook" tal:content="context/facebook">Facebook</a></span></li>
+
+        <li tal:condition="context/twitter">
+          <span i18n:translate="">Twitter</span> :
+          <span itemprop="twitter" class="twitter"><a target="_blank" href="" tal:attributes="href context/twitter" tal:content="context/twitter">Twitter</a></span></li>
+
+        <li tal:condition="context/instagram">
+          <span i18n:translate="">Instagram</span> :
+          <span itemprop="instagram" class="instagram"><a target="_blank" href="" tal:attributes="href context/instagram" tal:content="context/instagram">Instagram</a></span></li>
+
+        <li tal:condition="context/category">
+          <span i18n:translate="">Category</span> :
+          <span itemprop="category" class="category" tal:content="view/category">category</span></li>
+
+        <li tal:condition="context/topics">
+          <span i18n:translate="">Topics</span> :
+          <span itemprop="topics" class="topic" tal:content="python:view.topics()">topics</span></li>
+
+        <li tal:condition="context/iam">
+          <span i18n:translate="">I am</span> :
+          <span itemprop="iam" class="iam" tal:content="python:view.iam()">iam</span></li>
+
+        <li tal:condition="context/subjects">
+          <span i18n:translate="">Keywords</span> :
+          <span tal:repeat="subject context/subjects" itemprop="subject" class="subject" tal:content="subject">subject</span></li>
+    </ul>
+
+    <div tal:define="effective view/effective_date | nothing;
+                     expires view/expiration_date | nothing">
+      <div tal:condition="effective">
+        <span i18n:translate="">Effective</span> :
+        <span tal:replace="effective" /></div>
+      <div tal:condition="expires">
+        <span i18n:translate="">Expires</span> :
+        <span tal:replace="expires" /></div>
+    </div>
+
+    <div tal:define="images view/images"
+         tal:condition="images"
+         class="flexbin flexbin-margin">
+        <tal:images tal:repeat="item images">
+            <a class="spotlight gallery_item"
+               tal:define="image_view item/@@images;
+                           large python: image_view.scale('image', 'large')"
+               tal:attributes="href large/url | nothing;
+                               title item/title;
+                               data-description item/description">
+              <img tal:define="thumb python: image_view.scale('image', 'preview')"
+                   tal:attributes="src thumb/url | nothing;
+                                   alt item/title;
+                                   title item/title" />
+            </a>
+        </tal:images>
+    </div>
+
+    <div class="news-files"
+         tal:define="files view/files"
+         tal:condition="files">
+        <ul>
+            <li tal:repeat="item files">
+                <div tal:define="file_view nocall:item/@@file_view;
+                                 item_has_image item/image | nothing;
+                                 thumb_scale view/get_thumb_scale_list;
+                                 image_scale item/@@images;">
+                    <a tal:attributes="href item/absolute_url;
+                                       alt item/title">
+                        <span>
+                            <img class="mime-icon"
+                                 tal:attributes="src file_view/get_mimetype_icon">
+                            <span tal:content="item/title">Item Title</span>
+                            <span class="discreet">&mdash; <span tal:replace="file_view/human_readable_size" /></span>
+                        </span>
+                        <p><span tal:replace="item/description" /></p>
+                        <img tal:condition="item_has_image"
+                             tal:replace="structure python:image_scale.tag('image', scale=thumb_scale)" />
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</metal:main>
+</body>
+</html>
