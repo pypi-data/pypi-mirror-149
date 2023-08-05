@@ -1,0 +1,20 @@
+{% extends 'counts/_common.html' %}
+
+{% block counts %}
+  <!-- ======= Counts Section ======= -->
+  <section id="counts" class="counts">
+    <div class="container">
+
+      <div class="row counters">
+        {% for icon, title, count in counts %}
+          <div class="col-lg-3 col-6 text-center">
+            <span data-purecounter-start="0" data-purecounter-end="{{ count }}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>{{ title }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section>
+  <!-- End Counts Section -->
+{% endblock %}
