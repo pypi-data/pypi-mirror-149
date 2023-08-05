@@ -1,0 +1,209 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "audio": {
+            "type": "object",
+            "properties": {
+                "speaker": {
+                    "type": "string"
+                },
+                "filename": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "filename"
+            ]
+        },
+        "listof": {
+            "type": "object",
+            "properties": {
+                "listof": {
+                    "type": "string"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "object"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "file_type": {
+            "type": "string",
+            "enum": ["csv", "json", "psv", "pkl", "tsv", "xlsx", "xml"]
+        },
+        "name": {
+            "type": "string"
+        },
+        "display": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "skipheader": {
+            "type": "boolean"
+        },
+        "compare": {
+            "type": "string"
+        },
+        "sorting": {
+            "type": "string"
+        },
+        "transducers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": "string"
+                    },
+                    "target": {
+                        "type": "string"
+                    },
+                    "functions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "source",
+                    "target",
+                    "functions"
+                ]
+            }
+        },
+        "targets": {
+            "type": "object",
+            "properties": {
+                "word": {
+                    "type": "string"
+                },
+                "definition": {
+                    "type": "string"
+                },
+                "entryID": {
+                    "type": "string"
+                },
+                "optional": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "secondary_theme": {
+                    "type": "string"
+                },
+                "audio": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/audio"
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "definition_audio": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/audio"
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "example_sentence": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "example_sentence_definition": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "example_sentence_audio": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/audio"
+                                }
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "example_sentence_definition_audio": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/audio"
+                                }
+                            }
+                        },
+                        {
+                            "$ref": "#/definitions/listof"
+                        }
+                    ]
+                },
+                "img": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "word",
+                "definition"
+            ]
+        }
+    },
+    "required": [
+        "name",
+        "sorting",
+        "targets"
+    ]
+}

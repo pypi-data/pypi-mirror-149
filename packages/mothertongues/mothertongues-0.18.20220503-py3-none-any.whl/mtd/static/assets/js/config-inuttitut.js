@@ -1,0 +1,1 @@
+var config = {"L1": {"name": "Inuttitut", "lettersInLanguage": ["\u00e2", "a", "f", "b", "h", "g", "i", "k", "K", "l", "ng", "n\u0331g\u0331", "m", "n", "s", "t", "u"]}, "L2": {"name": "English"}, "build": "201908020947"}
