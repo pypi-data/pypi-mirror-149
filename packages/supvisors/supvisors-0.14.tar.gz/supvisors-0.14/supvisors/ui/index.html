@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:meld="https://github.com/Supervisor/supervisor">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="5" meld:id="meta_mid"/>
+    <title>Supvisors status</title>
+    <link rel="stylesheet" href="css/main_page.css" />
+    <link rel="stylesheet" href="css/ui_style.css" />
+    <link rel="stylesheet" href="css/menu.css" />
+    <link rel="stylesheet" href="css/button.css" />
+    <style meld:id="style_mid"> </style>
+</head>
+
+<body>
+    <div id="body_block">
+
+        <div id="left_side">
+            <header>
+                <h1><a href="index.html" meld:id="supvisors_mid">Supvisors</a></h1>
+                <p><span meld:id="version_mid"></span></p>
+                <p>view from <span meld:id="identifier_mid"></span></p>
+            </header>
+
+            <nav id="instance_list">
+                <h2>Supervisors</h2>
+                <div>
+                    <ul>
+                        <li meld:id="instance_li_mid"><a href="#" meld:id="instance_a_mid">Supervisor</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <nav id="application_list">
+                <h2 meld:id="appli_h_mid">Applications</h2>
+                <div>
+                    <ul>
+                        <li meld:id="appli_li_mid"><a href="#" meld:id="appli_a_mid">Application</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <footer>
+                <p>Contact: <a href="mailto:julien.6387.dev@gmail.com">Julien Le Cl&amp;eacute;ach</a></p>
+                <p id="copyright">&amp;copy; Copyright 2016-2022 Julien LE CLEACH</p>
+            </footer>
+        </div>
+
+        <div id="right_side">
+            <header>
+                <div id="state_modes">
+                    <div>
+                        <h3>
+                            <code meld:id="state_mid">SupvisorsStates</code>
+                        </h3>
+                    </div>
+                    <div>
+                        <ul class="vertical">
+                            <li><code meld:id="starting_mid">starting</code></li>
+                            <li><code meld:id="stopping_mid">stopping</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <ul class="linear action">
+                        <li>
+                            <a href="#" meld:id="restart_a_mid" class="on">
+                            <img src="img/restart_40.png" alt="Restart" title="Restart Supvisors"/></a>
+                        </li>
+                        <li>
+                            <a href="#" meld:id="shutdown_a_mid" class="on">
+                            <img src="img/shutdown_40.png" alt="Shutdown" title="Shutdown Supvisors"/></a>
+                        </li>
+                    </ul>
+                    <ul class="linear">
+                        <li>
+                            <a href="#" meld:id="refresh_a_mid" class="button on">
+                            <img src="img/reload_30.png" alt="Refresh" title="Refresh page"/></a>
+                        </li>
+                        <li>
+                            <a href="#" meld:id="autorefresh_a_mid" class="button on">
+                            <img src="img/auto_reload_30.png" alt="Auto-refresh" title="Auto-refresh page"/></a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+
+            <div id="index_contents">
+                <div id="box_part" meld:id="boxes_div_mid">
+                    <div meld:id="instance_div_mid" class="instanceBox">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2"><a href="#" meld:id="identifier_th_mid">Supervisor</a></th>
+                                    <th rowspan="2" meld:id="state_th_mid">State</th>
+                                    <th meld:id="time_th_mid">--:--:--</th>
+                                </tr>
+                                <tr>
+                                    <th meld:id="percent_th_mid">70%</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr meld:id="appli_tr_mid">
+                                    <td meld:id="app_name_td_mid"></td>
+                                    <td colspan="2" class="process_list">
+                                        <span meld:id="process_li_mid">
+                                            <a href="#" meld:id="process_a_mid" class="button"></a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="conflict_part" meld:id="conflicts_div_mid" class="horizontal_contents">
+                    <div>
+                        <table class="optionBox">
+                            <tr>
+                                <th>Conciliation Strategies</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul class="vertical">
+                                        <li meld:id="global_strategy_li_mid">
+                                            <a href="#" meld:id="global_strategy_a_mid" class="button on">--</a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="name">Name</th>
+                                    <th class="instance">Supervisor</th>
+                                    <th class="date">Uptime</th>
+                                    <th colspan="2">Actions</th>
+                                    <th>Strategy</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th class="name">Name</th>
+                                    <th class="instance">Supervisor</th>
+                                    <th class="date">Uptime</th>
+                                    <th colspan="2">Actions</th>
+                                    <th>Strategy</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr meld:id="tr_mid">
+                                    <td meld:id="name_td_mid">Name</td>
+                                    <td><a href="#" meld:id="conflict_instance_a_mid" class="button on">Supervisor</a></td>
+                                    <td meld:id="uptime_td_mid">Uptime</td>
+                                    <td><a href="#" meld:id="pstop_a_mid" class="button on">Stop</a></td>
+                                    <td><a href="#" meld:id="pkeep_a_mid" class="button on">Keep</a></td>
+                                    <td meld:id="strategy_td_mid"><ul class="vertical">
+                                        <li meld:id="local_strategy_li_mid">
+                                            <a href="#" meld:id="local_strategy_a_mid" class="button on">--</a>
+                                        </li>
+                                    </ul></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="statusBox">
+                <div id="messageBox" meld:id="message_mid"></div>
+                <div id="timeBox" class="invInfo" meld:id="time_mid"></div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+
