@@ -1,0 +1,25 @@
+{% extends 'counts/_common.html' %}
+
+{% block counts %}
+  <!-- ======= Counts Section ======= -->
+  <section id="counts" class="counts">
+    <div class="container">
+      <div class="row">
+        {% for icon, title, count in counts %}
+          {% if forloop.first %}
+          <div class="col-lg-3 col-md-6">
+          {% else%}
+          <div class="col-lg-3 col-md-6 mt-5 mt-md-0">
+          {% endif %}
+            <div class="count-box">
+              <i class="fas {{ icon }}"></i>
+              <span data-purecounter-start="0" data-purecounter-end="{{ count }}" data-purecounter-duration="1" class="purecounter"></span>
+              <p>{{ title }}</p>
+            </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!-- End Counts Section -->
+{% endblock %}
