@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Datalake catalog entry",
+    "type": "object",
+    "properties": {
+        "domain":   { "type": "string" },
+        "provider": { "type": "string" },
+        "feed":     { "type": "string" },
+        "columns":  { "$ref": "#/definitions/columns" },
+        "metadata": { "$ref": "#/definitions/metadata" },
+        "storage":  { "$ref": "#/definitions/storage" },
+        "delivery": { "$ref": "#/definitions/delivery" }
+    },
+    "required": [
+        "domain",
+        "provider",
+        "feed",
+        "columns",
+        "storage"
+    ],
+    "additionalProperties": true,
+    "definitions": {
+        "columns": {
+            "description": "Dataset columns definition",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "description": { "type": "string" },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "string",
+                            "number",
+                            "integer",
+                            "decimal",
+                            "date",
+                            "time",
+                            "datetime"
+                        ]
+                    },
+                    "gdpr": {
+                        "type": "object",
+                        "properties": {
+                            "pii":  { "type": "boolean" }
+                        },
+                        "additionalProperties": true
+                    }
+                },
+                "required": ["name", "type"],
+                "additionalProperties": true
+            }
+        },
+        "metadata": {
+            "description": "Any metadata that helps describing the dataset",
+            "type": "object",
+            "minProperties": 1
+        },
+        "storage": {
+            "description": "Informations about how and where dataset is stored",
+            "type": "object",
+            "properties": {
+                "path": {"$ref": "#/definitions/storage-path"},
+                "stores":{
+                    "type":"array", 
+                    "items": { "type":"string" }
+                }
+            },
+            "required": ["path"],
+            "additionalProperties": false
+        },
+        "storage-path": {
+            "description": "The path for the dataset in a storage",
+            "type":"object",
+            "properties": {
+                "pattern": { "type":"string" },
+                "params":{
+                    "type":"object",
+                    "patternProperties": {
+                        "^[A-Za-z0-9_]+$": { "type": "string" }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "required": ["pattern"],
+            "additionalProperties": false
+        },
+        "delivery": {
+            "type": "object",
+            "properties": {
+                "frequency":  { "type": "string", "description": "The frequency of new datasets like daily, weekly, monthly..." },
+                "not_before": { "type": "string", "description": "When a new dataset can be expected" },
+                "not_after":  { "type": "string", "description": "When a dataset can be considered late or missing" },
+                "monitor":    { "type": "boolean", "description": "Whether the dataset arrival is monitored or not" }
+            },
+            "required": ["frequency"],
+            "additionalProperties": true
+        }
+    }
+}
