@@ -1,0 +1,363 @@
+Photini - a simple photo metadata editor.
+http://github.com/jim-easterbrook/Photini
+Copyright (C) 2012-22  Jim Easterbrook  jim@jim-easterbrook.me.uk
+
+This program is free software: you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see
+<http://www.gnu.org/licenses/>.
+
+Changes in v2022.5.0:
+  1/ Can set alternative language texts for some fields (XMP only).
+  2/ Added a "headline" field to the descriptive metadata tab.
+  3/ Can initialise "ownership" template from file metadata.
+  4/ Drag a directory to the image list to open all its files.
+  5/ Better handling of unreadable thumbnails.
+  6/ QtWebKit is deprecated and will not be supported in a future release.
+  7/ Other minor improvements and bug fixes.
+
+Changes in v2022.3.2:
+  1/ Fix urllib import error porblem on some systems.
+  2/ Fix non-existing cache directory error.
+
+Changes in v2022.3.1:
+  1/ Fix bug when removing marker from Bing map.
+  2/ Fix bug in comparing version numbers.
+
+Changes in v2022.3.0:
+  1/ Removed OpenStreetMap tab.
+  2/ Added licence related stuf to ownership tab.
+  3/ Removed --user option from post install script.
+  4/ Better caching of geocoder results.
+  5/ Other minor improvements and bug fixes.
+
+Changes in v2022.2.0:
+  1/ Add uploader tab for "Ipernity" photo sharing club.
+  2/ Substantial rewrite of uploader tabs.
+  3/ Main window "maximised" state is saved.
+  4/ Other minor improvements and bug fixes.
+
+Changes in v2022.1.0:
+  1/ Simplified selection of dependencies when installing with pip.
+  2/ Improved spell check language menu.
+  3/ Add option to read BMFF files.
+  4/ Other minor improvements and bug fixes.
+
+Changes in v2021.12.0:
+  1/ Installing with pip should install dependencies if needed.
+  2/ Other minor improvements and bug fixes.
+
+Changes in v2021.11.1:
+  1/ Fix problems regenerating thumbnails if Pillow & FFmpeg are not available.
+  2/ Improved reading of Exif.Photo.UserComment values.
+  3/ Minimum version of python-exiv2 is now 0.8.1
+  4/ Other minor improvements and bug fixes.
+
+Changes in v2021.11.0:
+  1/ Can use PySide6 instead of PySide2 or PyQt5.
+  2/ New config option to enlarge user interface on high resolution screens.
+  3/ Other minor improvements and bug fixes.
+
+Changes in v2021.9.0:
+  1/ New option to set file timestamps to photo's taken date/time.
+  2/ Improved GPX importer.
+  3/ Drop Windows MSYS2 installer and use Windows Python instead.
+  4/ Add option to use python-exiv2 for metadata access.
+
+Changes in v2021.7.0:
+  1/ Added a tab for 'ownership' and copyright details.
+  2/ Added 'tooltip' hints to some text fields.
+  3/ Try to ensure only one instance of Photini runs at a time.
+  4/ Added menu option to make thumbnails for all images that have none.
+  5/ Other minor improvements and bug fixes.
+
+Changes in v2021.6.0:
+  1/ Show IPTC-IIM data length limits in text fields.
+  2/ Drop use of Python FlickrAPI library.
+  3/ Other minor improvements and bug fixes.
+
+Changes in v2021.4.0:
+  1/ Remove Python 2 and PyQt4 compatibility.
+  2/ Cache map search and elevation results for improved speed.
+  3/ Other minor improvements and bug fixes.
+
+Changes in v2021.1.0:
+  1/ Technical tab now includes camera model.
+  2/ Image list context menu now applies to all selected files.
+  3/ Fix hang when importing files from a folder.
+  4/ Can get thumbnails from more file types.
+  5/ Minor other fixes and improvements.
+
+Changes in v2020.12.1:
+  1/ Can now use PySide2 instead of PyQt5.
+  2/ Deprecated Python2 and PyQt4.
+  3/ No longer creates menu entries during installation. Run
+     photini-post-install after installation.
+  4/ Minor other fixes and improvements.
+
+Changes in v2020.11.0:
+  1/ Fix serious bug when saving "date taken" metadata.
+
+Changes in v2020.10.1:
+  1/ Fix bug when using --root option on Linux installer.
+
+Changes in v2020.10.0:
+  1/ Fix bug with non-ascii file or directory names on Windows.
+  2/ Fix bug when copying files from a high speed device.
+  3/ Fix Google Photos uploader bug when folder has no name.
+  4/ Improved installation, particularly start menu shortcuts.
+  5/ Minor other fixes and improvements.
+
+Changes in v2020.4.0:
+  1/ Stopped using deprecated MapBox tile layers.
+  2/ Many minor bug fixes and performance improvements.
+
+Changes in v2019.10.1:
+  1/ Improved technical tab widgets. Units (e.g. mm) are now included in the
+     display instead of the label, and blank or multiple values are handled
+     better.
+  2/ Several other bug fixes.
+
+Changes in v2019.10.0:
+  1/ GPS coords address lookup is now on a separate tab.
+  2/ Map tabs now display altitude as well as latitude & longitude.
+  3/ File count shows progress during import.
+  4/ Added 'move files' option to importer.
+  5/ Added Czech and Catalan localisations.
+  6/ Better handling of some non-standard metadata values.
+  7/ Use FFmpeg instead of Exiv2 to read video file metadata.
+  8/ Updated Windows installers, including GPX file reader and FFmpeg option.
+
+Changes in v2019.8.0:
+  1/ Added new Google Photos uploader.
+  2/ Improved login process for both uploaders.
+  3/ Added GPX file (GPS track) importer to set approximate locations.
+  4/ Made Photini extendable - can add tabs from other packages.
+  5/ Improved reliability of maps, uploaders, and importer.
+
+Changes in v2019.5.0:
+  1/ Added thumbnail context menu item to show metadata changes.
+  2/ Use tabs to show 'camera' and multiple 'subject' addresses.
+  3/ Can now synchronise Flickr metadata with local picture file.
+  4/ Removed Google Photos uploader as the API it used is defunct.
+  5/ Improved reliability when using PyGObject instead of pgi.
+  6/ Improved error messages from GObject/GLib stuff.
+
+Changes in v2018.8.0:
+  1/ Removed Facebook tab. Their API no longer allows photo uploads.
+  2/ Added "Mapbox" tab - OpenStreetMap data plus aerial imagery.
+  3/ Many changes to maps, e.g. removing "load map" button.
+  4/ Use OpenCage for all address lookups.
+
+Changes in v2018.5.0:
+  1/ Improved calculation of "35mm equivalent" focal length.
+  2/ Migrate spell check from PyEnchant to Gspell.
+  3/ Use environment variable to set location of config file.
+  4/ Copy more metadata to sidecar when it is created.
+  5/ Fix problem with QtWebEngine and some PyQt versions.
+  6/ Many other bug fixes and minor improvements.
+
+Changes in v2018.2.0:
+  1/ All maps are faster and less buggy.
+  2/ New Windows installer: Python 3.6, PyQt 5.10 (so Bing maps aerial view
+     works properly).
+
+Changes in v2017.12.0:
+  1/ Add 'rating' to descriptive tab.
+  2/ Don't try to upload files over 1 GByte to Flickr.
+  3/ Fix bug with thumbnails of portrait format images.
+
+Changes in v2017.10.0:
+  1/ Use timezone metadata from some Canon cameras.
+  2/ Make thumbnails 160x120 as specified by DCF.
+  3/ Fix bug in localisation of uploader tabs.
+  4/ Substantial rewrite of metadata handling.
+
+Changes in v2017.8.1:
+  1/ Added option to preserve file timestamps.
+  2/ Added option to change copyright boilerplate text.
+  3/ Added config file option to change application style.
+  4/ Fix bug with importing files with spaces in their names.
+  5/ Changed importer template marker from () to {}.
+
+Changes in v2017.8.0:
+  1/ Use Exif/Xmp thumbnails instead of computing from image data.
+  2/ Improved video file metadata reading.
+  3/ Added <multiple values> context menu to choose one of them.
+  4/ Added context menu to image selector.
+  5/ Can regenerate thumbnail, including from video files.
+  6/ New Windows installer, includes video file reading.
+
+Changes in v2017.6.0:
+  1/ Add location address metadata to map tabs.
+  2/ Fix bug in Flickr uploader if user hasn't set a "buddy" icon.
+  3/ Use OpenCage Data for OSM map search and address lookup.
+
+Changes in v2017.5.0:
+  1/ Migrate Bing map from v7 to v8 of Bing API.
+  2/ Many other map improvements.
+  3/ Time adjustment offset now includes time zone.
+
+Changes in v2017.03.0:
+  1/ Fix bugs in Google Photos uploader and remove disabled functionality.
+  2/ Improve error handling in Flickr uploader.
+  3/ Updated German translation.
+
+Changes in v2016.12.0:
+  1/ Started adding support for video files.
+  2/ Improved compatibility with files written by other software.
+  3/ Fixed several annoying bugs.
+
+Changes in v2016.10.0:
+  1/ Added a drop down list of favourite keywords.
+  2/ Improved spell checking of words with hyphens or apostrophes.
+  3/ Fix failure to open image viewer on some Windows versions.
+  4/ Fixed several minor bugs in map tabs.
+  5/ Fixed (I hope) segfault on exit bug.
+
+Changes in v2016.06.0:
+  1/ Added option to resize photos for Facebook upload.
+  2/ Improved handling of various 'raw' image formats.
+  3/ Store time zone offset in Exif data.
+  4/ Read time zone offset from some cameras.
+  5/ Improved reading and display of lens specification.
+  6/ Fixed several minor bugs and annoyances.
+
+Changes in v2016.05.0:
+  1/ Added a Facebook uploader tab.
+  2/ Display logged in user details on uploader tabs.
+  3/ Added 35mm equivalent focal length to 'technical' tab.
+  4/ Added German translation of program strings.
+  5/ Allow image file names to be given when running from command line.
+  6/ Fixed several minor bugs and annoyances.
+
+Changes in v2016.02.1:
+  1/ Replace accidentally invalidated Google maps API key.
+
+Changes in v2016.02.0:
+  1/ Made 'year' part of version number 4 digits.
+  2/ Made it easier to drag multiple photos to map.
+  3/ Changed 'Picasa' to 'Google Photos'.
+  4/ Fixed problem with Picasa authentication.
+  5/ Fixed some Python 3 incompatibilities.
+  6/ Fixed several minor bugs and annoyances.
+
+Changes in v15.11.0:
+  1/ Added time zone to 'technical' tab.
+  2/ Allow setting of date/time 'resolution'.
+  3/ Flickr uploader sets date 'granularity'.
+  4/ Dropped use of pyexiv2 library.
+
+Changes in v15.10.0:
+  1/ Added error handling to Flickr & Picasa uploaders.
+  2/ Added spell checking to most text entry fields.
+  3/ Speeded up importing photos from a camera.
+  4/ Fixed several minor bugs and annoyances.
+
+Changes in v15.09.1:
+  1/ Fix bug with importer not recognising some image types
+
+Changes in v15.09.0:
+  1/ Fix bugs with Qt4 and Python 3 introduced in last release.
+  2/ Improved widgets on 'technical' and 'descriptive' tabs.
+
+Changes in v15.08.1:
+  1/ Added Spanish translation of program strings.
+  2/ Added option to always write IPTC data.
+  3/ Improved speed on slow computers.
+  4/ Use PyQt5 if installed, PyQt4 otherwise.
+  5/ Fixed several minor bugs and annoyances.
+
+Changes in v15.07.1:
+  1/ Convert incompatible image formats before upload to Picasa/Flickr.
+  2/ Added lens selector to 'technical' tab.
+  3/ Improved internal handling of image metadata.
+  4/ Include subseconds in time stamps.
+
+Changes in v15.06.0:
+  1/ No longer store Picasa/Flickr login data in plain text file.
+  2/ Restructured Picasa and Flickr uploaders.
+  3/ Moved documentation to readthedocs.org.
+
+Changes in v15.05.0:
+  1/ Added aperture and focal length to 'technical' tab.
+  2/ Expanded range of file types that can be opened.
+  3/ Fixed several minor bugs and annoyances.
+
+Changes in v15.01.1:
+  1/ Fixed several minor bugs and annoyances.
+  2/ Removed need for 2to3 conversion when installing with Python3.
+
+Changes in v15.01.0:
+  1/ Removed Picasa uploader dependency on gdata-python-client.
+  2/ Several minor bug fixes.
+
+Changes in v14.10.0:
+  1/ Improved drag and drop of images on to map.
+  2/ Fixed some map bugs caused by '\' in Windows file paths.
+
+Changes in v14.09.0:
+  1/ Importer can now copy from any directory on the computer.
+  2/ Linux installer now adds a menu shortcut.
+
+Changes in v14.08.1:
+  1/ Added stuff to build a Windows all-in-one installer.
+  2/ Fixed some bugs, mostly when running on Windows.
+
+Changes in v14.08.0:
+  1/ Major rewrite of metadata handling to be more compliant with MWG
+     guidelines.
+  2/ Improved handling of metadata in non utf-8 character sets.
+
+Changes in v14.07.0:
+  1/ Changed version numbering scheme, again.
+  2/ Minor bug fix in camera image importer.
+
+Changes in v14.06.dev108:
+  1/ Now Python 3 compatible.
+  2/ Added ability to import pictures from a camera.
+  3/ Much improved documentation.
+  4/ Simplified Picasa uploader.
+  5/ Uploaders now have just one progress bar.
+  6/ Simplified installation process.
+
+Changes in v14.04.dev63:
+  1/ Changed version numbering scheme.
+  2/ Added ability to offset several photo timestamps by same amount.
+  3/ Added a logging window to display error messages.
+  4/ Can now create Flickr sets/albums.
+  5/ Can now use XMP sidecar files.
+  6/ Flickr uploader can now use v2 of flickrapi.
+  7/ Switched to a different map tile provider for Open Street Map.
+  8/ Simplified documentation build process.
+
+Changes in v13.09_r20:
+  1/ Added Google Picasa uploader.
+  2/ Added menu option to select which tabs to use.
+
+Changes in v13.05_r7:
+  1/ Changed version numbering scheme.
+  2/ Added ability to drag and drop files to image list area.
+  3/ Numerous bug fixes.
+
+Changes in v13.02_a515056:
+  1/ Fixed bug with GPS accuracy.
+
+Changes in v13.01_f2bbd24:
+  1/ Started writing a user manual.
+  2/ Started using GExiv2 instead of deprecated pyexiv2.
+
+Changes in v13.01_43a0943:
+  1/ Changed version numbering scheme.
+  2/ Added ability to change image orientation.
+  3/ Added a Flickr uploader.
+
