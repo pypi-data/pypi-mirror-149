@@ -1,0 +1,50 @@
+#!/bin/bash
+# Run the launcher defined in the current working directory
+
+set -e
+
+LOG_FP=._wb/log.txt
+
+# Helper functions
+
+# Make sure that the expected file exists
+file_exists(){
+    echo "$(date) Checking for file $1" >> $LOG_FP && \
+    ( [ -e "${1}" ] || echo "File does not exist: $1" ) && \
+    [ -e "${1}" ]
+}
+
+# Set the status of the dataset, while logging this action
+set_status(){
+    echo "$(date) Setting status of dataset to $1" >> $LOG_FP
+    /bin/bash ._wb/helpers/set_dataset_attribute status $1
+}
+
+# Set the status as LAUNCHING
+set_status LAUNCHING
+
+# Make sure that all of the expected files exist
+file_exists ._wb/helpers/set_dataset_attribute
+file_exists ._wb/tool/run.sh
+file_exists ._wb/tool/params.json
+file_exists ._wb/tool/config.json
+file_exists ._wb/tool/env
+file_exists ._wb/launcher/run.sh
+file_exists ._wb/launcher/params.json
+file_exists ._wb/launcher/config.json
+file_exists ._wb/launcher/env
+
+# Set all of the environment variables defined by the
+# parameters for the launcher
+source ._wb/launcher/env
+
+# Set the status as RUNNING
+set_status RUNNING
+
+# Run the launcher with the `run.sh` script defined by
+# the developer. While running this command, route any
+# messages to standard out or standard error to canonical
+# filepaths
+/bin/bash ._wb/launcher/run.sh \
+2>> >(tee -a ._wb/error.txt ._wb/log.txt >(cat 1>&2)) \
+1>> >(tee -a ._wb/output.txt ._wb/log.txt)
