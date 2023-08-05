@@ -1,0 +1,12 @@
+prepare_training:
+    py: prepare_training.py
+    class_name: PrepareTraining
+    dockerfile:
+        gpu:
+            file: DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: Dockerfile
+            docker_needs_context: False
+    template_kwargs:
+        package-suffixes: '.py,.sh'

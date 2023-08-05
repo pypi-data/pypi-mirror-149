@@ -1,0 +1,21 @@
+FROM pytorch/pytorch
+ARG pkg_version=
+ENV pkg_version=$pkg_version
+RUN apt update -y && \
+    apt install -y libglib2.0-0 libsm6 libxrender1 libxext6 libgl1-mesa-glx build-essential wget git
+RUN mkdir -p /sap_cv/data
+RUN mkdir -p /sap_cv/module
+RUN mkdir -p /tmp/model
+WORKDIR /sap_cv
+ENV HOME=/sap_cv
+RUN python -m pip install --upgrade pip
+RUN pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.10/index.html
+RUN pip install git+https://github.com/sappier/metaflow awscli
+RUN python -m pip install sap-computer-vision-package${pkg_version}
+COPY requirements.txt /sap_cv/requirements.txt
+RUN python -m pip install -r /sap_cv/requirements.txt
+
+RUN chgrp -R nogroup /sap_cv && \
+    chmod -R 777 /sap_cv
+RUN chgrp -R nogroup /tmp && \
+    chmod -R 777 /tmp

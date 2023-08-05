@@ -1,0 +1,21 @@
+_BASE_: "./Base-ImageClassifier.yaml"
+
+MODEL:
+  BACKBONE:
+    NAME: "build_timm_fpn_backbone"
+  TIMM:
+    NAME: 'convnext_base_384_in22ft1k'
+    PRETRAINED: True
+    OUT_INDICES: null
+    FEATURES_ONLY: True
+  FPN:
+    IN_FEATURES: null
+    OUT_FEATURES: ['p5', 'p6']
+  FEATURE_EXTRACTION:
+    POOL_BACKBONE_FEATURES: False
+    IN_FEATURES: ['p5', 'p6']
+  WEIGHTS: None
+
+INPUT:
+  FORMAT: RGB
+  FIXED_IMAGE_SIZE: 384

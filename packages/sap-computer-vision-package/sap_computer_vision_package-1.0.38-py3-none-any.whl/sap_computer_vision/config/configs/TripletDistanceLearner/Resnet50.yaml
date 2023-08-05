@@ -1,0 +1,24 @@
+_BASE_: "./Base-TripletDistanceLearner.yaml"
+
+MODEL:
+  BACKBONE:
+    NAME: "build_resnet_backbone"
+  WEIGHTS: "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
+  RESNETS:
+    OUT_FEATURES: ["res2", "res3", "res4", "res5"]
+    DEPTH: 50
+  FEATURE_EXTRACTION:
+    POOL_BACKBONE_FEATURES: True
+
+INPUT:
+  FORMAT: BGR
+  FIXED_IMAGE_SIZE: None
+  MAX_SIZE_TEST: 600
+  MAX_SIZE_TRAIN: 600
+  MIN_SIZE_TEST: 400
+  MIN_SIZE_TRAIN: [400, ]
+
+DATALOADER:
+  PK_SAMPLER:
+    P_CLASSES_PER_BATCH: 16
+    K_EXAMPLES_PER_CLASS: 4

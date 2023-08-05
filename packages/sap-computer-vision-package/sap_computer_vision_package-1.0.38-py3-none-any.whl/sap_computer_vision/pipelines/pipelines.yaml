@@ -1,0 +1,55 @@
+image_classification_train:
+    py: batch_pipelines/image_classification_train.py
+    class_name: ImageClassificationTrain
+    dockerfile:
+        gpu:
+            file: batch_pipelines/DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: batch_pipelines/Dockerfile
+            docker_needs_context: False
+object_detection_train:
+    py: batch_pipelines/object_detection_train.py
+    class_name: ObjectDetectionTrain
+    dockerfile:
+        gpu:
+            file: batch_pipelines/DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: batch_pipelines/Dockerfile
+            docker_needs_context: False
+triplet_distance_learning_train:
+    py: batch_pipelines/contrastive_learning_triplet_loss.py
+    class_name: TripletDistanceMetricTrain
+    dockerfile:
+        gpu:
+            file: batch_pipelines/DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: batch_pipelines/Dockerfile
+            docker_needs_context: False
+batch_processing:
+    py: batch_pipelines/batch_processing.py
+    class_name: BatchProcessing
+    dockerfile:
+        gpu:
+            file: batch_pipelines/DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: batch_pipelines/Dockerfile
+            docker_needs_context: False
+
+model_serving:
+    py: model_serving/serve_models.py
+    class_name: Model
+    dockerfile:
+        gpu:
+            file: model_serving/DockerfileGPU
+            docker_needs_context: False
+        cpu:
+            file: model_serving/Dockerfile
+            docker_needs_context: False
+        #test:
+        #    file: model_serving/DockerfileInternalTest
+        #    docker_needs_context: True
+    template: model_serving/template.yaml

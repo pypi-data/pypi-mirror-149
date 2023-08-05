@@ -1,0 +1,15 @@
+_BASE_: "./Base-ImageClassifier.yaml"
+
+MODEL:
+  BACKBONE:
+    NAME: "build_timm_backbone"
+  TIMM:
+    NAME: 'mixer_b16_224_in21k'
+    PRETRAINED: True
+    OUT_INDICES: null
+    FEATURES_ONLY: False
+  FEATURE_EXTRACTION:
+    POOL_BACKBONE_FEATURES: False
+INPUT:
+  FORMAT: RGB
+  FIXED_IMAGE_SIZE: 224

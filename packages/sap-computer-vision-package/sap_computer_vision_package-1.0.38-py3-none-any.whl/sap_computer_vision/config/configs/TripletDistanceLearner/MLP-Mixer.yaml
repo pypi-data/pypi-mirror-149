@@ -1,0 +1,24 @@
+_BASE_: "./Base-TripletDistanceLearner.yaml"
+
+MODEL:
+  BACKBONE:
+    NAME: "build_timm_backbone"
+  TIMM:
+    NAME: 'mixer_b16_224_in21k'
+    PRETRAINED: True
+    OUT_INDICES: null
+    FEATURES_ONLY: False
+  WEIGHTS: null
+  FEATURE_EXTRACTION:
+    POOL_BACKBONE_FEATURES: False
+    INTERMEDIATE_SIZE: null
+    PROJECTION_SIZE: null
+
+INPUT:
+  FORMAT: RGB
+  FIXED_IMAGE_SIZE: 224
+
+DATALOADER:
+  PK_SAMPLER:
+    P_CLASSES_PER_BATCH: 12
+    K_EXAMPLES_PER_CLASS: 4

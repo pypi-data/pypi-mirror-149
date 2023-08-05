@@ -1,0 +1,53 @@
+SOLVER:
+  EARLY_STOPPING:
+    ENABLED: True
+    METRIC_NAME: mAP/allClasses
+    PATIENCE: 5
+    MIN_IMPROVEMENT: 0.00001
+    MODE: 'max'
+    LOAD_BEST: True
+    BEST_MODEL_PREFIX: model_best
+  IMS_PER_BATCH_EVAL: 16
+
+INPUT:
+  RANDOM_LIGHTING:
+    ENABLED: true
+    STRENGTH: 0.1
+  RANDOM_BRIGHTNESS:
+    ENABLED: true
+    STRENGTH:
+    - 0.9
+    - 1.1
+  RANDOM_SATURATION:
+    ENABLED: true
+    STRENGTH:
+    - 0.9
+    - 1.1
+  RANDOM_CONTRAST:
+    ENABLED: true
+    STRENGTH:
+    - 0.9
+    - 1.1
+  RANDOM_ROTATION:
+    ENABLED: true
+    ANGLE:
+    - -30.0
+    - 30.0
+    SAMPLE_STYLE: range
+    EXPAND: true
+  RAND_AUG:
+    ENABLED: False
+    CONFIG_STR: rand-m4-n4-inc1
+    PROB: 0.95
+  CUT_OUT:
+    ENABLED: False
+    MAX_HOLES: 1
+    PER_PIXEL: False
+    RANDOM_COLOR: True
+    CONTAIN: True
+    AREA_RANGE:
+      - 0.07
+      - 0.03
+    ASPRECT_RATIO_RANGE:
+      - 0.3
+      - 1.

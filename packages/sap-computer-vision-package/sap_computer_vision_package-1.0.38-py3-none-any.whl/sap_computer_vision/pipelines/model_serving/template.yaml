@@ -1,0 +1,69 @@
+apiVersion: ai.sap.com/v1alpha1
+kind: ServingTemplate
+metadata:
+  name: sap-cv-model-serving
+  annotations:
+    scenarios.ai.sap.com/name: "sap-cv-model-serving"
+    executables.ai.sap.com/description: "Serving Models from sap_computer_vision package"
+    executables.ai.sap.com/name: "sap-cv-model-serving"
+  labels:
+    scenarios.ai.sap.com/id: "banrural-test"
+    ai.sap.com/version: "0.0.1"
+spec:
+  inputs:
+    parameters:
+      - name: models
+        default: /mnt/models/[model]
+        type: string
+      - name: cpuaffinity
+        default: "false"
+        type: string
+      - name: requesttimeout
+        type: string
+        default: "1m"
+      - name: loglevel
+        type: string
+        default: "3"
+      - name: gpu_deployment
+        type: string
+        default: "true"
+      - name: iou_threshold
+        type: string
+        default: "-1.0"
+    artifacts:
+      - name: trainedmodels
+  imagePullSecrets:
+    - name: docker-registry-secret
+  template:
+    metadata:
+      labels: |
+        ai.sap.com/resourcePlan: "infer.s"
+    spec: |
+        default:
+          predictor:
+            minReplicas: 1
+            custom:
+              container:
+                name: kfserving-container
+                image: mlf.docker.repositories.sapcdn.io/com.sap.ai/sap_cv_metaflow_serving:0.0.4
+                imagePullPolicy: Always
+                ports:
+                  - containerPort: 53547
+                    protocol: TCP
+                env:
+                  - name: STORAGE_URI
+                    value: "{{inputs.artifacts.trainedmodels}}"
+                  - name: MODELS
+                    value: "{{inputs.parameters.models}}"
+                  - name: IOU_THRESHOLD
+                    value: "{{inputs.parameters.iou_threshold}}"
+                  - name: LOG_LEVEL
+                    value: "{{inputs.parameters.loglevel}}"
+                  - name: REQUEST_TIMEOUT
+                    value: "{{inputs.parameters.requesttimeout}}"
+                  - name: ENABLE_CPU_AFFINITY
+                    value: "{{inputs.parameters.cpuaffinity}}"
+                  - name: NUM_CPU
+                    value: "1"
+                  - name: IS_GPU_DEPLOYMENT
+                    value: "{{inputs.parameters.gpu_deployment}}"

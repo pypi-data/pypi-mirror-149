@@ -1,0 +1,23 @@
+_BASE_: "./Base-ImageClassifier.yaml"
+
+MODEL:
+  BACKBONE:
+    NAME: "build_timm_fpn_backbone"
+  TIMM:
+    NAME: 'resnetv2_50x3_bitm_in21k'
+    PRETRAINED: True
+    OUT_INDICES: null
+    FEATURES_ONLY: True
+  FPN:
+    IN_FEATURES: null
+  FEATURE_EXTRACTION:
+    POOL_BACKBONE_FEATURES: True
+  WEIGHTS: "detectron2://ImageNetPretrained/MSRA/R-50.pkl"
+
+INPUT:
+  FORMAT: RGB
+  FIXED_IMAGE_SIZE: None
+  MAX_SIZE_TEST: 600
+  MAX_SIZE_TRAIN: 600
+  MIN_SIZE_TEST: 400
+  MIN_SIZE_TRAIN: [400, ]
