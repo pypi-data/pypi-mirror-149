@@ -1,0 +1,102 @@
+# Config file for automatic testing at travis-ci.org
+
+# Run in Python 3.x only
+language: python
+python: 3.7
+
+# Python 3.7 works only in Xenial with sudo
+# https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905
+dist: xenial  # required for Python >= 3.7 (travis-ci/travis-ci#9069)
+sudo: yes
+
+jobs:
+  include:
+    - env: MINICONDA=https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh
+    # Python 3.8 works with these dependencies, but only on Linux, not Windows.
+    #   Tornado 6.x and Pandas 1.x upgrade reqd for Windows. So drop it for Gramex 1.x
+    # - env: MINICONDA=https://repo.anaconda.com/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh
+    # Python 3.9 doesn't work at all with these dependencies
+    # - env: MINICONDA=https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh
+
+env:
+  global:
+    # Twitter secrets
+    # Read more here: https://docs.travis-ci.com/user/encryption-keys/
+    secure: "rZaZkcujQTr1RhsyyMj+dlazx2fkbHxKJgaspPXLqFYyh+Fidqyvekl6itr2mqOxUbP6DZIc3y/viAs8HcDFBK65z+U/hqvZjbS/H+NIWCfAMVHhAjJ/MiXLl5sloy14x1EYaybpFp/7/fGwc8nQK8nHOEdAOADyre338wZ/d33CtMZFkKkPrhijgRodnnKvh8t10RiChELKotHAZ+Aw9mIQiHbeTkjCJsn1CkkwmifpNOAoLjBnJViqiieFznZO4dOhcuvlgVZNxEaJ2MCUkNr4VITGL8jALNmC3yfQzl6sGwVVYp5dsaiF2Hi2NTPO4AkcypbgCSyf6dAuQJLvkmbaeGJ01WQB/0el0FptsmE432hPd34Wut1FN48Dagw1Q6Jj2NkD1U2Pqt30se0u1u+4nAB10+kbUlLpyOd/6Eo2mOGZcQCSE45jxcJeGvh1nr2SCk5ORkseR531AwbduOgr49t6oBlzukRiy/vrYlOwx3kwtGeGRH/fIrIsFVWx+UWzLF/9yO2skJDp9VUVpdCS9vWxex4qi8eO+86XGXorTm2Yq5FQAlq6nzk8YojEJWaaHy9Q987SrwJlYOHMpubJIHWSXfdDdImqIKmzJLKVojyIUK8hunvMIGY1Rm5YQRoY6xHJde1rzus9EYxBYdEE1vf2e0oB24Ummq/eylE="
+
+services:
+  - mysql
+  - postgresql
+  - redis-server
+  - elasticsearch
+  - mongodb
+
+# By default, Travis uses ElasticSearch 5.5.0. We want to test with 7.x
+# https://docs.travis-ci.com/user/database-setup/#installing-specific-versions-of-elasticsearch
+before_install:
+  - curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.9.3-amd64.deb -o elasticsearch.deb
+  - sudo dpkg -i --force-confnew elasticsearch.deb
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo service elasticsearch restart
+
+addons:
+  apt:
+    packages:
+      - pandoc
+
+# Cache modules for faster builds
+cache:
+  timeout: 1000
+  pip: true
+  npm: true
+  # We don't use yarn except for the test_install test cases
+  yarn: true
+  # Don't cache miniconda directory. It's slower. Fresh install takes ~200s.
+  # But caching takes ~150s (extraction) + ~190s (re-packing) = ~340s (slower).
+  # directories:
+  #   - $HOME/miniconda
+
+install:
+  # Install miniconda
+  - wget $MINICONDA -O $HOME/miniconda.sh
+  - bash $HOME/miniconda.sh -b -u -p $HOME/miniconda
+  # Add conda to path. "hash -r" rescans the $PATH
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  # Install conda packages. Keep this in sync with gramex/release.json.conda
+  - conda config --set always_yes yes --set changeps1 no
+  - conda install line_profiler
+  # Why conda install rpy2?
+  #   rpy2 v2.9.6 is compatible with pandas 1.0, not available on the default channel
+  # Why conda install r-markdown instead of install.packages("rmarkdown")?
+  #   install.packages("rmarkdown") has installation issues with numpy 1.16.6, 1.17.0, etc but is OK with 1.16.0
+  #   https://bitbucket.org/rpy2/rpy2/issues/572
+  #   Don't ask people to change the critical NumPy for the rarely used RMarkdown. Use the conda installer instead
+  - conda install -c conda-forge rpy2 r-markdown
+  # Install a reasonably modern version of node.js for UI components to work
+  - nvm install 12
+  # Set up variables
+  - export BRANCH=$TRAVIS_BRANCH
+
+script:
+  - make lint
+
+  # Install Gramex and accept the license
+  - pip install -e .
+  - pip install gramexenterprise
+  - gramex license accept
+  - gramex setup --all  # ensure sass, puppetter exists
+
+  # Run tests, explicitly showing coverage
+  - make test-setup
+  - coverage run -m nose
+  - coverage report --show-missing --ignore-errors
+
+  # Test specific apps
+  - cd $TRAVIS_BUILD_DIR/gramex/apps/filemanager/ && npm install && bash test/test.sh
+
+  # TODO: Incorporate later
+  # - gramex --listen.port=1234 > gramex.log 2>&1 &
+  # - sleep 10
+  # - cat gramex.log
+  # - kill %1

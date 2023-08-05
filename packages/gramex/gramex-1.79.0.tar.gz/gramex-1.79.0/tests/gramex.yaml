@@ -1,0 +1,2744 @@
+variables:
+  MYSQL_SERVER: {default: localhost}
+  POSTGRES_SERVER: {default: localhost}
+  REDIS_SERVER: {default: localhost}
+  STRING: abc
+  NUMBER: 1
+  LIST: [1, 2, 3]
+  DICT: {b: 1}
+  TRANSLATE_DB: $YAMLPATH/translate.db
+  TRANSLATE_XLSX: $YAMLPATH/translate.xlsx
+
+handlers:
+  BaseHandler:
+    headers:
+      X-BaseHandler: base
+  FileHandler:
+    headers:
+      X-FileHandler: base
+      X-FileHandler-Base: base
+
+app:
+  listen:
+    port: 9999              # Avoid clash with default Gramex port running tests
+  session:
+    cookie: sid2                # Name the cookie differently from "sid"
+    domain: .localhost.local    # RequestCookieJar uses this domain for localhost
+    secure: false               # Don't set this to true. We're using HTTP, so it will fail
+    samesite: Strict            # Check if SameSite=Strict is sent
+    # httponly: true            # Not required. Already set in base gramex.yaml
+
+cache:
+  memory:
+    type: memory
+    default: true
+  memory-small:
+    type: memory
+    size: 1000
+  disk:
+    type: disk
+    path: $YAMLPATH/.cache-url
+  redis:
+    type: redis
+    path: localhost:6379:0
+    size: 0
+  # We could test more disk caches, but they're slow
+
+url:
+  invalid-nohandler:
+    pattern: /nohandler
+  invalid-nopattern:
+    handler: NonExistent
+  invalid-pattern:
+    pattern: invalid\gpattern
+    handler: FileHandler
+    kwargs:
+        path: $YAMLPATH
+  invalid-handler:
+    pattern: /invalid-handler
+    handler: NonExistent
+  invalid-setup:
+    pattern: /invalid-setup
+    handler: FunctionHandler
+  invalid-function:
+    pattern: /invalid-function
+    handler: FunctionHandler
+    kwargs:
+        function: nonexistent
+
+  # TestGramex
+  pathdepth1: {pattern: "/path/.*",       handler: "gramex.handlers.FunctionHandler", kwargs: {function: str("/path/.*")}}
+  pathdepth2: {pattern: "/path/file",     handler: FunctionHandler, kwargs: {function: str("/path/file")     }}
+  pathdepth3: {pattern: "/path/dir/.*",   handler: FunctionHandler, kwargs: {function: str("/path/dir/.*")   }}
+  pathdepth4: {pattern: "/path/dir/file", handler: FunctionHandler, kwargs: {function: str("/path/dir/file") }}
+  pathdepth5: {pattern: "/path/priority", priority: 1, handler: "FunctionHandler", kwargs: {function: str("/path/priority") }}
+
+  pathnorm1: {pattern: "/./path/norm1", handler: FunctionHandler, kwargs: {function: str("/path/norm1") }}
+  pathnorm2: {pattern: "/path/./norm2", handler: FunctionHandler, kwargs: {function: str("/path/norm2") }}
+
+  # TestSchedule
+  schedule-key:
+    pattern: /schedule-key
+    handler: FunctionHandler
+    kwargs:
+      function: utils.schedule_key()
+
+  slow-count-start:
+    pattern: /slow-count-start
+    handler: FunctionHandler
+    kwargs:
+      function: utils.slow_count_start()
+
+  slow-count-check:
+    pattern: /slow-count-check
+    handler: FunctionHandler
+    kwargs:
+      function: utils.slow_count_check()
+
+  # test_handlers
+  base:
+    pattern: /base
+    handler: FileHandler
+    kwargs:
+      path: dir/index.html
+
+  # test_handlers:TestAlias
+  alias-command:
+    pattern: /alias-command
+    service: Command
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+
+  alias-data:
+    pattern: /alias-data
+    service: Data
+    kwargs:
+      url: sales.xlsx
+      sheet_name: table
+
+  alias-function:
+    pattern: /alias-function
+    service: Function
+    handler: nonexistent    # service: overrides handler:
+    kwargs:
+      function: utils.params_as_json(0, 1, a="a", b="b")
+
+  appconfig:
+    pattern: /appconfig
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.appconfig
+      headers:
+        Content-Type: application/json
+
+  # TestFunctionHandler
+  func/args:
+    pattern: /func/args
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json(0, 1, a="a", b="b")
+
+  func/args-split:
+    pattern: /func/args-split
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json
+      args: [0, 1]
+      kwargs: {a: a, b: b}
+
+  func/args-variable:
+    pattern: /func/args-variable
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json("$STRING", $NUMBER, a="$STRING", b=$NUMBER)
+
+  func/path_args:
+    pattern: /func/path_args/(.*?)/(.*?)
+    handler: FunctionHandler
+    kwargs:
+      function: json.dumps(handler.path_args)
+      headers:
+        Content-Type: application/json
+
+  func/async/args:
+    pattern: /func/async/args
+    handler: FunctionHandler
+    kwargs:
+      function: utils.async_args(0, 1, a="a", b="b")
+
+  func/async/args-split:
+    pattern: /func/async/args-split
+    handler: FunctionHandler
+    kwargs:
+      function: utils.async_args
+      args: [0, 1]
+      kwargs: {a: a, b: b}
+
+  func/get_arg:
+    pattern: /func/get_arg
+    handler: FunctionHandler
+    kwargs:
+      function: utils.get_arg
+
+  func/handler:
+    pattern: /func/handler
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json
+
+  func/handler-null:
+    pattern: /func/handler-null
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json()
+
+  func/attributes:
+    pattern: /func/attributes
+    handler: FunctionHandler
+    kwargs:
+      function: utils.attributes
+
+  func/composite:
+    pattern: /func/composite
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json(0, handler, a="a", handler=handler)
+
+  func/compositenested:
+    pattern: /func/compositenested
+    handler: FunctionHandler
+    kwargs:
+      function: 'utils.params_as_json(0, handler, a={"b": 1}, handler=handler)'
+
+  func/compositenested-split:
+    pattern: /func/compositenested-split
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json
+      args: [0, =handler]
+      kwargs: {a: {b: 1}, handler: =handler}
+
+  func/compositenested-variable:
+    pattern: /func/compositenested-variable
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json
+      args: [0, =handler]
+      kwargs: {a: $DICT, handler: =handler}
+
+  func/dumpx:
+    pattern: /func/dumpx
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json(handler.get_arguments('x'))
+
+  func/async/http:
+    pattern: /func/async/http
+    handler: FunctionHandler
+    kwargs:
+      function: utils.async_http("http://localhost:9999/func/dumpx?x=1&x=2")
+
+  func/async/http2:
+    pattern: /func/async/http2
+    handler: FunctionHandler
+    kwargs:
+      function: utils.async_http2
+      args:
+        - "http://localhost:9999/func/dumpx?x=1"
+        - "http://localhost:9999/func/dumpx?x=2"
+
+  func/async/calc:
+    pattern: /func/async/calc
+    handler: FunctionHandler
+    kwargs:
+      function: utils.async_calc
+
+  func/iterator:
+    pattern: /func/iterator
+    handler: FunctionHandler
+    kwargs:
+      function: utils.iterator
+
+  func/iterator/async:
+    pattern: /func/iterator/async
+    handler: FunctionHandler
+    kwargs:
+      function: utils.iterator_async
+
+  func/redirect:
+    pattern: /func/redirect
+    handler: FunctionHandler
+    kwargs:
+      function: utils.increment_header
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+
+  func/argparse:
+    pattern: /func/argparse
+    handler: FunctionHandler
+    kwargs:
+      function: utils.argparse
+
+  func/numpytypes:
+    pattern: /func/numpytypes
+    handler: FunctionHandler
+    kwargs:
+      function: utils.numpytypes
+
+  func/methods:
+    pattern: /func/methods
+    handler: FunctionHandler
+    kwargs:
+      function: utils.params_as_json
+      methods: [PUT, POST]
+      xsrf_cookies: false
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+
+  # Test `add_handler` decorator
+  func/total:
+    pattern: /func/total
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.total
+      xsrf_cookies: false
+  func/total/:
+    pattern: /func/total/(.*)/(.*)
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.total(handler)
+      methods: [GET, DELETE]
+      xsrf_cookies: false
+  func/name_age/:
+    pattern: /func/name_age/([a-z]+)/age/([0-9]+)
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.name_age
+  func/name_age:
+    pattern: /func/name_age
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.name_age
+      kwargs:
+        name: alpha
+        age: 10
+      xsrf_cookies: false
+  func/hints:
+    pattern: /func/hints
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.hints
+      xsrf_cookies: false
+  func/multilist:
+    pattern: /func/multilist
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.multilist
+  func/strtotal:
+    pattern: /func/strtotal
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.strtotal
+  func/nativetypes:
+    pattern: /func/nativetypes
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.nativetypes
+      xsrf_cookies: false
+  func/greet:
+    pattern: /func/greet
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.greet
+  func/yielder:
+    pattern: /func/yielder
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.yielder
+  func/power:
+    pattern: /func/power
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.power
+      kwargs:
+        x: 2
+  func/sales:
+    pattern: /func/sales
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.sales
+  func/content:
+    pattern: /func/content/(\d+)\.(txt|json)
+    handler: FunctionHandler
+    kwargs:
+      function: functionutils.content
+
+  # TestPyNode
+  pynode/run:
+    pattern: /pynode/run
+    handler: FunctionHandler
+    kwargs:
+      function: utils.pynode_run(handler)
+      headers:
+        Content-Type: application/json
+
+  # TestFileHandler
+  dir/noindex:
+    pattern: /dir/noindex/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      index: false
+  dir/index:
+    pattern: /dir/index/(.*)
+    handler: FileHandler
+    kwargs:
+      # Adding a slash at the end of "dir/" should not disrupt anything
+      path: dir/
+      index: true
+  dir/default-present-index:
+    pattern: /dir/default-present-index/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      default_filename: index.html
+      index: true
+  dir/default-missing-index:
+    pattern: /dir/default-missing-index/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      default_filename: nonexistent-file
+      index: true
+  dir/default-present-noindex:
+    pattern: /dir/default-present-noindex/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      default_filename: index.html
+      index: false
+  dir/default-missing-noindex:
+    pattern: /dir/default-missing-noindex/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      default_filename: nonexistent-file
+      index: false
+  dir/indextemplate:
+    pattern: /dir/indextemplate/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      index: true
+      index_template: index.template.html
+  dir/no-indextemplate:
+    pattern: /dir/no-indextemplate/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      index: true
+      index_template: nonexistent.template.html
+  dir/nonexistent-file:
+    pattern: /dir/nonexistent-file
+    handler: FileHandler
+    kwargs:
+      path: nonexistent-file
+  dir/single-file:
+    pattern: /dir/single-file/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir/text.txt
+  dir/normalize/slash:
+    pattern: /dir/normalize/slash/(.*)/
+    handler: FileHandler
+    kwargs:
+      path: dir
+  dir/normalize/dot:
+    pattern: /./dir/./normalize/./dot/./(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+  dir/normalize/dotdot:
+    pattern: /abc/../dir/normalize/abc/../dotdot/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+  dir/transform:
+    pattern: /dir/transform/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      transform:
+        "*.md":
+          encoding: utf-8
+          function: markdown.markdown(content)
+          headers:
+            Content-Type: text/html; charset=UTF-8
+        "*.Rmd":
+          encoding: utf-8
+          function: rmarkdown(content, handler)
+          headers:
+            Content-Type: text/html; charset=UTF-8
+        "*.yaml":
+          encoding: utf-8
+          function: badgerfish(content, handler)
+          headers:
+            Content-Type: text/html; charset=UTF-8
+        "template.*":
+          encoding: utf-8
+          function: template(content, handler=handler, param='x')
+          headers:
+            Content-Type: text/html; charset=UTF-8
+        "template-handler.txt":
+          encoding: utf-8
+          function: template
+  dir/transform-sass:
+    pattern: /dir/transform-sass/(.*)
+    handler: FileHandler
+    kwargs:
+      path: sass
+      transform:
+        # Multiple globs can be separated by spaces or commas
+        " import.sass,import.scss a.scss, b.scss":
+          encoding: utf-8
+          function: sass
+  dir/sass-file:
+    pattern: /dir/sass-file/(.*)
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/sass/
+      scss: ' missing.scss,import.scss, a.scss b.scss'
+      sass: '*.sass'
+  dir/transform-vue:
+    pattern: /dir/transform-vue/(.*)
+    handler: FileHandler
+    kwargs:
+      path: vue
+      transform:
+        # Multiple globs can be separated by spaces or commas
+        " comp-a.vue, comp-b.vue":
+          encoding: utf-8
+          function: vue
+  dir/vue-file:
+    pattern: /dir/vue-file/(.*)
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/vue/
+      vue: '*.vue'
+  dir/transform-ts:
+    pattern: /dir/transform-ts/(.*)
+    handler: FileHandler
+    kwargs:
+      path: ts
+      transform:
+        # Multiple globs can be separated by spaces or commas
+        " missing.ts,a.ts, b.ts":
+          encoding: utf-8
+          function: ts
+  dir/ts-file:
+    pattern: /dir/ts-file/(.*)
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/ts/
+      ts: '*.ts'
+  dir/template:
+    pattern: "/dir/template/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      template: '*'
+  dir/template-true:
+    pattern: "/dir/template-true/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      template: true
+  dir/template-index:
+    pattern: "/dir/template-index/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      template: 'index*'
+  dir/args:
+    pattern: /dir/args/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      default_filename: index.html
+      transform:
+        'index.html':
+          function: utils.args_as_json(handler)
+  dir/merge.txt:
+    pattern: /dir/merge.txt
+    handler: FileHandler
+    kwargs:
+      path:
+        - dir/alpha.txt
+        - dir/beta.html
+      transform:
+        'alpha.txt':
+          encoding: utf-8
+          function: str.upper(content)
+        'beta.html':
+          encoding: utf-8
+          function: str.title(content)
+  dir/merge.html:
+    pattern: /dir/merge.html
+    handler: FileHandler
+    kwargs:
+      path:
+        - dir/beta.html
+        - dir/alpha.txt
+      transform:
+        'beta.html':
+          encoding: utf-8
+          function: str.upper(content)
+        'alpha.txt':
+          encoding: utf-8
+          function: str.title(content)
+  dir/map:
+    pattern: /dir/map/(.*)
+    handler: FileHandler
+    kwargs:
+      path:
+        '': dir/index.html
+        '(.*)/(.*)/(.*)': 'dir/{0}{1}{2}'
+        'url': 'dir/{file}{mid}.{ext}'
+        '(?P<ext>txt)/(.*)': 'dir/{1}.{ext}'
+        '(?P<n>\w+)/(.*)': 'dir/{n}.{1}'
+        '(.*)': 'dir/subdir/{0}.txt'
+      default:
+        file: ''
+        mid: ''
+        ext: txt
+      transform:
+        'alpha.txt':
+          encoding: utf-8
+          function: str.upper(content)
+  dir/map2:
+    pattern: /dir/map2/
+    handler: FileHandler
+    kwargs:
+      path:
+        '': 'dir/{file}{mid}.{ext}'
+      default:
+        file: ''
+        mid: ''
+        ext: txt
+  dir/headers:
+    pattern: /header/
+    handler: FileHandler
+    kwargs:
+      path: dir/index.html
+      headers:
+        X-FileHandler-Header: updated
+        X-FileHandler: updated
+  dir/headersdict:
+    pattern: /headerdict/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      headers:
+        Root: x
+        'alpha.txt':
+          Root: a
+          Sub: a
+        'beta.html':
+          Root: b
+          Sub: b
+        '*':
+          All: x
+        '**/install/**':
+          Sub: x
+        '**/gramex-bower-package':
+          Sub: y
+
+  dir/data:
+    pattern: /dir/data                # Check that a pattern without brackets works
+    handler: FileHandler
+    kwargs:
+      path: dir/data.csv
+      headers:
+        Content-Type: text/plain      # Test header overriding
+        Content-Disposition: null     # Test header clearing
+
+  dir/pattern-text:
+    pattern: "/dir/pattern/(.*)/text"
+    handler: FileHandler
+    kwargs:
+      path: "dir/*.txt"
+
+  dir/pattern-html:
+    pattern: "/dir/pattern/(.*)\\.web"
+    handler: FileHandler
+    kwargs:
+      path: "dir/*.html"
+
+  dir/pattern-subdir:
+    pattern: "/dir/pattern/(.*)/sub"
+    handler: FileHandler
+    kwargs:
+      path: "dir/*/text.txt"
+
+  dir/ignore-file:
+    pattern: "/dir/ignore-file/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      ignore: ignore-file.txt
+
+  dir/ignore-list:
+    pattern: "/dir/ignore-list/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      ignore:
+        - ignore-list.txt
+        - '*.Ext*'
+
+  # Allow overrides global handler ignores
+  dir/allow-file:
+    pattern: "/dir/allow-file/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      allow: gramex.yaml
+
+  # Allow overrides local ignores
+  dir/allow-ignore:
+    pattern: "/dir/allow-ignore/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      ignore: ignore-file.txt
+      allow: ignore-file.txt
+
+  dir/ignore-all-except:
+    pattern: "/dir/ignore-all-except/(.*)"
+    handler: FileHandler
+    kwargs:
+      path: dir/
+      default_filename: index.html
+      ignore: '*'
+      allow: index.html
+
+  methods/get-only:
+    pattern: /methods/get-only
+    handler: FileHandler
+    kwargs:
+      path: index.template.html
+      methods: GET
+      xsrf_cookies: false
+  methods/head-put-delete:
+    pattern: /methods/head-put-delete
+    handler: FileHandler
+    kwargs:
+      path: index.template.html
+      methods: [HEAD, put, DELete]
+      xsrf_cookies: false
+
+  formhandler/file:
+    pattern: /formhandler/file
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      xsrf_cookies: false     # We're testing PUT/PUST/DELETE to see if they fail
+      # columns is ignored for files
+      columns:
+        id: {type: int, primary_key: True, autoincrement: True}
+        email: {nullable: True, default: none}
+        age: {type: float, nullable: False, default: 18}
+        dept: varchar(10)
+
+  formhandler/exceltable:
+    pattern: /formhandler/exceltable
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      sheet_name: table
+      table: MainTable
+      xsrf_cookies: false     # We're testing PUT/PUST/DELETE to see if they fail
+
+  formhandler/url:
+    pattern: /formhandler/url
+    handler: FormHandler
+    kwargs:
+      url: http://localhost:9999/sales.xlsx
+      xsrf_cookies: false     # We're testing PUT/PUST/DELETE to see if they fail
+
+  formhandler/methods:
+    pattern: /formhandler/methods
+    handler: FormHandler
+    kwargs:
+      url: sales-methods.xlsx
+      id: city
+      # Methods can be specified in any case, separated by a comma and/or spaces
+      methods: GET , put DELete
+      xsrf_cookies: false
+  formhandler/methods-list:
+    pattern: /formhandler/methods-list
+    handler: FormHandler
+    kwargs:
+      url: sales-methods.xlsx
+      id: city
+      methods: [GET, PUT, DELETE]
+      xsrf_cookies: false
+
+  formhandler/mysql:
+    pattern: /formhandler/mysql
+    handler: FormHandler
+    kwargs:
+      url: mysql+pymysql://root@$MYSQL_SERVER/test_formhandler?charset=utf8
+      table: sales
+
+  formhandler/postgres:
+    pattern: /formhandler/postgres
+    handler: FormHandler
+    kwargs:
+      url: postgresql://postgres@$POSTGRES_SERVER/test_formhandler
+      table: sales
+
+  formhandler/sqlite:
+    pattern: /formhandler/sqlite
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler.db
+      table: sales
+
+  formhandler/file-multi:
+    pattern: /formhandler/file-multi
+    handler: FormHandler
+    kwargs:
+      big:
+        url: sales.xlsx
+        sheet_name: sales
+        function: data[data['sales'] > 100]
+      by-growth:
+        url: sales.xlsx
+        function: data.sort_values('growth')
+
+  formhandler/sqlite-multi:
+    pattern: /formhandler/sqlite-multi
+    handler: FormHandler
+    kwargs:
+      big:
+        url: sqlite:///formhandler.db
+        table: sales
+        query: 'SELECT * FROM sales WHERE sales > 100'
+      by-growth:
+        url: sqlite:///formhandler.db
+        table: sales
+        function: data.sort_values('growth')
+      big-by-growth:
+        url: sqlite:///formhandler.db
+        table: sales
+        query: 'SELECT * FROM sales WHERE sales > 100'
+        function: data.sort_values('growth')
+
+  formhandler/file-function:
+    pattern: /formhandler/file-function
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      sheet_name: sales
+      function: data[handler.args.get('col', [])]
+
+  formhandler/sqlite-queryfunction:
+    pattern: /formhandler/sqlite-queryfunction
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler.db
+      queryfunction: utils.sales_query(args, handler)
+
+  formhandler/sqlite-state:
+    pattern: /formhandler/sqlite-state
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler.db
+      state: utils.state(args, handler.request.path)
+      queryfunction: utils.sales_query(args, handler)
+
+  formhandler/state-info:
+    pattern: /formhandler/state
+    handler: FunctionHandler
+    kwargs:
+      function: utils.get_state_info()
+
+  formhandler/default:
+    pattern: /formhandler/default
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      default:
+        'sales>': 50
+        _limit: 2
+        _format: csv
+
+  formhandler/modify:
+    pattern: /formhandler/modify
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      modify: data.sum(numeric_only=True).to_frame().T
+      default:
+        _format: csv
+
+  formhandler/modify-multi:
+    pattern: /formhandler/modify-multi
+    handler: FormHandler
+    kwargs:
+      city:
+        url: sqlite:///formhandler.db
+        table: sales
+        query: 'SELECT city, SUM(sales) as sales FROM sales GROUP BY city'
+        modify: data.assign(rank=data['sales'].rank())
+      big:
+        url: sales.xlsx
+        function: data[data['sales'] > 100]
+      modify: data['big'].merge(data['city'], on='city')
+      default:
+        _format: csv
+
+  formhandler/prepare:
+    pattern: /formhandler/prepare
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      prepare: args.update(_format=['csv'], product=['Biscuit'])
+
+  formhandler/edits-xlsx-singlekey:
+    pattern: /formhandler/edits-xlsx-singlekey
+    handler: FormHandler
+    kwargs:
+      url: sales-edits.xlsx
+      sheet_name: '{table}'
+      id: [sales]
+      xsrf_cookies: false
+      default: {x: 1, table: sales}
+
+  formhandler/edits-xlsx-multikey:
+    pattern: /formhandler/edits-xlsx-multikey
+    handler: FormHandler
+    kwargs:
+      url: sales-edits.xlsx
+      sheet_name: '{table}'
+      id: [city, product]
+      xsrf_cookies: false
+      default: {x: 1, table: sales}
+
+  formhandler/edits-sqlite-singlekey:
+    pattern: /formhandler/edits-sqlite-singlekey
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler-edits.db
+      table: '{table}'
+      id: [sales]
+      xsrf_cookies: false
+      default: {x: 1, table: sales}
+
+  formhandler/edits-sqlite-multikey:
+    pattern: /formhandler/edits-sqlite-multikey
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler-edits.db
+      table: '{table}'
+      id: [city, product]
+      xsrf_cookies: false
+      default: {x: 1, table: sales}
+
+  formhandler/edits-xlsx-redirect:
+    pattern: /formhandler/edits-xlsx-redirect
+    handler: FormHandler
+    kwargs:
+      url: sales-edits.xlsx
+      id: [city, product]
+      xsrf_cookies: false
+      redirect: {url: /redirected}
+
+  formhandler/edits-multidata:
+    pattern: /formhandler/edits-multidata
+    handler: FormHandler
+    kwargs:
+      csv:
+        url: '{file}'
+        encoding: utf-8
+        id: [city, product]
+      sql:
+        url: mysql+pymysql://root@$MYSQL_SERVER/test_formhandler?charset=utf8
+        table: '{table}'
+        id: [city, product]
+      xsrf_cookies: false
+      default: {file: sales-edits.csv, table: sales}
+
+  formhandler/edits-multidata-modify:
+    pattern: /formhandler/edits-multidata-modify
+    handler: FormHandler
+    kwargs:
+      csv:
+        url: '{file}'
+        encoding: utf-8
+        id: [city, product]
+        modify: len(handler.args.keys())
+      sql:
+        url: mysql+pymysql://root@$MYSQL_SERVER/test_formhandler?charset=utf8
+        table: '{table}'
+        id: [city, product]
+      modify: len(handler.args.keys())
+      xsrf_cookies: false
+      default: {file: sales-edits.csv, table: sales}
+
+  formhandler/edits-dates:
+    pattern: /formhandler/edits-dates
+    handler: FormHandler
+    kwargs:
+      url: sales-edits.xlsx
+      sheet_name: '{table}'
+      id: [sales]
+      xsrf_cookies: false
+      default: {table: dates}
+
+  formhandler/chart:
+    pattern: /formhandler/chart
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      formats:
+        common: &FORMHANDLER_CHART
+          format: sns
+          chart: '{chart}'
+          x: '{x}'
+          y: '{y}'
+          dpi: '{dpi}'
+          width: '{width}'
+          height: '{height}'
+        svg:
+          ext: svg
+          headers:
+            Content-Type: image/svg
+          <<: *FORMHANDLER_CHART
+        png:
+          ext: png
+          headers:
+            Content-Type: image/png
+          <<: *FORMHANDLER_CHART
+        vega:
+          format: vega
+          spec:
+            import: vega.yaml
+        vega-lite:
+          format: vega-lite
+          spec:
+            import: vega-lite.yaml
+        vegam:
+          format: vegam
+          spec:
+            import: vegam.yaml
+  formhandler/headers:
+    pattern: /formhandler/headers
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      xsrf_cookies: false     # We're testing PUT/PUST/DELETE to see if they fail
+      formats:
+        json:
+          headers:
+            X-JSON: ok
+            X-Base: ok        # Overrides base headers
+      headers:
+        X-Base: not ok
+        X-Root: ok
+  formhandler/arg-url:
+    pattern: /formhandler/arg-url
+    handler: FormHandler
+    kwargs:
+      url: '{path}.xlsx'
+      ext: '{ext}'
+      sheet_name: '{sheet}'
+      default:
+        ext: xlsx
+  formhandler/arg-table:
+    pattern: /formhandler/arg-table
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///{db}.db
+      table: '{table}{skip}'
+      default:
+        skip: ''
+  formhandler/arg-query:
+    pattern: /formhandler/arg-query
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///{db}.db
+      query: 'SELECT * FROM {table} WHERE {col}=:val'
+      default:
+        table: sales
+  formhandler/path_arg:
+    pattern: /formhandler/path_arg/(\w+)/(\w+)
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///$YAMLPATH/{_0}.db
+      query:
+        SELECT {group}, SUM(sales) AS sales
+        FROM {_1}
+        WHERE {col}=:val
+        GROUP BY {group}
+  formhandler/path_kwarg:
+    pattern: /formhandler/path_kwarg/(?P<db>\w+)/(?P<table>\w+)
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///$YAMLPATH/{db}.db
+      query:
+        SELECT {group}, SUM(sales) AS sales
+        FROM {table}
+        WHERE {col}=:val
+        GROUP BY {group}
+  formhandler/dates:
+    pattern: /formhandler/dates
+    handler: FormHandler
+    kwargs:
+      url: sales.xlsx
+      sheet_name: dates
+      parse_dates: [date]
+      formats:
+        json:
+          date_format: iso
+  formhandler/dir:
+    pattern: /formhandler/dir
+    handler: FormHandler
+    kwargs:
+      url: dir:///$YAMLPATH/{root}
+      default:
+        root: '.'
+      # columns is ignored for directories
+      columns:
+        id: {type: int, primary_key: True, autoincrement: True}
+        email: {nullable: True, default: none}
+        age: {type: float, nullable: False, default: 18}
+        dept: varchar(10)
+
+  formhandler/columns/mysql:
+    pattern: /formhandler/columns/mysql
+    handler: FormHandler
+    kwargs:
+      url: mysql+pymysql://root@$MYSQL_SERVER/test_formhandler?charset=utf8
+      table: new
+      id: id
+      xsrf_cookies: false
+      columns:
+        id: {type: int, primary_key: True, autoincrement: True}
+        # MySQL doesn't allow TEXT to have a default value on Linux. Use varchar instead.
+        # https://stackoverflow.com/a/4553664
+        email: {type: varchar(99), nullable: True, default: none}
+        age: {type: float, nullable: False, default: 18}
+        dept: varchar(10)
+  formhandler/columns/postgres:
+    pattern: /formhandler/columns/postgres
+    handler: FormHandler
+    kwargs:
+      url: postgresql://postgres@$POSTGRES_SERVER/test_formhandler
+      table: new
+      id: id
+      xsrf_cookies: false
+      columns:
+        id: {type: int, primary_key: True, autoincrement: True}
+        email: {nullable: True, default: none}
+        age: {type: float, nullable: False, default: 18}
+        dept: varchar(10)
+  formhandler/columns/sqlite:
+    pattern: /formhandler/columns/sqlite
+    handler: FormHandler
+    kwargs:
+      url: sqlite:///formhandler.db
+      table: new
+      id: id
+      xsrf_cookies: false
+      columns:
+        id: {type: int, primary_key: True, autoincrement: True}
+        email: {nullable: True, default: none}
+        age: {type: float, nullable: False, default: 18}
+        dept: varchar(10)
+
+  mlhandler/blank:
+    pattern: /mlblank
+    handler: MLHandler
+    kwargs:
+      xsrf_cookies: false
+
+  mlhandler/config:
+    pattern: /mlhandler
+    handler: MLHandler
+    kwargs:
+      data:
+        url: $YAMLPATH/../testlib/iris.csv
+      model:
+        class: LogisticRegression
+        target_col: species
+      xsrf_cookies: false
+
+  mlhandler/badcol:
+    pattern: /mlhandlerbadcol
+    handler: MLHandler
+    kwargs:
+      data:
+        url: $YAMLPATH/../testlib/iris.csv
+      model:
+        class: LogisticRegression
+        target_col: species
+        cats: [species]
+      xsrf_cookies: false
+
+  mlhandler/pipeline:
+    pattern: /mlpipe
+    handler: MLHandler
+    kwargs:
+      data:
+        url: $YAMLPATH/actors.csv
+      model:
+        class: DecisionTreeRegressor
+        target_col: rating
+        cats: [category]
+        exclude: [name]
+      xsrf_cookies: false
+
+  mlhandler/nopath:
+    pattern: /mlnopath
+    handler: MLHandler
+    kwargs:
+      data:
+        url: $YAMLPATH/../testlib/iris.csv
+      model:
+        class: LogisticRegression
+        target_col: species
+      xsrf_cookies: false
+  mlhandler/incr:
+    pattern: /mlincr
+    handler: MLHandler
+    kwargs:
+      xsrf_cookies: false
+  mlhandler/xform:
+    pattern: /mltransform
+    handler: MLHandler
+    kwargs:
+      data:
+        url: $YAMLPATH/circles.csv
+        transform: utils.transform_circles
+      model:
+        class: LogisticRegression
+        target_col: y
+      xsrf_cookies: false
+  mlhandler/decompositions:
+    pattern: /mldecompose
+    handler: MLHandler
+    kwargs:
+      model:
+        class: PCA
+        exclude: [species]
+        params:
+          n_components: 2
+      xsrf_cookies: false
+
+  # statsmodels
+  mlhandler/sarimax:
+    pattern: /sarimax
+    handler: MLHandler
+    kwargs:
+      model:
+        class: SARIMAX
+        params:
+          order: [7, 1, 0]
+      xsrf_cookies: false
+
+  capture:
+    pattern: /capture
+    handler: CaptureHandler
+    kwargs:
+      port: 9401
+  capturechrome:
+    pattern: /capturechrome
+    handler: CaptureHandler
+    kwargs:
+      engine: chrome
+      port: 9411
+  dir/capture:
+    pattern: /dir/capture
+    handler: FileHandler
+    kwargs:
+      path: dir/capture.html
+      template: true
+      headers:
+        Cache-Control: no-store
+
+  process/args:
+    pattern: /process/args
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+  process/args-pipe:
+    pattern: /process/args-pipe
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stdout: pipe
+      stderr: pipe
+  process/args-no-stderr:
+    pattern: /process/args-no-stderr
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stderr: false
+  process/args-no-stdout:
+    pattern: /process/args-no-stdout
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stdout: false
+  process/args-stdout-file:
+    pattern: /process/args-stdout-file
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stdout: $YAMLPATH/processtest.stdout
+  process/args-both-file:
+    pattern: /process/args-both-file
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stdout: $YAMLPATH/processtest.both
+      stderr: $YAMLPATH/processtest.both
+  process/args-multi-file:
+    pattern: /process/args-multi-file
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      stdout: [$YAMLPATH/processtest.stdout.1, $YAMLPATH/processtest.stdout.2, pipe]
+      stderr: [$YAMLPATH/processtest.stderr.1, $YAMLPATH/processtest.stderr.2, pipe]
+  process/shell:
+    pattern: /process/shell
+    handler: ProcessHandler
+    kwargs:
+      args: 'python $YAMLPATH/processtest.py a 1 "x y"'
+      shell: True
+  process/cwd:
+    pattern: /process/cwd
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      cwd: "${YAMLPATH}/../"
+  process/get-only:
+    pattern: /process/get-only
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      cwd: "${YAMLPATH}/../"
+      methods: GET
+      xsrf_cookies: false
+  process/nonexistent-command:
+    pattern: /process/nonexistent-command
+    handler: ProcessHandler
+    kwargs:
+      args: nonexistent-command
+  process/error:
+    pattern: /process/error
+    handler: ProcessHandler
+    kwargs:
+      args: [python, "$YAMLPATH/throwerror.py"]
+
+  httpbin:
+    pattern: /httpbin
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin
+      methods: [GET, PUT, POST, DELETE]
+  cache/randomchar-nocache:
+    pattern: /cache/randomchar-nocache
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999)
+  cache/randomchar:
+    pattern: /cache/randomchar
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999, mime="html")
+    cache: true
+  cache/increment:
+    pattern: /cache/increment
+    handler: FunctionHandler
+    kwargs:
+      function: utils.increment
+    cache: true
+  cache/increment2:
+    pattern: /cache/increment2
+    handler: FunctionHandler
+    kwargs:
+      function: utils.increment
+    cache: true
+  cache/increment-headers-dummy:
+    pattern: /cache/increment-headers-dummy
+    handler: FunctionHandler
+    kwargs:
+      function: utils.increment
+      headers:
+        Content-Type: text/plain
+    cache: true
+  cache/increment-headers:
+    pattern: /cache/increment-headers
+    handler: FunctionHandler
+    kwargs:
+      function: utils.increment
+      headers:
+        Content-Type: text/plain
+    cache: true
+  cache/pathkey:
+    pattern: /cache/pathkey
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999, mime='json')
+    cache:
+      key: request.path
+  cache/host:
+    pattern: /cache/host.*
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999)
+    cache:
+      key: request.host
+  cache/args:
+    pattern: /cache/args.*
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999)
+    cache:
+      key: [request.path, args.x, invalid.key]
+  cache/cookie-test:
+    pattern: /cache/cookie-test
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999)
+    cache:
+      key: [request.host, cookies.user, invalid.key]
+  cache/header-test:
+    pattern: /cache/header-test
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin(handler, rand=99999999)
+    cache:
+      key: [request.host, headers.test, invalid.key]
+  cache/invalid-keys-ignored:
+    pattern: /cache/invalid-keys-ignored.*
+    handler: FunctionHandler
+    kwargs:
+      function: utils.httpbin
+      kwargs: {rand: 99999999}
+    cache:
+      key: [invalid, invalid.invalid]
+  cache/filehandler:
+    pattern: /cache/filehandler/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      allow: .cache-file*
+    cache: true
+  cache/filehandler-errors:
+    pattern: /cache/filehandler-error/(.*)
+    handler: FileHandler
+    kwargs:
+      path: dir
+      allow: .cache-file*
+    cache:
+        status: [200, 404]
+  cache/subprocess:
+    pattern: /cache/subprocess
+    handler: FunctionHandler
+    kwargs:
+      function: utils.subprocess
+
+  json/get:
+    pattern: /json/get/(.*)
+    handler: JSONHandler
+    kwargs:
+      data:
+        x: "1"
+        y: {z: 2}
+        z: [a, b, {m: 1, n: 2, 'x/y': 3}]
+  json/write:
+    pattern: /json/write/(.*)
+    handler: JSONHandler
+    kwargs:
+      xsrf_cookies: false
+  json/path:
+    pattern: /json/path/(.*)
+    handler: JSONHandler
+    kwargs:
+      path: $YAMLPATH/.jsonpath/jsonhandler.json
+      xsrf_cookies: false
+
+  api/twitter:
+    pattern: /api/twitter/(.*)
+    handler: TwitterRESTHandler
+    kwargs:
+      # Gramener > Gramex guide app: https://apps.twitter.com/app/12449610/keys
+      key: $TWITTER_KEY
+      secret: $TWITTER_SECRET
+      access_key: $TWITTER_ACCESS_KEY
+      access_secret: $TWITTER_ACCESS_SECRET
+      xsrf_cookies: false
+
+  api/twitter-get:
+    pattern: /api/twitter-get/(.*)
+    handler: TwitterRESTHandler
+    kwargs:
+      # Gramener > Gramex guide app: https://apps.twitter.com/app/12449610/keys
+      key: $TWITTER_KEY
+      secret: $TWITTER_SECRET
+      access_key: $TWITTER_ACCESS_KEY
+      access_secret: $TWITTER_ACCESS_SECRET
+      methods: GET
+      xsrf_cookies: false
+
+  upload:
+    pattern: /upload
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      keys:
+        file: [image, text, unknown]
+        delete: rm
+        # save: save        # Leave this at the default
+      xsrf_cookies: false
+
+  upload-error:
+    pattern: /upload-error
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      if_exists: error
+      xsrf_cookies: false
+
+  upload-overwrite:
+    pattern: /upload-overwrite
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      if_exists: overwrite
+      xsrf_cookies: false
+
+  upload-backup:
+    pattern: /upload-backup
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      if_exists: backup
+      xsrf_cookies: false
+
+  upload-transform:
+    pattern: /upload-transform
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      xsrf_cookies: false
+      transform:
+        function: utils.upload_transform(content)
+
+  # If the transform does not return a dict, ignore it (logging an error)
+  upload-transform-blank:
+    pattern: /upload-transform-blank
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      xsrf_cookies: false
+      transform:
+        function: str('')
+
+  upload-transform-invalid-transform:
+    pattern: /upload-transform
+    handler: UploadHandler
+    kwargs:
+      path: $YAMLPATH/uploads
+      xsrf_cookies: false
+      transform: invalid-transform
+
+  drive:
+    pattern: /drive
+    handler: DriveHandler
+    kwargs:
+      path: $YAMLPATH/drive/
+      user_fields: {id: str, role: str}
+      tags: [tag, cat, date, m]   # date tag will be ignored
+      allow: [.txt, .html, .csv, .md, .xlsx, .zip, .py, .jpg]
+      ignore: [.py, .zip]
+      max_file_size: 10000
+      modify: utils.drivehandler_modify
+      xsrf_cookies: false
+
+  auth/session:
+    pattern: /auth/session
+    handler: FunctionHandler
+    kwargs:
+      function: utils.session
+      headers:
+        Content-Type: application/json
+  auth/user:
+    pattern: /auth/user
+    handler: FunctionHandler
+    kwargs:
+      function: json.dumps(handler.current_user)
+      headers:
+        Content-Type: application/json
+
+  auth/otp:
+    pattern: /auth/otp
+    handler: FunctionHandler
+    kwargs:
+      function: utils.otp
+      headers:
+        Content-Type: application/json
+
+  auth/apikey:
+    pattern: /auth/apikey
+    handler: FunctionHandler
+    kwargs:
+      function: utils.apikey
+      headers:
+        Content-Type: application/json
+
+  auth/authorize:
+    pattern: /auth/authorize
+    handler: SimpleAuth
+    kwargs:
+      credentials:
+        alpha: alpha
+        beta: beta
+      auth: true
+
+  auth/logout:
+    pattern: /auth/logout
+    handler: LogoutHandler
+    kwargs:
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+
+  # https://www.freeipa.org/page/Demo
+  auth/ldap:
+    pattern: /auth/ldap
+    handler: LDAPAuth
+    kwargs:
+      template: $YAMLPATH/auth.html     # This has the login form
+      host: ipa.demo1.freeipa.org       # Server to connect to
+      use_ssl: true                     # Whether to use SSL or not
+      user: 'uid={user},cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org'
+      password: '{password}'
+      xsrf_cookies: false
+
+  # http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/
+  auth/ldap2-search:
+    pattern: /auth/ldap2-search
+    handler: LDAPAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      host: ldap.forumsys.com
+      use_ssl: false                    # ldap.forumsys.com does not accept SSL
+      user: 'uid={user},dc=example,dc=com'
+      password: '{password}'
+      search:
+        base: 'dc=example,dc=com'                   # Search in this domain
+        filter: '(mail={user}@ldap.forumsys.com)'   # Using a mail ID filter
+        user: 'email:{mail}'                        # Replace with this user ID
+      redirect: {url: /auth/session}
+      xsrf_cookies: false
+
+  auth/ldap2-bind:                          # Test the "bind" mode of LDAP auth
+    pattern: /auth/ldap2-bind
+    handler: LDAPAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      host: ldap.forumsys.com
+      use_ssl: false                      # ldap.forumsys.com does not accept SSL
+      bind:                               # By default, bind as this user
+        user: 'uid=euler,dc=example,dc=com'
+        password: 'password'
+      search:
+        base: 'dc=example,dc=com'       # Search in this domain
+        filter: '(mail={user})'         # Using a mail ID filter
+        password: '{password}'          # and the password field as password
+      xsrf_cookies: false
+
+  auth/ldap2-bind-wrong-bind:               # Test the "bind" mode of LDAP auth with a wrong bind
+    pattern: /auth/ldap2-bind-wrong-bind
+    handler: LDAPAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      host: ldap.forumsys.com
+      use_ssl: false                      # ldap.forumsys.com does not accept SSL
+      bind:                               # By default, bind as this user
+        user: 'uid=euler,dc=example,dc=com'
+        password: 'wrong-password'      # This will fail. We test for that.
+      search:
+        base: 'dc=example,dc=com'       # Search in this domain
+        filter: '(mail={user})'         # Using a mail ID filter
+        password: '{password}'          # and the password field as password
+      xsrf_cookies: false
+
+  auth/simple:
+    pattern: /auth/simple
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      user: {arg: user}
+      password: {arg: password}
+      credentials:
+        alpha: alpha
+        beta: beta
+        gamma:
+          password: gamma
+          role: user
+      delay: [0.4, 0.8]
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+      action:
+        -
+          function: utils.set_session
+          kwargs:
+            action_set: true
+        -
+          function: ensure_single_session
+      xsrf_cookies: false
+
+  auth/simple-no-redirect:
+    pattern: /auth/simple-no-redirect
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      credentials:
+        alpha: alpha
+
+  auth/expiry:
+    pattern: /auth/expiry
+    handler: SimpleAuth
+    kwargs:
+      session_expiry: 0.001
+      template: $YAMLPATH/auth.html
+      credentials:
+        alpha: alpha
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+
+  auth/inactive:
+    pattern: /auth/inactive
+    handler: SimpleAuth
+    kwargs:
+      session_inactive: 0.000011574     # 1 second in days
+      template: $YAMLPATH/auth.html
+      credentials:
+        alpha: alpha
+      redirect:
+        url: /dir/index/
+
+  auth/customexpiry:
+    pattern: /auth/customexpiry
+    handler: SimpleAuth
+    kwargs:
+      session_expiry:
+        default: 0.001
+        key: remember
+        values:
+          day: 1
+          week: 7
+      template: $YAMLPATH/auth.html
+      credentials:
+        alpha: alpha
+      redirect:
+        query: next
+        header: NEXT
+        url: /dir/index/
+
+  auth/template:
+    pattern: /auth/template
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/authtemplate.html
+      user: {arg: user}
+      password: {arg: password}
+      credentials:
+        alpha: alpha
+      xsrf_cookies: false
+
+  auth/db:
+    pattern: /auth/db
+    handler: DBAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      url: 'mysql+pymysql://root@${MYSQL_SERVER}/test_auth'
+      table: users
+      user:
+          column: user
+          arg: user
+      password:
+          column: password
+          arg: password
+          function: utils.encrypt(handler, content)
+      delay: [0.4, 0.8]
+      redirect:
+          query: next
+          header: NEXT
+          url: /dir/index/
+
+  auth/dbschema:
+    pattern: /auth/dbschema
+    handler: DBAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      url: 'postgresql://postgres@$POSTGRES_SERVER/test_auth'
+      table: auth.users         # Test that schemas work
+      user:
+          column: user
+          arg: user
+      password:
+          column: password
+          arg: password
+          function: utils.encrypt(handler, content)
+      delay: [0.4, 0.8]
+      redirect:
+          query: next
+          header: NEXT
+          url: /dir/index/
+
+  auth/dbsignup:
+    pattern: /auth/dbsignup
+    handler: DBAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      url: 'mysql+pymysql://root@${MYSQL_SERVER}/test_auth'
+      table: users
+      user:
+        column: user
+        arg: user
+      password:
+        column: password
+        arg: password
+        function: utils.encrypt(handler, content)
+      forgot:
+        email_from: smtps_stub
+      signup: true
+      redirect:
+          query: next
+          header: NEXT
+          url: /dir/index/
+  auth/dbcsv:
+    pattern: /auth/dbcsv
+    handler: DBAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      url: $YAMLPATH/login.csv
+      user:
+          column: user
+          arg: user
+      password:
+          column: password
+          arg: password
+          function: utils.encrypt(handler, content)
+      delay: [0.4, 0.8]
+      redirect:
+          query: next
+          header: NEXT
+          url: /dir/index/
+  auth/dbexcel:
+    pattern: /auth/dbexcel
+    handler: DBAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      url: $YAMLPATH/login.xlsx
+      sheet_name: auth
+      user:
+          column: user
+          arg: user
+      password:
+          column: password
+          arg: password
+          function: utils.encrypt(handler, content)
+      delay: [0.4, 0.8]
+      redirect:
+          query: next
+          header: NEXT
+          url: /dir/index/
+
+  auth/functionhandler:
+    pattern: /auth/functionhandler
+    handler: FunctionHandler
+    kwargs:
+      auth: true
+      function: str
+      args: 'OK'
+      xsrf_cookies: false
+  auth/filehandler:
+    pattern: /auth/filehandler
+    handler: FileHandler
+    kwargs:
+      auth: true
+      path: dir/alpha.txt
+      xsrf_cookies: false
+  auth/jsonhandler:
+    pattern: /auth/jsonhandler/(.*)
+    handler: JSONHandler
+    kwargs:
+      auth: true
+      data: {x: 1}
+      xsrf_cookies: false
+  auth/processhandler:
+    pattern: /auth/processhandler
+    handler: ProcessHandler
+    kwargs:
+      auth: true
+      args: [python, "$YAMLPATH/processtest.py", a, '1', 'x y']
+      xsrf_cookies: false
+  auth/twitterresthandler:
+    pattern: /auth/twitterresthandler
+    handler: TwitterRESTHandler
+    kwargs:
+      auth: true
+      # Gramener > Gramex guide app: https://apps.twitter.com/app/12449610/keys
+      key: XkCVNZD5sfWECxHGAGnlHGQFa
+      secret: yU00bx5dHYMbge9IyO5H1KeC5uFnWndntG7u6CH6O4HDZHQg0p
+      access_key: 445767176-pqio8PuGlpzULSstlZQbLhRqFJfNBjWFH5LqNRgI
+      access_secret: zVosr4wIS3aM80hErmWUkMePZ6vX830yI7VKxar6xZqgp
+      xsrf_cookies: false
+  auth/uploadhandler:
+    pattern: /auth/uploadhandler
+    handler: UploadHandler
+    kwargs:
+      auth: true
+      path: $YAMLPATH/uploads
+      methods: GET
+      xsrf_cookies: false
+  auth/membership:
+    pattern: /auth/membership
+    handler: FileHandler
+    kwargs:
+      path: dir/alpha.txt
+      auth:
+        membership:
+          user: [alpha, beta]
+      xsrf_cookies: false
+  auth/memberships:
+    pattern: /auth/memberships
+    handler: FileHandler
+    kwargs:
+      path: dir/alpha.txt
+      auth:
+        membership:
+          -
+            user: alpha
+          -
+            user: beta
+      xsrf_cookies: false
+  auth/condition:
+    pattern: /auth/condition
+    handler: FileHandler
+    kwargs:
+      path: dir/alpha.txt
+      auth:
+        condition:
+          function: str.endswith
+          args: [=handler.current_user.user, 'ta']        # beta, delta
+      xsrf_cookies: false
+  auth/login-url:
+    pattern: /auth/login-url
+    handler: FileHandler
+    kwargs:
+      auth:
+        login_url: /auth/simple
+      path: dir/alpha.txt
+      xsrf_cookies: false
+  auth/login-url-query:
+    pattern: /auth/login-url-query
+    handler: FileHandler
+    kwargs:
+      auth:
+        login_url: /auth/simple-query
+        query: later
+      path: dir/alpha.txt
+      xsrf_cookies: false
+  auth/simple-query:
+    pattern: /auth/simple-query
+    handler: SimpleAuth
+    kwargs:
+      credentials: {alpha: alpha}
+      redirect:
+        query: later
+        url: /dir/index/
+  auth/login-url-false:
+    pattern: /auth/login-url-false
+    handler: FileHandler
+    kwargs:
+      auth:
+        login_url: false
+      path: dir/alpha.txt
+      xsrf_cookies: false
+  auth/unauthorized-template:
+    pattern: /auth/unauthorized-template
+    handler: FileHandler
+    kwargs:
+      path: dir/alpha.txt
+      xsrf_cookies: false
+      auth:
+        membership:
+          user: beta
+        template: 403-template.html
+
+  auth/prepare:
+    pattern: /auth/prepare
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      user: {arg: user}
+      password: {arg: password}
+      prepare: utils.auth_prepare(args, handler)
+      credentials:
+        alpha: alpha1
+        beta: beta1
+
+  auth/active:
+    pattern: /auth/active
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      user: {arg: user}
+      password: {arg: password}
+      credentials:
+        activeuser: activeuser1
+
+  auth/userkey:
+    pattern: /auth/userkey
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      user_key: userkey
+      credentials:
+        alpha: alpha
+
+  auth/userkey_logout:
+    pattern: /auth/userkey_logout
+    handler: LogoutHandler
+    kwargs:
+      user_key: userkey
+
+  auth/lookup:
+    pattern: /auth/lookup
+    handler: SimpleAuth
+    kwargs:
+      template: $YAMLPATH/auth.html
+      credentials:
+        alpha: alpha
+        beta: beta
+      lookup:
+        url: lookup.xlsx
+        sheet_name: userinfo
+        id: userid
+
+  auth/rules:
+    pattern: /auth/rulesdb
+    handler: SimpleAuth
+    kwargs:
+      credentials:
+        alpha:
+          password: alpha
+          gender: female
+          email: jane.doe@gmail.com
+        beta:
+          password: beta
+          gender: male
+          email: john.doe@gramener.com
+          team: "ग्रामेक्स"
+        γ:
+          password: gamma
+          gender: male
+          empty: ''
+      rules:
+        url: sqlite:///$YAMLPATH/rules.db
+        table: rules
+
+  auth/rules-files:
+    pattern: /auth/rulesfile
+    handler: SimpleAuth
+    kwargs:
+      credentials:
+        alpha:
+          password: alpha
+          gender: female
+          email: jane.doe@gmail.com
+        beta:
+          password: beta
+          gender: male
+          email: john.doe@gramener.com
+          team: "ग्रामेक्स"
+        γ:
+          password: gamma
+          gender: male
+          empty: ''
+      rules:
+        url: $YAMLPATH/rules.xlsx
+        sheet_name: rules
+
+  auth/no-rules:
+    pattern: /auth/norules
+    handler: SimpleAuth
+    kwargs:
+      credentials:
+        alpha:
+          password: alpha
+          gender: female
+          email: jane.doe@gmail.com
+        beta:
+          password: beta
+          gender: male
+          email: john.doe@gramener.com
+          team: "ग्रामेक्स"
+        γ:
+          password: gamma
+          gender: male
+          empty: ''
+      rules: {}
+
+  pptx/source:
+    pattern: /pptx/source
+    handler: PPTXHandler
+    kwargs:
+      source: template.pptx
+  pptx/change-text:
+    pattern: /pptx/change-text
+    handler: PPTXHandler
+    kwargs:
+      source: template.pptx
+      change-text:
+        slide-number: 1
+        Text1: {text: New Text1}
+        Arabic: {text: سعيد}
+        Chinese: {text: 高兴}
+        Hindi: {text: खुश}
+        Russian: {text: счастливый}
+  pptx/change-text-args:
+    pattern: /pptx/change-text-args
+    handler: PPTXHandler
+    kwargs:
+      source: template.pptx
+      change-text:
+        slide-number: 1
+        Text1: {text: "{{ args['text'] }}"}
+        Arabic: {text: سعيد}
+        Chinese: {text: 高兴}
+        Hindi: {text: खुश}
+        Russian: {text: счастливый}
+
+  proxy/httpbin/:
+    pattern: /proxy/httpbin(.*?)/(.*)
+    handler: ProxyHandler
+    kwargs:
+      url: http://127.0.0.1:9999/httpbin?x=1&x=2&z=1&pre={0}&post={1}
+      request_headers:
+        User-Agent: true
+        X-Xsrftoken: true
+        X-Csrftoken: true
+        Cookie: true
+        X-From: ProxyHandler
+        Session: 'Session {handler.session[id]}'
+      default:
+        y: [1, 2]
+        z: 3
+      # httpbin exposes GET, POST, PUT, DELETE. Make this a bit different
+      methods: [GET, POST, PUT, PATCH]
+      prepare: utils.proxy_prepare(request, handler)
+      modify: utils.proxy_modify(request, response, handler)
+      headers:
+        X-Proxy-Custom: custom-header
+
+  xsrf:
+    pattern: /xsrf
+    handler: FunctionHandler
+    kwargs:
+      function: "str"
+      args: "xsrf"
+      set_xsrf: true
+  xsrf/yes:
+    pattern: /xsrf/yes
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/dir/index.html
+      xsrf_cookies: true
+  xsrf/no:
+    pattern: /xsrf/no
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/dir/index.html
+      xsrf_cookies: false
+
+  error/404-template:
+    pattern: /error/404-template(.*)
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/dir/
+      error:
+        404:
+          path: $YAMLPATH/error-404.json
+          autoescape: false
+          whitespace: oneline
+  error/404-escaped:
+    pattern: /error/404-escaped(.*)
+    handler: FileHandler
+    kwargs:
+      path: $YAMLPATH/dir/
+      error:
+        404:
+          path: $YAMLPATH/error-404.json
+  error/500-function:
+    pattern: /error/500-function
+    handler: FunctionHandler
+    kwargs:
+      function: utils.zero_division_error
+      error:
+        500:
+          function: utils.handle_error
+          headers:
+            Content-Type: application/json
+
+  ws/socket:
+    pattern: /ws/socket
+    handler: WebSocketHandler
+    kwargs:
+      open:
+        function: utils.ws_open
+      on_message:
+        function: utils.ws_on_message
+      on_close:
+        function: utils.ws_on_close
+
+  ws-proxy/socket:
+    pattern: /ws-proxy/socket(.*?)/(.*?)
+    handler: ProxyHandler
+    kwargs:
+      url: /proxy/httpbin{0}/{1}
+      open:
+        function: utils.ws_open
+      on_message:
+        function: utils.ws_on_message
+      on_close:
+        function: utils.ws_on_close
+
+  ws-proxy/socket-auth:
+    pattern: /ws-proxy/auth(.*?)/(.*?)
+    handler: ProxyHandler
+    kwargs:
+      auth:
+        membership:
+          id: alpha
+      url: /proxy/httpbin{0}/{1}
+      open:
+        function: utils.ws_open
+      on_message:
+        function: utils.ws_on_message
+      on_close:
+        function: utils.ws_on_close
+
+  ws/socket-auth:
+    pattern: /ws/auth
+    handler: WebSocketHandler
+    kwargs:
+      auth:
+        membership:
+          id: alpha
+      open:
+        function: utils.ws_open
+      on_message:
+        function: utils.ws_on_message
+      on_close:
+        function: utils.ws_on_close
+
+  ws/info:
+    pattern: /ws/info
+    handler: FunctionHandler
+    kwargs:
+      function: utils.ws_info_dump
+      headers:
+        Content-Type: application/json
+
+  email/stubs:
+    pattern: /email/stubs
+    handler: FunctionHandler
+    kwargs:
+      function: utils.email_stubs
+      headers:
+        Content-Type: application/json
+
+  sms/info:
+    pattern: /sms/info
+    handler: FunctionHandler
+    kwargs:
+      function: utils.sms_info
+      headers:
+        Content-Type: application/json
+
+  model/generic:
+    pattern: /model/(.*)/(.*)
+    handler: ModelHandler
+    kwargs:
+      path: $YAMLPATH/
+      xsrf_cookies: false
+
+  filters/sales:
+    pattern: /filters/sales
+    handler: FilterHandler
+    kwargs:
+      url: $YAMLPATH/sales.xlsx
+
+  filters/census:
+    pattern: /filters/census
+    handler: FilterHandler
+    kwargs:
+      url: $YAMLPATH/sales.xlsx
+      sheet_name: census
+
+  uitest/sass:
+    pattern: /uitest/sass
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.apps.ui.sass(handler, r"$YAMLPATH/sass/vars.scss")
+
+  uitest/sass2:
+    pattern: /uitest/sass2
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.apps.ui.sass2(handler)
+
+  translate/db:
+    pattern: /translate/db
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.ml.translater
+      kwargs:
+        key: ...
+        source: en
+        target: nl
+        api: mock
+        cache:
+          url: sqlite:///$TRANSLATE_DB
+          table: translate
+  translate/xlsx:
+    pattern: /translate/xlsx
+    handler: FunctionHandler
+    kwargs:
+      # Spell translater as translator. The latter must also work
+      function: gramex.ml.translator
+      kwargs:
+        key: ...
+        source: en
+        target: nl
+        api: mock
+        cache:
+          url: $TRANSLATE_XLSX
+          sheet_name: translate
+
+  comic:
+    pattern: /comic
+    handler: ComicHandler
+
+  openapi/spec:
+    pattern: /openapi/spec
+    handler: OpenAPIHandler
+    kwargs:
+      info:
+        title: OpenAPI-title
+        description: OpenAPI-description
+        version: OpenAPI-version
+      servers:
+        - url: ..
+          description: Server-description
+
+  openapi/func:
+    pattern: /openapi/func
+    handler: FunctionHandler
+    kwargs:
+      function: utils.test_function
+      methods: GET, POST
+    openapi:
+      get:
+        responses:
+          '400':
+            description: You served a bad request
+
+  openapi/form:
+    pattern: /openapi/form
+    handler: FormHandler
+    kwargs:
+      sales:
+        url: sales.xlsx
+        sheet_name: sales
+        columns:
+          - name: देश
+            type: text
+          - name: city
+            type: text
+          - name: product
+            type: text
+          - name: sales
+            type: float
+          - name: growth
+            type: float
+      dates:
+        url: sales.xlsx
+        sheet_name: sales
+        columns:
+          - name: date
+            type: date
+          - name: sales
+            type: int
+      census:
+        url: sales.xlsx
+        sheet_name: census
+        columns: [State, District, DistrictCaps]
+    openapi:
+      get:
+        responses:
+          '400':
+            description: You served a bad request
+
+  variables:
+    pattern: /variables
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.config.variables
+      headers:
+        Content-Type: application/json
+
+  secrets:
+    pattern: /secrets
+    handler: FunctionHandler
+    kwargs:
+      function: f'$SECRET1 $SECRET2 $REMOTE_SECRET1 $REMOTE_SECRET2'
+
+  gramexlog/default:
+    pattern: /gramexlog/default
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.log
+
+  gramexlog/extra:
+    pattern: /gramexlog/extra
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.log(handler, 'extra', int=1, bool=True, str='msg', none=None)
+
+  gramexlog/nonexistent:
+    pattern: /gramexlog/nonexistent
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.log(handler, 'nonexistent')
+
+  gramexlog/delete:
+    pattern: /gramexlog/delete
+    handler: FunctionHandler
+    kwargs:
+      function: utils.gramexlog_delete
+
+  gramexlog/search:
+    pattern: /gramexlog/search
+    handler: FunctionHandler
+    kwargs:
+      function: utils.gramexlog_search
+
+  shutdown:
+    pattern: /shutdown
+    handler: FunctionHandler
+    kwargs:
+      function: gramex.shutdown() or 'Done'
+
+gramexlog:
+  flush: 0.2
+  default:
+      host: localhost
+  extra:
+      host: localhost
+      keys: [
+        name, class, method, uri, status, port, error,
+        args.x, args.y, request.path, headers.Host, cookies.sid, user.id, env.HOME
+      ]
+      index: extraindex
+  nonexistent:
+      host: nonexistent
+
+sms:
+  amazonsns:
+    type: amazonsns
+    aws_access_key_id: invalid-aws-key
+    aws_secret_access_key: invalid-aws-secret
+    region_name: ap-southeast-1
+    smstype: Transactional
+
+# Display Gramex logs on console with indentation
+log:
+    version: 1
+    root:
+      level: DEBUG
+      handlers:
+        - error
+    handlers:
+      error:
+        class: logging.StreamHandler
+        level: INFO
+        stream: ext://sys.stdout
+        formatter: inline
+    formatters:
+      inline:
+        format: '        %(message)s'
+
+watch:
+  watch_template:
+    paths: watcher.txt
+    on_modified: utils.on_modified
+    on_created: utils.on_created
+    on_deleted: utils.on_deleted
+  watch_patterns:
+    paths:
+      - dir/
+      - watch.*.test
+    on_created: utils.on_created
+    on_modified: utils.on_modified
+    on_deleted: utils.on_deleted
+  no-paths: {}
+  no-events:
+    paths: dir
+  invalid-event:
+    paths: dir
+    on_modified: nonexistent            # This should not throw an error, only report a warning
+
+schedule:
+  make-circles:
+    function: utils.make_circles
+    startup: true
+  schedule-start:
+    function: utils.schedule_start
+    startup: true
+  schedule-slow-count:
+    function: utils.slow_count          # Set global schedule-count every 10ms
+    thread: true
+  schedule-timed:
+    function: gramex.config.app_log.info('schedule-timed ran now')
+    hours: 5
+    minutes: 0
+  schedule-timed-utc:
+    function: gramex.config.app_log.info('schedule-timed-utc ran now')
+    hours: 5
+    minutes: 0
+    utc: true
+  schedule-every:
+    function: gramex.config.app_log.info('schedule-every-90s ran now')
+    every: 1.5 hours 1.5m 2.5 sec
+
+email:
+  smtps_stub:
+    stub: true
+    type: smtps
+    host: 10.20.30.40
+    email: user@example.org
+    password: userpassword
+
+alert:
+    alert-no-service:
+      subject: Hello world
+      to: admin@example.org
+    alert-no-startup:
+      service: smtps_stub
+      to: nostartup@example.org
+      subject: No startup
+    alert-startup:
+      service: smtps_stub
+      startup: true
+      to: startup@example.org
+      subject: Gramex started
+    alert-schedule:
+      service: smtps_stub
+      days: '*'
+      hours: '*'
+      minutes: '0'
+      to: admin@example.org
+      subject: Scheduled alert
+    alert-template:
+      service: smtps_stub
+      to: "{{ 'user@example.org' }}"
+      cc: "{{ 'cc@example.org' }}"
+      bcc: "{{ 'bcc@example.org' }}"
+      reply_to: "{{ 'reply_to@example.org' }}"
+      on_behalf_of: "{{ 'on_behalf_of@example.org' }}"
+      subject: "{{ 'subject' }}"
+      body: "{{ 'body' }}"
+      html: "{{ 'html' }}"
+      bodyfile: $YAMLPATH/{{ 'template-alert.txt' }}    # These are ignored.
+      htmlfile: $YAMLPATH/{{ 'template-alert.txt' }}    # body & html take precendence
+    alert-templatefile:
+      service: smtps_stub
+      to: 'user@example.org'
+      bodyfile: $YAMLPATH/{{ 'template-alert.txt' }}
+      htmlfile: $YAMLPATH/{{ 'template-alert.txt' }}
+    alert-markdown:
+      service: smtps_stub
+      to: 'user@example.org'
+      body: 'markdown'
+      html: '<p>HTML content will be overwritten by markdown</p>'
+      markdown: '{{ "# markdown" }}'
+      markdownfile: $YAMLPATH/{{ 'template-alert.md' }}   # Ignored. markdown takes precedence
+    alert-markdown-template:
+      service: smtps_stub
+      to: 'user@example.org'
+      body: 'markdown'
+      html: '<p>HTML content will be overwritten by markdown</p>'
+      markdownfile: $YAMLPATH/{{ 'template-alert.md' }}
+    alert-attachments:
+      service: smtps_stub
+      to: user@example.org
+      subject: Gramex attachments
+      html: '<img src="cid:img">'
+      attachments:
+        - $YAMLPATH/install-test.zip
+      images:
+        img: sample.png
+    alert-data:
+      service: smtps_stub
+      data: actors.csv
+      to: user@example.org
+      subject: '{{ len(data) }} actors from {{ config.service }}'
+      body: '{{ data["votes"].sum() }} votes'
+    alert-condition-df:
+      service: smtps_stub
+      data: actors.csv
+      to: user@example.org
+      condition: data[data['votes'] > 100]
+      subject: '{{ len(data) }} actors'
+      body: '{{ data["votes"].sum() }} votes'
+    alert-condition-false:
+      service: smtps_stub
+      to: user@example.org
+      condition: 'False'
+    alert-condition-0:
+      service: smtps_stub
+      to: user@example.org
+      condition: '0'
+    alert-condition-dict:
+      service: smtps_stub
+      data:
+        actors: $YAMLPATH/actors.csv
+      condition: '{"to": "user@example.org", "val": "hello"}'
+      to: '{{ to }}, admin@example.org'
+      subject: '{{ len(actors) }} actors'
+      body: 'val is {{ val }}'
+    alert-each:
+      service: smtps_stub
+      data: $YAMLPATH/actors.csv
+      condition: data[data['votes'] > 120]
+      each: data
+      to: "{{ row['name'].replace(' ', '_') + '@example.org' }}"
+      subject: "{{ config.salutation }} #{{ index }}! {{ config['prefix'] }} {{ row['votes'] }} votes"
+      salutation: "Congrats"
+      prefix: "You got"
+      attachments:
+        - http://localhost:9999/capturechrome?url=http://localhost:9999/auth/user&ext=pdf
+      user:
+        id: "{{ row['name'] }}"
+    alert-data-inplace:
+      service: smtps_stub
+      data:
+        - to: x@example.org
+        - to: y@example.org
+      each: data
+      to: '{{ row.to }}'
+      subject: '{{ row.to }}'
+      body: 'Body is {{ row.to }}'
+    alert-capture:
+      service: smtps_stub
+      to: user@example.org
+      subject: CaptureHandler attachments id={{ config.user.id }}, role={{ config.user.role }}
+      html: The attachment should show the user name and role below for user
+      user:
+        id: login@example.org
+        role: manager
+      attachments:
+        - http://localhost:9999/capturechrome?url=http://localhost:9999/auth/session&ext=pdf
+    alert-run-args:
+      service: smtps_stub
+      to: "{{ args.get('to', 'default@local') }}"
+      subject: "{{ args.get('subject', 'default') }}"
+    alert-notify:
+      data:
+        - {email: alpha@example.org}
+        - {email: beta@example.org}
+        - {email: gamma@example.org}
+      each: data
+      to: "{{ row['email'] }}"
+      subject: "#{{ index }}: 1/val={{ 1 // args['val'][index] }}"
+      notify: [alert-notify-always, alert-notify-success, alert-notify-failure, alert-notify-nonexistent]
+    alert-notify-always:
+      service: smtps_stub
+      to: always@example.org
+      subject: '{{ len(args["done"]) }} done, {{ len(args["fail"]) }} failed'
+    alert-notify-success:
+      service: smtps_stub
+      to: success@example.org
+      subject: '{{ len(args["done"]) }} done'
+      condition: not args["fail"]
+    alert-notify-failure:
+      service: smtps_stub
+      to: failure@example.org
+      subject: '{{ len(args["done"]) }} done, {{ len(args["fail"]) }} failed'
+      condition: args["fail"]
+
+import:
+  # Import from all subdirectories
+  subdir: '*/gramex.yaml'
+  gramex-update:
+    path: $GRAMEXAPPS/update/gramex.yaml
+    YAMLURL: /update/
+  gramex-logviewer:
+    path: $GRAMEXAPPS/logviewer/gramex.yaml
+    YAMLURL: /logviewer/
+    LOGVIEWER_SCHEDULER_SETUP:
+      thread: false
+
+  admin/default:
+    path: $GRAMEXAPPS/admin2/gramex.yaml
+    YAMLURL: /$YAMLURL/admin/default/
+
+  admin/kwargs:
+    path: $GRAMEXAPPS/admin2/gramex.yaml
+    YAMLURL: /$YAMLURL/admin/kwargs/
+    ADMIN_KWARGS:
+      logo: logo.png
+      title: Custom title
+      components: [users, info, shell]
+      theme: '?font-family-base=roboto'
+      authhandler: auth/db
+
+  admin/auth:
+    path: $GRAMEXAPPS/admin2/gramex.yaml
+    YAMLURL: /$YAMLURL/admin/auth/
+    ADMIN_KWARGS:
+      authhandler: auth/dbcsv
+    ADMIN_AUTH:
+      login_url: /auth/dbcsv
+      membership:
+        user: [alpha, delta]
+
+  ui:
+    path: $GRAMEXAPPS/ui/gramex.yaml
+    YAMLURL: $YAMLURL/ui/
+
+# Invalid services should be ignored
+invalid-service: true
+
+eventlog:
+  path: $YAMLPATH/events.db
