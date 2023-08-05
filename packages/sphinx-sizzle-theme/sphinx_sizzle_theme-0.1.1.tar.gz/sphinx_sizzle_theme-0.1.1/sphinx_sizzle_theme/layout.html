@@ -1,0 +1,588 @@
+{%- macro css() %}
+    <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
+    <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
+    {%- for cssfile in css_files %}
+    <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
+    {%- endfor %}
+{%- endmacro %}
+{%- macro script() %}
+    <script>
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '{{ url_root }}',
+        VERSION:     '{{ release|e }}',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}',
+        LINK_SUFFIX: '{{ link_suffix }}',
+        HAS_SOURCE:  false,
+        SOURCELINK_SUFFIX: '{{ sourcelink_suffix }}'
+      };
+      $(document).data('sizzle', {on_load: []});
+    </script>
+    {%- for scriptfile in script_files[2:] %}
+    {%- if js_tag is defined %}
+    {{ js_tag(scriptfile) }}
+    {%- else %}
+    {%- if scriptfile %}
+    <script src="{{ pathto(scriptfile, 1) }}"></script>
+    {%- endif %}
+    {%- endif %}
+    {%- endfor %}
+    {%- if app_data_path is defined %}
+    <script src="{{ app_data_path }}"></script>
+    {%- endif %}
+{%- endmacro %}
+{%- macro sometoc(toctree) %}
+  {% if toctree %}
+    {{ toctree }}
+  {% else %}
+  <div class="localtoc">
+    {{ toc }}
+  </div>
+  {% endif %}
+{%- endmacro %}
+{%- macro navigation(toctree) %}
+  <div class="navsidebar">
+    <div id="sidebar-search">
+      {{ sbox() }}
+    </div>
+    {%- if sidebars != None %}
+      {#- new style sidebar: explicitly include/exclude templates #}
+      {%- for sidebartemplate in sidebars %}
+      {%- include sidebartemplate %}
+      {%- endfor %}
+    {% else %}
+      <div class="sidebar-block">
+        <div class="sidebar-tocheading">
+          <div class="pull-left">
+            <h2>{{ _('Table Of Contents') }}</h2>
+          </div>
+          <div class="pull-right" title="Hide this sidebar (hover at left edge to bring it back)"><i class="fa fa-chevron-left hidetoc"></i></div>
+        </div>
+        <div class="sidebar-toc">
+      {% if theme_show_filter %}
+          <div id="toc-filter" title="Type in here to show only matching topics">
+            <input class="form-control" id="toc-filter-query" placeholder="Filter by title ...">
+          </div>
+      {% else %}
+        <div style="clear: both"></div>
+      {% endif %}
+        {{ sometoc(toctree) }}
+        </div>
+      </div>
+    {%- endif %}
+  </div>
+{%- endmacro %}
+{%- macro prev_next() %}
+  {% if prev or next %}
+  <div class="prev-next">
+    {% if prev %}
+      <div class="pull-left">
+        <a class="btn btn-default prev" href="{{ prev.link|e }}" title="{{ 'Previous chapter'}} ({{ prev.title|striptags }})"><i class="fa fa-chevron-left mr-1em" aria-hidden="true"></i><span class="btn-text">{{ prev.title|striptags }}</span></a>
+      </div>
+    {% endif %}
+    {%- if next and next.title != '&lt;no title&gt;' %}
+      <div class="pull-right">
+        <a class="btn btn-default next" href="{{ next.link|e }}" title="{{ 'Next chapter' }} ({{ next.title|striptags }})"><span class="btn-text">{{ next.title|striptags }}</span>&nbsp;<i class="fa fa-chevron-right ml-1em" aria-hidden="true"></i></a>
+      </div>
+    {%- endif %}
+    </div>
+  {% endif %}
+{%- endmacro %}
+{%- macro sbox() %}
+<div class="input-group" title="Enter something to search for and then either press Enter or click the magnifying glass">
+  <input type="text" class="form-control search-query" placeholder="Search docs ...">
+  <div class="input-group-addon">
+    <i class="fa fa-search"></i>
+  </div>
+</div>
+{%- endmacro -%}
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{{ metatags }}
+{% if pagename == 'index' %}
+<title>{{ title|striptags|e }}{{ titlesuffix }}</title>
+{% else %}
+<title>{{ project }} - {{ title|striptags|e }}{{ titlesuffix }}</title>
+{% endif %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css" integrity="sha256-8uHMIn1ru0GS5KO+zf7Zccf8Uw12IA5DrdEcmMuWLFM=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/tooltipster.bundle.min.css" integrity="sha256-Qc4lCfqZWYaHF5hgEOFrYzSIX9Rrxk0NPHRac+08QeQ=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css" integrity="sha256-Wa1I4jhSXeWd3N6RhfPlkqr1WlT+zS3Vh2YGCg0129E=" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Code+Pro|Source+Sans+Pro|Source+Serif+Pro|Roboto|Roboto+Mono{{ theme_google_fonts }}" rel="stylesheet">
+<link href="https://fonts.red-dove.com/iosevka-ss09-regular/webfont.css" rel="stylesheet">
+{{ css() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" integrity="sha256-G7A4JrJjJlFqP0yamznwPjAApIKPkadeHfyIwiaa9e0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/tooltipster@4.2.8/dist/js/tooltipster.bundle.min.js" integrity="sha256-v8akIv8SCqn5f3mbVB7vEWprIizxPh6oV0yhao/dbB4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+{%- block scripts %}
+{{- script() }}
+{%- endblock %}
+{%- block linktags %}
+{%- if hasdoc('about') %}
+<link rel="author" title="{{ _('About these documents') }}" href="{{ pathto('about') }}" />
+{%- endif %}
+{%- if hasdoc('genindex') %}
+<link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}" />
+{%- endif %}
+{%- if hasdoc('search') %}
+<link rel="search" title="{{ _('Search') }}" href="{{ pathto('search') }}" />
+{%- endif %}
+{%- if hasdoc('copyright') %}
+<link rel="copyright" title="{{ _('Copyright') }}" href="{{ pathto('copyright') }}" />
+{%- endif %}
+{%- if next %}
+<link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}" />
+{%- endif %}
+{%- if prev %}
+<link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}" />
+{%- endif %}
+{%- endblock %}
+{% block extrahead %}{% endblock %}
+</head>
+<body class="full-height test">
+<noscript>
+  <div>
+    <div id="noscript-message">JavaScript is not enabled. It is needed for this website to work.</div>
+  </div>
+</noscript>
+<div id="whole-page" class="container-fluid content full-height">
+  <div id="header-row" class="row">
+    <div id="header-container" class="col-md-12">
+      <div id="hdr-left">
+        <i class="fa fa-bars menu-toggle"></i>
+        {% include "logo-text.html" %}
+      </div>
+      <div id="hdr-centre" class="text-center stretch">
+        <h3 title="{{ title|striptags }}">{{ title|striptags }}</h3>
+        <h6>{{ title }}</h6>
+      </div>
+      <div id="hdr-search">
+        {{ sbox() }}
+      </div>
+{% if hasdoc('genindex') and pagename != 'genindex' and theme_show_index %}
+      <div id="hdr-index">
+        <a href="{{ pathto('genindex') }}" class="btn btn-default" title="Go to the index"><i class="fa fa-list"></i></a>
+      </div>
+{% endif %}
+{%- if show_source and has_source and sourcename %}
+      <div id="hdr-source">
+        <a href="{{ pathto('_sources/' + sourcename, true)|e }}" class="btn btn-default" title="See the source for this page"><i class="fa fa-code"></i></a>
+      </div>
+{% endif %}
+      <div id="hdr-right">
+        {{ prev_next() }}
+      </div>
+      <div id="alt-hdr-right">
+{% if prev %}
+        <a href="{{ prev.link|e }}"><i class="fa fa-chevron-left mr-8"></i></a>
+{% endif %}
+{% if pagename != 'index' %}
+        <a href="{{ pathto('index') }}"><i class="fa fa-home mr-8"></i></a>
+{% endif %}
+{% if pagename != 'search' %}
+        <a href="{{ pathto('search') }}"><i class="fa fa-search mr-8"></i></a>
+{% endif %}
+{% if hasdoc('genindex') and pagename != 'genindex' and theme_show_index %}
+        <a href="{{ pathto('genindex') }}"><i class="fa fa-list mr-8"></i></a>
+{% endif %}
+{% if next %}
+        <a href="{{ next.link|e }}"><i class="fa fa-chevron-right"></i></a>
+{% endif %}
+      </div>
+    </div>
+  </div>
+{% set toctree = toctree(maxdepth=theme_globaltoc_depth|toint, collapse=theme_globaltoc_collapse|tobool, includehidden=theme_globaltoc_includehidden|tobool) %}
+  <div id="content-row" class="row">
+    <div id="page-content" class="col-md-12 flex-col">
+      <div id="content-container">
+        <div id="nav">
+          {{ navigation(toctree) }}
+        </div>
+        <div id="content" tabindex="0" class="stretch">
+          <div id="mnav">
+            {{ sometoc(toctree) }}
+          </div>
+          <div class="body">
+            {% block body %}{% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="footer-row" class="row">
+{% block footer %}
+    <div class="col-md-12">
+        <span title="Built on {{ build_date }}" class="pull-right">&copy; Copyright {{ copyright }}.
+        Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> {{ sphinx_version }} and the
+        <a href="https://pypi.org/project/sphinx-sizzle-theme/"
+{% if sizzle_version %}
+           title="{{ sizzle_version }}"
+{% endif %}
+        >Sizzle</a> theme.</span>
+    </div>
+{% endblock %}
+  </div>
+</div>
+{% if pagename != 'glossary' %}
+<div id="tooltips" class="hidden">
+</div>
+{% endif %}
+<script>
+$(document).ready(function() {
+  'use strict';
+  var $search = $('.search-query');
+{% if theme_show_filter %}
+  var $filter = $('#toc-filter-query');
+  var $toclist = $('.sidebar-toc > ul').find('li');
+
+  if ($toclist.length === 0) {
+    $toclist = $('.localtoc > ul').find('li');
+  }
+
+{% endif %}
+  var $nav = $('#nav');
+
+  //$('#whole-page').removeClass('hidden');
+  var nav_width = $nav.width();
+
+{% if pagename == 'search' %}
+  var params = $.getQueryParameters();
+  var search_url = '';
+  if (params.q) {
+      var query = params.q[0];
+      $search.val(query).filter(':visible').focus();
+  }
+{% else %}
+  var search_url = '{{ pathto('search') }}';
+{% endif %}
+  function perform_search(e) {
+    var $elem;
+
+    if (e.type === 'keypress') {
+      $elem = $(e.target);
+    }
+    else if (e.type === 'click') {
+      $elem = $(e.target).parents('.input-group').find('input');
+    }
+    var q = $elem.val().trim();
+
+    if (q) {
+      var url = search_url + '?q=' + q + '&check_keywords=yes&area=default';
+
+      location.href = url;
+    }
+  }
+
+{% if theme_show_filter %}
+  function apply_filter() {
+    var s = $filter.val().trim().toLowerCase();
+
+    $toclist.find('a').removeClass('hidden');
+    $toclist.each(function() {
+      var $this = $(this);
+      var $link = $this.find('> a');
+      var t = $link.text().toLowerCase();
+      var show = t.indexOf(s) >= 0;
+
+      if (!show) {
+        $link.addClass('hidden');
+      }
+    });
+  }
+
+  $filter.on('keyup', function(e) {
+    apply_filter();
+  });
+
+{% endif %}
+
+  $search.on('keypress', function(e) {
+    if (e.which == 13) {
+      perform_search(e);
+    }
+  });
+  $search.parents('.input-group').find('.input-group-addon').on('click', perform_search);
+  $(document).on('click', '.summary .fa-caret-right', function(e) {
+    var $elem = $(e.target).parents('li');
+    var $next = $elem.next();
+    $elem.addClass('hidden');
+    $next.removeClass('hidden');
+  });
+  $(document).on('click', '.detail .fa-caret-down', function(e) {
+    var $elem = $(e.target).parents('li');
+    var $prev = $elem.prev();
+    $elem.addClass('hidden');
+    $prev.removeClass('hidden');
+  });
+
+  $('#content').on('click', function() {
+    $('#mnav').hide();
+  });
+
+  var counter = 0;
+  var timer = null;
+
+  function show_nav() {
+    $('#content').off('mousemove', track_mouse);
+    if (timer !== null) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    $nav.show();
+  }
+
+  function track_mouse(e) {
+    var x = e.clientX;
+
+    if (x < 15) {
+      ++counter;
+      if (timer === null) {
+        timer = setTimeout(show_nav, 2000);
+      }
+    }
+    else {
+      counter = 0;
+    }
+    if (counter >= 20) {
+      show_nav();
+    }
+  };
+
+  function hide_nav() {
+    $nav.hide();
+    counter = 0;
+    $('#content').on('mousemove', track_mouse);
+  }
+
+  $('.hidetoc').on('click', hide_nav);
+
+  $(document).on('keyup', function(e) {
+    if (e.ctrlKey) {
+      if (e.which == 37) {      // Ctrl+left arrow
+        hide_nav();
+      }
+      else if (e.which == 39) { // Ctrl+right arrow
+        show_nav();
+      }
+    }
+  });
+
+  $('.menu-toggle').on('click', function(e) {
+    $('#mnav').toggle();
+  });
+
+  function scroll_nav(frag) {
+    var sel = '#nav ' + (frag ? 'a[href="' + frag + '"]' : '.toctree-l1 a.current');
+
+    var $link = $(sel);
+
+    if ($link.length > 0) {
+      $link[0].scrollIntoView({block: 'center'});
+    }
+  }
+
+  // If the navigator is long, then the item we clicked on to get here might
+  // not be in view. Try to scroll it into the view - a slight delay is needed
+  // to get it to sync properly with other stuff going on (as the page has just
+  // loaded). Hence the setTimeout with a timeout of 0.
+
+  function do_scroll() {
+    scroll_nav(window.location.hash);
+  }
+
+  setTimeout(do_scroll, 0);
+
+  function adjust_size() {
+    // we need to set the height explicitly so that scrolling regions in the
+    // content area work properly.
+    var h = $('#page-content').height();
+
+    $('#nav, #content').height(h);
+    if ($('#nav').is(':visible')) {
+      $('#mnav').hide();
+    }
+  }
+
+  adjust_size();
+
+  $(window).on('resize', adjust_size);
+
+  function focus_content() {
+    $('#content').focus();  // so that keyboard can be used to scroll, etc.
+  }
+
+  setTimeout(focus_content, 150);
+
+  var sizzle = $(document).data('sizzle');
+
+  function make_tooltip(id, h, b) {
+    var $e = $('<div>').attr('id', id);
+    var $b = $('<div>').addClass('tc-body').html(b);
+
+    if (h) {
+      var $h = $('<div>').addClass('tc-heading').html(h);
+      $e.append($h);
+    }
+    $e.append($b);
+    return $e;
+  }
+
+  var default_tt_options = {
+    theme: ['tooltipster-light', 'tooltipster-light-customized'],
+    interactive: true,
+    maxWidth: 600,
+    contentCloning: true
+  };
+
+  function activate_tooltips() {
+    var $tt = $('.tt');
+
+    //console.log('tt links:', $tt.length);
+    $tt.tooltipster(default_tt_options);
+  }
+
+{% if pagename != 'glossary' and theme_enable_tooltips %}
+
+  function add_glossary_tooltips() {
+    var links = $('a');  // can qualify with .reference.internal
+    var glinks = {};
+    var pat = /(.*)\.html#(term-.*)$/;
+    var found = false;  // links in this document
+
+    $.each(links, function(i, link) {
+        var $link = $(link);
+        var href = $link.attr('href');
+        var m = href.match(pat);
+
+        if (m) {
+          var s = m[1].replace(/^(\.\.\/)+/, '');
+
+          if (s === sizzle.app_data.glossary.document) {
+            var k = m[2];
+
+            if (k in glinks) {
+              glinks[k].push($link);
+            }
+            else {
+              glinks[k] = [$link];
+            }
+            found = true;
+          }
+        }
+    });
+    if (found) {
+      var $t = $('#tooltips');
+      var data = sizzle.app_data.glossary.terms;
+
+      $.each(glinks, function(k, v) {
+        var d = data[k];
+
+        if (d) {  // as a sanity check
+          var s = 'tc-'+ k;
+          var $e = make_tooltip(s, d.term, d.defn);
+          $t.append($e);
+
+          $.each(v, function(i, link) {
+            link.addClass('tt').attr('data-tooltip-content', '#' + s);
+          });
+        }
+      });
+    }
+  }
+
+  if (sizzle.app_data && sizzle.app_data.glossary &&
+      sizzle.app_data.glossary.document) {
+    add_glossary_tooltips();
+  }
+{% endif %}
+
+{% if theme_enable_tooltips %}
+
+  function add_custom_tooltips() {
+    if (!sizzle.app_data) {
+      return;
+    }
+
+    var info_tips = sizzle.app_data.custom_data['info-tips'] || {};
+
+    if ($.isEmptyObject(info_tips)) {
+      return;
+    }
+
+    var tt_options = $.extend({contentAsHTML: true}, default_tt_options);
+
+    $('.tc-info').each(function() {
+      var $elem = $(this).prev();
+      var classes = $elem.attr('class');
+      var m = /\btci-([\S]+)/.exec(classes);
+
+      if (m !== null) {
+        var key = m[1];
+
+        if (key in info_tips) {
+          var v = info_tips[key];
+          var tt = $elem.tooltipster(tt_options).tooltipster('content', v);
+        }
+      }
+    });
+  }
+
+  add_custom_tooltips();
+
+  setTimeout(activate_tooltips, 1000);
+{% endif %}
+
+  // Clipboard copy for code blocks with captions
+
+  $('.code-block-caption').each(function() {
+    var $cap = $(this);
+    var $btn = $('<span class="clip-copy"><span class="copied hidden">Copied!</span><i class="fa fa-clipboard" title="Copy contents"></i></span>');
+    var $code = $cap.parent().find('.highlight');
+
+    $cap.append($btn);
+    $btn.find('.fa-clipboard').data('clip-text', $code.text());
+  });
+
+  var clipboard = new ClipboardJS('.code-block-caption .fa-clipboard', {
+    'text': function(trigger) {
+      return $(trigger).data('clip-text');
+    }
+  });
+
+  clipboard.on('success', function(e) {
+    var $copied = $(e.trigger).prev();
+
+    $copied.removeClass('hidden');
+
+    setTimeout(function() {$copied.addClass('hidden'); }, 1000);
+  });
+
+  if (sizzle.on_load) {
+    sizzle.on_load.forEach(function(f) {
+      f();
+    });
+  }
+});
+</script>
+{%- block analytics %}
+{%- if theme_google_analytics_id %}
+  <script>
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', '{{ theme_google_analytics_id }}']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+{%- endif %}
+{%- endblock %}
+</body>
+</html>
