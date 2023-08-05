@@ -1,0 +1,60 @@
+Metadata-Version: 2.1
+Name: atmega
+Version: 0.0.2
+Summary: Provides an API for atmega devices (memory manipulation)
+Home-page: https://github.com/CEA-IM2AG/ATMEGA-API
+Author: Sofiane DJERBI, Ny Aina PEDERSEN, Aymes FREZJA, Nour LADHARI, Yanis ACHAICHIA, Amine OTMANE
+Author-email: sofiane.djerbi@etu.univ-grenoble-alpes.fr
+License: UNKNOWN
+Keywords: API,development,FTDI,RS232,USB,Serial
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: System :: Hardware :: Universal Serial Bus (USB)
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# ATMEGA API
+Provides an API for ATMEGA microcontroller through an FTDI USB device.  
+**Installation:** `pip install atmega`  
+**Note:** On linux the user should be in the group `dialout` and `uucp` 
+
+# Local installation
+
+## Requirements
+**Install dependencies** with pip: `pip install -r requirements.txt`  
+**Install the library** with pip: `pip install .`  
+**Run tests:** `python setup.py test`
+
+# Usage
+
+```python
+import logging
+from atmega.ram import RAM
+
+# Set global logging level
+logging.basicConfig(level=logging.INFO)
+
+# Create device ram object
+dev = RAM()
+
+# Reset ram to 0x11
+dev.reset(0x11)
+
+# Set high baudrate
+dev.change_baudrate(1000000)
+
+# Dump ram into file
+dev.dump_to_file("dump.txt")
+
+# Close device
+dev.close()
+```
+
