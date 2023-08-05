@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>&lt;no title&gt; &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions"></span><p>Created on Mon Nov 23 21:06:13 2020</p>
+<p>&#64;author: ide2704</p>
+<p>Effective brain connectivity functions</p>
+<p>Ivan De La Pava Panche, Automatics Research Group
+Universidad Tecnologica de Pereira, Pereira - Colombia
+email: <a class="reference external" href="mailto:ide&#37;&#52;&#48;utp&#46;edu&#46;co">ide<span>&#64;</span>utp<span>&#46;</span>edu<span>&#46;</span>co</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.CFD_Ch">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">CFD_Ch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_ph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#CFD_Ch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.CFD_Ch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cross-frequency directionality (CFD) between a pair channels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input time series (number of channels x number of samples)</p></li>
+<li><p><strong>ch_pair</strong> (<em>list</em>) – Channel pair of interest</p></li>
+<li><p><strong>freq_ph</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies_ph</em><em>,</em><em>)</em>) – Frequencies of interest for phase extraction, in Hz</p></li>
+<li><p><strong>freq_amp</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies_amp</em><em>,</em><em>)</em>) – Frequencies of interest for amplitude extraction, in Hz</p></li>
+<li><p><strong>time</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Time vector (must be sampled at the sampling frequency of X)</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – Sampling frequency</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>CFD_pac</strong> – Cross frequency directionality</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.GaussianKernel">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">GaussianKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#GaussianKernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.GaussianKernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Gaussian Kernel matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>features</em><em>)</em>) – Input data</p></li>
+<li><p><strong>sig_scale</strong> (<em>float</em>) – Parameter to scale the kernel’s bandwidth</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>K</strong> – Gaussian kernel matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (samples,samples)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.Morlet_Wavelet">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">Morlet_Wavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#Morlet_Wavelet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.Morlet_Wavelet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Morlet wavelet decomposition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Input signal</p></li>
+<li><p><strong>time</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Time vector (must be sampled at the sampling frequency of data,
+best practice is to have time=0 at the center of the wavelet)</p></li>
+<li><p><strong>freq</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies</em><em>,</em><em>)</em>) – Frequencies to evaluate in Hz</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dataW</strong> – Dictionary containing the Morlet wavelet decomposition of data
+‘amp’: ndarray of shape (frequencies,num_samples) holding the amplitude envelopes at each freq
+‘filt’: ndarray of shape (frequencies,num_samples) holding the filtered signals at each freq
+‘phase’: ndarray of shape (frequencies,num_samples) holding the phase time series at each freq
+‘f’: ndarray of shape (frequencies,) holding the evaluated frequencies in Hz
+(If samples is odd, num_samples = samples, otherwise num_samples = samples-1)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict of keys {‘amp’,’filt’,’phase’,’f’}</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.PSI">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">PSI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#PSI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.PSI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the phase slope index (PSI) from channel x to channel y</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Source time series</p></li>
+<li><p><strong>y</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Target time series</p></li>
+<li><p><strong>freq_range</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies</em><em>,</em><em>)</em>) – Frequencies of interest, in Hz</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – Sampling frequency</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>psi</strong> – PSI(x-&gt;y) at the freq_range</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.Wavelet_Trial_Dec">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">Wavelet_Trial_Dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phase'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#Wavelet_Trial_Dec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.Wavelet_Trial_Dec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Morlet wavelet decomposition for multiple channels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input signals (number of channels x number of samples)</p></li>
+<li><p><strong>time</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Time vector (must be sampled at the sampling frequency of data)</p></li>
+<li><p><strong>freq</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies</em><em>,</em><em>)</em>) – Frequencies to evaluate in Hz</p></li>
+<li><p><strong>component</strong> (<em>{'filt'</em><em>,</em><em>'amp'</em><em>,</em><em>'phase'}</em>) – Component of interest from the wavelet decomposition at each frequency
+in freq (filt: filtered data, amp: amplitude envelope, phase: phase)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>wav_dec</strong> – Array containing the wavelet decomposition of data at the target
+frequencies (If samples is odd, num_samples = samples, otherwise
+num_samples = samples-1)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (channels,num_samples,frequencies)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.autocorr_decay_time">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">autocorr_decay_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxlag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#autocorr_decay_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.autocorr_decay_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Autocorrelation decay time (embedding delay)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Input time series</p></li>
+<li><p><strong>maxlag</strong> (<em>int</em>) – Maximum embedding delay</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>act</strong> – Embedding delay</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.autocorrelation">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">autocorrelation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#autocorrelation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.autocorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Autocorrelation of x</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Input time series</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>act</strong> – Autocorrelation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (samples,)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.cao_criterion">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">cao_criterion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#cao_criterion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.cao_criterion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cao’s criterion (embedding dimension)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Input time series</p></li>
+<li><p><strong>d_max</strong> (<em>int</em>) – Maximum embedding dimension</p></li>
+<li><p><strong>tau</strong> (<em>int</em>) – Embedding delay</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dim</strong> – Embedding dimension</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_AlphaFz">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">compare_AlphaFz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sq_amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sq_amp_baseline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#compare_AlphaFz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_AlphaFz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the baseline alpha squared amplitude with that of a single epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sq_amp</strong> (<em>float</em>) – Alpha squared amplitude (Fz) from a single epoch</p></li>
+<li><p><strong>cnt_baseline</strong> (<em>float</em>) – Baseline alpha squared amplitude (Fz)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>feedback_val</strong> – Feedback value for stimulus presentation [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_connectivity_CFD">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">compare_connectivity_CFD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnt_baseline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#compare_connectivity_CFD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_connectivity_CFD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the baseline connectivity with the connectivity from a single epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cnt</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>channels</em><em>)</em>) – Connectivity data from a single epoch</p></li>
+<li><p><strong>cnt_baseline</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>channels</em><em>)</em>) – Baseline connectivity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>feedback_val</strong> – Feedback value for stimulus presentation [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_connectivity_kTE">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">compare_connectivity_kTE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cnt_baseline</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#compare_connectivity_kTE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.compare_connectivity_kTE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the baseline connectivity with the connectivity from a single epoch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cnt</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>channels</em><em>)</em>) – Connectivity data from a single epoch</p></li>
+<li><p><strong>cnt_baseline</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>channels</em><em>)</em>) – Baseline connectivity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>feedback_val</strong> – Feedback value for stimulus presentation [-1,1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.embeddingX">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">embeddingX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#embeddingX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.embeddingX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time-delay embbeding of the source time series x</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Source time series</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Embedding dimension</p></li>
+<li><p><strong>tau</strong> (<em>int</em>) – Embedding delay</p></li>
+<li><p><strong>u</strong> (<em>int</em>) – Interaction time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X_emb</strong> – Time embedded source time series</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (samples-(tau*(dim-1))-u,dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.embeddingY">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">embeddingY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#embeddingY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.embeddingY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time-delay embbeding of the target time series y</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Target time series</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Embedding dimension</p></li>
+<li><p><strong>tau</strong> (<em>int</em>) – Embedding delay</p></li>
+<li><p><strong>u</strong> (<em>int</em>) – Interaction time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>Y_emb</strong> (<em>ndarray of shape (samples-(tau*(dim-1))-u,dim)</em>) – Time embedded target time series</p></li>
+<li><p><strong>y_t</strong> (<em>ndarray of shape (samples-(tau*(dim-1))-u,1)</em>) – Time shifted target time series</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelRenyiEntropy">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">kernelRenyiEntropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">K_lst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#kernelRenyiEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelRenyiEntropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Renyi’s entropy from kernel matrices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>K_lst</strong> (<em>list</em>) – List holding kernel matrices [ndarrays of shape (channels,channels)]</p></li>
+<li><p><strong>alpha</strong> (<em>int</em><em> or </em><em>float</em>) – Order of Renyi’s entropy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>h</strong> – Kernel-based Renyi’s transfer entropy, TE(x-&gt;y)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelTransferEntropy">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">kernelTransferEntropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#kernelTransferEntropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelTransferEntropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute kernel-based Renyi’s transfer entropy from channel x to channel y</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Source time series</p></li>
+<li><p><strong>y</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Target time series</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – Embedding dimension</p></li>
+<li><p><strong>tau</strong> (<em>int</em>) – Embedding delay</p></li>
+<li><p><strong>u</strong> (<em>int</em>) – Interaction time</p></li>
+<li><p><strong>alpha</strong> (<em>int</em><em> or </em><em>float</em>) – Order of Renyi’s entropy</p></li>
+<li><p><strong>sig_scale</strong> (<em>float</em>) – Parameter to scale the kernel’s bandwidth</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>TE</strong> – Kernel-based Renyi’s transfer entropy, TE(x-&gt;y)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelTransferEntropy_PAC_Ch">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">kernelTransferEntropy_PAC_Ch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tau</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">U</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_ph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#kernelTransferEntropy_PAC_Ch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.kernelTransferEntropy_PAC_Ch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute directed phase-amplitude interactions through kernel-based Renyi’s phase transfer
+entropy between a pair channels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input time series (number of channels x number of samples)</p></li>
+<li><p><strong>Dim</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>)</em>) – Embedding dimension for each channel</p></li>
+<li><p><strong>Tau</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>)</em>) – Embedding delay for each channel</p></li>
+<li><p><strong>U</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>)</em>) – Interaction times for each channel pair and direction of interaction</p></li>
+<li><p><strong>alpha</strong> (<em>int</em><em> or </em><em>float</em>) – Order of Renyi’s entropy</p></li>
+<li><p><strong>freq_ph</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies_ph</em><em>,</em><em>)</em>) – Frequencies of interest for phase extraction, in Hz</p></li>
+<li><p><strong>freq_amp</strong> (<em>ndarray of shape</em><em> (</em><em>frequencies_amp</em><em>,</em><em>)</em>) – Frequencies of interest for amplitude extraction, in Hz</p></li>
+<li><p><strong>time</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Time vector (must be sampled at the sampling frequency of X)</p></li>
+<li><p><strong>sig_scale</strong> (<em>float</em>) – Parameter to scale the kernel’s bandwidth</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>TE_pac</strong> – Directed PAC estimated through kernel-based Renyi’s phase transfer
+entropy</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (frequencies_ph,frequencies_amp)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_AlphaFz">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">neurofeedback_AlphaFz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#neurofeedback_AlphaFz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_AlphaFz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the average squared alpha amplitude (Fz) for a 1 second long EEG trial (epoch).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input time series (number of channels x number of samples)</p></li>
+<li><p><strong>ch_labels</strong> (<em>list</em>) – EEG channel labels</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – Sampling frequency (Hz)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>mean_power</strong> – Average squared alpha amplitude (Fz)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_CFD">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">neurofeedback_CFD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#neurofeedback_CFD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_CFD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the average CFD (Frontal/pre-frontal theta to parietal/occipital alpha)
+for a 1 second long EEG trial (epoch).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input time series (number of channels x number of samples)</p></li>
+<li><p><strong>ch_labels</strong> (<em>list</em>) – EEG channel labels</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – Sampling frequency (Hz)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>CFD_mean</strong> – Average CFD for the channels and frequency bands of interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (channels,channels)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_kTE_PAC">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">neurofeedback_kTE_PAC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#neurofeedback_kTE_PAC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.neurofeedback_kTE_PAC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the average PAC through kTE (Frontal/pre-frontal theta to parietal/occipital alpha)
+for a 1 second long EEG trial (epoch).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>ndarray of shape</em><em> (</em><em>channels</em><em>,</em><em>samples</em><em>)</em>) – Input time series (number of channels x number of samples)</p></li>
+<li><p><strong>ch_labels</strong> (<em>list</em>) – EEG channel labels</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – Sampling frequency (Hz)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>kTE_mean</strong> – Average PAC kTE for the channels and frequency bands of interest</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape (channels,channels)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.win_segmentation">
+<span class="sig-prename descclassname"><span class="pre">bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.</span></span><span class="sig-name descname"><span class="pre">win_segmentation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_win</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="bci_framework/default_extensions/Neurofeedback_Visuospatial_working_memory/Neurofeedback_functions/NeuroFeedbackFunctions.html#win_segmentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.win_segmentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment time series x into windows of n_win points with an overlap of overlap</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>ndarray of shape</em><em> (</em><em>samples</em><em>,</em><em>)</em>) – Time series</p></li>
+<li><p><strong>n_win</strong> (<em>integer</em>) – Number of data points per window</p></li>
+<li><p><strong>overlap</strong> (<em>float</em>) – Percentage of overlap among the segmentation windows</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>seg_signal</strong> – Time series segmented into multiple windows</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ndarray of shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/_modules/bci_framework.default_extensions.Neurofeedback_Visuospatial_working_memory.Neurofeedback_functions.NeuroFeedbackFunctions.rst"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

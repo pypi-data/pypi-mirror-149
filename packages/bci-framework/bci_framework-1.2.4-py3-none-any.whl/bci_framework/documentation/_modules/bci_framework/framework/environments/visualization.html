@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.environments.visualization &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.environments.visualization</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+================================
+Data Analysis and Visualizations
+================================
+
+Kafka consumers and transformers with data processing and outputs.
+&quot;&quot;&quot;
+
+import os
+import sys
+
+import psutil
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QColor, QBrush
+from PySide6.QtWidgets import QTableWidgetItem
+
+from ..config_manager import ConfigManager
+from ..extensions_handler import ExtensionWidget
+from ..subprocess_handler import run_subprocess
+
+
+########################################################################
+<div class="viewcode-block" id="Visualization"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization">[docs]</a>class Visualization:
+    &quot;&quot;&quot;Real-time data analysis and visualizations.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, core):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.parent_frame = core.main
+        self.core = core
+        self.config = ConfigManager()
+
+        self.process_status_timer = QTimer()
+        self.process_status_timer.timeout.connect(self.update_data_analysis)
+        self.process_status_timer.setInterval(1000)
+
+        self.on_focus()
+        self.add_subwindow()
+        self.connect()
+        # self.build_analysis()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.connect"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.parent_frame.pushButton_load_visualizarion.clicked.connect(
+            self.add_subwindow)
+        self.parent_frame.pushButton_visualizations_remove_all.clicked.connect(
+            self.remove_all)
+        self.parent_frame.pushButton_visualizations_reload_all.clicked.connect(
+            self.reload_all)
+        self.parent_frame.tableWidget_anlaysis.itemChanged.connect(
+            self.analisys_status_update)
+        self.parent_frame.pushButton_visualizations_stop_all.clicked.connect(
+            self.stop_all_scripts)
+        self.parent_frame.pushButton_visualizations_restart_all.clicked.connect(
+            self.restart_running_scripts)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.on_focus"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.on_focus">[docs]</a>    def on_focus(self) -&gt; None:
+        &quot;&quot;&quot;Update mdiAreas.&quot;&quot;&quot;
+        self.parent_frame.mdiArea.tileSubWindows()
+
+        self.visualizations_list = []
+        for i in range(self.parent_frame.listWidget_projects_visualizations.count()):
+            item = self.parent_frame.listWidget_projects_visualizations.item(
+                i)
+            if item.text().startswith(&#39;_&#39;):
+                continue
+            if item.text().startswith(&#39;Tutorial :&#39;):
+                continue
+            self.visualizations_list.append([item.text(), item.path])
+        self.build_analysis()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.reload_all"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.reload_all">[docs]</a>    def reload_all(self) -&gt; None:
+        &quot;&quot;&quot;Reload all patitions.&quot;&quot;&quot;
+        for sub in self.parent_frame.mdiArea.subWindowList():
+            sub.reload()</div>
+        # self.resize_menubar()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.remove_all"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.remove_all">[docs]</a>    def remove_all(self) -&gt; None:
+        &quot;&quot;&quot;Remove all patitions.&quot;&quot;&quot;
+        for sub in self.parent_frame.mdiArea.subWindowList():
+            sub.remove()
+        QTimer().singleShot(100, self.widgets_set_enabled)</div>
+
+    # # ----------------------------------------------------------------------
+    # def resize_menubars(self):
+        # &quot;&quot;&quot;&quot;&quot;&quot;
+        # for sub in self.parent_frame.mdiArea.subWindowList():
+            # if hasattr(sub, &#39;resize_menubar&#39;):
+                # # sub.resize_menubar()
+                # QTimer().singleShot(100, sub.resize_menubar)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.add_subwindow"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.add_subwindow">[docs]</a>    def add_subwindow(self) -&gt; None:
+        &quot;&quot;&quot;Add new patition.&quot;&quot;&quot;
+        sub = ExtensionWidget(
+            self.parent_frame.mdiArea, mode=&#39;visualization&#39;, extensions_list=self.visualizations_list)
+        self.parent_frame.mdiArea.addSubWindow(sub)
+        sub.show()
+        self.parent_frame.mdiArea.tileSubWindows()
+        sub.update_menu_bar()
+        sub.loaded = self.widgets_set_enabled
+
+        sub.destroyed.connect(self.widgets_set_enabled)
+        # sub..connect(self.resize_menubars)
+        # sub.on_remove(self.resize_menubars)
+
+        self.widgets_set_enabled()</div>
+
+        # self.resize_menubars()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Visualization.widgets_set_enabled"><a class="viewcode-back" href="../../../bci_framework.framework.environments.visualization.html#bci_framework.framework.environments.visualization.Visualization.widgets_set_enabled">[docs]</a>    def widgets_set_enabled(self) -&gt; None:
+        &quot;&quot;&quot;Update action buttons.&quot;&quot;&quot;
+        subwindows = len(self.parent_frame.mdiArea.subWindowList()) != 0
+        self.parent_frame.pushButton_visualizations_remove_all.setEnabled(
+            subwindows)
+
+        self.parent_frame.pushButton_visualizations_reload_all.setEnabled(
+            False)
+
+        for sub in self.parent_frame.mdiArea.subWindowList():
+            if getattr(sub, &#39;stream_subprocess&#39;, False):
+                self.parent_frame.pushButton_visualizations_reload_all.setEnabled(
+                    True)
+                break</div>
+
+    # ----------------------------------------------------------------------
+    def build_analysis(self) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        columns = [&#39;Data analisys&#39;,
+                   &#39;PID&#39;,
+                   &#39;CPU%&#39;,
+                   &#39;Memory&#39;,
+                   &#39;Status&#39;,
+                   ]
+
+        start_index = self.parent_frame.tableWidget_anlaysis.rowCount() - 1
+        if self.parent_frame.tableWidget_anlaysis.rowCount() == 0:
+            self.parent_frame.tableWidget_anlaysis.clear()
+            self.parent_frame.tableWidget_anlaysis.setRowCount(0)
+            self.parent_frame.tableWidget_anlaysis.setColumnCount(
+                len(columns))
+            self.parent_frame.tableWidget_anlaysis.setHorizontalHeaderLabels(
+                columns)
+            already_items = []
+
+            to_remove = []
+            to_add = [self.parent_frame.listWidget_projects_analysis.item(i).text(
+            ) for i in range(self.parent_frame.listWidget_projects_analysis.count())]
+
+        else:
+            # start_index = 0
+            already_items = [self.parent_frame.tableWidget_anlaysis.item(
+                i, 0).text() for i in range(self.parent_frame.tableWidget_anlaysis.rowCount())]
+            new_ones = [self.parent_frame.listWidget_projects_analysis.item(
+                i).text() for i in range(self.parent_frame.listWidget_projects_analysis.count())]
+
+            to_remove = set(already_items) - set(new_ones)
+            to_add = set(new_ones) - set(already_items)
+
+        for i, script_name in enumerate(to_add):
+
+            if script_name.startswith(&#39;_&#39;):
+                continue
+
+            if script_name in already_items:
+                continue
+
+            # if item.text().startswith(&#39;Tutorial |&#39;):
+                # continue
+
+            self.parent_frame.tableWidget_anlaysis.insertRow(start_index + i)
+            for j in range(len(columns)):
+
+                if j == 0:
+                    item = QTableWidgetItem(script_name)
+                    item.setCheckState(Qt.Unchecked)
+                    item.is_running = False
+                    item.path = self.core.projects.normalize_path(
+                        item.text())
+                else:
+                    item = QTableWidgetItem()
+
+                if 0 &lt; j &lt; 4:
+                    item.setTextAlignment(Qt.AlignCenter)
+
+                item.setFlags(item.flags() &amp;
+                              ~Qt.ItemIsEditable &amp;
+                              ~Qt.ItemIsSelectable)
+                self.parent_frame.tableWidget_anlaysis.setItem(
+                    start_index + i, j, item)
+
+                self.parent_frame.tableWidget_anlaysis.cellWidget(
+                    start_index + i, j)
+
+        for script_name in to_remove:
+            for i in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+                item = self.parent_frame.tableWidget_anlaysis.item(i, 0)
+                if item.text() == script_name:
+                    if not item.checkState() == Qt.Checked:
+                        self.parent_frame.tableWidget_anlaysis.removeRow(i)
+                    else:
+                        item.to_remove = True
+                    break
+
+        self.parent_frame.tableWidget_anlaysis.sortByColumn(
+            0, Qt.SortOrder.DescendingOrder)
+
+    # ----------------------------------------------------------------------
+    def analisys_status_update(self, item) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if item.column() != 0:
+            return
+
+        if item.checkState() == Qt.Checked:
+            self.start_script(item)
+        else:
+            self.stop_script(item)
+
+    # ----------------------------------------------------------------------
+    def stop_script(self, item) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if hasattr(item, &#39;subprocess&#39;):
+            item.subprocess.terminate()
+            del item.subprocess
+            item.setCheckState(Qt.Unchecked)
+            self.update_row_information(item.row(), &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;Terminated&#39;)
+
+            if hasattr(item, &#39;to_remove&#39;):
+                self.parent_frame.tableWidget_anlaysis.removeRow(item.row())
+
+    # ----------------------------------------------------------------------
+    def start_script(self, item) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        script = item.path
+        item.setCheckState(Qt.Checked)
+        item.subprocess = run_subprocess([sys.executable, os.path.join(
+            self.core.projects.projects_dir, script, &#39;main.py&#39;)])
+        if not self.process_status_timer.isActive():
+            self.process_status_timer.start()
+
+    # ----------------------------------------------------------------------
+    def update_data_analysis(self) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        running = 0
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, &#39;subprocess&#39;):
+
+                try:
+                    process = psutil.Process(item.subprocess.pid)
+                    pid = str(item.subprocess.pid)
+                    memory = f&quot;{process.memory_info().vms / (1024):.0f} K&quot;
+                    cpu = f&quot;{process.cpu_percent()}%&quot;
+                    status = &#39;Running...&#39;
+                    running += 1
+                except:
+                    item.setCheckState(Qt.Unchecked)
+                    pid = &#39;&#39;
+                    memory = &quot;&quot;
+                    cpu = &quot;&quot;
+                    status = &#39;Finalized&#39;
+
+                if process.memory_info().vms == 0:
+                    pid = &#39;&#39;
+                    memory = &quot;&quot;
+                    cpu = &quot;&quot;
+                    status = &#39;Finalized&#39;
+                    self.stop_script(item)
+
+                self.update_row_information(row, pid, cpu, memory, status)
+
+        if not running:
+            self.process_status_timer.stop()
+
+        enable = self.process_status_timer.isActive()
+        self.parent_frame.pushButton_visualizations_stop_all.setEnabled(
+            enable)
+        self.parent_frame.pushButton_visualizations_restart_all.setEnabled(
+            enable)
+
+    # ----------------------------------------------------------------------
+    def update_row_information(self, row, pid: str, cpu: str, memory: str, status: str) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        item1 = self.parent_frame.tableWidget_anlaysis.item(row, 1)
+        item1.setText(pid)
+        item2 = self.parent_frame.tableWidget_anlaysis.item(row, 2)
+        item2.setText(cpu)
+        item2 = self.parent_frame.tableWidget_anlaysis.item(row, 3)
+        item2.setText(memory)
+        item3 = self.parent_frame.tableWidget_anlaysis.item(row, 4)
+        item3.setText(status)
+
+        # if status in [&#39;Terminated&#39;, &#39;Finalized&#39;]:
+            # item3.setBackground(QColor(220, 53, 69, 30))
+        # elif status in [&#39;Running...&#39;]:
+            # item3.setBackground(QColor(63, 197, 94, 30))
+
+    # ----------------------------------------------------------------------
+    def stop_all_scripts(self) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, &#39;subprocess&#39;):
+                self.stop_script(item)
+
+    # ----------------------------------------------------------------------
+    def restart_running_scripts(self) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        for row in range(self.parent_frame.tableWidget_anlaysis.rowCount()):
+            item = self.parent_frame.tableWidget_anlaysis.item(row, 0)
+            if hasattr(item, &#39;subprocess&#39;):
+                self.stop_script(item)
+                self.start_script(item)</div>
+
+
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

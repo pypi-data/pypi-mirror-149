@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.configuration &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.configuration</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=============
+Configuration
+=============
+&quot;&quot;&quot;
+
+import os
+import shutil
+
+from PySide6.QtWidgets import QWidget, QMainWindow
+from PySide6.QtUiTools import QUiLoader
+
+from .config_manager import ConfigManager
+
+
+########################################################################
+<div class="viewcode-block" id="ConfigurationFrame"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame">[docs]</a>class ConfigurationFrame(QMainWindow):
+    &quot;&quot;&quot;Auxiliar window with configuration options.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        frame = os.path.join(
+            os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;framework&#39;, &#39;qtgui&#39;, &#39;configurations.ui&#39;)
+        self.main = QUiLoader().load(frame)
+        self.main.widget_restart.hide()
+
+        self.config = ConfigManager()
+        self.original_config = ConfigManager(os.path.join(
+            os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;assets&#39;, &#39;bciframework.default&#39;))
+
+        theme = self.config.get(&#39;framework&#39;, &#39;theme&#39;, &#39;light&#39;)
+        self.main.radioButton_light.setChecked(theme == &#39;light&#39;)
+        self.main.radioButton_dark.setChecked(theme == &#39;dark&#39;)
+
+        self.connect()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.show"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.show">[docs]</a>    def show(self) -&gt; None:
+        &quot;&quot;&quot;Show frame.&quot;&quot;&quot;
+        center = QWidget.screen(self).availableGeometry().center()
+        geometry = self.main.frameGeometry()
+        geometry.moveCenter(center)
+        self.main.move(geometry.topLeft())
+        self.main.show()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.connect"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.main.lineEdit_user_directory.setText(
+            os.environ[&#39;BCISTREAM_HOME&#39;])
+        self.main.lineEdit_projects_directory.setText(
+            os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;default_extensions&#39;))
+        self.main.lineEdit_records_directory.setText(
+            os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;records&#39;))
+
+        self.main.radioButton_light.clicked.connect(
+            lambda: self.config.set(&#39;framework&#39;, &#39;theme&#39;, &#39;light&#39;, save=True))
+        self.main.radioButton_dark.clicked.connect(
+            lambda: self.config.set(&#39;framework&#39;, &#39;theme&#39;, &#39;dark&#39;, save=True))
+
+        self.main.pushButton_restore_projects.clicked.connect(
+            self.restore_projects)
+        self.main.pushButton_reset_projects.clicked.connect(
+            self.reset_projects)
+        self.main.pushButton_remove_records.clicked.connect(
+            self.remove_records)
+        self.main.pushButton_reset_montages.clicked.connect(
+            self.reset_montages)
+        self.main.pushButton_reset_connections.clicked.connect(
+            self.reset_connections)
+        self.main.pushButton_reset_notebooks.clicked.connect(
+            self.reset_notebooks)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.restore_projects"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.restore_projects">[docs]</a>    def restore_projects(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Copy defautl project into the user projects directory.&quot;&quot;&quot;
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;default_extensions&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;default_extensions&#39;), dirs_exist_ok=True)
+
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;kafka_scripts&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;kafka_scripts&#39;), dirs_exist_ok=True)
+
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;python_scripts&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;python_scripts&#39;), dirs_exist_ok=True)</div>
+
+    # ----------------------------------------------------------------------
+    def reset_notebooks(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;notebooks&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;notebooks&#39;), dirs_exist_ok=True)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.reset_projects"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.reset_projects">[docs]</a>    def reset_projects(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Remove user projects nad copy the default projects.&quot;&quot;&quot;
+        shutil.rmtree(os.path.join(
+            os.environ[&#39;BCISTREAM_HOME&#39;], &#39;default_extensions&#39;))
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;default_extensions&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;default_extensions&#39;))
+
+        shutil.rmtree(os.path.join(
+            os.environ[&#39;BCISTREAM_HOME&#39;], &#39;kafka_scripts&#39;))
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;kafka_scripts&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;kafka_scripts&#39;))
+
+        shutil.rmtree(os.path.join(
+            os.environ[&#39;BCISTREAM_HOME&#39;], &#39;python_scripts&#39;))
+        shutil.copytree(os.path.join(os.environ[&#39;BCISTREAM_ROOT&#39;], &#39;python_scripts&#39;),
+                        os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;python_scripts&#39;))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.remove_records"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.remove_records">[docs]</a>    def remove_records(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Clear the directory with records.&quot;&quot;&quot;
+        shutil.rmtree(os.path.join(os.environ[&#39;BCISTREAM_HOME&#39;], &#39;records&#39;))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.reset_montages"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.reset_montages">[docs]</a>    def reset_montages(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Remove user defined montages.&quot;&quot;&quot;
+        self.reset_section(&#39;montages&#39;)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.reset_connections"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.reset_connections">[docs]</a>    def reset_connections(self) -&gt; None:
+        &quot;&quot;&quot;Remove user modified connection configurations.&quot;&quot;&quot;
+        self.reset_section(&#39;connection&#39;)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="ConfigurationFrame.reset_section"><a class="viewcode-back" href="../../bci_framework.framework.configuration.html#bci_framework.framework.configuration.ConfigurationFrame.reset_section">[docs]</a>    def reset_section(self, section: str) -&gt; None:
+        &quot;&quot;&quot;Overwrite user section with default section.&quot;&quot;&quot;
+        self.config.remove_section(section)
+        for option in self.original_config.options(section):
+            self.config.set(section, option,
+                            self.original_config.get(section, option))
+        self.config.save()</div></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

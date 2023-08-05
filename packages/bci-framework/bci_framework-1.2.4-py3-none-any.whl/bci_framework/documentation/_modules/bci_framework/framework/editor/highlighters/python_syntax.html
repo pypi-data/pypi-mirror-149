@@ -1,0 +1,319 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.editor.highlighters.python_syntax &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css" />
+    <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+    <script src="../../../../../_static/jquery.js"></script>
+    <script src="../../../../../_static/underscore.js"></script>
+    <script src="../../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.editor.highlighters.python_syntax</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+==================
+Python Highlighter
+==================
+
+QSyntaxHighlighter for Python syntax.
+&quot;&quot;&quot;
+
+import os
+
+from PySide6.QtCore import QRegularExpression
+from PySide6.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+
+
+########################################################################
+<div class="viewcode-block" id="PythonHighlighter"><a class="viewcode-back" href="../../../../bci_framework.framework.editor.highlighters.python_syntax.html#bci_framework.framework.editor.highlighters.python_syntax.PythonHighlighter">[docs]</a>class PythonHighlighter(QSyntaxHighlighter):
+    &quot;&quot;&quot;Syntax highlighter for the Python language.
+    &quot;&quot;&quot;
+    # Python keywords
+    keywords_bold = [&#39;and&#39;, &#39;assert&#39;, &#39;break&#39;, &#39;class&#39;, &#39;continue&#39;, &#39;def&#39;,
+                     &#39;del&#39;, &#39;elif&#39;, &#39;else&#39;, &#39;except&#39;, &#39;exec&#39;, &#39;finally&#39;,
+                     &#39;for&#39;, &#39;from&#39;, &#39;global&#39;, &#39;if&#39;, &#39;import&#39;, &#39;in&#39;,
+                     &#39;is&#39;, &#39;lambda&#39;, &#39;not&#39;, &#39;or&#39;, &#39;pass&#39;, &#39;print&#39;,
+                     &#39;raise&#39;, &#39;return&#39;, &#39;try&#39;, &#39;while&#39;, &#39;yield&#39;,
+                     &#39;None&#39;, &#39;True&#39;, &#39;False&#39;, &#39;as&#39;, &#39;match&#39;, &#39;case&#39;
+                     ]
+
+    keywords = [&#39;__name__&#39;, &#39;format&#39;, &#39;int&#39;, &#39;float&#39;, &#39;str&#39;, &#39;list&#39;, &#39;tuple&#39;,
+                &#39;dict&#39;, &#39;set&#39;, &#39;len&#39;, &#39;super&#39;, &#39;range&#39;, &#39;enumerate&#39;, &#39;hasattr&#39;,
+                &#39;getattr&#39;, &#39;setattr&#39;, &#39;isinstance&#39;, &#39;issubclass&#39;, &#39;sum&#39;, &#39;ord&#39;,
+                &#39;chr&#39;, &#39;zip&#39;, &#39;bool&#39;
+                ]
+
+    # Python operators
+    operators = [&#39;=&#39;, &#39;:=&#39;
+                 # Comparison
+                 &#39;==&#39;, &#39;!=&#39;, &#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;&#39;, &#39;&gt;=&#39;,
+                 # Arithmetic
+                 &#39;\+&#39;, &#39;-&#39;, &#39;\*&#39;, &#39;/&#39;, &#39;//&#39;, &#39;\%&#39;, &#39;\*\*&#39;,
+                 # In-place
+                 &#39;\+=&#39;, &#39;-=&#39;, &#39;\*=&#39;, &#39;/=&#39;, &#39;\%=&#39;,
+                 # Bitwise
+                 &#39;\^&#39;, &#39;\|&#39;, &#39;\&amp;&#39;, &#39;\~&#39;, &#39;&gt;&gt;&#39;, &#39;&lt;&lt;&#39;,
+                 ]
+
+    # Python braces
+    braces = [&#39;\{&#39;, &#39;\}&#39;, &#39;\(&#39;, &#39;\)&#39;, &#39;\[&#39;, &#39;\]&#39;, ]
+
+    # ----------------------------------------------------------------------
+    def __init__(self, document):
+        QSyntaxHighlighter.__init__(self, document)
+
+        # Multi-line strings (expression, flag, style) FIXME: The triple-quotes
+        # in these two lines will mess up the syntax highlighting from this
+        # point onward
+        self.tri_single = (QRegularExpression(
+            &quot;&#39;&#39;&#39;&quot;), 1, self.styles[&#39;string2&#39;])
+        self.tri_double = (QRegularExpression(
+            &#39;&quot;&quot;&quot;&#39;), 2, self.styles[&#39;string2&#39;])
+
+        rules = []
+
+        # Keyword, operator, and brace rules
+        rules += [(r&#39;\b%s\b&#39; % w, 0, self.styles[&#39;keyword&#39;])
+                  for w in PythonHighlighter.keywords_bold]
+        rules += [(r&#39;\b%s\b&#39; % w, 0, self.styles[&#39;keyword2&#39;])
+                  for w in PythonHighlighter.keywords]
+        rules += [(r&#39;\b%s\b&#39; % o, 0, self.styles[&#39;operator&#39;])
+                  for o in PythonHighlighter.operators]
+        rules += [(r&#39;\b%s\b&#39; % b, 0, self.styles[&#39;brace&#39;])
+                  for b in PythonHighlighter.braces]
+
+        # All other rules
+        rules += [
+            # &#39;def&#39; followed by an identifier
+            (r&#39;\bdef\b\s*(\w+)&#39;, 1, self.styles[&#39;def&#39;]),
+            # &#39;class&#39; followed by an identifier
+            (r&#39;\bclass\b\s*(\w+)&#39;, 1, self.styles[&#39;class&#39;]),
+
+            # Numeric literals
+            (r&#39;\b[+-]?[0-9]+[lL]?\b&#39;, 0, self.styles[&#39;numbers&#39;]),
+            (r&#39;\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b&#39;, 0, self.styles[&#39;numbers&#39;]),
+            (r&#39;\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b&#39;,
+             0, self.styles[&#39;numbers&#39;]),
+
+            # From &#39;#&#39; until a newline
+            (r&quot;&quot;&quot;#[^\n&#39;{2}&quot;{2}]*&quot;&quot;&quot;, 0, self.styles[&#39;comment&#39;]),
+
+            # Double and Single-quoted string, possibly containing escape sequences
+            (r&#39;&quot;[^&quot;\\]*(\\.[^&quot;\\]*)*&quot;&#39;, 0, self.styles[&#39;string&#39;]),
+            (r&quot;&#39;[^&#39;\\]*(\\.[^&#39;\\]*)*&#39;&quot;, 0, self.styles[&#39;string&#39;]),
+
+            # Complete line commented
+            (r&#39;^[\s]*(#[^\n]*)&#39;, 1, self.styles[&#39;comment&#39;]),
+
+            # Decorators
+            (r&#39;^[\s]*(@[^(]*)&#39;, 1, self.styles[&#39;decorator&#39;]),
+        ]
+
+        # Build a QRegularExpression for each pattern
+        self.rules = [(QRegularExpression(pat), index, fmt)
+                      for (pat, index, fmt) in rules]
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="PythonHighlighter.highlightBlock"><a class="viewcode-back" href="../../../../bci_framework.framework.editor.highlighters.python_syntax.html#bci_framework.framework.editor.highlighters.python_syntax.PythonHighlighter.highlightBlock">[docs]</a>    def highlightBlock(self, text: str) -&gt; None:
+        &quot;&quot;&quot;Apply syntax highlighting to the given block of text.&quot;&quot;&quot;
+        # Do other syntax formatting
+        for expression, nth, format_ in self.rules:
+            index = expression.match(text, 0).capturedStart(nth)
+
+            start = 0
+            while index &gt;= 0:
+                # We actually want the index of the nth match
+                index = expression.match(text, start).capturedStart(nth)
+                length = expression.match(text, start).capturedLength(nth)
+                end = expression.match(text, start).capturedEnd(nth)
+
+                self.setFormat(index, length, format_)
+                start = end
+
+        self.setCurrentBlockState(0)
+
+        # Do multi-line strings
+        in_multiline = self.match_multiline(text, *self.tri_single)
+        if not in_multiline:
+            in_multiline = self.match_multiline(text, *self.tri_double)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="PythonHighlighter.match_multiline"><a class="viewcode-back" href="../../../../bci_framework.framework.editor.highlighters.python_syntax.html#bci_framework.framework.editor.highlighters.python_syntax.PythonHighlighter.match_multiline">[docs]</a>    def match_multiline(self, text: str, delimiter, in_state, style):
+        &quot;&quot;&quot;Do highlighting of multi-line strings. ``delimiter`` should be a
+        ``QRegularExpression`` for triple-single-quotes or triple-double-quotes, and
+        ``in_state`` should be a unique integer to represent the corresponding
+        state changes when inside those strings. Returns True if we&#39;re still
+        inside a multi-line string when this function is finished.
+        &quot;&quot;&quot;
+        # If inside triple-single quotes, start at 0
+        if self.previousBlockState() == in_state:
+            start = 0
+            add = 0
+        # Otherwise, look for the delimiter on this line
+        else:
+            start = delimiter.match(text, 0).capturedStart()
+            # Move past this match
+            add = delimiter.match(text, 0).capturedLength()
+
+        # As long as there&#39;s a delimiter match on this line...
+        while start &gt;= 0:
+            # Look for the ending delimiter
+            end = delimiter.match(text, start + add).capturedStart()
+            # Ending delimiter on this line?
+            if end &gt;= add:
+                length = end - start + add + \
+                    delimiter.match(text, start + add).capturedEnd()
+
+                self.setCurrentBlockState(0)
+            # No; multi-line string
+            else:
+                self.setCurrentBlockState(in_state)
+                length = len(text) - start + add
+            # Apply formatting
+            self.setFormat(start, length, style)
+            # Look for the next match
+            start = delimiter.match(text, start + length).capturedStart()
+
+        # Return True if still inside a multi-line string, False otherwise
+        if self.currentBlockState() == in_state:
+            return True
+        else:
+            return False</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="PythonHighlighter.get_format"><a class="viewcode-back" href="../../../../bci_framework.framework.editor.highlighters.python_syntax.html#bci_framework.framework.editor.highlighters.python_syntax.PythonHighlighter.get_format">[docs]</a>    @classmethod
+    def get_format(cls, color, style=&#39;&#39;, fontsize=None):
+        &quot;&quot;&quot;Return a QTextCharFormat with the given attributes.
+        &quot;&quot;&quot;
+        _color = QColor()
+        _color.setNamedColor(color)
+
+        _format = QTextCharFormat()
+        _format.setForeground(_color)
+        if &#39;bold&#39; in style:
+            _format.setFontWeight(QFont.Bold)
+        if &#39;italic&#39; in style:
+            _format.setFontItalic(True)
+
+        if fontsize:
+            _format.setFontPointSize(fontsize)
+
+        return _format</div>
+
+    # ----------------------------------------------------------------------
+    @property
+    def styles(self):
+        &quot;&quot;&quot;The styles depend on the theme.&quot;&quot;&quot;
+        # Syntax styles that can be shared by all languages
+        if &#39;light&#39; in os.environ[&#39;QTMATERIAL_THEME&#39;]:
+            return {
+                &#39;operator&#39;: self.get_format(&#39;black&#39;, &#39;bold&#39;),
+                &#39;brace&#39;: self.get_format(&#39;black&#39;),
+                &#39;numbers&#39;: self.get_format(&#39;#007f7f&#39;),
+                &#39;decorator&#39;: self.get_format(&#39;#805000&#39;),
+                &#39;comment&#39;: self.get_format(&#39;#007f00&#39;),
+                &#39;def&#39;: self.get_format(&#39;#007f7f&#39;, &#39;bold&#39;),
+                &#39;keyword&#39;: self.get_format(&#39;#00007f&#39;, &#39;bold&#39;),
+                &#39;class&#39;: self.get_format(&#39;#0000ff&#39;, &#39;bold&#39;),
+                &#39;keyword2&#39;: self.get_format(&#39;#407090&#39;),
+                &#39;string&#39;: self.get_format(&#39;#7f007f&#39;),
+                &#39;string2&#39;: self.get_format(&#39;#7f0000&#39;),
+
+            }
+        else:
+            return {
+                &#39;keyword&#39;: self.get_format(&#39;#8080ff&#39;, &#39;bold&#39;),
+                &#39;keyword2&#39;: self.get_format(&#39;#afdfff&#39;),
+                &#39;comment&#39;: self.get_format(&#39;#7efb7e&#39;),
+                &#39;operator&#39;: self.get_format(&#39;white&#39;, &#39;bold&#39;),
+                &#39;decorator&#39;: self.get_format(&#39;#ffcf7f&#39;),
+                &#39;brace&#39;: self.get_format(&#39;white&#39;),
+                &#39;def&#39;: self.get_format(&#39;#7cf7f7&#39;, &#39;bold&#39;),
+                &#39;class&#39;: self.get_format(&#39;#4444ff&#39;, &#39;bold&#39;),
+                &#39;string&#39;: self.get_format(&#39;#ff80ff&#39;),
+                &#39;string2&#39;: self.get_format(&#39;#ac5656&#39;),
+                &#39;numbers&#39;: self.get_format(&#39;#72e4e4&#39;),
+            }</div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../../index.html">
+              <img class="logo" src="../../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

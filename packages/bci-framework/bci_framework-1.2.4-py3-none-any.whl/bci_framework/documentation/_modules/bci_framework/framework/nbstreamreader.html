@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.nbstreamreader &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.nbstreamreader</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+==========================
+Non blocking stream reader
+==========================
+&quot;&quot;&quot;
+
+import time
+from typing import Optional, TypeVar, Union
+from threading import Thread
+from queue import Queue, Empty
+
+
+Stdout = TypeVar(&#39;Stdout&#39;)
+Seconds = TypeVar(&#39;Seconds&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="NonBlockingStreamReader"><a class="viewcode-back" href="../../bci_framework.framework.nbstreamreader.html#bci_framework.framework.nbstreamreader.NonBlockingStreamReader">[docs]</a>class NonBlockingStreamReader:
+    &quot;&quot;&quot;Artificial `timeout` for blocking process.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, stream: Stdout):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.stream_stdout = stream
+        self.queue_messages = Queue()
+        self.kepp_alive = True
+
+        def _populateQueue(stream, queue):
+            &quot;&quot;&quot;Collect lines from &#39;stream&#39; and put them in &#39;quque&#39;.&quot;&quot;&quot;
+
+            while self.kepp_alive:
+                line = stream.readline()
+                if line:
+                    queue.put(line)
+                time.sleep(0.1)
+
+        self.thread_collector = Thread(target=_populateQueue,
+                                       args=(self.stream_stdout,
+                                             self.queue_messages))
+        self.thread_collector.daemon = True
+        self.thread_collector.start()  # start collecting lines from the stream
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="NonBlockingStreamReader.readline"><a class="viewcode-back" href="../../bci_framework.framework.nbstreamreader.html#bci_framework.framework.nbstreamreader.NonBlockingStreamReader.readline">[docs]</a>    def readline(self, timeout: Optional[Seconds] = 0.1) -&gt; Union[str, None]:
+        &quot;&quot;&quot;Read lines from queue object.&quot;&quot;&quot;
+        try:
+            return self.queue_messages.get(block=timeout is not None, timeout=timeout)
+        except Empty:
+            return None</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="NonBlockingStreamReader.stop"><a class="viewcode-back" href="../../bci_framework.framework.nbstreamreader.html#bci_framework.framework.nbstreamreader.NonBlockingStreamReader.stop">[docs]</a>    def stop(self) -&gt; None:
+        &quot;&quot;&quot;Stop the readline.&quot;&quot;&quot;
+        self.kepp_alive = False</div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

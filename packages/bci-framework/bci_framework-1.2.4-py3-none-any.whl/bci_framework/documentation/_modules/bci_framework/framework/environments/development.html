@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.environments.development &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.environments.development</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+===========
+Development
+===========
+
+This environment use the integrated development environt to code a test new
+extensions.
+&quot;&quot;&quot;
+
+import os
+from typing import TypeVar
+
+from PySide6.QtCore import QTimer, Qt
+from PySide6.QtGui import QTextCursor, QKeySequence, QShortcut
+
+from ..extensions_handler import ExtensionWidget
+from ..editor import Autocompleter
+from ..widgets import projects
+
+# LINE_DELIVERY = &#39;bci_framework.extensions.stimuli_delivery&#39;
+# LINE_VISUALIZATION = &#39;bci_framework.extensions.visualizations&#39;
+# LINE_ANALYSIS = &#39;bci_framework.extensions.data_analysis&#39;
+# LINE_LOCKTIME = &#39;bci_framework.extensions.timelock_analysis&#39;
+
+PATH = TypeVar(&#39;Path&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="Development"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development">[docs]</a>class Development:
+    &quot;&quot;&quot;Main Action with an integrated development environ.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.__init__"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.__init__">[docs]</a>    def __init__(self, core):
+        &quot;&quot;&quot;Constructor&quot;&quot;&quot;
+
+        self.parent_frame = core.main
+        self.core = core
+
+        self.parent_frame.pushButton_stop_preview.hide()
+
+        shortcut_docs = QShortcut(QKeySequence(&#39;F5&#39;), self.parent_frame)
+        shortcut_docs.activated.connect(self.start_preview)
+        shortcut_docs = QShortcut(QKeySequence(&#39;Ctrl+F5&#39;), self.parent_frame)
+        shortcut_docs.activated.connect(self.stop_preview)
+        shortcut_docs = QShortcut(QKeySequence(&#39;Ctrl+S&#39;), self.parent_frame)
+        shortcut_docs.activated.connect(self.save_all_files)
+
+        self.log_timer = QTimer()
+        self.log_timer.timeout.connect(self.update_log)
+        self.log_timer.setInterval(10)
+
+        self.timer_autosave = QTimer()
+        self.timer_autosave.timeout.connect(self.save_all_files)
+        self.timer_autosave.setInterval(5000)
+        self.timer_autosave.start()
+
+        self.connect()
+        self.hide_preview()</div>
+
+        # self.build_linenumber()
+
+    # # ----------------------------------------------------------------------
+    # def build_linenumber(self) -&gt; None:
+        # &quot;&quot;&quot;The same linenumber is used for all editors.&quot;&quot;&quot;
+
+        # self.parent_frame.textEdit_linenumber.setStyleSheet(f&quot;&quot;&quot;
+        # QTextEdit {{
+        # background-color: {os.environ.get(&#39;QTMATERIAL_SECONDARYDARKCOLOR&#39;)};
+        # color: {os.environ.get(&#39;QTMATERIAL_SECONDARYTEXTCOLOR&#39;)};
+        # font-weight: normal;
+        # font-family: &#39;DejaVu Sans Mono&#39;;
+        # font-size: 15px;
+        # line-height: 15px;
+        # border: 0px solid {os.environ.get(&#39;QTMATERIAL_SECONDARYLIGHTCOLOR&#39;)};
+        # border-right: 10px solid {os.environ.get(&#39;QTMATERIAL_SECONDARYLIGHTCOLOR&#39;)};
+        # border-radius: 0px;
+        # padding: 8px 0px ;
+        # padding-top: 41px;
+
+        # }}
+        # &quot;&quot;&quot;)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.connect"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.parent_frame.pushButton_script_preview.clicked.connect(
+            self.start_preview)
+        self.parent_frame.pushButton_stop_preview.clicked.connect(
+            self.stop_preview)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.hide_preview"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.hide_preview">[docs]</a>    def hide_preview(self) -&gt; None:
+        &quot;&quot;&quot;Expand editor.&quot;&quot;&quot;
+        if self.mode != &#39;analysis&#39;:
+            self.parent_frame.mdiArea_development.hide()
+            self.parent_frame.splitter_preview.moveSplitter(
+                self.parent_frame.splitter_preview.getRange(1)[1], 1)</div>
+            # self.handle_width = self.parent_frame.splitter_preview.handleWidth()
+            # self.parent_frame.splitter_preview.setHandleWidth(0)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.show_preview"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.show_preview">[docs]</a>    def show_preview(self) -&gt; None:
+        &quot;&quot;&quot;Show previsualization.&quot;&quot;&quot;
+        if self.mode != &#39;analysis&#39;:
+            self.parent_frame.mdiArea_development.show()
+            self.parent_frame.splitter_preview.moveSplitter(
+                self.parent_frame.splitter_preview.getRange(1)[1] // 2, 1)</div>
+            # self.parent_frame.splitter_preview.setHandleWidth(30)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.get_project"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.get_project">[docs]</a>    def get_project(self) -&gt; PATH:
+        &quot;&quot;&quot;Return the path of the current project.&quot;&quot;&quot;
+        return os.path.split(self.parent_frame.treeWidget_project.path)[1]</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.start_preview"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.start_preview">[docs]</a>    def start_preview(self) -&gt; None:
+        &quot;&quot;&quot;Initialize the previsualization and the debugger.&quot;&quot;&quot;
+
+        if not self.parent_frame.pushButton_script_preview.isVisible():
+            return
+
+        self.log_timer.start()
+        self.show_preview()
+        self.parent_frame.mdiArea_development.tileSubWindows()
+        self.save_all_files()
+        self.parent_frame.plainTextEdit_preview_log.setPlainText(&#39;&#39;)
+        self.sub.open_subwindow = self.open_subwindow
+        self.sub.load_extension(self.get_project(), debugger=True)
+
+        self.parent_frame.pushButton_stop_preview.show()
+        self.parent_frame.pushButton_script_preview.hide()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.open_subwindow"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.open_subwindow">[docs]</a>    def open_subwindow(self) -&gt; None:
+        &quot;&quot;&quot;Open an auxiliar window for stimuli delivery.&quot;&quot;&quot;
+        url = self.sub.stream_subprocess.url
+        self.core.stimuli_delivery.open_subwindow(
+            url.replace(&#39;/dashboard&#39;, &#39;/&#39;))</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.on_focus"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.on_focus">[docs]</a>    def on_focus(self) -&gt; None:
+        &quot;&quot;&quot;Set the correct projects widget.&quot;&quot;&quot;
+        self.parent_frame.mdiArea_development.tileSubWindows()
+        self.parent_frame.tabWidget_widgets.setCurrentWidget(
+            self.parent_frame.tab_projects)
+        self.parent_frame.actionDevelopment.setEnabled(
+            self.parent_frame.tabWidget_project.count())</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.build_preview"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.build_preview">[docs]</a>    def build_preview(self) -&gt; None:
+        &quot;&quot;&quot;Update mdiAreas.&quot;&quot;&quot;
+        self.stop_preview()
+        for sub in self.parent_frame.mdiArea_development.subWindowList():
+            sub.remove()
+
+        if sub := getattr(self, &#39;sub&#39;, False):
+            sub.deleteLater()
+
+        self.sub = ExtensionWidget(
+            self.parent_frame.mdiArea_development, extensions_list=[], mode=self.mode)
+        self.parent_frame.mdiArea_development.addSubWindow(self.sub)
+        self.sub.show()
+        self.parent_frame.mdiArea_development.tileSubWindows()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.stop_preview"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.stop_preview">[docs]</a>    def stop_preview(self) -&gt; None:
+        &quot;&quot;&quot;Stop subprocess.&quot;&quot;&quot;
+        if not self.parent_frame.pushButton_stop_preview.isVisible():
+            return
+        self.log_timer.stop()
+        if hasattr(self, &#39;sub&#39;):
+            self.sub.stop_preview()
+
+        self.parent_frame.pushButton_stop_preview.hide()
+        self.parent_frame.pushButton_script_preview.show()
+        self.hide_preview()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.update_log"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.update_log">[docs]</a>    def update_log(self) -&gt; None:
+        &quot;&quot;&quot;Write logs into debugger.
+
+        Logging messages could be from Python or JavaScript (Bryhon).
+        &quot;&quot;&quot;
+
+        # if not hasattr(self.sub, &#39;stream_subprocess&#39;):
+            # # self.timer.singleShot(50, self.update_log)
+            # return
+
+        if not hasattr(self.sub.stream_subprocess, &#39;stdout&#39;):
+            self.sub.stream_subprocess.start_debug()
+            # return
+
+        loglevel = self.parent_frame.comboBox_log_level.currentText()
+        levels = [&#39;DEBUG&#39;, &#39;INFO&#39;, &#39;WARNING&#39;, &#39;ERROR&#39;, &#39;CRITICAL&#39;]
+        lines = []
+
+        try:
+            if hasattr(self.sub.stream_subprocess, &#39;subprocess_script&#39;):
+                if line := self.sub.stream_subprocess.subprocess_script.nb_stdout.readline(timeout=0.01):
+                    if hasattr(line, &#39;decode&#39;):
+                        lines.append(line.decode())
+                    else:
+                        lines.append(line)
+
+            if self.mode == &#39;stimuli&#39;:
+                if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+                    if hasattr(line, &#39;decode&#39;):
+                        lines.append(line.decode())
+                    else:
+                        lines.append(line)
+        except:
+            pass
+
+        # if hasattr(self.sub.stream_subprocess, &#39;subprocess_script&#39;):
+            # if line := self.sub.stream_subprocess.stdout.readline(timeout=0.01):
+                # if hasattr(line, &#39;decode&#39;):
+                    # lines.append(line.decode())
+                # else:
+                    # lines.append(line)
+
+        filter_ = [
+            &#39;using indexedDB&#39;,
+            &#39;Synchronous XMLHttpRequest&#39;,
+            &#39;Error 404 means&#39;,
+            &#39;The AudioContext&#39;,
+            &#39;WARNING:tornado.access:404&#39;,
+            &#39;INFO:tornado.access:200&#39;,
+            &#39;upgrade needed&#39;,
+            &#39;INFO:werkzeug&#39;,
+            &#39;* Serving&#39;,
+            &#39;* Environment:&#39;,
+            &#39;* Debug mode:&#39;,
+            &#39;This is a development server&#39;,
+            &#39;selenium&#39;,
+        ]
+
+        for line in lines:
+            if not line.strip():
+                continue
+
+            trace = &#39;Traceback (most recent call last):&#39;
+            if trace in line:
+                line = line[line.find(trace):]
+
+            c = False
+            for f in filter_:
+                if f in line:
+                    c = True
+                    break
+            if c:
+                continue
+
+            self.parent_frame.plainTextEdit_preview_log.moveCursor(
+                QTextCursor.End)
+
+            if line[:line.find(&#39;:&#39;)] in levels:
+                s = [level == loglevel for level in levels]
+                if line[:line.find(&#39;:&#39;)] in levels[s.index(True):]:
+                    self.parent_frame.plainTextEdit_preview_log.insertPlainText(
+                        line)
+            else:
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
+                    line)
+
+            if not line.endswith(&#39;\n&#39;):
+                self.parent_frame.plainTextEdit_preview_log.insertPlainText(
+                    &#39;\n&#39;)</div>
+
+        # if lines:
+            # self.log_timer.setInterval(5)
+        # else:
+            # self.log_timer.setInterval(500)
+        # self.log_timer.setInterval(5)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Development.save_all_files"><a class="viewcode-back" href="../../../bci_framework.framework.environments.development.html#bci_framework.framework.environments.development.Development.save_all_files">[docs]</a>    def save_all_files(self) -&gt; None:
+        &quot;&quot;&quot;Save all opened files.&quot;&quot;&quot;
+        for i, tab_text in enumerate(map(self.parent_frame.tabWidget_project.tabText, range(self.parent_frame.tabWidget_project.count()))):
+            if tab_text.endswith(&#39;*&#39;):
+                editor = self.parent_frame.tabWidget_project.widget(i)
+
+                with open(editor.path, &#39;w&#39;) as file:
+                    content = editor.toPlainText()
+                    file.write(content)
+
+                    # if not editor.completer:
+                        # if projects.LINE_DELIVERY in content:
+                            # completer = Autocompleter(mode=&#39;stimuli&#39;)
+                            # editor.set_completer(completer)
+                        # elif projects.LINE_ANALYSIS in content:
+                            # completer = Autocompleter(mode=&#39;analysis&#39;)
+                            # editor.set_completer(completer)
+                        # elif projects.LINE_VISUALIZATION in content:
+                            # completer = Autocompleter(mode=&#39;visualization&#39;)
+                            # editor.set_completer(completer)
+                        # elif projects.LINE_LOCKTIME in content:
+                            # completer = Autocompleter(mode=&#39;locktime&#39;)
+                            # editor.set_completer(completer)
+
+                    self.parent_frame.tabWidget_project.setTabText(
+                        i, tab_text.strip(&#39;*&#39;))</div>
+
+    # ----------------------------------------------------------------------
+    @property
+    def mode(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        return getattr(self.core.projects, &#39;mode&#39;, None)</div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

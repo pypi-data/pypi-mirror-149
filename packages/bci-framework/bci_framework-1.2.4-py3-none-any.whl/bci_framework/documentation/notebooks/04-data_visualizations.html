@@ -1,0 +1,668 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Data visualization &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Stimuli delivery" href="06-stimuli_delivery.html" />
+    <link rel="prev" title="Data analysis" href="03-data_analysis.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 0;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Data-visualization">
+<h1>Data visualization<a class="headerlink" href="#Data-visualization" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Data visualization are based on <a class="reference external" href="https://figurestream.readthedocs.io/en/latest/">Matplotlib-FigureStream</a>, this interface inherits all features from it and extends the utilities with an specific ones.</div>
+<div class="line">All topics explained in <a class="reference external" href="70-data_analysis.ipynb">Data analysis</a> are valid here too, since visualizations is a special case of <em>Data analysis</em>.</div>
+</div>
+<section id="Bare-minimum">
+<h2>Bare minimum<a class="headerlink" href="#Bare-minimum" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># visualizations backend classes</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions.visualizations</span> <span class="kn">import</span> <span class="n">EEGStream</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions.visualizations.utils</span> <span class="kn">import</span> <span class="n">loop_consumer</span>
+
+<span class="c1"># Main class must inherit `EEGStream`</span>
+<span class="k">class</span> <span class="nc">Stream</span><span class="p">(</span><span class="n">EEGStream</span><span class="p">):</span>  <span class="c1"># This is `matplotlib.Figure` based class</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Initialize `StimuliAPI` class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Amplitude&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Create and run the server</span>
+    <span class="n">Stream</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="8ed91fdaffc34897a02e8b5066e63a79" src="../_images/visualization_bare_minimum.png" /></p>
+</center></section>
+<section id="Data-stream-access">
+<h2>Data stream access<a class="headerlink" href="#Data-stream-access" title="Permalink to this headline">¶</a></h2>
+<p>The decorator <code class="docutils literal notranslate"><span class="pre">&#64;loop_consumer</span></code> is explained in <a class="reference external" href="70-data_analysis.ipynb#Data-stream-access">Data analysis</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">eeg</span><span class="p">,</span> <span class="n">aux</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="c1"># First eeg channel</span>
+    <span class="n">ch0</span> <span class="o">=</span> <span class="n">eeg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ch0</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ch0</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">ch0</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+
+    <span class="c1"># Time axis</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ch0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="5a61972d4c51456ab7ad67bc80b1ee80" src="../_images/visualization-simple.gif" /></p>
+</center><p>So chaotic, lets create a buffer to visualize more than 100 samples.</p>
+</section>
+<section id="Buffer">
+<h2>Buffer<a class="headerlink" href="#Buffer" title="Permalink to this headline">¶</a></h2>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">self.create_buffer</span></code> to implement an automatic buffer with a fixed time view:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>  <span class="c1"># create a buffer of 30 seconds</span>
+</pre></div>
+</div>
+</div>
+<p>The data can be accessed with <code class="docutils literal notranslate"><span class="pre">self.buffer_eeg</span></code>, <code class="docutils literal notranslate"><span class="pre">self.buffer_aux</span></code> and <code class="docutils literal notranslate"><span class="pre">self.buffer_timestamp</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg</span>
+
+    <span class="c1"># First eeg channel</span>
+    <span class="n">ch0</span> <span class="o">=</span> <span class="n">eeg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ch0</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Time axis</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ch0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="2f5eece189664b489939ec403788295f" src="../_images/visualization-full.gif" /></p>
+</center></section>
+<section id="Resampling">
+<h2>Resampling<a class="headerlink" href="#Resampling" title="Permalink to this headline">¶</a></h2>
+<p>This visualization has a big issue, there is a lot of data visualize, in this particular case it’s sampling at <code class="docutils literal notranslate"><span class="pre">1000</span> <span class="pre">kHz</span></code> and <code class="docutils literal notranslate"><span class="pre">30</span></code> seconds, which means <code class="docutils literal notranslate"><span class="pre">30000</span></code> points to visualize on the window with (likely) an inferior number of pixels, moreover, this amount of data will affect the speed of the visualization, <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> use all data to render the plot.</p>
+<p>We can resample the data, to speed up the visualization.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>  <span class="c1"># create a buffer of 30 seconds and a resampling to 1000 samples</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg_resampled</span>
+
+    <span class="c1"># First eeg channel</span>
+    <span class="n">ch0</span> <span class="o">=</span> <span class="n">eeg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ch0</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Time axis</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ch0</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="c83a54eb440041518989da3b03d19ae3" src="../_images/visualization-1000.gif" /></p>
+</center><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="3bb7f3cbd2b14d539761301895e0314f" src="../_images/visualization-300.gif" /></p>
+</center></section>
+<section id="Plot-raw-data">
+<h2>Plot raw data<a class="headerlink" href="#Plot-raw-data" title="Permalink to this headline">¶</a></h2>
+<p>There is a method to create <code class="docutils literal notranslate"><span class="pre">matplotlib.lines</span></code> automatically for the current configurations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_lines</span><span class="p">(</span><span class="n">time</span><span class="o">=-</span><span class="mi">30</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>It will return the <code class="docutils literal notranslate"><span class="pre">axis</span></code> object the <code class="docutils literal notranslate"><span class="pre">time</span></code> array and a list of <code class="docutils literal notranslate"><span class="pre">lines</span></code> according to the number of channels.</p>
+<p>We can also configure the visualization with channel names as ticks.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>To update the visualization we only need to iterate over <code class="docutils literal notranslate"><span class="pre">self.lines</span></code> and <code class="docutils literal notranslate"><span class="pre">self.buffer_eeg_resampled</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg_resampled</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">eeg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="ad6efdee398c41cc835d86e422e42b77" src="../_images/visualization-8ch.gif" /></p>
+</center><p>The complete example looks like:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.visualizations</span> <span class="kn">import</span> <span class="n">EEGStream</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions.data_analysis</span> <span class="kn">import</span> <span class="n">loop_consumer</span>
+<span class="kn">from</span> <span class="nn">bci_framework.extensions</span> <span class="kn">import</span> <span class="n">properties</span> <span class="k">as</span> <span class="n">prop</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">Stream</span><span class="p">(</span><span class="n">EEGStream</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">DATAWIDTH</span> <span class="o">=</span> <span class="mi">1000</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_lines</span><span class="p">(</span><span class="n">time</span><span class="o">=-</span><span class="mi">30</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">DATAWIDTH</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Raw EEG&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Channels&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">CHANNELS</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_buffer</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">resampling</span><span class="o">=</span><span class="n">DATAWIDTH</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">eeg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_eeg_resampled</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">):</span>
+            <span class="n">line</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">eeg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Stream</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Topoplot">
+<h2>Topoplot<a class="headerlink" href="#Topoplot" title="Permalink to this headline">¶</a></h2>
+<p>Following the same instructions is possible to draw topoplots by setting the explicit axes.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.visualizations</span> <span class="kn">import</span> <span class="n">EEGStream</span><span class="p">,</span> <span class="n">loop_consumer</span>
+<span class="kn">import</span> <span class="nn">mne</span>
+
+<span class="k">class</span> <span class="nc">Stream</span><span class="p">(</span><span class="n">EEGStream</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mne_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span>
+
+    <span class="nd">@loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">eeg</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">mne</span><span class="o">.</span><span class="n">viz</span><span class="o">.</span><span class="n">plot_topomap</span><span class="p">(</span><span class="n">eeg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">eeg</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">outlines</span><span class="o">=</span><span class="s1">&#39;skirt&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cool&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">Stream</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="0be558d67f874be2bb383c1d10957fca" src="../_images/visualization-topoplot.gif" /></p>
+</center></section>
+<section id="Skip-frames">
+<h2>Skip frames<a class="headerlink" href="#Skip-frames" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes when the data processing is slow than acquisition, is necessary just to drop some data packages, this will prevent the buffer saturation and improve the visualization.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@fake_loop_consumer</span><span class="p">(</span><span class="s1">&#39;eeg&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">frame</span> <span class="o">%</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># use only 1 of 5 packages</span>
+        <span class="n">eeg</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">mne</span><span class="o">.</span><span class="n">viz</span><span class="o">.</span><span class="n">plot_topomap</span><span class="p">(</span><span class="n">eeg</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">eeg</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">outlines</span><span class="o">=</span><span class="s1">&#39;skirt&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;cool&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<center><p><img alt="dc95300ba0cc4bf0936ffb1b7c363bb1" src="../_images/visualization-topoplot_slow.gif" /></p>
+</center></section>
+<section id="Framework-integration">
+<h2>Framework integration<a class="headerlink" href="#Framework-integration" title="Permalink to this headline">¶</a></h2>
+<p>In this interface is possible to load multiple visualizations at the same time (just keep an eye on your machine resources).</p>
+<center><p><img alt="e9d1d35bb99348639f04d648adf8d125" src="../_images/visualization-integration.gif" /></p>
+</center></section>
+<section id="Examples-of-data-visualizations">
+<h2>Examples of data visualizations<a class="headerlink" href="#Examples-of-data-visualizations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../_modules/bci_framework.default_extensions.OpenBCI_Auxiliar_data.main.html"><span class="doc">OpenBCI: Auxiliar data</span></a></p></li>
+<li><p><a class="reference internal" href="../_modules/bci_framework.default_extensions.OpenBCI_Raw_EEG.main.html"><span class="doc">OpenBCI: Raw EEG</span></a></p></li>
+<li><p><a class="reference external" href="../_modules/bci_framework.default_extensions.OpenBCI_Raw_EEG_spectrum.main.rst">OpenBCI: Raw EEG spectrum</a></p></li>
+<li><p><a class="reference internal" href="../_modules/bci_framework.default_extensions.OpenBCI_Raw_topoplot.main.html"><span class="doc">OpenBCI: Raw topoplot</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Bare-minimum">Bare minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Data-stream-access">Data stream access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Buffer">Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Resampling">Resampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Plot-raw-data">Plot raw data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Topoplot">Topoplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Skip-frames">Skip frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Framework-integration">Framework integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Examples-of-data-visualizations">Examples of data visualizations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="03-data_analysis.html" title="previous chapter">Data analysis</a></li>
+      <li>Next: <a href="06-stimuli_delivery.html" title="next chapter">Stimuli delivery</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notebooks/04-data_visualizations.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

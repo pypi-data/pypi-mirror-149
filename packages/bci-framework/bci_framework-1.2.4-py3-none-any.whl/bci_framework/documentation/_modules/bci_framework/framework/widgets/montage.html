@@ -1,0 +1,931 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.framework.widgets.montage &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.framework.widgets.montage</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=======
+Montage
+=======
+&quot;&quot;&quot;
+
+import os
+import json
+import logging
+from typing import List, TypeVar, Dict, Optional
+
+from PySide6.QtGui import QCursor
+from PySide6.QtCore import QTimer, QSize, Qt
+from PySide6.QtWidgets import QLabel, QComboBox, QTableWidgetItem, QApplication, QCheckBox
+from PySide6.QtGui import QResizeEvent
+
+import mne
+import numpy as np
+from scipy.spatial.distance import pdist, squareform, euclidean
+import matplotlib
+from matplotlib import cm, pyplot
+from matplotlib.figure import Figure
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
+from openbci_stream.acquisition import OpenBCIConsumer
+from gcpds.filters import frequency as filters
+
+from ...extensions import properties as prop
+from ...extensions.data_analysis.utils import thread_this
+
+
+from mne.channels.layout import _find_topomap_coords
+
+try:
+    matplotlib.rcParams[&#39;axes.edgecolor&#39;] = &#39;k&#39;
+except:
+    # &#39;rcParams&#39; object does not support item assignment
+    pass
+
+VOLTS = TypeVar(&#39;Volts&#39;)
+IMPEDANCE = TypeVar(&#39;Impedance&#39;)
+
+
+########################################################################
+<div class="viewcode-block" id="TopoplotBase"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotBase">[docs]</a>class TopoplotBase(FigureCanvas):
+    &quot;&quot;&quot;The figure will try to resize so fast that freezes the main window.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__(Figure(figsize=(1, 1), dpi=90))
+        self.resize_timer = QTimer()
+        self.resize_timer.timeout.connect(self.do_resize_now)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotBase.resizeEvent"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotBase.resizeEvent">[docs]</a>    def resizeEvent(self, event) -&gt; None:
+        &quot;&quot;&quot;Slow down the resize event.&quot;&quot;&quot;
+        self.figure.set_visible(False)
+        self.draw()
+        self.lastEvent = (event.size().width(), event.size().height())
+        self.resize_timer.stop()
+        self.resize_timer.start(50)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotBase.do_resize_now"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotBase.do_resize_now">[docs]</a>    def do_resize_now(self) -&gt; None:
+        &quot;&quot;&quot;Resize plot.&quot;&quot;&quot;
+        self.resize_timer.stop()
+        newsize = QSize(*self.lastEvent)
+        event = QResizeEvent(newsize, QSize(1, 1))
+        super().resizeEvent(event)
+        self.figure.set_visible(True)
+        self.redraw()</div>
+
+    # ----------------------------------------------------------------------
+    def redraw(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if args := getattr(self, &#39;args_update&#39;, False):
+            if hasattr(self, &#39;update_montage&#39;):
+                self.update_montage(*args)
+            else:
+                self.update_impedances(*args)
+        else:
+            self.draw()</div>
+
+
+########################################################################
+class DragAndDropMontage:
+    &quot;&quot;&quot;&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        &quot;&quot;&quot;Constructor&quot;&quot;&quot;
+        self.mpl_connect(&#39;button_press_event&#39;, self.on_press)
+        self.mpl_connect(&#39;button_release_event&#39;, self.on_release)
+        self.mpl_connect(&#39;motion_notify_event&#39;, self.on_motion)
+
+    # ----------------------------------------------------------------------
+    def on_press(self, event):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.dragging = True
+
+        markers = [l.get_marker() for l in self.ax.axes.lines]
+        if not &#39;o&#39; in markers:
+            return
+        line = self.ax.axes.lines[0]
+
+        distance = 1e99
+        mk = None
+        b = None
+
+        pos = _find_topomap_coords(
+            self.info_, picks=self.channels_labels_, sphere=0.1)
+
+        for i, (x, y) in enumerate(pos):
+        # for i, (x, y) in enumerate(zip(*line.get_data())):
+
+            d = euclidean((event.xdata, event.ydata), (x, y))
+            if distance &gt; d:
+                distance = d
+                mk = i
+                b = [x], [y]
+
+        self.figure.axes[0].plot(
+            *b, &#39;o&#39;, color=&#39;w&#39;, alpha=0.7, markersize=self.markersize)[0]
+
+        self.target_start = mk
+
+    # ----------------------------------------------------------------------
+    def on_release(self, event):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.dragging = False
+        try:
+            print(f&#39;CH{self.target_start} -&gt; {self.target_end}&#39;)
+            self.set_channel(self.target_start, self.target_end)
+        except:
+            pass
+
+        del self.marker_placeholder
+        del self.text_placeholder
+
+    # ----------------------------------------------------------------------
+    def on_motion(self, event):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        if not self.dragging:
+            return
+
+        if event.xdata == None and event.ydata == None:
+            return
+
+        distance = 1e99
+        mk = None
+        b = None
+        t = None
+
+        pos = _find_topomap_coords(
+            self.info_, picks=self.channels_names_, sphere=0.1)
+
+        for i, (x, y) in enumerate(pos):
+            xe, ye = event.xdata, event.ydata
+            d = euclidean((xe, ye), (x, y))
+
+            if distance &gt; d:
+                distance = d
+                mk = i
+                b = [x], [y]
+                t = [x, y]
+
+        if not hasattr(self, &#39;marker_placeholder&#39;):
+            self.marker_placeholder = self.figure.axes[0].plot(
+                *b, &#39;o&#39;, color=&#39;k&#39;, alpha=0.5, markersize=self.markersize)[0]
+
+            self.text_placeholder = self.figure.axes[0].text(
+                *b, self.channels_names_[mk], color=&#39;w&#39;, fontsize=self.font_size, va=&#39;center&#39;, ha=&#39;center&#39;, fontdict={})
+
+        self.marker_placeholder.set_data(*b)
+        self.text_placeholder.set_position(t)
+        self.text_placeholder.set_text(self.channels_names_[mk])
+
+        self.draw()
+
+        if mk != None:
+            self.target_end = self.channels_names_[mk]
+
+
+########################################################################
+<div class="viewcode-block" id="TopoplotMontage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotMontage">[docs]</a>class TopoplotMontage(TopoplotBase, DragAndDropMontage):
+    &quot;&quot;&quot;Topoplot with electrodes positions.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        TopoplotBase.__init__(self)
+        DragAndDropMontage.__init__(self)
+
+        self.ax = self.figure.add_subplot(111)
+        self.reset_plot()
+        self.dragging = False
+
+        # self.mpl_connect(&#39;button_press_event&#39;, self.on_press)
+        # self.mpl_connect(&#39;button_release_event&#39;, self.on_release)
+        # self.mpl_connect(&#39;motion_notify_event&#39;, self.on_motion)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotMontage.reset_plot"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotMontage.reset_plot">[docs]</a>    def reset_plot(self) -&gt; None:
+        &quot;&quot;&quot;Ajust figure positions.&quot;&quot;&quot;
+        self.figure.subplots_adjust(
+            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotMontage.update_montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotMontage.update_montage">[docs]</a>    def update_montage(self, montage: mne.channels.DigMontage, electrodes: List[str], montage_name: str = None) -&gt; None:
+        &quot;&quot;&quot;Redraw electrodes positions.&quot;&quot;&quot;
+
+        self.args_update = (montage, electrodes, montage_name)
+        self.montage_ = montage
+
+        # ----------------------------------------------------------------------
+        def map_(x, in_min, in_max, out_min, out_max):
+            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+        matplotlib.rcParams[&#39;text.color&#39;] = &quot;#ffffff&quot;
+        if hasattr(self, &#39;lastEvent&#39;):
+            factor = map_(len(electrodes), 1, 32, 1.2, 0.6)
+            self.font_size = int(min(self.lastEvent) / 25) * factor
+            self.markersize = int(min(self.lastEvent) / 10) * factor
+        else:
+            self.font_size = 13
+            self.markersize = 35
+        matplotlib.rcParams[&#39;font.size&#39;] = self.font_size
+
+        self.ax.clear()
+        self.channels_names = montage.ch_names.copy()
+
+        info = mne.create_info(self.channels_names,
+                               sfreq=1000, ch_types=&quot;eeg&quot;)
+        info.set_montage(montage)
+
+        self.channels_names_ = self.channels_names.copy()
+        if montage_name in [&#39;standard_1020&#39;, &#39;standard_1005&#39;]:
+            for ch in [&#39;T3&#39;, &#39;T5&#39;, &#39;T4&#39;, &#39;T6&#39;]:
+                self.channels_names.pop(self.channels_names.index(ch))
+
+        info = mne.create_info(self.channels_names,
+                               sfreq=1000, ch_types=&quot;eeg&quot;)
+        info.set_montage(montage)
+
+        self.info_ = info.copy()
+
+        channels_mask = np.array(
+            [ch in electrodes for ch in self.channels_names])
+        values = [0] * len(channels_mask)
+
+        channels_labels = []
+        self.channels_labels_ = electrodes.copy()
+        for ch in self.channels_names:
+            if ch in electrodes:
+                i = electrodes.index(ch)
+                channels_labels.append(
+                    f&#39;$\\mathsf{{{ch}}}$\n$\\mathsf{{ch{i+1}}}$&#39;)
+            else:
+                channels_labels.append(f&#39;$\\mathsf{{{ch}}}$&#39;)
+
+        # colors = [&#39;#3d7a84&#39;, &#39;#3d7a84&#39;]
+        colors = [os.environ.get(&#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;), os.environ.get(
+            &#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;)]
+        cm = LinearSegmentedColormap.from_list(&#39;plane&#39;, colors, N=2)
+
+        # pos = np.stack([k[&#39;r&#39;] for k in self.info_[&#39;dig&#39;][3:]])
+        # radius = np.abs(pos[[2, 3], 0]).mean()
+
+        # x = pos[0, 0]
+        # y = pos[-1, 1]
+        # z = pos[:, -1].mean()
+        # [x, y, z, radius]
+
+        mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0, cmap=cm, outlines=&#39;skirt&#39;, names=channels_labels, show_names=True, axes=self.ax, sensors=True, show=False,
+                             mask_params=dict(marker=&#39;o&#39;, markerfacecolor=&#39;#263238&#39;,
+                                              markeredgecolor=&#39;#4f5b62&#39;, linewidth=0, markersize=self.markersize),
+                             mask=channels_mask,
+                             # sphere=[0, 0, 0, 0.1],
+                             )
+
+        self.draw()</div></div>
+
+
+########################################################################
+<div class="viewcode-block" id="TopoplotImpedances"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances">[docs]</a>class TopoplotImpedances(TopoplotBase):
+    &quot;&quot;&quot;Topoplot with electrodes impedances.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        super().__init__()
+        self.ax = self.figure.add_subplot(111)
+        self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
+        self.cmap = matplotlib.cm.get_cmap(&#39;YlGn&#39;)
+        self.cmap = self.truncate_colormap(
+            self.cmap, minval=0, maxal=0.66)
+
+        self.band_2737 = filters.GenericButterBand(27, 37, fs=250)
+        self.reset_plot()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotImpedances.raw_to_z"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances.raw_to_z">[docs]</a>    def raw_to_z(self, v: VOLTS) -&gt; IMPEDANCE:
+        &quot;&quot;&quot;Convert voltage to impedance.&quot;&quot;&quot;
+        v = filters.notch60(v, fs=250)
+        v = self.band_2737(v, fs=250)
+
+        rms = np.std(v)
+        z = (1e-6 * rms * np.sqrt(2) / 6e-9) - 2200
+        if z &lt; 0:
+            return 0
+        return z</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotImpedances.reset_plot"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances.reset_plot">[docs]</a>    def reset_plot(self) -&gt; None:
+        &quot;&quot;&quot;Ajust figure positions.&quot;&quot;&quot;
+        self.figure.subplots_adjust(
+            left=0.03, bottom=0.08, right=0.97, top=0.97, wspace=0, hspace=0)
+        self.add_colorbar()</div>
+
+    # ----------------------------------------------------------------------
+    def truncate_colormap(self, cmap, minval=0, maxal=1, n=100):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        new_cmap = LinearSegmentedColormap.from_list(
+            f&#39;trunc({cmap.name}, {minval:.2f}, {maxal:.2f})&#39;,
+            cmap(np.linspace(minval, maxal, n)))
+        return new_cmap
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotImpedances.update_impedances"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances.update_impedances">[docs]</a>    def update_impedances(self, montage: mne.channels.DigMontage, electrodes: List[str], impedances: Dict[str, float], montage_name: str = None) -&gt; None:
+        &quot;&quot;&quot;Redraw electrodes with background colors.&quot;&quot;&quot;
+
+        self.args_update = (montage, electrodes, impedances, montage_name)
+
+        # ----------------------------------------------------------------------
+        def map_(x, in_min, in_max, out_min, out_max):
+            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+
+        matplotlib.rcParams[&#39;text.color&#39;] = &quot;#000000&quot;
+        if hasattr(self, &#39;lastEvent&#39;):
+            factor = map_(len(electrodes), 1, 32, 1.2, 0.6)
+
+            matplotlib.rcParams[&#39;font.size&#39;] = int(
+                min(self.lastEvent) / 25) * factor
+            markersize = int(min(self.lastEvent) / 10) * factor
+        else:
+            matplotlib.rcParams[&#39;font.size&#39;] = 13
+            markersize = 35
+
+        channels_names = montage.ch_names.copy()
+        info = mne.create_info(
+            montage.ch_names, sfreq=1000, ch_types=&quot;eeg&quot;)
+        info.set_montage(montage)
+
+        # channels_names = self.remove_overlaping(info, channels_names)
+        if montage_name in [&#39;standard_1020&#39;, &#39;standard_1005&#39;, None]:
+            for ch in [&#39;T3&#39;, &#39;T5&#39;, &#39;T4&#39;, &#39;T6&#39;]:
+                try:
+                    channels_names.pop(channels_names.index(ch))
+                except:
+                    pass
+
+        info = mne.create_info(channels_names, sfreq=1000, ch_types=&quot;eeg&quot;)
+        info.set_montage(montage)
+
+        channels_mask = np.array(
+            [ch in electrodes for ch in channels_names])
+        values = [0] * len(channels_mask)
+
+        channels_labels = []
+        for ch in channels_names:
+            if ch in electrodes:
+
+                if impedances[ch] == &#39;??&#39;:
+                    label = f&#39;??\,\Omega&#39;
+
+                elif impedances[ch] &lt; 1000:
+
+                    z1 = int(impedances[ch])
+                    z2 = int(np.ceil((impedances[ch] % 1) * 10))
+                    label = f&#39;{z1}k{z2}\,\Omega&#39;
+                else:
+                    label = f&#39;\infty \,\Omega&#39;
+
+                i = electrodes.index(ch)
+                channels_labels.append(
+                    f&#39;$\\mathsf{{{ch}|ch{i+1}}}$\n$\\mathsf{{{label}}}$&#39;)
+            else:
+                channels_labels.append(f&#39;$\\mathsf{{{ch}}}$&#39;)
+
+        colors = [os.environ.get(&#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;), os.environ.get(
+            &#39;QTMATERIAL_PRIMARYCOLOR&#39;, &#39;#ffffff&#39;)]
+        cmap_ = LinearSegmentedColormap.from_list(&#39;plane&#39;, colors, N=2)
+
+        self.ax.clear()
+        mne.viz.plot_topomap(values, info, vmin=-1, vmax=1, contours=0,
+                             cmap=cmap_, outlines=&#39;skirt&#39;, axes=self.ax,
+                             names=channels_labels, show_names=True,
+                             sensors=True, show=False,
+                             mask_params={&#39;marker&#39;: &#39;&#39;},
+                             mask=channels_mask,
+                             )
+        q = self.cmap
+
+        markers = [l.get_marker() for l in self.ax.axes.lines]
+        if not &#39;&#39; in markers:
+            return
+        line = self.ax.axes.lines[markers.index(&#39;&#39;)]
+
+        channels = np.array(channels_names)[channels_mask]
+        for i, (x, y) in enumerate(zip(*line.get_data())):
+            try:
+                if impedances[channels[i]] == &#39;??&#39;:
+                    color = &#39;#da4453&#39;
+                elif impedances[channels[i]] &gt;= 15:
+                    color = &#39;#da4453&#39;
+                elif impedances[channels[i]] &lt;= 0.1:
+                    color = &#39;#da4453&#39;
+                else:
+                    color = q(impedances[channels[i]] / 20)
+                self.ax.plot([x], [y], marker=&#39;o&#39;, markerfacecolor=color,
+                             markeredgecolor=color, markersize=markersize, linewidth=0)
+            except IndexError:
+                return
+        self.draw()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotImpedances.add_colorbar"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances.add_colorbar">[docs]</a>    def add_colorbar(self) -&gt; None:
+        &quot;&quot;&quot;Draw color bar to indicate the impedance value.&quot;&quot;&quot;
+        # self.cax = self.figure.add_axes([0.1, 0.1, 0.8, 0.05])
+        norm = matplotlib.colors.Normalize(vmin=0, vmax=15)
+
+        sm = cm.ScalarMappable(cmap=self.cmap, norm=norm)
+        cbr = pyplot.colorbar(sm, cax=self.cax, orientation=&quot;horizontal&quot;)
+        pyplot.setp(pyplot.getp(cbr.ax.axes, &#39;xticklabels&#39;),
+                    color=os.environ.get(&#39;QTMATERIAL_SECONDARYTEXTCOLOR&#39;, &#39;#000000&#39;), size=10)
+        ticks = [0, 5, 10, 15]
+        cbr.set_ticks(ticks)
+        cbr.set_ticklabels([f&#39;{i} k$\Omega$&#39; for i in ticks])</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="TopoplotImpedances.remove_overlaping"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.TopoplotImpedances.remove_overlaping">[docs]</a>    def remove_overlaping(self, info, channels_names) -&gt; None:
+        &quot;&quot;&quot;Remove channels that overlap positions.&quot;&quot;&quot;
+        locs3d = [ch[&#39;loc&#39;][:3] for ch in info[&#39;chs&#39;]]
+        dist = pdist(locs3d)
+        problematic_electrodes = []
+        if len(locs3d) &gt; 1 and np.min(dist) &lt; 1e-10:
+            problematic_electrodes = [
+                info[&#39;chs&#39;][elec_i]
+                for elec_i in squareform(dist &lt; 1e-10).any(axis=0).nonzero()[0]
+            ]
+
+        issued = []
+        for ch_i in problematic_electrodes:
+            for ch_j in problematic_electrodes:
+                if ch_i[&#39;ch_name&#39;] == ch_j[&#39;ch_name&#39;]:
+                    continue
+                if ch_i[&#39;ch_name&#39;] in issued and ch_j[&#39;ch_name&#39;] in issued:
+                    continue
+                if pdist([ch_i[&#39;loc&#39;][:3], ch_j[&#39;loc&#39;][:3]])[0] &lt; 1e-10:
+                    issued.extend([ch_i[&#39;ch_name&#39;], ch_j[&#39;ch_name&#39;]])
+                    if ch_i[&#39;ch_name&#39;] in channels_names:
+
+                        channels_names.pop(channels_names.index(
+                            ch_i[&#39;ch_name&#39;]))
+
+        return channels_names</div></div>
+
+
+########################################################################
+<div class="viewcode-block" id="Montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage">[docs]</a>class Montage:
+    &quot;&quot;&quot;Widget that handle the montage, electrodes channels, and impedances.&quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def __init__(self, core):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.parent_frame = core.main
+        self.core = core
+
+        if color := os.getenv(&#39;QTMATERIAL_SECONDARYDARKCOLOR&#39;, False):
+            pyplot.rcParams[&#39;axes.facecolor&#39;] = color
+            pyplot.rcParams[&#39;figure.facecolor&#39;] = color
+            pyplot.rcParams[&#39;savefig.facecolor&#39;] = color
+
+        self.channels_names_widgets = []
+        self.channels_bipolar_widgets = []
+
+        self.topoplot = TopoplotMontage()
+        self.topoplot.set_channel = self.set_channel
+        self.parent_frame.gridLayout_montage.addWidget(self.topoplot)
+
+        self.parent_frame.comboBox_montages.addItems(
+            mne.channels.get_builtin_montages())
+
+        # self.parent_frame.comboBox_montage_channels.addItems(
+            # [f&quot;{i+1} channel{&#39;s&#39;[:i]}&quot; for i in range(128)])
+
+        self.set_saved_montages()
+        self.update_environ()
+        self.connect()
+
+        self.topoplot_impedance = TopoplotImpedances()
+        self.parent_frame.gridLayout_impedances.addWidget(
+            self.topoplot_impedance)
+        # self.update_impedance()
+
+        self.load_montage()
+
+        QTimer().singleShot(10, self.set_spliter_position)
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.update_impedance"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.update_impedance">[docs]</a>    def update_impedance(self, z: Optional[List[float]] = None) -&gt; None:
+        &quot;&quot;&quot;Send the impedance values to the drawer.&quot;&quot;&quot;
+        electrodes = list(prop.CHANNELS.values())
+        montage = self.get_mne_montage()
+
+        if z is None:
+            z = [&#39;??&#39;] * len(electrodes)
+
+        impedances = {ch: z for ch, z in zip(electrodes, z)}
+        self.topoplot_impedance.update_impedances(
+            montage, electrodes, impedances)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.set_spliter_position"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.set_spliter_position">[docs]</a>    def set_spliter_position(self) -&gt; None:
+        &quot;&quot;&quot;Delay method to redraw the figure.&quot;&quot;&quot;
+        self.parent_frame.splitter_montage.moveSplitter(
+            self.parent_frame.splitter_montage.getRange(1)[1] // 2, 1)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.connect"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.connect">[docs]</a>    def connect(self) -&gt; None:
+        &quot;&quot;&quot;Connect events.&quot;&quot;&quot;
+        self.parent_frame.comboBox_montages.activated.connect(
+            self.update_topoplot)
+
+        self.parent_frame.spinBox_montage_channels.valueChanged.connect(
+            self.update_topoplot)
+        # self.parent_frame.spinBox_montage_channels.activated.connect(
+            # self.update_topoplot)
+
+        self.parent_frame.pushButton_save_montage.clicked.connect(
+            self.save_montage)
+        self.parent_frame.pushButton_remove_montage.clicked.connect(
+            self.delete_montage)
+
+        self.parent_frame.tableWidget_montages.itemClicked.connect(
+            self.load_montage)
+
+        self.parent_frame.checkBox_view_impedances.clicked.connect(
+            self.change_plot)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.change_plot"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.change_plot">[docs]</a>    def change_plot(self) -&gt; None:
+        &quot;&quot;&quot;Switch between Montage and Impedance.&quot;&quot;&quot;
+        if self.parent_frame.checkBox_view_impedances.isChecked():  # impedances
+            self.parent_frame.stackedWidget_montage.setCurrentIndex(1)
+        else:  # montage
+            self.parent_frame.stackedWidget_montage.setCurrentIndex(0)
+
+        self.start_impedance_measurement()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.get_mne_montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.get_mne_montage">[docs]</a>    def get_mne_montage(self) -&gt; mne.channels.DigMontage:
+        &quot;&quot;&quot;Create montage from GUI options.&quot;&quot;&quot;
+        montage_name = self.parent_frame.comboBox_montages.currentText()
+        montage = mne.channels.make_standard_montage(montage_name)
+        return montage</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.update_topoplot"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.update_topoplot">[docs]</a>    def update_topoplot(self) -&gt; None:
+        &quot;&quot;&quot;Redraw topoplot.&quot;&quot;&quot;
+        montage = self.get_mne_montage()
+        montage_name = self.parent_frame.comboBox_montages.currentText()
+        self.generate_list_channels()
+        electrodes = [ch.currentText() for ch in self.channels_names_widgets]
+        self.topoplot.update_montage(
+            montage, electrodes, montage_name=montage_name)
+        self.validate_channels()
+        self.update_environ()
+        self.topoplot_impedance.reset_plot()
+        self.update_impedance()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.generate_list_channels"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.generate_list_channels">[docs]</a>    def generate_list_channels(self) -&gt; None:
+        &quot;&quot;&quot;Update the widgets to set the channel to the electrode.&quot;&quot;&quot;
+        for layout in [self.parent_frame.gridLayout_list_channels_right, self.parent_frame.gridLayout_list_channels_left]:
+
+            for i in reversed(range(layout.count())):
+                if item := layout.takeAt(i):
+                    item.widget().deleteLater()
+            # layout.setColumnStretch(1, 1)
+
+            layout.setColumnStretch(0, 0)
+            layout.setColumnStretch(1, 1)
+            layout.setColumnStretch(2, 1)
+
+        if self.channels_names_widgets:
+            previous_labels = [ch.currentText()
+                               for ch in self.channels_names_widgets]
+        else:
+            previous_labels = []
+
+        self.channels_names_widgets = []
+        self.channels_bipolar_widgets = []
+        self.labels_names_widgets = []
+        montage = self.get_mne_montage()
+        for i in range(self.parent_frame.spinBox_montage_channels.value()):
+
+            j = i
+            if i % 2:
+                layout = self.parent_frame.gridLayout_list_channels_right
+                j = j - 1
+            else:
+                layout = self.parent_frame.gridLayout_list_channels_left
+
+            channel_label = QLabel(f&#39;CH{i+1}&#39;)
+            self.labels_names_widgets.append(channel_label)
+            layout.addWidget(channel_label, j, 0)
+
+            channel_name = QComboBox()
+            channel_name.addItems([&#39;Off&#39;] + montage.ch_names)
+
+            if len(previous_labels) &gt; i and previous_labels[i] in montage.ch_names:
+                index = montage.ch_names.index(previous_labels[i])
+            elif len(previous_labels) &gt; i and previous_labels[i] == &#39;Off&#39;:
+                index = -1
+            else:
+                index = i
+            channel_name.setCurrentIndex(index + 1)
+            channel_name.activated.connect(self.update_topoplot)
+            self.channels_names_widgets.append(channel_name)
+
+            layout.addWidget(channel_name, j, 1)
+
+            channel_bipolar = QCheckBox(&#39;Bipolar&#39;)
+            # channel_bipolar = QComboBox()
+            # channel_bipolar.addItems([&#39;Monopolar&#39;, &#39;Bipolar&#39;])
+            self.channels_bipolar_widgets.append(channel_bipolar)
+
+            layout.addWidget(channel_bipolar, j, 2)</div>
+
+    # ----------------------------------------------------------------------
+    def set_channel(self, channel, name):
+        &quot;&quot;&quot;&quot;&quot;&quot;
+        self.channels_names_widgets[channel].setCurrentText(name)
+        self.update_topoplot()
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.save_montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.save_montage">[docs]</a>    def save_montage(self) -&gt; None:
+        &quot;&quot;&quot;Save current montage.&quot;&quot;&quot;
+        montage_name = self.parent_frame.comboBox_montages.currentText()
+        channels_names = &#39;,&#39;.join([ch.currentText()
+                                   for ch in self.channels_names_widgets])
+        # channels_bipolar = &#39;,&#39;.join([str(int(ch.currentText() == &#39;Monopolar&#39;))
+                                     # for ch in self.channels_bipolar_widgets])
+
+        channels_bipolar = &#39;,&#39;.join(
+            [str(int(w.isChecked())) for w in self.channels_bipolar_widgets])
+
+        channels_bipolar = [int(w.isChecked())
+                            for w in self.channels_bipolar_widgets]
+
+        # saved_montages = self.config[&#39;montages&#39;]
+        for i in range(1, 999):
+            if self.core.config.has_option(&#39;montages&#39;, f&#39;montage{i}&#39;):
+                if self.core.config.get(&#39;montages&#39;, f&#39;montage{i}&#39;) == f&quot;{montage_name}|{channels_names}&quot;:
+                    return  # Duplicated montage
+            else:
+                self.core.config.set(
+                    &#39;montages&#39;, f&#39;montage{i}&#39;, f&quot;{montage_name}|{channels_names}&quot;)
+                self.core.config.set(
+                    &#39;montages&#39;, f&#39;type{i}&#39;, f&quot;{channels_bipolar}&quot;)
+                # self.parent.comboBox_historical_montages.addItem(name)
+                self.core.config.save()
+                self.set_saved_montages()
+                return</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.delete_montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.delete_montage">[docs]</a>    def delete_montage(self, *args, **kwargs) -&gt; None:
+        &quot;&quot;&quot;Remove montage.&quot;&quot;&quot;
+        row = self.parent_frame.tableWidget_montages.currentRow()
+        config_name = self.parent_frame.tableWidget_montages.item(
+            row, 0).config_name
+        self.core.config.remove_option(&#39;montages&#39;, config_name)
+        self.core.config.save()
+        self.set_saved_montages()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.set_saved_montages"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.set_saved_montages">[docs]</a>    def set_saved_montages(self) -&gt; None:
+        &quot;&quot;&quot;Load saved montages.&quot;&quot;&quot;
+        self.parent_frame.tableWidget_montages.clear()
+        self.parent_frame.tableWidget_montages.setRowCount(0)
+        self.parent_frame.tableWidget_montages.setColumnCount(3)
+        self.parent_frame.tableWidget_montages.verticalHeader().setVisible(True)
+        self.parent_frame.tableWidget_montages.setHorizontalHeaderLabels(
+            [&#39;Montage&#39;, &#39;Channels&#39;, &#39;Electrodes&#39;])
+        saved_montages = self.core.config[&#39;montages&#39;]
+
+        montages = filter(lambda m: m.startswith(
+            &#39;montage&#39;), saved_montages.keys())
+        for i, saved in enumerate(montages):
+            montage, electrodes = saved_montages.get(saved).split(&#39;|&#39;)
+            self.parent_frame.tableWidget_montages.insertRow(i)
+
+            item = QTableWidgetItem(montage)
+            item.config_name = saved
+
+            itemh = QTableWidgetItem(montage)
+            itemh.setText(f&#39;#{i+1}&#39;)
+            self.parent_frame.tableWidget_montages.setVerticalHeaderItem(
+                i, itemh)
+
+            self.parent_frame.tableWidget_montages.setItem(
+                i, 0, item)
+            self.parent_frame.tableWidget_montages.setItem(
+                i, 1, QTableWidgetItem(f&quot;{len(electrodes.split(&#39;,&#39;))-electrodes.split(&#39;,&#39;).count(&#39;Off&#39;)} ch&quot;))
+            self.parent_frame.tableWidget_montages.setItem(
+                i, 2, QTableWidgetItem(&#39; &#39;.join(electrodes.split(&#39;,&#39;))))
+
+            i += 1</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.load_montage"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.load_montage">[docs]</a>    def load_montage(self, event=None) -&gt; None:
+        &quot;&quot;&quot;Load the selected montage.&quot;&quot;&quot;
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        if event is None:
+            montage_name, channels = self.core.config.get(
+                &#39;montages&#39;, &#39;last_montage&#39;).split(&#39;|&#39;)
+            channels = channels.split(&#39;,&#39;)
+
+            # montage_name, channels = self.core.config.get(
+                # &#39;montages&#39;, &#39;last_montage&#39;).split(&#39;|&#39;)
+            # channels = channels.split(&#39;,&#39;)
+
+        else:
+            montage_name = self.parent_frame.tableWidget_montages.item(
+                event.row(), 0).text()
+            channels = self.parent_frame.tableWidget_montages.item(
+                event.row(), 2).text()
+            channels = channels.split(&#39; &#39;)
+            self.core.config.set(&#39;montages&#39;, &#39;last_montage&#39;,
+                                 f&quot;{montage_name}|{&#39;,&#39;.join(channels)}&quot;)
+            # channels = channels.split(&#39; &#39;)
+            # self.core.config.set(&#39;montages&#39;, &#39;last_type&#39;,
+                                 # f&quot;{&#39;,&#39;.join(channels)}&quot;)
+            self.core.config.save()
+
+        self.parent_frame.comboBox_montages.setCurrentText(montage_name)
+        self.parent_frame.spinBox_montage_channels.setValue(len(channels))
+
+        self.generate_list_channels()
+        [wg.setCurrentText(ch) for wg, ch in zip(
+            self.channels_names_widgets, channels)]
+
+        self.update_topoplot()
+        QApplication.restoreOverrideCursor()</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.validate_channels"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.validate_channels">[docs]</a>    def validate_channels(self) -&gt; None:
+        &quot;&quot;&quot;Highlight misconfigurations.&quot;&quot;&quot;
+        channels = [ch.currentText() for ch in self.channels_names_widgets]
+        for channel, label in zip(channels, self.labels_names_widgets):
+            if channels.count(channel) &gt; 1:
+                label.setStyleSheet(
+                    &quot;QLabel{color: #ff1744;}QLabel:disabled{color: rgba(255, 23, 68, 0.2)};&quot;)
+            else:
+                label.setStyleSheet(
+                    f&quot;QLabel{{color: {os.environ.get(&#39;QTMATERIAL_SECONDARYTEXTCOLOR&#39;, &#39;&#39;)};}}&quot;
+                    f&quot;QLabel:disabled{{color: rgba(255, 255, 255, 0.2) }}&quot;)</div>
+
+    # ----------------------------------------------------------------------
+<div class="viewcode-block" id="Montage.update_environ"><a class="viewcode-back" href="../../../bci_framework.framework.widgets.montage.html#bci_framework.framework.widgets.montage.Montage.update_environ">[docs]</a>    def update_environ(self) -&gt; None:
+        &quot;&quot;&quot;Update environment variables.&quot;&quot;&quot;
+        montage = {i + 1: ch.currentText() for i, ch in enumerate(
+            (self.channels_names_widgets)) if ch.currentText() != &#39;Off&#39;}
+
+        # types = [int(w.currentText() == &#39;Monopolar&#39;)
+                 # for w in self.channels_bipolar_widgets]
+        types = [int(not w.isChecked())
+                 for w in self.channels_bipolar_widgets]
+
+        os.environ[&#39;BCISTREAM_CHANNELS&#39;] = json.dumps(montage)
+        os.environ[&#39;BCISTREAM_MONTAGE_TYPE&#39;] = json.dumps(types)
+        os.environ[&#39;BCISTREAM_MONTAGE_NAME&#39;] = json.dumps(
+            self.parent_frame.comboBox_montages.currentText())</div>
+        # os.environ[&#39;BCISTREAM_DAISY&#39;] = json.dumps(
+            # bool(list(filter(lambda x: x &gt; 8, montage.keys()))))
+
+    # ----------------------------------------------------------------------
+    @thread_this
+    def start_impedance_measurement(self) -&gt; None:
+        &quot;&quot;&quot;Change OpenBCI configurations to read impedance.&quot;&quot;&quot;
+        if self.parent_frame.checkBox_view_impedances.isChecked():
+
+            if not hasattr(self.core.connection, &#39;openbci&#39;):
+                self.core.connection.openbci_connect()
+
+            openbci = self.core.connection.openbci.openbci
+
+            response = openbci.command(openbci.SAMPLE_RATE_250SPS)
+            logging.warning(response)
+
+            response = openbci.command(openbci.DEFAULT_CHANNELS_SETTINGS)
+            logging.warning(response)
+
+            openbci.leadoff_impedance(
+                prop.CHANNELS, pchan=openbci.TEST_SIGNAL_NOT_APPLIED, nchan=openbci.TEST_SIGNAL_APPLIED)
+
+            self.measuring_impedance = True
+            V = []
+            with OpenBCIConsumer(host=prop.HOST, topics=[&#39;eeg&#39;]) as stream:
+
+                n = (1000 // prop.STREAMING_PACKAGE_SIZE)
+                frame = 0
+                for data in stream:
+                    frame += 1
+                    if data.topic == &#39;eeg&#39;:
+
+                        v = data.value[&#39;data&#39;]
+                        V.append(v)
+
+                        if len(V) &gt; 10:
+                            V.pop(0)
+
+                        if frame % n == 0:
+                            z = np.array(
+                                [self.topoplot_impedance.raw_to_z(v) for v in np.concatenate(V, axis=1)])
+                            self.update_impedance(z / 1000)
+
+                        if not self.measuring_impedance:
+                            self.core.connection.openbci.session_settings()
+                            break
+
+        else:
+            self.measuring_impedance = False</div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

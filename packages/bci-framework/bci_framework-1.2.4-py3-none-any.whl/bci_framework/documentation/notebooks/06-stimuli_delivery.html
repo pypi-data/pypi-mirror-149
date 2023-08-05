@@ -1,0 +1,865 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Stimuli delivery &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Neurofeedback" href="07-neurofeedback.html" />
+    <link rel="prev" title="Data visualization" href="04-data_visualizations.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 0;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Stimuli-delivery">
+<h1>Stimuli delivery<a class="headerlink" href="#Stimuli-delivery" title="Permalink to this headline">¶</a></h1>
+<p>This interface use <a class="reference external" href="https://brython.info">Brython</a> and the <a class="reference external" href="https://radiant-framework.readthedocs.io/en/latest/">Radiant framework</a> as backend for do the web development in a Python style, this interface inherits all features from <a class="reference external" href="https://radiant-framework.readthedocs.io/en/latest/">Radiant</a> and extends the utilities with an specific ones.</p>
+<section id="Bare-minimum">
+<h2>Bare minimum<a class="headerlink" href="#Bare-minimum" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.stimuli_delivery</span> <span class="kn">import</span> <span class="n">StimuliAPI</span>
+
+<span class="c1"># Brython modules</span>
+<span class="kn">from</span> <span class="nn">browser</span> <span class="kn">import</span> <span class="n">document</span><span class="p">,</span> <span class="n">html</span>
+<span class="kn">from</span> <span class="nn">browser.widgets.dialog</span> <span class="kn">import</span> <span class="n">InfoDialog</span>
+
+<span class="c1"># Main class must inherit `StimuliAPI`</span>
+<span class="k">class</span> <span class="nc">StimuliDelivery</span><span class="p">(</span><span class="n">StimuliAPI</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Initialize `StimuliAPI` class</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># very importante line ;)</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># -------------------------------------------------------------</span>
+        <span class="c1"># main brython code</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">html</span><span class="o">.</span><span class="n">H3</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">)</span>
+
+        <span class="n">button</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">BUTTON</span><span class="p">(</span><span class="s1">&#39;click me&#39;</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="n">InfoDialog</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">))</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">button</span>
+        <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># Create and run the server</span>
+    <span class="n">StimuliDelivery</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="3eb0fb5d1f1e4ccfa3e8f82b5fc35ab7" src="../_images/stimuli_bare_minimum.png" /></p>
+</section>
+<section id="Stimuli-area-and-Dashboard">
+<h2>Stimuli area and Dashboard<a class="headerlink" href="#Stimuli-area-and-Dashboard" title="Permalink to this headline">¶</a></h2>
+<p>One of the main features is the possibility to make configurable experiments, in favor of this philosophy, by default they are builded both areas <code class="docutils literal notranslate"><span class="pre">self.stimuli_area</span></code> and <code class="docutils literal notranslate"><span class="pre">self.dashboard</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># -------------------------------------------------------------</span>
+<span class="c1"># main brython code</span>
+
+<span class="c1"># Create a division for the stimuli_area and the dashboard</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">stimuli_area</span> <span class="o">&lt;=</span> <span class="n">html</span><span class="o">.</span><span class="n">H3</span><span class="p">(</span><span class="s1">&#39;Stimuli area&#39;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">html</span><span class="o">.</span><span class="n">H3</span><span class="p">(</span><span class="s1">&#39;Dashboard&#39;</span><span class="p">)</span>
+
+<span class="c1"># Insert a cross in the middle of the stimuli area</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">show_cross</span><span class="p">()</span>
+
+<span class="c1"># This area is used for external event processord</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">show_synchronizer</span><span class="p">()</span>
+<span class="c1"># -------------------------------------------------------------</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">self.stimuli_area</span></code> at left attemp to be used to display stimuli and the <code class="docutils literal notranslate"><span class="pre">self.dashboard</span></code> on the right is for widgets and configurations.</p>
+<p><img alt="51b2bd5ed51d479fb202b77e4bc95062" src="../_images/areas.png" /></p>
+</section>
+<section id="Widgets">
+<h2>Widgets<a class="headerlink" href="#Widgets" title="Permalink to this headline">¶</a></h2>
+<p>All widgets and styles they are part of <a class="reference external" href="https://github.com/material-components/material-components-web">material-components-web</a> with a custom framework implementation designed to display widgets and get values.</p>
+<p>All widgets are available trought the <code class="docutils literal notranslate"><span class="pre">Widgets</span></code> submodule located in the module <code class="docutils literal notranslate"><span class="pre">bci_framework.extensions.stimuli_delivery.utils</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.stimuli_delivery.utils</span> <span class="kn">import</span> <span class="n">Widgets</span> <span class="k">as</span> <span class="n">w</span>
+</pre></div>
+</div>
+<p>The following styles are used for all examples</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">flex</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;margin-bottom&#39;</span><span class="p">:</span> <span class="s1">&#39;15px&#39;</span><span class="p">,</span> <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;flex&#39;</span><span class="p">,</span> <span class="p">}</span>
+<span class="n">flex_title</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;margin-top&#39;</span><span class="p">:</span> <span class="s1">&#39;50px&#39;</span><span class="p">,</span> <span class="s1">&#39;margin-bottom&#39;</span><span class="p">:</span> <span class="s1">&#39;10px&#39;</span><span class="p">,</span> <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;flex&#39;</span><span class="p">,</span> <span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<section id="Typography">
+<h3>Typography<a class="headerlink" href="#Typography" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># -------------------------------------------------------------</span>
+<span class="c1"># main brython code</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline1&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline2&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline2&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline3&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline3&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline5&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline5&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;headline6&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline6&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;body2&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;body2&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;subtitle1&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;subtitle1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;subtitle2&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;subtitle2&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;caption&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;button&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;overline&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;overline&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+<span class="c1"># -------------------------------------------------------------</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="54e6a99d93ea4fc3ad03805802ed9673" src="../_images/stimuli_typography.png" /></p>
+</section>
+<section id="Buttons">
+<h3>Buttons<a class="headerlink" href="#Buttons" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Buttons&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex_title</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s1">&#39;Button 1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_button&#39;</span><span class="p">),</span> <span class="s1">&#39;html&#39;</span><span class="p">,</span> <span class="s1">&#39;Button 1 pressed!&#39;</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s1">&#39;Button 2&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_button2</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_button&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_button2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_button&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="s1">&#39;Button 2 pressed!&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="bf5a0574044149639bc8c3055dcc97dd" src="../_images/stimuli_buttons.png" /></p>
+</section>
+<section id="Switch">
+<h3>Switch<a class="headerlink" href="#Switch" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Switch&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex_title</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">switch</span><span class="p">(</span><span class="s1">&#39;Switch 1&#39;</span><span class="p">,</span> <span class="n">checked</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_switch</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_swicth&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_switch&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># value = self.widgets.get_value(&#39;my_swicth&#39;)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_switch&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Switch Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="376a1cb29c834e75b8526ab5ebed7659" src="../_images/stimuli_switch.png" /></p>
+</section>
+<section id="Checkbox">
+<h3>Checkbox<a class="headerlink" href="#Checkbox" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Checkbox&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex_title</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">checkbox</span><span class="p">(</span><span class="s1">&#39;Checkbox&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[[</span><span class="sa">f</span><span class="s1">&#39;chb-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)],</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_checkbox</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_checkbox&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_checkbox&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_checkbox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;my_checkbox&#39;</span><span class="p">)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_checkbox&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Checkbox Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="03bcc884672c461890fe9884d1e94e6c" src="../_images/stimuli_checkbox.png" /></p>
+</section>
+<section id="Radios">
+<h3>Radios<a class="headerlink" href="#Radios" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Radios&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex_title</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">radios</span><span class="p">(</span><span class="s1">&#39;Radios&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[[</span><span class="sa">f</span><span class="s1">&#39;chb-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;chb-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)],</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_radios</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_radios&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_radios&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_radios</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;my_radios&#39;</span><span class="p">)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_radios&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Radios Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="36960ec4dae14846b8756c85d1e5f0b7" src="../_images/stimuli_radios.png" /></p>
+</section>
+<section id="Select">
+<h3>Select<a class="headerlink" href="#Select" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Select&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;Select&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="sa">f</span><span class="s1">&#39;sel-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;sel-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)],</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_select</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_select&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_select&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># value = w.get_value(&#39;my_select&#39;)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_select&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Select Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="2f93426e7f97428f90126778c06cbe2b" src="../_images/stimuli_select.png" /></p>
+</section>
+<section id="Sliders">
+<h3>Sliders<a class="headerlink" href="#Sliders" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="c1"># Slider</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Slider&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">slider</span><span class="p">(</span><span class="s1">&#39;Slider&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_slider</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_slider&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_slider&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+
+    <span class="c1"># Slider range</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;Slider range&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="s1">&#39;headline4&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">range_slider</span><span class="p">(</span><span class="s1">&#39;Slider range&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">value_lower</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">value_upper</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">on_change</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">on_slider_range</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;my_range&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;for_range&#39;</span><span class="p">,</span> <span class="n">typo</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;body1&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">flex</span><span class="p">)</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">on_slider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># value = w.get_value(&#39;my_slider&#39;)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_slider&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Slider Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<span class="k">def</span> <span class="nf">on_slider_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="c1"># value = w.get_value(&#39;my_slider&#39;)</span>
+    <span class="n">document</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span><span class="s1">&#39;#for_range&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">html</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Range Changed: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="a76998ecd11441e98df54b49c50779f6" src="../_images/stimuli_sliders.png" /></p>
+</section>
+</section>
+<section id="Sound">
+<h2>Sound<a class="headerlink" href="#Sound" title="Permalink to this headline">¶</a></h2>
+<section id="Tones">
+<h3>Tones<a class="headerlink" href="#Tones" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Tone</span></code> library allows playing single notes using the javascript <code class="docutils literal notranslate"><span class="pre">AudioContext</span></code> backend, the <code class="docutils literal notranslate"><span class="pre">duration</span></code> and the <code class="docutils literal notranslate"><span class="pre">gain</span></code> can also be configured.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.stimuli_delivery.utils</span> <span class="kn">import</span> <span class="n">Tone</span> <span class="k">as</span> <span class="n">t</span>
+
+    <span class="c1"># -------------------------------------------------------------</span>
+    <span class="c1"># main brython code</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">gain</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s1">&#39;f#4&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="s1">&#39;f#4&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">gain</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="s1">&#39;0 15px&#39;</span><span class="p">})</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s1">&#39;D#0&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="s1">&#39;D#0&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">gain</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="s1">&#39;0 15px&#39;</span><span class="p">})</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dashboard</span> <span class="o">&lt;=</span> <span class="n">w</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">t</span><span class="p">(</span><span class="s1">&#39;B2&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">gain</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="s1">&#39;0 15px&#39;</span><span class="p">})</span>
+    <span class="c1"># -------------------------------------------------------------</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="ed641b9467594ea9baac3cd2e7dd09c6" src="../_images/stimuli_tones1.png" /></p>
+</section>
+<section id="Audio-files">
+<h3>Audio files<a class="headerlink" href="#Audio-files" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Not implemented yet
+</pre></div>
+</div>
+</section>
+</section>
+<section id="Pipelines">
+<h2>Pipelines<a class="headerlink" href="#Pipelines" title="Permalink to this headline">¶</a></h2>
+<p>Pipelines consist of the controlled execution of methods with asynchronous timeouts.</p>
+<p>Let’s assume that we have 4 view methods, each method could be a step needed to build a trial.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">view1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;On view1: </span><span class="si">{</span><span class="n">s1</span><span class="si">=}</span><span class="s1">, </span><span class="si">{</span><span class="n">r1</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">view2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;On view2: </span><span class="si">{</span><span class="n">s1</span><span class="si">=}</span><span class="s1">, </span><span class="si">{</span><span class="n">r1</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">view3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;On view3: </span><span class="si">{</span><span class="n">s1</span><span class="si">=}</span><span class="s1">, </span><span class="si">{</span><span class="n">r1</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">view4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">r1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;On view4: </span><span class="si">{</span><span class="n">s1</span><span class="si">=}</span><span class="s1">, </span><span class="si">{</span><span class="n">r1</span><span class="si">=}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The first rule is that all methods will have the same arguments, these arguments consist of the needed information to build a single trial.</p>
+<p>Now, we need the <code class="docutils literal notranslate"><span class="pre">trials</span></code>, for example, here we define 3 trials (notice the arguments):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trials</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;s1&#39;</span><span class="p">:</span> <span class="s1">&#39;Hola&#39;</span><span class="p">,</span>  <span class="c1"># Trial 1</span>
+           <span class="s1">&#39;r1&#39;</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+     <span class="p">},</span>
+
+    <span class="p">{</span><span class="s1">&#39;s1&#39;</span><span class="p">:</span> <span class="s1">&#39;Mundo&#39;</span><span class="p">,</span>  <span class="c1"># Trial 2</span>
+     <span class="s1">&#39;r1&#39;</span><span class="p">:</span> <span class="mi">85</span><span class="p">,</span>
+     <span class="p">},</span>
+
+    <span class="p">{</span><span class="s1">&#39;s1&#39;</span><span class="p">:</span> <span class="s1">&#39;Python&#39;</span><span class="p">,</span>  <span class="c1"># Trial 3</span>
+     <span class="s1">&#39;r1&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+     <span class="p">},</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">pipeline</span></code> consists of a list of sequential methods with a respective timeout <code class="docutils literal notranslate"><span class="pre">(method,</span> <span class="pre">timeout)</span></code>, if the <code class="docutils literal notranslate"><span class="pre">timeout</span></code> is a number then this will indicate the milliseconds until the next method call. If the <code class="docutils literal notranslate"><span class="pre">timeout</span></code> is a list, then a random (with uniform distribution) number between that range will be generated on each trial.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline_trial</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view1</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span>
+    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view2</span><span class="p">,</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]),</span>
+    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view3</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;slider&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view4</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">)),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>Finally, our pipeline can be executed with the method <code class="docutils literal notranslate"><span class="pre">self.run_pipeline</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">run_pipeline</span><span class="p">(</span><span class="n">pipeline_trial</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">On</span> <span class="n">view1</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Hola</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">91</span>
+<span class="n">On</span> <span class="n">view2</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Hola</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">91</span>
+<span class="n">On</span> <span class="n">view3</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Hola</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">91</span>
+<span class="n">On</span> <span class="n">view4</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Hola</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">91</span>
+
+<span class="n">On</span> <span class="n">view1</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Mundo</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">85</span>
+<span class="n">On</span> <span class="n">view2</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Mundo</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">85</span>
+<span class="n">On</span> <span class="n">view3</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Mundo</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">85</span>
+<span class="n">On</span> <span class="n">view4</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Mundo</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">85</span>
+
+<span class="n">On</span> <span class="n">view1</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Python</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">On</span> <span class="n">view2</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Python</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">On</span> <span class="n">view3</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Python</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">30</span>
+<span class="n">On</span> <span class="n">view4</span><span class="p">:</span> <span class="n">s1</span><span class="o">=</span><span class="n">Python</span><span class="p">,</span> <span class="n">r1</span><span class="o">=</span><span class="mi">30</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Recording-EEG-automatically">
+<h2>Recording EEG automatically<a class="headerlink" href="#Recording-EEG-automatically" title="Permalink to this headline">¶</a></h2>
+<p>If there is a current EEG streaming, the stimuli delivery can be configured to automatically start and stop the EEG recording with the methods <code class="docutils literal notranslate"><span class="pre">self.start_record()</span></code> and <code class="docutils literal notranslate"><span class="pre">self.stop_record()</span></code> respectively.</p>
+</section>
+<section id="Send-Markers">
+<h2>Send Markers<a class="headerlink" href="#Send-Markers" title="Permalink to this headline">¶</a></h2>
+<p>The markers are used to synchronize events. The <code class="docutils literal notranslate"><span class="pre">self.send_marker</span></code> method is available all the time to stream markers through the streaming platform.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">send_marker</span><span class="p">(</span><span class="s2">&quot;MARKER&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p>The method <em>self.send_marker</em> <strong>works on the delivery views</strong>, so, if you have not an active remote presentation the markers will never send.</p>
+</div>
+</section>
+<section id="Hardware-based-event-synchonization">
+<h2>Hardware-based event synchonization<a class="headerlink" href="#Hardware-based-event-synchonization" title="Permalink to this headline">¶</a></h2>
+<div class="line-block">
+<div class="line">In case that there is needed maximum precision about markers synchronization is possible to <a class="reference external" href="https://doi.org/10.3389/fninf.2020.00002">attach an external input</a> directly to the analog inputs of OpenBCI.</div>
+<div class="line">The method <code class="docutils literal notranslate"><span class="pre">self.show_synchronizer()</span></code> do the trick, and is possible to configure the duration of the event with the <code class="docutils literal notranslate"><span class="pre">blink</span></code> argument in <code class="docutils literal notranslate"><span class="pre">self.send_marker</span></code>:</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">send_marker</span><span class="p">(</span><span class="s1">&#39;RIGHT&#39;</span><span class="p">,</span> <span class="n">blink</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">send_marker</span><span class="p">(</span><span class="s1">&#39;LEFT&#39;</span><span class="p">,</span> <span class="n">blink</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Fixation-cross">
+<h2>Fixation cross<a class="headerlink" href="#Fixation-cross" title="Permalink to this headline">¶</a></h2>
+<p>The fixation cross merely serves to center the subject’s gaze at the center of the screen. We can control the presence of this mark with the methods:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">show_cross</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">hide_cross</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Send-annotations">
+<h2>Send annotations<a class="headerlink" href="#Send-annotations" title="Permalink to this headline">¶</a></h2>
+<p>In the same way that <code class="docutils literal notranslate"><span class="pre">markers</span></code>, the anotations (as defined in the EDF file format) can be streamed with the <code class="docutils literal notranslate"><span class="pre">self.send_annotation</span></code> method.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">send_annotationn</span><span class="p">(</span><span class="s1">&#39;Data record start&#39;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">send_annotationn</span><span class="p">(</span><span class="s1">&#39;The subject yawn&#39;</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Feedbacks">
+<h2>Feedbacks<a class="headerlink" href="#Feedbacks" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">feedbacks</span></code>are used to comunicate the <a class="reference internal" href="03-data_analysis.html"><span class="doc">Data analysis</span></a> and <a class="reference internal" href="04-data_visualizations.html"><span class="doc">Data visualizations</span></a> with the Stimuli Delivery platform. For this purpose, there is a predefined stream channel called <code class="docutils literal notranslate"><span class="pre">feedback</span></code>. This is useful to develop <a class="reference internal" href="07-neurofeedback.html"><span class="doc">Neurofeedback applications</span></a>.</p>
+<p>The asynchronous handler can be configured with the <code class="docutils literal notranslate"><span class="pre">Feedback</span></code> class:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bci_framework.extensions.stimuli_delivery</span> <span class="kn">import</span> <span class="n">Feedback</span>
+</pre></div>
+</div>
+</div>
+<p>This class needs an <code class="docutils literal notranslate"><span class="pre">ID</span></code> and bind a method:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span> <span class="o">=</span> <span class="n">Feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;my_feedback_id&#39;</span><span class="p">)</span>  <span class="c1"># ID</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">on_feedback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_input_feedback</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>So, this method will be executed asynchronously on each feedback call.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">on_input_feedback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">feedback</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<p>The feedbacks are bidirectional comunications, so, is possible to write messages back to the data rocessor with the method <code class="docutils literal notranslate"><span class="pre">Feedback.write</span></code>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Examples-of-stimuli-delivery-paradigms">
+<h2>Examples of stimuli delivery paradigms<a class="headerlink" href="#Examples-of-stimuli-delivery-paradigms" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="bci_framework/default_extensions/Resting_state_and_noise_acquisition/paradigm.ipynb">Resting state and noise acquisition</a></p></li>
+<li><p><a class="reference external" href="bci_framework/default_extensions/Class_motor_imagery/paradigm.ipynb">4-Class motor imagery (Arrows)</a></p></li>
+<li><p><a class="reference external" href="bci_framework/default_extensions/Class_motor_imagery_Pacman/paradigm.ipynb">4-Class motor imagery (Pacman)</a></p></li>
+<li><p><a class="reference external" href="bci_framework/default_extensions/Visuospatial_working_memory_Change_detection_task/paradigm.ipynb">Visuospatial working memory - Change detection task</a></p></li>
+<li><p><a class="reference external" href="bci_framework/default_extensions/P300_Speller/paradigm.ipynb">P300 speller</a></p></li>
+<li><p><a class="reference external" href="bci_framework/default_extensions/Reward_stop_signal_task_RSST/paradigm.ipynb">Reward Stop Signal Task (RSST)</a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Stimuli delivery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Bare-minimum">Bare minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Stimuli-area-and-Dashboard">Stimuli area and Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Widgets">Widgets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Typography">Typography</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Buttons">Buttons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Switch">Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Checkbox">Checkbox</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Radios">Radios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Select">Select</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Sliders">Sliders</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Sound">Sound</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Tones">Tones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Audio-files">Audio files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Pipelines">Pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Recording-EEG-automatically">Recording EEG automatically</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Send-Markers">Send Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Hardware-based-event-synchonization">Hardware-based event synchonization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fixation-cross">Fixation cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Send-annotations">Send annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Feedbacks">Feedbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Examples-of-stimuli-delivery-paradigms">Examples of stimuli delivery paradigms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="04-data_visualizations.html" title="previous chapter">Data visualization</a></li>
+      <li>Next: <a href="07-neurofeedback.html" title="next chapter">Neurofeedback</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notebooks/06-stimuli_delivery.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

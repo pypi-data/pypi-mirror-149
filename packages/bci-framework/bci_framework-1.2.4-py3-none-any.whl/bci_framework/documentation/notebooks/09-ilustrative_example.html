@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Illustrative example &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Event marker synchronization" href="08-event_marker_synchronization.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 0;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Illustrative-example">
+<h1>Illustrative example<a class="headerlink" href="#Illustrative-example" title="Permalink to this headline">¶</a></h1>
+<p>In this example we will create an <a class="reference external" href="https://openbci-stream.readthedocs.io/en/latest/notebooks/A3-server-based_acquisition.html">acquisition server</a> on a Raspberry Pi and stream EEG data in real-time from them through <a class="reference external" href="https://openbci-stream.readthedocs.io/en/latest/notebooks/02-kafka_configuration.html">Kafka</a> using the <a class="reference external" href="https://openbci-stream.readthedocs.io/en/latest/index.html">OpenBCI-Stream library</a>.</p>
+<center><p><img alt="55ae24da952a4abea6f28e1afd115576" src="../_images/illustrative.svg" /></p>
+</center><p>Devices used:</p>
+<ul class="simple">
+<li><p>Raspberry Pi 4 Model B 4GB RAM</p></li>
+<li><p>Cyton Biosensing Board (8-channels)</p></li>
+<li><p>OpenBCI WiFi Shield</p></li>
+<li><p>Computer (with WiFi)</p></li>
+</ul>
+<p>Conventions used:</p>
+<ul class="simple">
+<li><p>The <strong>red window frames</strong> indicate that this window is “owned” by Raspberry through remote connection using SSH.</p></li>
+<li><p>The <strong>IP</strong> for the <strong>Raspberry</strong> is <strong>192.168.1.1</strong></p></li>
+<li><p>The <strong>IP</strong> for the <strong>OpenBCI WiFi Shield</strong> is <strong>192.168.1.113</strong></p></li>
+</ul>
+<section id="Acquisition-server">
+<h2>Acquisition server<a class="headerlink" href="#Acquisition-server" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://openbci-stream.readthedocs.io/en/latest/notebooks/A3-server-based_acquisition.html">guide to create an acquisition server</a> explain the process to set up the server over a Raspberry Pi, after finish and reboot the system the Raspberry will be an <strong>Acces Point</strong>, we must connect the <strong>OpenBCI WiFi Shield</strong> to this network as well as the main computer (where BCI Framework will be executed).</p>
+<p>We must verify that the respective daemons are running correctly on Raspberry:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl status kafka zookeeper@kafka
+</pre></div>
+</div>
+<center><p><img alt="8222db3e07a14dc0b64754ffa0bc5819" src="../_images/daemon1.gif" /></p>
+</center><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl status stream_eeg stream_rpyc
+</pre></div>
+</div>
+<center><p><img alt="8ca6f4182a6941e48020b29285661b5d" src="../_images/daemon2.gif" /></p>
+</center><p>The system uses the NTP to synchronize clocks, so the Rasberry <strong>must have a wired connection</strong> to the internet to synchronize their own clock, to ensure this we can verify the connection and restart the daemon:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ sudo systemctl restart ntpd
+</pre></div>
+</div>
+<p>$ nptq -pn</p>
+<center><p><img alt="494ef01f79b4440a8b5865e18b6a9fe5" src="../_images/ntp1.gif" /></p>
+</center><p>After a while, the clock will be synchronized (notice the * in the server <strong>186.30.58.181</strong>)</p>
+<center><p><img alt="e20c58bbe2564d0ebac1f89d9504d1b2" src="../_images/ntp2.gif" /></p>
+</center><p>We can verify the status of the <strong>WiFi Shield</strong> with the command:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ curl -s http:/192.168.1.113/board | jq
+</pre></div>
+</div>
+<center><p><img alt="ef1b6d89f6cc40f987e7d268e766a50b" src="../_images/shield.gif" /></p>
+</center><p>The above commands being executed through a SSH connection, also can be done by connecting a monitor and a keyboard to the Raspberry.</p>
+</section>
+<section id="Configure-montage">
+<h2>Configure montage<a class="headerlink" href="#Configure-montage" title="Permalink to this headline">¶</a></h2>
+<p>A simple montage 8 channels:</p>
+<center><p><img alt="07f760052b2f4de3988c1aaff61c8190" src="../_images/montage1.gif" /></p>
+</center></section>
+<section id="Configuration-and-connection-with-OpenBCI-and-then-start-the-stream">
+<h2>Configuration and connection with OpenBCI and then start the stream<a class="headerlink" href="#Configuration-and-connection-with-OpenBCI-and-then-start-the-stream" title="Permalink to this headline">¶</a></h2>
+<p>Connect with the Raspberry that is running under the IP <strong>192.168.1.1</strong> and the <strong>WiFi Shield</strong> on <strong>192.168.1.113</strong>. The sample frequency of <strong>1000 samples per second</strong> with a transmission of packages of <strong>100 samples</strong>.</p>
+<center><p><img alt="a1011648d250410d816efe95a0ad1a6f" src="../_images/connection1.gif" /></p>
+</center></section>
+<section id="Impedances">
+<h2>Impedances<a class="headerlink" href="#Impedances" title="Permalink to this headline">¶</a></h2>
+<p>Once the streamming is started the impedances can be displayed from the <strong>Montages tab</strong></p>
+<center><p><img alt="a7ba78b4dee445d49b27e5dad0138365" src="../_images/impedances1.gif" /></p>
+</center></section>
+<section id="Raw-EEG-and-topoplot">
+<h2>Raw EEG and topoplot<a class="headerlink" href="#Raw-EEG-and-topoplot" title="Permalink to this headline">¶</a></h2>
+<center><p><img alt="a84b20b9df794297ad35c5c0eac650cf" src="../_images/raw.gif" /></p>
+</center></section>
+<section id="P300-speller">
+<h2>P300 speller<a class="headerlink" href="#P300-speller" title="Permalink to this headline">¶</a></h2>
+<center><p><img alt="09cb3cf841fa4c9ab6cae30858c9bd1f" src="../_images/p300.gif" /></p>
+</center></section>
+<section id="EEG-records-reading">
+<h2>EEG records reading<a class="headerlink" href="#EEG-records-reading" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">openbci_stream.utils.hdf5</span> <span class="kn">import</span> <span class="n">HDF5Reader</span>
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;record-04_20_21-13_58_25.h5&quot;</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">HDF5Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+==================================================
+record-04_20_21-13_58_25.h5
+2021-04-20 13:58:25.717151
+==================================================
+MARKERS: [&#39;NO-TARGET&#39;, &#39;TARGET&#39;]
+SAMPLE_RATE: 1000
+STREAMING_SAMPLE_RATE: 100
+DATETIME: 1618945105.717151
+MONTAGE: standard_1020
+CHANNELS: {1: &#39;Fp1&#39;, 2: &#39;Fp2&#39;, 3: &#39;T3&#39;, 4: &#39;C3&#39;, 5: &#39;C4&#39;, 6: &#39;T4&#39;, 7: &#39;O1&#39;, 8: &#39;O2&#39;}
+START-OFFSET: 346.3931083679199
+SHAPE: [8, 68900]
+END-OFFSET: 377.5792121887207
+==================================================
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">HDF5Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">tmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">0.125</span><span class="p">)</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">classes</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+((65, 8, 125), (65,))
+</pre></div></div>
+</div>
+<!---
+## Online classifier
+--><!---
+## P300 speller + Feedback
+--></section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Illustrative example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Acquisition-server">Acquisition server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Configure-montage">Configure montage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Configuration-and-connection-with-OpenBCI-and-then-start-the-stream">Configuration and connection with OpenBCI and then start the stream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Impedances">Impedances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Raw-EEG-and-topoplot">Raw EEG and topoplot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#P300-speller">P300 speller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EEG-records-reading">EEG records reading</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="08-event_marker_synchronization.html" title="previous chapter">Event marker synchronization</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/notebooks/09-ilustrative_example.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

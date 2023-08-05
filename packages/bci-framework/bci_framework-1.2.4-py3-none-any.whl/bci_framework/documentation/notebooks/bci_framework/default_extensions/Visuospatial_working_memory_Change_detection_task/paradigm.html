@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Visuospatial working memory - Change detection task &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="Visuospatial-working-memory---Change-detection-task">
+<h1>Visuospatial working memory - Change detection task<a class="headerlink" href="#Visuospatial-working-memory---Change-detection-task" title="Permalink to this headline">¶</a></h1>
+<p>Implemented through extensions systems in the <a class="reference internal" href="../../../../_modules/bci_framework.default_extensions.Visuospatial_working_memory_Change_detection_task.main.html"><span class="doc">VisualWorkingMemory</span></a> module.</p>
+<p><img alt="333c0080d6364ff6aa22d8d52e952178" src="../../../../_images/paradigm6.png" /></p>
+<p>The task consists in remembering the colors of a set of squares displayed on a computer screen, termed memory array, and then comparing them with the colors of a second set of squares located in the same positions, termed test array <a class="footnote-reference brackets" href="#footcite-vogel2004neural" id="id1">1</a>. A trial of the task begins with an arrow indicating either the left or the right side of the screen for 0.2 s. Then, a memory array appears on the screen for 0.1 s. For every trial, memory arrays are displayed on both hemifields, but the
+subject must remember only those appearing on the side indicated by the arrow cue. Next, after a retention interval lasting 0.9 s, a test array appears for a period of 2 s. During this period the subject reports if the colors of all the items in the memory and test arrays match. The task has three levels according to the number of elements in the memory array: low memory load (one square), medium memory load (two squares), and high memory load (four squares). The subject must perform a total of
+300 trials, with 100 trials for each memory load level (50 trials per hemifield). Trials from different levels are presented at random. The color of one of the squares in the test array differs from its counterpart in the memory array in 50% of the trials.</p>
+<section id="Stimuli-presentation">
+<h2>Stimuli presentation<a class="headerlink" href="#Stimuli-presentation" title="Permalink to this headline">¶</a></h2>
+<p>All stimuli are presented on a computer screen situated 120 cm away from the subject. The stimulus arrays appear within two <span class="math notranslate nohighlight">\(7.2^{\circ}\)</span> × <span class="math notranslate nohighlight">\(13.15^{\circ}\)</span> rectangular regions that are centered <span class="math notranslate nohighlight">\(5.4^{\circ}\)</span> to the left and right of a central fixation cross on a gray background (the symbol <span class="math notranslate nohighlight">\(\circ\)</span> stands for degrees of visual angle <a class="footnote-reference brackets" href="#footcite-newsome1972visual" id="id2">2</a>). Each colored square (<span class="math notranslate nohighlight">\(1.17^{\circ}\)</span> × <span class="math notranslate nohighlight">\(1.17^{\circ}\)</span>) is randomly selected from a set of seven
+colors (red, blue, violet, green, yellow, black and white). A given color can appear no more than twice within an array. Stimulus positions were randomized on each trial, with the constraint that the distance between squares within a hemifield was at least <span class="math notranslate nohighlight">\(3.5^{\circ}\)</span> (center to center) <a class="footnote-reference brackets" href="#footcite-villena2020data" id="id3">3</a>.</p>
+</section>
+<section id="Configuration-options">
+<h2>Configuration options<a class="headerlink" href="#Configuration-options" title="Permalink to this headline">¶</a></h2>
+<p><img alt="ed59ef52354e45188b0406220af28710" src="../../../../_images/vwm.gif" /></p>
+<section id="Squares">
+<h3>Squares<a class="headerlink" href="#Squares" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><strong>Squares size:</strong></div>
+<div class="line">Define the size in <a class="reference external" href="https://osdoc.cogsci.nl/3.2/visualangle/">degrees of visual angle</a>, <span class="math notranslate nohighlight">\(1.17^{\circ}\)</span> by default.</div>
+<div class="line"><strong>Minimum distance between Squares:</strong></div>
+<div class="line">Define the minimum distance between squares in <a class="reference external" href="https://osdoc.cogsci.nl/3.2/visualangle/">degrees of visual angle</a>, <span class="math notranslate nohighlight">\(3.5^{\circ}\)</span> by default.</div>
+</div>
+</section>
+<section id="Intervals">
+<h3>Intervals<a class="headerlink" href="#Intervals" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><strong>Inter trial break:</strong></div>
+<div class="line">Break in milliseconds between trials. 2000 ms by default.</div>
+<div class="line"><strong>Arrow cue:</strong></div>
+<div class="line">Time on screen for the cue in milliseconds. 200 ms by default.</div>
+<div class="line"><strong>Memory array:</strong></div>
+<div class="line">Time used to visualize the array. 100 ms by default.</div>
+<div class="line"><strong>Retention interval:</strong></div>
+<div class="line">Time used to memorize the array. 900 ms by default.</div>
+<div class="line"><strong>Test array:</strong></div>
+<div class="line">Time used for the subject to response. 2000 ms by default.</div>
+</div>
+</section>
+<section id="Trial">
+<h3>Trial<a class="headerlink" href="#Trial" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><strong>Task level:</strong></div>
+<div class="line">The level means how many squares will be visible at time.</div>
+<div class="line"><strong>Numbers of trials per level:</strong></div>
+<div class="line">How many trials per class will contain the run. Between 1 and 500, 100 by default.</div>
+</div>
+</section>
+<section id="Presentation">
+<h3>Presentation<a class="headerlink" href="#Presentation" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line"><strong>Distance from monitor:</strong></div>
+<div class="line">Used to calculate correctly the <a class="reference external" href="https://osdoc.cogsci.nl/3.2/visualangle/">DVA</a> units.</div>
+<div class="line"><strong>Monitor DPI:</strong></div>
+<div class="line">The real monitor DPI, used to calculate correctly the <a class="reference external" href="https://osdoc.cogsci.nl/3.2/visualangle/">DVA</a> units.</div>
+</div>
+<p id="id4"><dl class="footnote brackets">
+<dt class="label" id="footcite-vogel2004neural"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Edward K Vogel and Maro G Machizawa. Neural activity predicts individual differences in visual working memory capacity. <em>Nature</em>, 428(6984):748–751, 2004.</p>
+</dd>
+<dt class="label" id="footcite-newsome1972visual"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>LR Newsome. Visual angle and apparent size of objects in peripheral vision. <em>Perception &amp; Psychophysics</em>, 12(3):300–304, 1972.</p>
+</dd>
+<dt class="label" id="footcite-villena2020data"><span class="brackets"><a class="fn-backref" href="#id3">3</a></span></dt>
+<dd><p>Mario Villena-González, Iván Rubio-Venegas, and Vladimir López. Data from brain activity during visual working memory replicates the correlation between contralateral delay activity and memory capacity. <em>Data in brief</em>, 28:105042, 2020.</p>
+</dd>
+</dl>
+</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2022, Yeison Cardona.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../../_sources/notebooks/bci_framework/default_extensions/Visuospatial_working_memory_Change_detection_task/paradigm.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

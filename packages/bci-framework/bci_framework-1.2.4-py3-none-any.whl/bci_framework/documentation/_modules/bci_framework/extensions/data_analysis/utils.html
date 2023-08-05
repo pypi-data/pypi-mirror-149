@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bci_framework.extensions.data_analysis.utils &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for bci_framework.extensions.data_analysis.utils</h1><div class="highlight"><pre>
+<span></span>&quot;&quot;&quot;
+=====
+Utils
+=====
+
+This module define usefull decorators to use with data analysis.
+&quot;&quot;&quot;
+
+import os
+import json
+import time
+import logging
+import random
+from datetime import datetime, timedelta
+from multiprocessing import Process
+from threading import Thread
+from typing import Callable
+import re
+
+import numpy as np
+from openbci_stream.acquisition import OpenBCIConsumer
+
+from ...extensions import properties as prop
+
+
+class data:
+    value = {
+        &#39;context&#39;: {},
+    }
+
+
+data_tmp_aux_ = None
+data_tmp_eeg_ = None
+
+
+# ----------------------------------------------------------------------
+<div class="viewcode-block" id="subprocess_this"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.utils.html#bci_framework.extensions.data_analysis.utils.subprocess_this">[docs]</a>def subprocess_this(fn: Callable) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to move methods to subprocessing.&quot;&quot;&quot;
+
+    def wraper(*args, **kwargs):
+        c = Process(target=fn, args=args)
+        c.start()
+    return wraper</div>
+
+
+# ----------------------------------------------------------------------
+<div class="viewcode-block" id="thread_this"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.utils.html#bci_framework.extensions.data_analysis.utils.thread_this">[docs]</a>def thread_this(fn: Callable) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to move methods to threading.&quot;&quot;&quot;
+
+    def wraper(*args, **kwargs):
+        c = Thread(target=fn, args=args)
+        c.start()
+    return wraper</div>
+
+
+# ----------------------------------------------------------------------
+<div class="viewcode-block" id="timeit"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.utils.html#bci_framework.extensions.data_analysis.utils.timeit">[docs]</a>def timeit(fn: Callable) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to calculate the execution time of a method.&quot;&quot;&quot;
+
+    def wraper(self, *args, **kwargs):
+        t0 = time.time()
+        r = fn(self, *args, **kwargs)
+        t1 = time.time()
+        print(f&quot;[timeit] {fn.__name__}: {(t1-t0)*1000:.2f} ms&quot;)
+        return r
+    return wraper</div>
+
+
+# ----------------------------------------------------------------------
+<div class="viewcode-block" id="loop_consumer"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.utils.html#bci_framework.extensions.data_analysis.utils.loop_consumer">[docs]</a>def loop_consumer(*topics, package_size=None) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to iterate methods with new streamming data.
+
+    This decorator will call a method on every new data streamming input.
+    &quot;&quot;&quot;
+    global data_tmp_eeg_, data_tmp_aux_, package_size_
+
+    topics = list(topics)
+
+    if json.loads(os.getenv(&#39;BCISTREAM_RASPAD&#39;)):
+        package_size_ = 1000
+    else:
+        package_size_ = package_size
+
+    def wrap_wrap(fn: Callable) -&gt; Callable:
+        global data_tmp_eeg_, data_tmp_aux_, package_size_
+
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+
+        def wrap(cls):
+            global data_tmp_eeg_, data_tmp_aux_, package_size_
+
+            if cls._feedback:
+                topics.append(&#39;feedback&#39;)
+
+            # if cls._package_size:
+                # package_size_ = cls._package_size
+
+            with OpenBCIConsumer(host=prop.HOST, topics=topics) as stream:
+                frame = 0
+
+                for data in stream:
+
+                    if cls._package_size:
+                        package_size_ = cls._package_size
+
+                    if data.topic == &#39;feedback&#39;:
+                        feedback = data.value
+                        if feedback[&#39;name&#39;] == cls._feedback.name and feedback[&#39;mode&#39;] == &#39;stimuli2analysis&#39;:
+                            cls._feedback._on_feedback(**feedback)
+
+                        continue
+
+                    if data.topic == &#39;eeg&#39;:
+                        frame += 1
+                        if hasattr(cls, &#39;buffer_eeg_&#39;):
+                            cls.update_buffer(
+                                eeg=data.value[&#39;data&#39;], timestamp=min(data.value[&#39;context&#39;][&#39;timestamp.binary&#39;]) - prop.OFFSET)
+                        data_ = data.value[&#39;data&#39;]
+                    elif data.topic == &#39;aux&#39;:
+                        frame += 1
+                        if hasattr(cls, &#39;buffer_aux_&#39;):
+                            cls.update_buffer(
+                                aux=data.value[&#39;data&#39;], timestamp=min(data.value[&#39;context&#39;][&#39;timestamp.binary&#39;]) - prop.OFFSET)
+                        data_ = data.value[&#39;data&#39;]
+                    else:
+                        data_ = data.value
+
+                    # latency calculated with `timestamp.binary`
+                    if data.topic in [&#39;eeg&#39;, &#39;aux&#39;]:
+                        latency = (datetime.now() - datetime.fromtimestamp(
+                            min(data.value[&#39;context&#39;][&#39;timestamp.binary&#39;]) - prop.OFFSET)).total_seconds() * 1000
+                    else:
+                        # latency calculated with kafka timestamp
+                        latency = (datetime.now(
+                        ) - datetime.fromtimestamp(data.timestamp / 1000)).total_seconds() * 1000
+
+                    if package_size_ and (data.topic in [&#39;eeg&#39;, &#39;aux&#39;]):
+
+                        if data.topic == &#39;eeg&#39;:
+                            if data_tmp_eeg_ is None:
+                                data_tmp_eeg_ = np.zeros(
+                                    (data_.shape[0], 0))
+                            data_tmp_eeg_ = np.concatenate(
+                                [data_tmp_eeg_, data_], axis=1)
+                            d = data_tmp_eeg_
+                        elif data.topic == &#39;aux&#39;:
+                            if data_tmp_aux_ is None:
+                                data_tmp_aux_ = np.zeros((data_.shape[0], 0))
+                            data_tmp_aux_ = np.concatenate(
+                                [data_tmp_aux_, data_], axis=1)
+                            d = data_tmp_aux_
+
+                        kwargs = {&#39;data&#39;: d,
+                                  &#39;kafka_stream&#39;: data,
+                                  &#39;topic&#39;: data.topic,
+                                  &#39;frame&#39;: frame,
+                                  &#39;latency&#39;: latency,
+                                  }
+                        n = (package_size_ // prop.STREAMING_PACKAGE_SIZE)
+                        if frame % n == 0:
+                            fn(*[cls] + [kwargs[v] for v in arguments])
+                        # else:
+                            if data.topic == &#39;eeg&#39;:
+                                data_tmp_eeg_ = np.zeros((data_.shape[0], 0))
+                            elif data.topic == &#39;aux&#39;:
+                                data_tmp_aux_ = np.zeros((data_.shape[0], 0))
+                    else:
+                        kwargs = {&#39;data&#39;: data_,
+                                  &#39;kafka_stream&#39;: data,
+                                  &#39;topic&#39;: data.topic,
+                                  &#39;frame&#39;: frame,
+                                  &#39;latency&#39;: latency,
+                                  }
+                        fn(*[cls] + [kwargs[v] for v in arguments])
+        return wrap
+    return wrap_wrap</div>
+
+
+# ----------------------------------------------------------------------
+<div class="viewcode-block" id="fake_loop_consumer"><a class="viewcode-back" href="../../../bci_framework.extensions.data_analysis.utils.html#bci_framework.extensions.data_analysis.utils.fake_loop_consumer">[docs]</a>def fake_loop_consumer(*topics, package_size=None) -&gt; Callable:
+    &quot;&quot;&quot;Decorator to iterate methods with new streamming data.
+
+    This decorator will call a method with fake data.
+    &quot;&quot;&quot;
+
+    # ----------------------------------------------------------------------
+    def wrap_wrap(fn: Callable) -&gt; Callable:
+
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+
+        def wrap(cls):
+            frame = 0
+
+            while True:
+                frame += 1
+                t0 = time.time()
+
+                num_data = int(prop.STREAMING_PACKAGE_SIZE)
+                num_data = random.randint(num_data - 10, num_data + 10)
+
+                eeg = 150 * np.random.normal(0, 0.2, size=(
+                    len(prop.CHANNELS), num_data))
+
+                if prop.BOARDMODE == &#39;default&#39;:
+                    aux = np.random.normal(0, 0.2, size=(3, num_data))
+                elif prop.BOARDMODE == &#39;analog&#39;:
+                    if prop.CONNECTION == &#39;wifi&#39;:
+                        aux = np.random.normal(0, 0.07, size=(3, num_data))
+
+                        if (frame // 10) % 2:
+                            aux += 100
+
+                    else:
+                        aux = np.random.normal(0, 0.07, size=(3, num_data))
+
+                    if (time.time() // 1) % 2:
+                        aux += 1
+
+                elif prop.BOARDMODE == &#39;digital&#39;:
+                    if prop.CONNECTION == &#39;wifi&#39;:
+                        aux = np.random.normal(0, 0.2, size=(3, num_data))
+                    else:
+                        aux = np.random.normal(0, 0.2, size=(5, num_data))
+                else:
+                    aux = None
+
+                data.timestamp = datetime.now().timestamp() * 1000
+                data.value[&#39;timestamp&#39;] = datetime.now()
+                # data.value[&#39;data&#39;] = eeg, aux
+
+                if &#39;eeg&#39; in topics:
+                    if hasattr(cls, &#39;buffer_eeg&#39;):
+                        cls.update_buffer(
+                            eeg=eeg, timestamp=data.value[&#39;timestamp&#39;].timestamp())
+
+                    kwargs = {&#39;data&#39;: eeg,
+                              &#39;kafka_stream&#39;: data,
+                              &#39;topic&#39;: &#39;eeg&#39;,
+                              &#39;frame&#39;: frame,
+                              &#39;latency&#39;: 0,
+                              }
+                    fn(*[cls] + [kwargs[v] for v in arguments])
+
+                if &#39;aux&#39; in topics:
+                    if hasattr(cls, &#39;buffer_aux&#39;):
+                        cls.update_buffer(
+                            aux=aux, timestamp=data.value[&#39;timestamp&#39;].timestamp())
+
+                    kwargs = {&#39;data&#39;: aux,
+                              &#39;kafka_stream&#39;: data,
+                              &#39;topic&#39;: &#39;eeg&#39;,
+                              &#39;frame&#39;: frame,
+                              &#39;latency&#39;: 0,
+                              }
+                    fn(*[cls] + [kwargs[v] for v in arguments])
+
+                if &#39;marker&#39; in topics:
+                    if np.random.random() &gt; 0.9:
+                        data.value[&#39;timestamp&#39;] = datetime.now()
+                        # data.value[&#39;datetime&#39;] = datetime.now()
+                        data.value[&#39;context&#39;][&#39;timestamp.binary&#39;] = datetime.now()
+                        # data.value[&#39;data&#39;] = chr(
+                            # np.random.choice(range(ord(&#39;A&#39;), ord(&#39;Z&#39;) + 1)))
+                        # data.value[&#39;data&#39;] = random.choice(
+                            # [&#39;Right&#39;, &#39;Left&#39;, &#39;Up&#39;, &#39;Bottom&#39;])
+                        data.value[&#39;marker&#39;] = random.choice([&#39;MARKER&#39;])
+
+                        kwargs = {&#39;data&#39;: data.value,
+                                  &#39;kafka_stream&#39;: data,
+                                  &#39;topic&#39;: &#39;marker&#39;,
+                                  &#39;frame&#39;: frame,
+                                  &#39;latency&#39;: 0,
+                                  }
+                        fn(*[cls] + [kwargs[v] for v in arguments])
+
+                while time.time() &lt; (t0 + 1 / (prop.SAMPLE_RATE / prop.STREAMING_PACKAGE_SIZE)):
+                    time.sleep(0.0001)
+
+        return wrap
+    return wrap_wrap</div>
+
+
+# ----------------------------------------------------------------------
+def marker_slicing(markers, t0, t1):
+    &quot;&quot;&quot;&quot;&quot;&quot;
+    if isinstance(markers, str):
+        markers = [markers]
+
+    def wrap_wrap(fn):
+
+        arguments = fn.__code__.co_varnames[1:fn.__code__.co_argcount]
+
+        def wrap(cls):
+            cls._target_marker = []
+
+            @loop_consumer(&#39;aux&#39;, &#39;marker&#39;)
+            def marker_slicing_(cls, topic, data, kafka_stream, latency):
+
+                if topic == &#39;marker&#39;:
+                    # if data[&#39;marker&#39;] in markers:
+                        # cls._target_marker.append(
+                            # [data[&#39;marker&#39;], kafka_stream.value[&#39;datetime&#39;]])
+
+                    if any([bool(re.match(mkr, data[&#39;marker&#39;])) for mkr in markers]):
+                        cls._target_marker.append(
+                            [data[&#39;marker&#39;], kafka_stream.value[&#39;datetime&#39;]])
+
+                if len(cls._target_marker) &lt; 3:
+                    return
+
+                if target := getattr(cls, &#39;_target_marker&#39;, False):
+
+                    # marker, target = target
+
+                    last_buffer_timestamp = cls.buffer_aux_timestamp[-1] - prop.OFFSET
+                    last_target_timestamp = (datetime.fromtimestamp(
+                        target[0][1]) + timedelta(seconds=t1)).timestamp()
+
+                    if last_buffer_timestamp &gt; last_target_timestamp:
+                    # if True:
+
+                        _marker, _target = target.pop(0)
+
+                        argmin = np.abs(
+                            cls.buffer_aux_timestamp - _target).argmin()
+
+                        start = int((prop.SAMPLE_RATE) * t0)
+                        stop = int((prop.SAMPLE_RATE) * t1)
+
+                        t = cls.buffer_aux_timestamp[argmin +
+                                                     start: argmin + stop]
+                        eeg = cls.buffer_eeg_[
+                            :, argmin + start: argmin + stop]
+                        aux = cls.buffer_aux_[
+                            :, argmin + start: argmin + stop]
+
+                        kwargs = {&#39;eeg&#39;: eeg,
+                                  &#39;aux&#39;: aux,
+                                  &#39;timestamp&#39;: t,
+                                  &#39;marker_datetime&#39;: _target,
+                                  &#39;marker&#39;: _marker,
+                                  &#39;latency&#39;: latency,
+                                  }
+
+                        fn(*[cls] + [kwargs[v] for v in arguments])
+
+                    else:
+                        logging.warning(&#39;Date too old to synchronize&#39;)
+                        logging.warning(f&#39;Offset: {prop.OFFSET}&#39;)
+                        logging.warning(
+                            f&#39;{datetime.fromtimestamp(last_buffer_timestamp), datetime.fromtimestamp(last_target_timestamp)}&#39;)
+
+            marker_slicing_(cls)
+        return wrap
+    return wrap_wrap
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, GCPDS.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

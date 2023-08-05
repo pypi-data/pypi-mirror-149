@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>P300 Speller &#8212; BCI-Framework  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../../../_static/favico.ico"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <style>
+    .nbinput .prompt,
+    .nboutput .prompt {
+        display: none;
+}
+</style><section id="P300-Speller">
+<h1>P300 Speller<a class="headerlink" href="#P300-Speller" title="Permalink to this headline">¶</a></h1>
+<p>Implemented through extensions system in the <a class="reference internal" href="../../../../_modules/bci_framework.default_extensions.P300_Speller.main.html"><span class="doc">P300 Speller</span></a> module.</p>
+<p><img alt="90a50734ca0941aa9abbf4e81ee5ffca" src="../../../../_images/paradigm3.png" /></p>
+<p>The interface layout of the speller followed the typical design of a row-column speller. The six rows and six columns were configured with 36 symbols (A to Z, 0 to 9). Each symbol was presented equally spaced. The stimulus-time interval can be setted between 100 and 500 ms, and the inter-stimulus interval (ISI) between 0 and 300 ms. A single iteration of stimulus presentation in all rows and columns was considered a sequence. Therefore, one sequence consisted of 12 stimulus flashes. A maximum of
+15 sequences (i.e., 180 flashes) was allotted without prolonged inter-sequence intervals for each target character. After the end of selected number sequences (5 by default), 3 s were given to the user for identifying, locating, and gazing at the next target character. The participant can be instructed to attend to the target symbol by counting the number of times each target character had been flashed <a class="footnote-reference brackets" href="#footcite-lee2019eeg" id="id1">1</a>.</p>
+<section id="Configuration-options">
+<h2>Configuration options<a class="headerlink" href="#Configuration-options" title="Permalink to this headline">¶</a></h2>
+<p><img alt="818eedef2cc345318b98ab7822f73a3d" src="../../../../_images/p300_speller_m1.gif" /></p>
+<div class="line-block">
+<div class="line"><strong>Trials:</strong></div>
+<div class="line">Number of targets to use in the run. 5 targets by default.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Target notice:</strong></div>
+<div class="line">Time used to show to the subject the target that must focus on.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Flash duration:</strong></div>
+<div class="line">Stimuli duration in miliseconds. 125 ms by default.</div>
+</div>
+<div class="line-block">
+<div class="line"><strong>Inter stimulus interval:</strong></div>
+<div class="line">Time between flashes. 62.5 ms by default.</div>
+</div>
+</section>
+<section id="Feedback-mode">
+<h2>Feedback mode<a class="headerlink" href="#Feedback-mode" title="Permalink to this headline">¶</a></h2>
+<p>In feedback mode, the stimuli delivery is working constantly. In the background, an <a class="reference external" href="../_modules/bci_framework.default_extensions.P300_online_classifier.main.rst">online classifier</a> is checking for the presence of ERP and returning the corresponding value.</p>
+<p><img alt="d4a1b16b7b3940dc90a69c8f2e02859e" src="notebooks/images/extensions/p300_speller_m2.png" /></p>
+<p id="id2"><dl class="footnote brackets">
+<dt class="label" id="footcite-lee2019eeg"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Min-Ho Lee, O-Yeon Kwon, Yong-Jeong Kim, Hong-Kyung Kim, Young-Eun Lee, John Williamson, Siamac Fazli, and Seong-Whan Lee. Eeg dataset and openbmi toolbox for three bci paradigms: an investigation into bci illiteracy. <em>GigaScience</em>, 8(5):giz002, 2019.</p>
+</dd>
+</dl>
+</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/logo.svg" alt="Logo"/>
+            </a></p><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../01-installation.html">Installation and running</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../02-interface.html">Interface description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../03-data_analysis.html">Data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../04-data_visualizations.html">Data visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../06-stimuli_delivery.html">Stimuli delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../07-neurofeedback.html">Neurofeedback</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../08-event_marker_synchronization.html">Event marker synchronization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../09-ilustrative_example.html">Illustrative example</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019-2022, Yeison Cardona.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../../../_sources/notebooks/bci_framework/default_extensions/P300_Speller/paradigm.ipynb"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
