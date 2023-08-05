@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "dbtrunner"
+version = "0.2.10"
+description = "Python client stubs for invoking DBT runner calls"
+authors = ["Tom Collingwood <tcollingwood@petsathome.co.uk>"]
+packages = [{include = "dbtrunner"}]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+google_api = "^0.1.12"
+grpc-gateway-protoc-gen-openapiv2 = "^0.1.0"
+grpcio = "^1.41.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::pytest.PytestCollectionWarning",
+]
+
+[tool.isort]
+profile = "black"
