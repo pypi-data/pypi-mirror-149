@@ -1,0 +1,37 @@
+asphalt~=4.8
+
+[:(extra == "test" and platform_python_implementation == "CPython") or extra == "doc" or extra == "django"]
+Django>=3.2
+
+[:(extra == "test" or extra == "doc" or extra == "aiohttp") and python_version < "3.11"]
+aiohttp>=3.8
+
+[:extra == "test" or extra == "doc" or extra == "asgi3" or extra == "starlette" or extra == "fastapi" or extra == "django"]
+asgiref~=3.5
+uvicorn>=0.17.6
+
+[:extra == "test" or extra == "doc" or extra == "fastapi"]
+fastapi>=0.75
+
+[:extra == "test" or extra == "doc" or extra == "starlette"]
+starlette>=0.17
+
+[aiohttp]
+
+[django]
+
+[doc]
+Sphinx
+sphinx_rtd_theme
+sphinx-autodoc-typehints>=1.2.0
+sphinx-tabs>=3.3.1
+
+[fastapi]
+
+[starlette]
+
+[test]
+pytest
+pytest-asyncio
+httpx
+websockets
