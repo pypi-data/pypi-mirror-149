@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: panda-client
+Version: 1.5.10
+Summary: PanDA Client Package
+Home-page: https://panda-wms.readthedocs.io/en/latest/
+Author: PanDA Team
+Author-email: atlas-adc-panda@cern.ch
+License: GPL
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*
+Description-Content-Type: text/markdown
+Provides-Extra: jupyter
+License-File: LICENSE
+
+# How to install
+
+Download the code
+```
+git clone git://github.com/PanDAWMS/panda-client.git
+cd panda-client
+```
+and install it
+```
+python setup.py install --prefix=/path/to/install/dir
+```
+or create the tar ball
+```
+python setup.py sdist
+pip install dist/panda-client-*.tar.gz
+```
+
+# How to use
+```
+source /path/to/install/dir/etc/panda/panda_setup.[c]sh
+prun -h
+pathena -h
+```
+
+# Release Notes
+
+See ChangeLog.txt
+
+# CVMFS deployment
+1. Leave the tar ball under: /afs/cern.ch/user/a/atlpan/www/panda-client. The web https://atlpan.web.cern.ch/atlpan/panda-client/ publishes the afs directory.
+1. Update the release notes: https://twiki.cern.ch/twiki/bin/view/PanDA/PandaTools
+1. Request atlas-adc-tier3sw-install to copy on CVMFS 
+
+# Uploading to pip
+```
+python setup.py sdist upload
+```
+Uploading source so that wheel generates setup files locally.
+ 
+# Acknowledge
+Icons from http://iconka.com
+
+
