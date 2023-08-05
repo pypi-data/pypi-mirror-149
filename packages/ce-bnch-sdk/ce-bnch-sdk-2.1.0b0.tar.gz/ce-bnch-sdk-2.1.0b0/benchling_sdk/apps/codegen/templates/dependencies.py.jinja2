@@ -1,0 +1,133 @@
+"""Generated from {{ manifest.info.name }} {{ manifest.info.version }}.
+
+Do not edit manually.
+
+An instance `dependencies: Dependencies` can be used as follows:
+
+```
+{% for dependency in manifest.configuration %}
+{% if dependency.__class__.__name__ == "ManifestScalarConfig" %}
+dependencies.{{ dependency_to_snake_case(dependency) }}.value
+{% else %}
+dependencies.{{ dependency_to_snake_case(dependency) }}.id
+    {% if field_definitions_from_dependency(dependency) %}
+        {% for field in dependency.field_definitions %}
+dependencies.{{ dependency_to_snake_case(dependency) }}.fields.{{ dependency_to_snake_case(field) }}.name
+        {% endfor %}
+    {% elif options_from_dependency(dependency) %}
+        {% for option in dependency.options %}
+dependencies.{{ dependency_to_snake_case(dependency) }}.options.{{ dependency_to_snake_case(option) }}.id
+        {% endfor %}
+    {% endif %}
+{% endif %}
+{% endfor %}
+```
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import date, datetime
+
+from benchling_api_client.v2.beta.models.dropdown_dependency_link import DropdownDependencyLink
+from benchling_api_client.v2.beta.models.entity_schema_dependency_link import EntitySchemaDependencyLink
+from benchling_api_client.v2.beta.models.resource_dependency_link import ResourceDependencyLink
+from benchling_api_client.v2.beta.models.scalar_config import ScalarConfig
+from benchling_api_client.v2.beta.models.scalar_config_types import ScalarConfigTypes
+from benchling_api_client.v2.beta.models.schema_dependency_link import SchemaDependencyLink
+
+from benchling_sdk.apps.config.dependencies import (
+    BaseDependencies,
+    DropdownDependency,
+    DropdownOptionsDependency,
+    EntitySchemaDependency,
+    RequiredApiDependencyMixin,
+    RequiredScalarDependencyMixin,
+    ResourceDependency,
+    ScalarDependency,
+    SchemaDependency,
+    SchemaFieldsDependency,
+    Subdependency,
+)
+
+class Dependencies(BaseDependencies):
+{% for dependency in manifest.configuration %}
+
+    @property
+    def {{ dependency_to_snake_case(dependency) }}(self) -> {{ dependency_to_pascal_case(dependency) }}Dependency:
+{% if dependency.__class__.__name__ == "ManifestScalarConfig" %}
+{% set config_class_name = "ScalarConfig" %}
+        config: {{ config_class_name }} = self._store.config_by_name({{ dependency_to_pascal_case(dependency) }}Dependency.config_name, {{ config_class_name }})
+        definition = self._scalar_definitions.get(config.type, self._unknown_scalar_definition)
+        return {{ dependency_to_pascal_case(dependency) }}Dependency(config, definition)
+
+{% else %}
+{% set dependency_link_class_name = dependency.__class__.__name__ + "Link" %}
+        dependency_link: {{ dependency_link_class_name }} = self._store.config_by_name({{ dependency_to_pascal_case(dependency) }}Dependency.config_name, {{ dependency_link_class_name }})
+        return {{ dependency_to_pascal_case(dependency) }}Dependency(dependency_link)
+{% endif %}
+{% endfor %}
+{% for dependency in manifest.configuration %}
+
+{% if dependency.__class__.__name__ == "ManifestScalarConfig" %}
+    {% set dependency_subclass_name = "ScalarDependency" %}
+    {% set required_mixin_name = "RequiredScalarDependencyMixin[" + scalar_type_from_config(dependency).__name__ + "]" %}
+{% else %}
+    {% set dependency_subclass_name = dependency.__class__.__name__ %}
+    {% set required_mixin_name = "RequiredApiDependencyMixin" %}
+{% endif %}
+
+@dataclass
+class {{ dependency_to_pascal_case(dependency) }}Dependency({{ dependency_subclass_name }}, {{ required_mixin_name }}):
+    config_name = "{{ dependency.name }}"
+    {% if field_definitions_from_dependency(dependency) %}
+
+    @property
+    def fields(self) -> {{ dependency_to_pascal_case(dependency) }}DependencyFields:
+        return {{ dependency_to_pascal_case(dependency) }}DependencyFields(self)
+    {% elif dependency.options %}
+
+    @property
+    def options(self) -> {{ dependency_to_pascal_case(dependency) }}DependencyOptions:
+        return {{ dependency_to_pascal_case(dependency) }}DependencyOptions(self)
+    {% endif %}
+    {% if field_definitions_from_dependency(dependency) %}
+
+        {% set fields_class_name = dependency_to_pascal_case(dependency) + "DependencyFields" %}
+@dataclass
+class {{ fields_class_name }}(SchemaFieldsDependency, RequiredApiDependencyMixin):
+        {% for field in dependency.field_definitions %}
+            {% if not loop.first %}
+
+            {% endif %}
+            {% set inner_fields_class_name = dependency_to_pascal_case(field) + "Dependency" %}
+    @dataclass
+    class {{ inner_fields_class_name }}(Subdependency, RequiredApiDependencyMixin):
+        subdependency_name = "{{ field.name }}"
+
+    @property
+    def {{ dependency_to_snake_case(field) }}(self) -> {{ inner_fields_class_name }}:
+        subdependency = self.parent.subdependency_by_name({{ fields_class_name }}.{{ inner_fields_class_name }}.subdependency_name)
+        return {{ fields_class_name }}.{{ inner_fields_class_name }}(subdependency)
+        {% endfor %}
+    {% elif options_from_dependency(dependency) %}
+
+
+        {% set options_class_name = dependency_to_pascal_case(dependency) + "DependencyOptions" %}
+@dataclass
+class {{ options_class_name }}(DropdownOptionsDependency, RequiredApiDependencyMixin):
+        {% for option in dependency.options %}
+            {% if not loop.first %}
+
+            {% endif %}
+            {% set inner_option_class_name = dependency_to_pascal_case(option) + "Dependency" %}
+    @dataclass
+    class {{ inner_option_class_name }}(Subdependency, RequiredApiDependencyMixin):
+        subdependency_name = "{{ option.name }}"
+
+    @property
+    def {{ dependency_to_snake_case(option) }}(self) -> {{ inner_option_class_name }}:
+        subdependency = self.parent.subdependency_by_name({{ options_class_name }}.{{ inner_option_class_name }}.subdependency_name)
+        return {{ options_class_name }}.{{ inner_option_class_name }}(subdependency)
+        {% endfor %}
+    {% endif %}
+{% endfor %}
