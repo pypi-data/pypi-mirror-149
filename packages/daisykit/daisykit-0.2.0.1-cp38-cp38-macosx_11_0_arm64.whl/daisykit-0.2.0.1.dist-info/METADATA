@@ -1,0 +1,105 @@
+Metadata-Version: 2.1
+Name: daisykit
+Version: 0.2.0.1
+Summary: Deploy AI Systems Yourself (DAISY) Kit. DaisyKit Python is the wrapper of DaisyKit SDK, an easy AI framework for everyone.
+Home-page: https://docs.daisykit.org/
+Author: DaisyKit Team
+Author-email: daisykit.team@gmail.com
+Maintainer: DaisyKit Team
+Maintainer-email: daisykit.team@gmail.com
+License: Apache License 2.0
+Platform: UNKNOWN
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: tqdm
+Requires-Dist: requests
+Requires-Dist: portalocker
+Requires-Dist: opencv-python
+
+# Daisykit Python
+
+<https://pypi.org/project/daisykit/>
+
+Daisykit is an easy AI toolkit for software engineers to integrate pretrained AI models and pipelines into their projects. You DON'T need to be an AI engineer to build AI software. This open source project includes:
+
+- **Daisykit SDK - C++**, the core of models and algorithms in NCNN deep learning framework.
+- **Daisykit Python** wrapper for easy integration with Python.
+- **Daisykit Android** - Example app demonstrate how to use Daisykit SDK in Android.
+
+
+## How to install ?
+
+**For Windows:**
+
+```
+pip3 install daisykit
+```
+
+**For Ubuntu:**
+
+- Install dependencies
+
+```
+sudo apt install pybind11-dev # Pybind11 - For Python/C++ Wrapper
+sudo apt install libopencv-dev # For OpenCV
+sudo apt install libvulkan-dev # Optional - For GPU support
+```
+
+- Install DaisyKit (compile from source)
+
+```
+pip3 install --upgrade pip # Ensure pip is updated
+pip3 install daisykit
+```
+
+**For other platforms:**
+
+- Install OpenCV, Pybind11 and Vulkan development package (if you want GPU support)
+
+- Install DaisyKit (compile from source)
+
+```
+pip3 install --upgrade pip # Ensure pip is updated
+pip3 install daisykit
+```
+
+## Examples
+
+Read [Documentation](https://docs.daisykit.org/).
+
+## Note for Python build
+
+Current CD (continuous delivery) flow is partial, which means we only have prebuilt linux wheels for x86_64 and for Windows.
+
+- Prebuilt wheels for linux x86_64 are built with Github actions.
+- Windows wheels (64bit) are built manually on a local machine.
+- macOS prebuilt wheels are not available for now. However, you can install dependencies (OpenCV, Vulkan) manually, then install Daisykit with pip command.
+
+We will be happy if you can make a pull request to make the CD build fully automated. A good choice is using Github flow for all building tasks.
+
+**Current steps for Windows build:**
+
+```sh
+bash ./build_tools/py_windows/build_dk_all_pythons_windows.sh
+bash ./build_tools/py_windows/build_dk_python_source_dist.sh
+bash ./build_tools/upload_pypi.sh
+```
+
+## Bug report
+
+Please open an issue on our official repository if you find any error.
+
+<https://github.com/DaisyLabSolutions/daisykit>
+
+
