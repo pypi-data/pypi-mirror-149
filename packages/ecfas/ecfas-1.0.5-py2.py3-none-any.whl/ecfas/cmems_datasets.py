@@ -1,0 +1,283 @@
+"""
+Created on Wed Jan 27 12:26:58 2021
+@author: mirazoki
+CMEMS datasets
+"""
+datasets_hydro = {'ARC_ocean':{"service":'ARCTIC_ANALYSIS_FORECAST_PHYS_002_001_a-TDS',  # there is also tide available
+                       "product":'dataset-topaz4-arc-1hr-myoceanv2-be',
+                        "var":['ssh'],
+                        "lat_min":62,  # the minimum is actually around 34!
+                        "lat_max":80,
+                        "lon_min":-32,
+                        "lon_max":35,
+                        "uptime":4,  # hours since midnight
+                        "tssize":84469},
+                'ARC':{"service":'ARCTIC_ANALYSISFORECAST_PHY_TIDE_002_015-TDS',  # there is also tide available
+                       "product":'dataset-topaz6-arc-15min-3km-be',
+                        "var":['zos'],
+                        "lat_min":62,  # the minimum is actually around 34!
+                        "lat_max":80,
+                        "lon_min":-32,  # [-32,35,25,80]
+                        "lon_max":35,
+                        "uptime":4,  # hours since midnight
+                        "tssize":6909896,
+                        "tsdsize":1595710},
+                'BAL':{"service":'BALTICSEA_ANALYSISFORECAST_PHY_003_006-TDS',
+                       "product":'dataset-bal-analysis-forecast-phy-hourly',
+                       "var":['sla'],
+                       "lat_min":53,
+                       "lat_max":66,
+                       "lon_min":9,
+                       "lon_max":32,
+                       "depth_min":0,
+                       "depth_max":1,
+                       "uptime":22,  # hours since midnight
+                       "tssize":28108636,
+                       "tsdsize":6212288},
+                'BAL_15min':{"service":'BALTICSEA_ANALYSISFORECAST_PHY_003_006-TDS',
+                       "product":'dataset-bal-analysis-forecast-phy-15minutes',
+                       "var":['sla'],
+                        "lat_min":53,
+                       "lat_max":66,
+                       "lon_min":9,
+                       "lon_max":32,
+                       "depth_min":0,
+                       "depth_max":1,
+                       "uptime":22},  # hours since midnight
+                'BS':{"service":'BLKSEA_ANALYSISFORECAST_PHY_007_001-TDS',
+                       "product":'bs-cmcc-ssh-an-fc-h',
+                       "var":['zos'],  # HOURLY MEAN
+                       "lat_min":40,
+                       "lat_max":47,
+                       "lon_min":27,
+                       "lon_max":42,
+                       "uptime":12,  # hours since midnight
+                       "tssize":2804010,
+                       "tsdsize":749728},
+                'IBI':{"service":'IBI_ANALYSISFORECAST_PHY_005_001-TDS',
+                       "product":'cmems_mod_ibi_phy_anfc_0.027deg-2D_PT1H-m',  # hourly mean
+                       "var":['zos'],
+                       "lat_min":26,
+                       "lat_max":56,
+                       "lon_min":-19,
+                       "lon_max":5,
+                       "uptime":14,  # hours since midnight
+                       "tssize":4432904,
+                       "tsdsize":987339},
+                'IBI_15min':{"service":'IBI_ANALYSISFORECAST_PHY_005_001-TDS',
+                       "product":'cmems_mod_ibi_phy_anfc_0.027deg-2D_PT15M-m',  # hourly mean
+                       "var":['zos'],
+                       "lat_min":26,
+                       "lat_max":56,
+                       "lon_min":-19,
+                       "lon_max":5,
+                       "uptime":14,  # hours since midnight
+                       "tssize":2662323},
+                'MED':{"service":'MEDSEA_ANALYSISFORECAST_PHY_006_013-TDS',
+                       "product":'med-cmcc-ssh-an-fc-hts',  # hourly mean
+                       "var":['zos'],
+                       "lat_min":30,
+                       "lat_max":46.5,
+                       "lon_min":-19,
+                       "lon_max":37,
+                       "uptime":20,  # hours since midnight
+                       "tssize":11246557,
+                       "tsdsize":2497389},
+                'NWS':{"service":'NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013-TDS',
+                       "product":'MetO-NWS-PHY-hi-SSH',
+                       "var":['zos'],
+                       "lat_min":46,
+                       "lat_max":62.75,
+                       "lon_min":-16,
+                       "lon_max":13,
+                       "uptime":12,  # hours since midnight
+                       "tssize":25828004,
+                       "tsdsize":5689964},
+                'NWS_15min':{"service":'NORTHWESTSHELF_ANALYSIS_FORECAST_PHY_004_013-TDS',
+                       "product":'MetO-NWS-PHY-qh-SSH',
+                       "var":['zos'],
+                       "lat_min":46,
+                       "lat_max":62.75,
+                       "lon_min":-16,
+                       "lon_max":13,
+                       "uptime":12,  # hours since midnight
+                       "tssize":15287027} ,
+                'GLO':{"service":'GLOBAL_ANALYSIS_FORECAST_PHY_001_024-TDS',
+                       "product":'global-analysis-forecast-phy-001-024-hourly-t-u-v-ssh',
+                       "var":['zos'],
+                       "lat_min":30,
+                       "lat_max":70,
+                       "lon_min":-25,
+                       "lon_max":43,
+                       "uptime":12}  # hours since midnight
+                }
+
+datasets_hydro_reanal = {'ARC':{"service":'ARCTIC_REANALYSIS_PHYS_002_003-TDS',  # no separate product for tide
+                       "product":'dataset-ran-arc-day-myoceanv2-be',  # #daily mean
+                        "var":['ssh'],
+                        "lat_min":62,  # the minimum is actually around 34!
+                        "lat_max":80,
+                        "lon_min":-32,
+                        "lon_max":35},
+                'BAL':{"service":'BALTICSEA_REANALYSIS_PHY_003_011-TDS',  # hinst
+                       "product":'dataset-reanalysis-nemo-surface',
+                       "var":['sla'],
+                       "lat_min":53,
+                       "lat_max":66,
+                       "lon_min":9,
+                       "lon_max":32,
+                       "depth_min":0,
+                       "depth_max":1},
+                'BS':{"service":'BLKSEA_MULTIYEAR_PHY_007_004-TDS',  # daily mean
+                       "product":'bs-cmcc-ssh-rean-d',
+                       "var":['zos'],  # HOURLY MEAN
+                       "lat_min":40,
+                       "lat_max":47,
+                       "lon_min":27,
+                       "lon_max":42},
+                'IBI':{"service":'IBI_MULTIYEAR_PHY_005_002-TDS',
+                       "product":'cmems_mod_ibi_phy_my_0.083deg-2D_PT1H-m',  # hourly mean
+                       "var":['zos'],
+                       "lat_min":26,
+                       "lat_max":56,
+                       "lon_min":-19,
+                       "lon_max":5},
+                'MED':{"service":'MEDSEA_MULTIYEAR_PHY_006_004-TDS',
+                       "product":'med-cmcc-ssh-rean-h',  # hourly mean
+                       "var":['zos'],
+                       "lat_min":30,
+                       "lat_max":46.5,
+                       "lon_min":-19,
+                       "lon_max":37},
+                'NWS':{"service":'NWSHELF_MULTIYEAR_PHY_004_009-TDS',
+                       "product":'cmems_mod_nws_phy-ssh_my_7km-2D_P1D-m',  # daily mean
+                       "var":['zos'],
+                       "lat_min":46,
+                       "lat_max":62.75,
+                       "lon_min":-16,
+                       "lon_max":13},
+                'GLO':{"service":'GLOBAL_REANALYSIS_PHY_001_030-TDS',
+                       "product":'global-reanalysis-phy-001-030-daily',  # daily mean
+                       "var":['zos'],
+                       "lat_min":30,
+                       "lat_max":70,
+                       "lon_min":-25,
+                       "lon_max":43,
+                       'depth_min':0.493,
+                       'depth_max':5727.918000000001}
+                }
+
+datasets_wave = {'ARC':{"service":'ARCTIC_ANALYSIS_FORECAST_WAV_002_014-TDS',
+                       "product":'dataset-wam-arctic-1hr3km-be',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                         "lat_min":62,  # the minimum is actually around 34!
+                        "lat_max":80,
+                        "lon_min":-32,
+                        "lon_max":35},
+                        # "summer_mask":'WAVsubset_formask_2020-08-01_00-00-00_2020-08-02_00-00-00.nc'},
+                'BAL':{"service":'BALTICSEA_ANALYSISFORECAST_WAV_003_010-TDS',
+                       "product":'dataset-bal-analysis-forecast-wav-hourly',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":53,
+                       "lat_max":66,
+                       "lon_min":9,
+                       "lon_max":32,
+                       "summer_mask":{'20180101':{'filename':'WAVsubset_formask_2020-08-01_00-00-00_2020-08-02_00-00-00.nc', 'var':'VHM0'},
+                                     '20181201':{'filename':'WAVsubset_analysis_2020-08-01_00-00-00_2020-08-02_00-00-00.nc', 'var':'VHM0'}
+                                     }
+                      },
+                'BS':{"service":'BLKSEA_ANALYSISFORECAST_WAV_007_003-TDS',
+                       "product":'cmems_mod_blk_wav_anfc_2.5km_PT1H-i', #'bs-hzg-wav-an-fc-h'
+                       "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":40,
+                       "lat_max":47,
+                       "lon_min":27,
+                       "lon_max":42},
+                'IBI':{"service":'IBI_ANALYSIS_FORECAST_WAV_005_005-TDS',
+                       "product":'dataset-ibi-analysis-forecast-wav-005-005-hourly',
+                       "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":26,
+                       "lat_max":56,
+                       "lon_min":-19,
+                       "lon_max":5},
+                'MED':{"service":'MEDSEA_ANALYSISFORECAST_WAV_006_017-TDS',
+                       "product":'med-hcmr-wav-an-fc-h',
+                       "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":30,
+                       "lat_max":46.5,
+                       "lon_min":-19,
+                       "lon_max":37},
+                'NWS':{"service":'NORTHWESTSHELF_ANALYSIS_FORECAST_WAV_004_014-TDS',
+                       "product":'MetO-NWS-WAV-hi',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                        "lat_min":46,
+                        "lat_max":62.75,
+                        "lon_min":-16,
+                        "lon_max":13}
+                }
+
+datasets_wave_reanal = {'ARC':{"service":'ARCTIC_MULTIYEAR_WAV_002_013-TDS',
+                       "product":'cmems_mod_arc_wav_my_3km_PT1H-i',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                        "lat_min":62,  # the minimum is actually around 34!
+                        "lat_max":80,
+                        "lon_min":-32,
+                        "lon_max":35},
+                'BAL':{"service":'BALTICSEA_REANALYSIS_WAV_003_015-TDS',
+                       "product":'dataset-bal-reanalysis-wav-hourly',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":53,
+                       "lat_max":66,
+                       "lon_min":9,
+                       "lon_max":32,
+                       "summer_mask":'WAVsubset_reanalysis_2018-08-01_00-00-00_2018-08-02_00-00-00.nc'},
+                'BS':{"service":'BLKSEA_MULTIYEAR_WAV_007_006-TDS',
+                       "product":'bs-hzg-wav-rean-h',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":40,
+                       "lat_max":47,
+                       "lon_min":27,
+                       "lon_max":42},
+                'IBI':{"service":'IBI_MULTIYEAR_WAV_005_006-TDS',
+                       "product":'cmems_mod_ibi_wav_my_0.05deg-2D_PT1H-i',  # hourly mean
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":26,
+                       "lat_max":56,
+                       "lon_min":-19,
+                       "lon_max":5},
+                'MED':{"service":'MEDSEA_HINDCAST_WAV_006_012-TDS',
+                       "product":'sv03-med-hcmr-wav-hi-h',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                       "lat_min":30,
+                       "lat_max":46.5,
+                       "lon_min":-19,
+                       "lon_max":37},
+                'NWS':{"service":'NWSHELF_REANALYSIS_WAV_004_015-TDS',
+                       "product":'MetO-NWS-WAV-RAN',
+                        "var":[['VHM0', 'VMDR', 'VTPK', 'VPED', 'VTM02', 'VTM10']],
+                        "lat_min":46,
+                        "lat_max":62.75,
+                        "lon_min":-16,
+                        "lon_max":13}
+                }
+
+datasets_sat = {'HR_alg':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                    "product":'cmems_obs-sl_atl_phy-ssh_my_alg-l3-duacs_PT0.2S',
+                      "var":[None]},
+              'HR_c2':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                    "product":'cmems_obs-sl_atl_phy-ssh_my_c2-l3-duacs_PT0.2S',
+                      "var":[None]},
+              'HR_j2g':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                        "product":'cmems_obs-sl_atl_phy-ssh_my_j2g-l3-duacs_PT0.2S',
+                      "var":[None]},
+              'HR_j2n':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                        "product":'cmems_obs-sl_atl_phy-ssh_my_j2n-l3-duacs_PT0.2S',
+                      "var":[None]},
+              'HR_j3':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                        "product":'cmems_obs-sl_atl_phy-ssh_my_j3-l3-duacs_PT0.2S',
+                      "var":[None]},
+              'HR_s3a':{"service":'SEALEVEL_ATL_PHY_HR_L3_MY_008_064-DGF',
+                        "product":'cmems_obs-sl_atl_phy-ssh_my_s3a-l3-duacs_PT0.2S',
+                      "var":[None]}
+              }
+
