@@ -1,0 +1,122 @@
+[tool.poetry]
+name = "sxcu"
+version = "4.1.0"
+description = "Python API wrapper for sxcu.net"
+authors = [
+    "Naveen M K <naveen521kk@gmail.com>"
+]
+maintainers = [
+    "Naveen M K <naveen521kk@gmail.com>"
+]
+keywords = [
+    "api",
+    "sxcu",
+    "sharex"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "Topic :: Internet",
+]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/naveen521kk/sxcu"
+documentation = "https://sxcu.readthedocs.io/en/latest"
+packages = [
+    { include = "sxcu" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+requests = ">=2.0.0"
+rich = {version = "^10.5", optional = true}
+pyperclip = {version = "^1.8", optional = true}
+
+[tool.poetry.extras]
+cli = ["rich", "pyperclip"]
+
+[tool.poetry.scripts]
+sxcu = 'sxcu._cli:main'
+
+[tool.poetry.dev-dependencies]
+pre-commit = {version = "^2.17.0", python = ">=3.6.1"}
+coverage = {version = "^6.2", extras = ["toml"]}
+sphinx = "^3.5.4"
+sphinx-rtd-theme = "^1.0.0"
+pytest = "^7.0.1"
+pytest-cov = "^3.0"
+pylint = "^2.12.0"
+black = {version = "^20.8b1", allow-prereleases = true}
+
+[tool.black]
+line-length = 88
+target-python = "3.8"
+
+[tool.isort]
+src_paths = ["sxcu", "test"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 88
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra --cov=sxcu --cov-report=xml --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+data_file = ".coverage/data"
+# we only care about these packages
+source = [
+    "sxcu",
+]
+
+[tool.coverage.paths]
+# ensure these paths are treated as equivalents
+source = [
+    "sxcu/",
+    "*/site-packages"
+]
+
+[tool.coverage.report]
+skip_empty = true
+ignore_errors = true
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:"
+]
+
+[tool.coverage.html]
+directory = ".coverage/html"
+
+[tool.coverage.xml]
+output = ".coverage/coverage.xml"
+
+[tool.coverage.json]
+output = ".coverage/coverage.json"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
