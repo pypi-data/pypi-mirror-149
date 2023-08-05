@@ -1,0 +1,46 @@
+[tool.black]
+line-length = 100
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 100
+disable = "fixme, no-name-in-module, too-few-public-methods, too-many-arguments"
+
+[tool.pylint.SIMILARITIES]
+ignore-imports = 'yes'
+ignore-comments = 'yes'
+ignore-docstrings = 'yes'
+ignore-signatures = 'yes'
+min-similarity-lines = 10
+
+[tool.isort]
+profile="black"
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
+
+[tool.poetry]
+name = "command-builder"
+version = "0.1.1"
+description = "Summary shell commands execution"
+authors = ["Guilherme Righetto <guilhermerighetto02@gmail.com>"]
+license = "MIT License"
+
+readme = "README.md"
+packages = [
+    { include = "command_builder" },
+]
+
+[tool.poetry.scripts]
+pipeline = "ci_pipeline:main"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+black = "^22.3.0"
+pylint = "^2.13.7"
+mypy = "^0.950"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
