@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="{{meta.lang}}">
+<head>
+    <meta charset="utf-8"/>
+    {% if meta.title %}<title>{{meta.title}}</title>{% endif %}
+    {% if meta.author %}<meta name="author" content="{{meta.author}}">{% endif %}
+    {% if meta.description %}<meta name="description" content="{{meta.description}}">{% endif %}
+    {% if meta.copyright %}<meta name="copyright" content="{{meta.copyright}}">{% endif %}
+    {% if meta.keywords %}<meta name="keywords" content="{{meta.keywords}}">{% endif %}
+    <meta name="generator" content="LitProg {{meta.litprog_version}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if meta.favicon_url %}
+    <link rel="shortcut icon" href="{{ meta.favicon_url }}" type="image/x-icon">
+    {% else %}
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    {% endif %}
+    {% if fmt.is_web_target %}
+    <style type="text/css">
+    /* inline styles to avoid flashing (esp. in dark mode) */
+    .nav {display: none;}
+    body.dark, body.dark .wrapper {background: #292929;}
+    /*body.gray, body.gray .wrapper {background: #777;}*/
+    </style>
+    <link rel="preload" href="static/bitter-v17-latin-ext_latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="static/bitter-v17-latin-ext_latin-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="static/enriqueta-v10-latin-ext_latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <script defer src="static/popper.js"></script>
+    <script defer src="static/app.js"></script>
+    {% endif %}
+    {% if fmt.is_print_target %}
+        <link rel="stylesheet" type="text/css" href="static/fonts_print.css">
+        <link rel="stylesheet" type="text/css" href="static/codehilite.css">
+        <link rel="stylesheet" type="text/css" href="static/general_v2.css">
+        <link rel="stylesheet" type="text/css" href="static/katex.css">
+        <link rel="stylesheet" type="text/css" href="static/print.css">
+        {% if fmt.page_size == "a6" %} <link rel="stylesheet" type="text/css" href="static/print_a6.css"> {% endif %}
+        {% if fmt.page_size == "a5" %} <link rel="stylesheet" type="text/css" href="static/print_a5.css"> {% endif %}
+        {% if fmt.page_size == "a4" %} <link rel="stylesheet" type="text/css" href="static/print_a4.css"> {% endif %}
+        {% if fmt.page_size == "letter" %} <link rel="stylesheet" type="text/css" href="static/print_letter.css"> {% endif %}
+        {% if fmt.page_size == "halfletter" %}
+        <link rel="stylesheet" type="text/css" href="static/print_halfletter.css">
+        {% endif %}
+        {% if fmt.is_tallcol_target %}
+        <link rel="stylesheet" type="text/css" href="static/print_tallcol.css">
+            {% if fmt.page_size == "tallcol_a4" %}
+            <link rel="stylesheet" type="text/css" href="static/print_tallcol_a4.css">
+            {% endif %}
+            {% if fmt.page_size == "tallcol_letter" %}
+            <link rel="stylesheet" type="text/css" href="static/print_tallcol_letter.css">
+            {% endif %}
+        {% endif %}
+        {% if fmt.page_size == "ereader" %}
+        <link rel="stylesheet" type="text/css" href="static/print_ereader.css">
+        {% endif %}
+    {% endif %}
+</head>
+<body class="{{ fmt.page_size }}">
+    {% if fmt.is_web_target %}
+    <script type="text/javascript">
+        if (localStorage.getItem("litprog_theme") == "dark") {
+            document.body.classList.add("dark")
+        }
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="static/fonts_screen.css">
+    <link rel="stylesheet" type="text/css" href="static/general_v2.css">
+    <link rel="stylesheet" type="text/css" href="static/screen_v3.css">
+
+    <link rel="stylesheet" href="static/katex.css" type="text/css">
+    <link rel="stylesheet" href="static/codehilite.css" type="text/css">
+
+    <div class="dark-overlay"></div>
+
+    <div class="header">
+        <img alt="Logo of {{ meta.project_name }} " src="{{ meta.logo_url }}">
+        <div>{{ meta.title }}</div>
+    </div>
+    <div class="menu">
+        <div class="menu-icons-left">
+            <span class="menu-icon" title="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+            <span class="toggle-contrast" title="Toggle Light/Dark Mode">
+                <span></span>
+            </span>
+            <span class="print-icon" title="Download PDF files">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+            <!--
+            <span class="download-icon" title="Downloads">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+            -->
+        </div><div class="menu-icons-right">
+            <a class="scroll-to-top" title="Scroll to Top" href="#top">
+                <span></span>
+                <span></span>
+            </a>
+        </div>
+    </div>
+    <div class="pdf-links">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>A4 ISO</th>
+                    <th>US Letter</th>
+                    <th>E-Reader</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Default</th>
+                    <td><a class="a4 portrait" href="print_a4.pdf"></a></td>
+                    <td><a class="letter portrait" href="print_letter.pdf"></a></td>
+                    <td><a class="ereader" href="print_ereader.pdf"></a></td>
+                </tr>
+                <!--
+                <tr>
+                    <th>Dense</th>
+                    <td><a class="a4 portrait twocol" href="print_twocol_a4.pdf"></a></td>
+                    <td><a class="letter portrait twocol" href="print_twocol_letter.pdf"></a></td>
+                    <td></td>
+                </tr>
+                -->
+                <tr>
+                    <th>Booklet<br/>(duplex)</th>
+                    <td><a class="a4 landscape twocol" href="print_booklet_a4.pdf"></a></td>
+                    <td><a class="letter landscape twocol" href="print_booklet_letter.pdf"></a></td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <th></th>
+        </table>
+    </div>
+    {% endif %}
+    <div class="layout-wrapper">
+        {% if fmt.is_web_target %}
+            <div class="nav nav-sections">
+                <div class="nav-scroller">
+                    <div class="nav-title">Outline</div>
+                    {{nav.sections_html}}
+                </div>
+            </div>
+            {% if nav.chapters_html %}
+            <div class="nav nav-chapters">
+                <div class="nav-scroller">
+                    <div class="nav-title">Chapters</div>
+                    {{nav.chapters_html}}
+                </div>
+            </div>
+            {% endif %}
+        {% endif %}
+        <div class="wrapper">
+            {% if fmt.is_web_target %}
+            <div id="top"></div>
+            {% endif %}
+            <div class="content">
+                {% if fmt.is_web_target %}
+                <div class="chapter-nav chapter-nav-top">
+                    {% if nav.chapter_prev_href %}
+                    <div class="chapter-prev"> <a href="{{nav.chapter_prev_href}}">◄ {{nav.chapter_prev_text}}</a> </div>
+                    {% endif %}
+                    {% if nav.chapter_next_href %}
+                    <div class="chapter-next"> <a href="{{nav.chapter_next_href}}">{{nav.chapter_next_text}} ►</a> </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {{content}}
+
+
+                {% if fmt.is_web_target %}
+                <div class="chapter-nav chapter-nav-bottom">
+                    {% if nav.chapter_prev_href %}
+                    <div class="chapter-prev"> <a href="{{nav.chapter_prev_href}}">{{nav.chapter_prev_text}}</a> </div>
+                    {% endif %}
+                    {% if nav.chapter_next_href %}
+                    <div class="chapter-next"> <a href="{{nav.chapter_next_href}}"> {{nav.chapter_next_text}}</a> </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                </div>
+                <hr/>
+                <div class="footer">
+                    <!-- Copyright -->
+                    {% if meta.copyright_url %}
+                    <a href="{{meta.copyright_url}}">© {{meta.copyright}}</a>
+                    {% elif meta.copyright %}
+                    <span>© {{meta.copyright}}</span>
+                    {% endif %}
+                    <br/>
+                    <!-- File/VCS Info -->
+                    {% if fmt.is_web_target %}
+                        {% if meta.vcs_revision %}
+                        <a href="{{meta.repo_url}}/{{meta.vcs_revision or 'master'}}/{{meta.md_filepath}}">{{meta.vcs_name.title()}} Revision: <code>{{meta.md_filepath}}@{{meta.vcs_revision_short}}</code>{% if meta.is_file_dirty %} (Dirty) {% endif %}</a>
+                        {% else %}
+                        <code>{{meta.md_filepath}}</code>
+                        {% endif %}
+                    {% else %}
+                        {% if meta.vcs_revision %}
+                        <a href="{{meta.repo_url}}/{{meta.vcs_revision or 'master'}}">{{meta.vcs_name.title()}} Revision: <code>{{meta.vcs_revision_short}}</code>{% if meta.vcs_dirty_files %} (Dirty) {% endif %}</a>
+                        {% endif %}
+                    {% endif %}
+                    <!-- Authors Timeline -->
+                    {% if meta.authors_timeline_svg %}
+                    <br/>
+                    <span>Authorship Timeline for file </span>
+                    <code>{{meta.md_filepath}}</code>
+                    <br/>
+                    <img class="authors-timeline" src="{{meta.authors_timeline_svg}}">
+                    {% endif %}
+                    <!-- Build Info -->
+                    <br/>
+                    <span>
+                        Built {{ meta.build_timestamp }} with
+                        <a href="https://gitlab.com/mbarkhau/litprog/">
+                            LitProg {{meta.litprog_version}}
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
