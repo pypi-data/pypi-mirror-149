@@ -1,0 +1,35 @@
+# Rh-s-PyTool
+
+---
+
+Rh-s-PyTool是本人在学校课题中写过的python工具整理后得到的合集。虽然能力有限导致代码写得丑陋，不过思考过后还是决定发出来给自己的成果一个纪念。对我而言这些渣代码的重要性不亚于课题最后的论文。
+
+# 主要功能
+
+---
+
+主要包含了两个大模块，二者各自又包含了若干小模块。前者**cp_lookup**的主要功能包括根据省级行政区名称查询该省所有地级行政单位、根据地级行政单位名称反查所属省级行政区名称、根据区域（地级及以上）名称得到行政中心经纬度、计算两地（地级及以上）球面距离。后者**index_calmeth**的主要功能为指标体系正向化、归一化、计算critic权重、计算rsr得分、计算topsis得分。
+
+# 下载
+
+---
+
+可以从release下载压缩包本地安装，
+
+或从PyPI上下载：
+
+```
+pip3 install Rh-s-PyTool
+```
+
+推荐使用pdm包管理系统：
+
+```
+pdm add Rh-s-PyTool
+```
+
+注：由于最后汇总模块的时候使用的是python3.10版本，而本人对python各代版本的差异不甚了解，如果有人想尝试一下这些代码，最好用python3.10以上版本。
+
+# 文档
+
+Notion：[Rh-s-PyTool]([Notion – The all-in-one workspace for your notes, tasks, wikis, and databases.](https://skahanium.notion.site/Rh-s-PyTool-bf7ab98fba544187b2132c613f0835ea))
