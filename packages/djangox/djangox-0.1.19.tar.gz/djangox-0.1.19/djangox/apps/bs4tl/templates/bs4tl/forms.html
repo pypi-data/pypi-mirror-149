@@ -1,0 +1,102 @@
+<%def name="form(form, action, submit_label, enctype='application/x-www-form-urlencoded', prefix='')">
+    <form class="form" action="${action}" method="POST" enctype="${enctype}">
+        <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}">
+        % for field in form.hidden_fields():
+            ${hidden_field(field, prefix)}
+        % endfor
+        % for field in form.visible_fields():
+            ${visible_field(field, prefix)}
+        % endfor
+        <input type="submit" value="${submit_label}" class="btn btn-primary">
+    </form>
+</%def>
+<%def name="visible_field(field, prefix='')">
+    <div class="form-group ${'has-error' if field.errors else ''}">
+        <label for="${prefix}field-${field.name}">${_(field.label)}</label>
+        % if hasattr(self, field.field.widget.__class__.__name__):
+            ${getattr(self, field.field.widget.__class__.__name__)(field, prefix)}
+        % else:
+            ${TextInput(field, prefix)}
+        %endif
+        % if field.help_text:
+            <p class="text-muted">${_(field.help_text)}</p>
+        % endif
+        % for error in field.errors:
+            <p class="text-danger">${ _(error) }</p>
+        % endfor
+    </div>
+</%def>
+
+<%def name="TextInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="text" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="PasswordInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="password" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="EmailInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="email" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="ClearableFileInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="file" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="URLInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="text" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="NumberInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="number" name="${field.name}" value="${field.value()}" class="form-control">\
+</%def>
+
+<%def name="Textarea(field, prefix='')">\
+<textarea id="${prefix}field-${field.name}" name="${field.name}" class="form-control">${field.value() or ''}</textarea>\
+</%def>
+
+<%def name="Select(field, prefix='')">
+    <select id="${prefix}field-${field.name}" name="${field.name}" class="form-control">
+        % for choice in field.field.choices:
+            <option value="${choice[0]}"
+                    ${'selected' if str(field.value()) == str(choice[0]) else ''}>${_(choice[1])}</option>
+        % endfor
+    </select>
+</%def>
+
+<%def name="SelectMultiple(field, prefix='')">
+    <select id="${prefix}field-${field.name}" name="${field.name}" class="form-control" multiple="multiple">
+        % for choice in field.field.choices:
+            <option value="${choice[0]}"
+                    ${'selected' if str(field.value()) == str(choice[0]) else ''}>${choice[1]}</option>
+        % endfor
+    </select>
+</%def>
+
+<%def name="DateTimeInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="datetime" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="DateInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="date" name="${field.name}" value="${field.value() or ''}" class="form-control datepicker">\
+</%def>
+
+<%def name="MonthInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="month" name="${field.name}" value="${field.value() or ''}" class="form-control">\
+</%def>
+
+<%def name="hidden_field(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="hidden" name="${field.name}" value="${field.value() or ''}">\
+        % for error in field.errors:
+            <label>${field.name}</label>
+            <p class="help-block">${ error }</p>
+        % endfor
+</%def>
+
+<%def name="CheckboxInput(field, prefix='')">\
+<input id="${prefix}field-${field.name}" type="checkbox" name="${field.name}" value="checked" ${'checked="checked"' if field.value() else ''} class="">\
+</%def>
+
+<%def name="csrf_token_input()">
+    <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}"/>
+</%def>
