@@ -1,0 +1,48 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2021-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block header %}
+  <!-- block google's indexing: https://developers.google.com/search/docs/advanced/crawling/block-indexing -->
+  <meta name="robots" content="noindex" />
+{%- endblock header %}
+
+{%- block page_body %}
+  {#- TODO remove the inline styles #}
+  {#- TODO remove the margin on the footer? #}
+  <div style="background-color: lightgrey; height:calc(100% + 100px); padding-top: 3em;">
+    {#- heading #}
+    <h1 style="color: black; text-decoration: underline; text-align: center; margin: auto;">Florian W&ouml;rister</h1>
+
+    {#- image #}
+    <div style="text-align: center; margin: auto;">
+      <img style="border-color: black; border-style: ridge; border-width: 0.3em; filter: grayscale(45%); margin: 1em;" src="{{ url_for('static', filename='images/tuwstones/fwoerister.png') }}">
+    </div>
+
+    <article style="text-align: center; max-width: 33em; margin: auto;">
+      <div>
+        <h2 style="color: black;">
+          Ex Almost TU:RD Manager
+        </h2>
+
+        <p>
+          &#127773; 2020-07-01 &#8212; 2022-02-28 &#127770;
+        </p>
+        <p>
+          Florian joined the team as a software developer and left us before the position was turned into TU:RD manager.
+          He laid the foundation for the TU:RD user interface as we know it today and always had
+          the users in mind.
+        </p>
+        <p>
+          We will always remember him for his love of music and Mario Kart.
+        </p>
+      </div>
+    </article>
+  </div>
+{%- endblock page_body %}

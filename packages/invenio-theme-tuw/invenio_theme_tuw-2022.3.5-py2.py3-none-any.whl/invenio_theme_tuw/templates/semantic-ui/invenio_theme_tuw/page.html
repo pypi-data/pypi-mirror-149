@@ -1,0 +1,211 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2015-2018 CERN.
+  Copyright (C) 2021 New York University.
+  Copyright (C) 2020-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+<!DOCTYPE html>
+<html {% if html_css_classes %} class="{{ html_css_classes|join(' ') }}"{% endif %} lang="{{ current_i18n.locale.language|safe }}" dir="{{ current_i18n.locale.text_direction }}">
+  <head>
+    {%- block head %}
+
+      {%- block head_meta %}
+        <meta charset="utf-8">
+        <meta name="description" content="Research Data Repository of TU Wien">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {%- if description %}
+          <meta name="description" content="{{ description }}"/>
+        {%- endif %}
+
+        {%- if keywords %}
+          <meta name="keywords" content="{{ keywords }}"/>
+        {%- endif %}
+
+        {%- if config.get('THEME_GOOGLE_SITE_VERIFICATION', None) %}
+
+          {%- for google_id in config.THEME_GOOGLE_SITE_VERIFICATION %}
+            <meta name="google-site-verification" content="{{ google_id }}"/>
+          {%- endfor %}
+
+        {%- endif %}
+
+      {%- endblock head_meta %}
+
+      {%- block head_title %}
+
+        {%- set title = title or _(config.THEME_SITENAME) or _('Invenio') %}
+        <title>{{ title }}</title>
+
+      {%- endblock head_title %}
+
+      {%- block head_links %}
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon-32x32.png') }}"/>
+        <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon-16x16.png') }}"/>
+
+        {%- if keywords %}
+          <link rel="canonical" href="{{ canonical_url }}"/>
+        {%- endif %}
+
+        {%- block head_links_langs %}
+
+          {%- if alternate_urls %}
+
+            {%- for alt_ln, alternate_url in alternate_urls.items() %}
+              <link rel="alternate" hreflang="{{ alt_ln }}" href="{{ alternate_url }}"/>
+            {%- endfor %}
+
+          {%- endif %}
+
+        {%- endblock %}
+
+        {%- block head_apple_icons %}
+        {%- endblock head_apple_icons %}
+
+      {%- endblock head_links %}
+
+      {%- block header %}
+      {%- endblock header %}
+
+      {%- block css %}
+        {{- webpack['theme.css'] }}
+      {%- endblock css %}
+
+      {%- block tuw_metadata %}
+      {%- endblock tuw_metadata -%}
+
+      {%- block tracking %}
+
+        {%- if config.get("THEME_TUW_MATOMO_ENABLED", False) %}
+          {{- webpack["invenio-theme-tuw-tracking.js"] }}
+        {%- endif %}
+
+      {%- endblock tracking %}
+
+    {%- endblock head %}
+  </head>
+
+  <body class="{{ body_css_classes|join(' ') -}} pushable" {% if g.ln %} lang="{{ g.ln.split('_', 1)[0]|safe }}" {% if rtl_direction %}{{ rtl_direction|safe }} {% endif %}{% endif -%}
+        itemscope itemtype="http://schema.org/WebPage" data-spy="scroll" data-target=".scrollspy-target">
+    <h1 class="hidden">{{ config.THEME_SITENAME }}</h1>
+
+    {%- if config.get("THEME_TUW_MATOMO_ENABLED", False) %}
+
+      {%- set matomo_url = config.get("THEME_TUW_MATOMO_URL") %}
+      {%- set matomo_site_id = 2 %}
+
+      {%- if config.get("THEME_TUW_DISPLAY_STAGING_WARNING", False) %}
+        {%- set matomo_site_id = 1 %}
+      {%- endif %}
+
+      {%- if not matomo_url.endswith("/") %}
+        {%- set matomo_url = matomo_url + "/" %}
+      {%- endif %}
+
+      <input id="matomo-url" type="hidden" value="{{ matomo_url }}"/>
+      <input id="matomo-site-id" type="hidden" value="{{ matomo_site_id }}"/>
+
+    {%- endif %}
+
+    {%- block body %}
+
+      {%- block body_inner %}
+
+        <div class="ui sidebar inverted vertical menu" id="sidebar">
+
+          {%- if not current_user.is_authenticated %}
+            <a href="{{ url_for_security('login', next=request.path) }}" class="item login mobile">
+              <span><i class="ui icon sign-in"></i>{{ _("Log in") }}</span>
+            </a>
+
+          {%- elif current_user.is_authenticated %}
+            <a href="{{ url_for_security('logout', next=request.path) }}" class="item login mobile">
+              <span><i class="ui icon sign-out"></i>{{ _("Log out") }}</span>
+            </a>
+
+          {%- endif %}
+
+          <div class="ui submenu">
+            {%- for item in current_menu.submenu('main').children|sort(attribute='order') if item.visible recursive %}
+              <a href="{{ item.url }}" class="item">{{ item.text|safe }}</a>
+            {%- endfor %}
+          </div>
+
+          {%- if config.ACCOUNTS %}
+
+            {%- if current_user.is_authenticated %}
+
+              <div class="ui divider"></div>
+              <div class="ui submenu">
+                {%- for item in current_menu.submenu('settings').children if item.visible %}
+                  <a href="{{ item.url }}" class="item">{{ item.text|safe }}</a>
+                {%- endfor %}
+              </div>
+
+            {%- endif %}
+
+          {%- endif %}
+
+        </div>
+        <div class="pusher">
+          <div class="page-content">
+
+            {%- block page_header %}
+              {%- include config.THEME_HEADER_TEMPLATE %}
+            {%- endblock page_header %}
+
+            {%- block page_hero %}
+            {%- endblock page_hero %}
+
+            {%- block breadcrumbs %}
+            {%- endblock breadcrumbs %}
+
+            {%- block staging_warning -%}
+
+              {%- if config.THEME_TUW_DISPLAY_STAGING_WARNING -%}
+                <section id="msg-section" class="ui container">
+                  <div class="ui visible red message staging">
+                    <p>
+                      <i class="ui icon warning"></i>Warning - You are currently working on our
+                      <span class="bold">test environment</span>. Any data upload to this system
+                      may be deleted. If you are looking for our main instance to share data, please visit
+                      <a href="https://researchdata.tuwien.ac.at">https://researchdata.tuwien.ac.at</a>
+                    </p>
+                  </div>
+                </section>
+              {%- endif -%}
+
+            {%- endblock staging_warning -%}
+
+            {%- block page_body %}
+              {%- include "invenio_theme/body.html" %}
+            {%- endblock page_body %}
+
+          </div>
+
+          {%- block page_footer %}
+            {%- include config.THEME_FOOTER_TEMPLATE %}
+          {%- endblock page_footer %}
+
+        </div>
+
+      {%- endblock body_inner %}
+
+      {%- block javascript %}
+
+        {{- webpack["invenio-theme-tuw-mobilemenu.js"] }}
+        {%- include config.THEME_JAVASCRIPT_TEMPLATE %}
+
+      {%- endblock javascript %}
+
+      {%- block trackingcode %}
+        {%- include config.THEME_TRACKINGCODE_TEMPLATE %}
+      {%- endblock trackingcode %}
+
+    {%- endblock body %}
+  </body>
+</html>

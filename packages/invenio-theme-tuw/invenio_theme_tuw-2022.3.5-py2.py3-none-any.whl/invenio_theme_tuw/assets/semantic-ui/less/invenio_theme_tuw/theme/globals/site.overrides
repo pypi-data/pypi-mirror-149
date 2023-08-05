@@ -1,0 +1,131 @@
+/*******************************
+         Theme Overrides
+*******************************/
+
+@import "@less/invenio_app_rdm/theme/globals/site.overrides";
+
+@import "../custom/flip-card.less";
+@import "../custom/file-list.less";
+
+.truncated.filename {
+  width: 500px;
+}
+
+.hidden {
+  display: none;
+}
+
+.page-content {
+  flex: 1 0 auto;
+}
+
+h1,
+h2,
+h3 {
+  color: @primaryColor;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  margin: 0px;
+}
+
+#hero {
+  background-size: cover;
+  background-position-y: bottom;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 4px 4px lightgrey;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+#hero.frontpage {
+  background-image: url("../assets/images/hero-background.webp");
+}
+
+#hero.contact {
+  background-image: url("../assets/images/hero-contact.webp");
+}
+
+#hero.policies {
+  background-image: url("../assets/images/hero-policies.webp");
+}
+
+#searchbar {
+  width: 500px;
+  max-width: 80vw;
+}
+
+.features-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.features-wrapper a {
+  padding: 0;
+  margin: 0;
+}
+
+#welcome p {
+  text-align: justify;
+}
+
+#features {
+  margin-bottom: 4em;
+}
+
+.invenio-record {
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: 1em;
+  margin-bottom: 1.5em;
+}
+
+.text-muted {
+  color: @grey;
+}
+
+.badges {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+@media only screen and (min-width: @computerBreakpoint) {
+  #hero {
+    height: 300px;
+  }
+
+  .features-wrapper {
+    justify-content: space-between;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* landing page styling */
+
+.ui.table.files-table th.hidden {
+  /* this is required to render the files table on the landing page properly */
+  display: table-cell;
+}
+
+.preview-iframe {
+  /* otherwise, the file preview iframe will overlap the rounded bottom borders */
+  border-radius: 0 0 10px 10px;
+}
+
+.ui.grid.record-citation
+  .citation-style-selector
+  .ui.selection.dropdown.citation-dropdown {
+  /* make the drop downs shorter */
+  min-width: 7.5em;
+  max-width: inherit;
+}

@@ -1,0 +1,205 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2017-2018 CERN.
+  Copyright (C) 2020-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_header %}
+  {% include config.THEME_HEADER_TEMPLATE %}
+{%- endblock %}
+
+{%- block page_hero %}
+  <section class="frontpage" id="hero" style="flex-shrink: 0;">
+    <form action="{{ config.THEME_SEARCH_ENDPOINT }}">
+      <div class="ui action input" id="searchbar">
+        <label class="hidden" for="q">Search Query</label>
+        <input class="huge" id="q" name="q" placeholder="Type and press enter to search..." type="text">
+        <button class="ui icon button huge" type="submit" aria-label="submit query">
+          <i class="search icon"></i>
+        </button>
+      </div>
+    </form>
+  </section>
+{%- endblock page_hero %}
+
+{%- block page_body %}
+  <section id="welcome" class="ui container">
+
+    <h2>Welcome to {{ config.THEME_SITENAME }}</h2>
+    <p>
+      {{ config.THEME_SITENAME }} is an institutional service of TU Wien to enable storing, sharing and publishing of
+      digital objects,
+      in particular research data. It facilitates the funders' requirements for open access to research data and the
+      FAIR
+      principles by making research output findable, accessible, interoperable and re-usable. This service is developed
+      by the
+      <strong>TU Wien Center for Research Data Management</strong> and hosted by <strong>TU.it</strong>.
+    </p>
+    <p>
+      Please note that this service is still under development and has limited functionality. We will add more
+      functionality as development progresses.
+    </p>
+
+  </section>
+
+  <section id="features" class="ui container">
+    <h2 class="hidden">Features of {{ config.THEME_SITENAME }}</h2>
+    <div class="features-wrapper">
+      <a href="{{ url_for('invenio_app_rdm_records.deposit_create') }}">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="static/images/features/upload-file.webp"
+                   alt="icon displaying a cloud and a arrow pointing upwards."/>
+            </div>
+            <div class="flip-card-back">
+              <p>Deposit research outputs openly, restricted or closed. A landing page provides information on your
+                digital objects,
+                download links, license and persistent identifier.</p>
+            </div>
+          </div>
+          <span class="tile-title">Deposit</span>
+        </div>
+      </a>
+
+      <a href="{{ url_for('invenio_search_ui.search') }}">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="static/images/features/magnifying-glass.webp" alt="icon displaying a magnifying glass"/>
+            </div>
+            <div class="flip-card-back">
+              <p>Search datasets published by other users.</p>
+            </div>
+          </div>
+          <span class="tile-title">Search</span>
+        </div>
+      </a>
+
+      <a href="https://www.tuwien.at/en/research/rti-support/research-data/rdm-infos-tips/preserving-and-publishing/tu-data-repository-faqs" target="_blank">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="static/images/features/faq.webp" alt="icon displaying a faq speach bubble"/>
+            </div>
+            <div class="flip-card-back">
+              <p>For any questions regarding this service, please refer to our FAQ and our Upload Guide.</p>
+            </div>
+          </div>
+          <span class="tile-title">FAQ</span>
+        </div>
+      </a>
+
+      <a href="{{ url_for('invenio_theme_tuw.tuw_contact') }}">
+        <div class="flip-card">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <img src="static/images/features/online-chat.webp" alt="icon displaying two speach bubbles"/>
+            </div>
+            <div class="flip-card-back">
+              <p>To get in touch with our team, please visit our 'Contact' page.</p>
+            </div>
+          </div>
+          <span class="tile-title">Contact</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="recent-uploads" class="ui container">
+    <h2>Recent Uploads</h2>
+
+    {%- for r in records %}
+      {%- set creation_date = r.created|from_isodatetime -%}
+      {%- set record_url = url_for('invenio_app_rdm_records.record_detail', pid_value=r.id) %}
+
+      <article class="invenio-record">
+        <h3>
+          <a href="{{ record_url }}" class="no-decoration">
+            {{ r.metadata.title }}
+          </a>
+        </h3>
+
+        <div>
+          {%- for creators in r.metadata.creators %}
+
+            {%- if creators.identifiers and creators.identifiers.orcid %}
+              <a href="{{ creators.identifiers.orcid|pid_url('orcid') }}" target="_blank"><img class="inline-orcid"
+                                                                                               src="{{ url_for('static', filename='extra/orcid.png') }}"/></a>
+            {%- endif %}
+            <span class="text-muted" {% if creators.affiliations %} {% for affiliation in creators.affiliations %}
+                  data-tooltip="{{ affiliation.name }}" data-inverted="" {%- endfor %} {% endif %}>
+              {{ creators.person_or_org.name }}
+            </span>
+            {% if not loop.last %}; {% endif %}
+          {%- endfor %}
+        </div>
+
+        <div class="badges">
+          <!--Publication date/Version badge-->
+          <span class="ui label blue" data-tooltip="{{ _('Publication date') }}" data-inverted="">
+            {{ r.metadata.publication_date }} {{ '(' ~ r.metadata.version ~ ')' if r.metadata.version }}
+          </span>
+
+          <!--Resource type badge-->
+          <span class="ui label grey" data-tooltip="{{ _('Resource type') }}" data-inverted>
+            {{ r.ui.resource_type.title_l10n }}
+          </span>
+
+          <span class="ui label access-status {{ r.ui.access_status.id }}"
+                data-tooltip="{{ r.ui.access_status.description_l10n }}" data-inverted="">
+            {% if r.ui.access_status.icon %}<i class="icon {{ r.ui.access_status.icon }}"></i>{% endif %}
+            {{ r.ui.access_status.title_l10n }}
+          </span>
+        </div>
+
+        <div>
+          {{ r.metadata.description | striptags | truncate(300) }}
+        </div>
+
+        <div class="ui grid">
+          <div class="two column row">
+            <div class="left floated column">
+              {%- for s in r.metadata.subjects %}
+                <div class="ui tiny label">{{ s.subject }}</div>
+              {%- endfor %}
+              <div>
+                <small>
+                  {% trans user=userprofile, date=creation_date | dateformat('long') %}
+                    Uploaded on {{ date }}
+                  {% endtrans %}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    {%- endfor %}
+
+    <div class="ui centered grid">
+      <a href="{{ config.THEME_SEARCH_ENDPOINT }}"><button id="more-button" class="ui primary button">More</button></a>
+    </div>
+
+    {%- if not records %}
+      <div class="ui visible message">
+        <p>Currently no records available.</p>
+      </div>
+    {%- endif %}
+
+  </section>
+
+{%- endblock page_body %}
+
+{%- block javascript %}
+  {{ super() }}
+{%- endblock javascript %}
+
+{%- block trackingcode %}
+  {% include config.THEME_TRACKINGCODE_TEMPLATE %}
+{%- endblock %}

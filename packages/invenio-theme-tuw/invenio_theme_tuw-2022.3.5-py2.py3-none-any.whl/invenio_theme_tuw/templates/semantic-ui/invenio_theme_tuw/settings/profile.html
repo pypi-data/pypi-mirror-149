@@ -1,0 +1,35 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2015-2018 CERN.
+  Copyright (C) 2021-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.USERPROFILES_SETTINGS_TEMPLATE %}
+
+{%- from "invenio_theme_tuw/settings/macros.html" import render_field, form_errors %}
+
+{%- set panel_title = _("Profile") %}
+{%- set panel_icon  = "user icon" %}
+
+{%- block settings_form %}
+
+  {%- set form = profile_form %}
+
+  <form name="profile_form" class="ui form">
+    {%- for field in form %}
+
+      {%- if field.widget.input_type == "hidden" %}
+        {{ field() }}
+
+      {%- elif "repeat" not in field.id %}
+        {{ render_field(field, autofocus=True, placeholder=field.label.text, disabled=True) }}
+
+      {%- endif %}
+
+    {%- endfor %}
+  </form>
+
+{%- endblock settings_form %}
