@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>eyekit.io API documentation</title>
+<meta name="description" content="Functions for reading and writing data." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%;border:1px solid #ccc}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:0.8em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/227875615/00ca2d80-f76c-11ea-807f-d81cd315b9df"/>
+<meta name="twitter:site" content="@github"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="eyekit"/>
+<meta name="twitter:description" content="A lightweight Python package for doing open, transparent, reproducible science on reading behavior"/>
+<meta property="og:image" content="https://repository-images.githubusercontent.com/227875615/00ca2d80-f76c-11ea-807f-d81cd315b9df"/>
+<meta property="og:site_name" content="GitHub"/>
+<meta property="og:type" content="object"/>
+<meta property="og:title" content="eyekit"/>
+<meta property="og:url" content="https://github.com/jwcarr/eyekit"/>
+<meta property="og:description" content="A lightweight Python package for doing open, transparent, reproducible science on reading behavior"/>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>eyekit.io</code></h1>
+</header>
+<section id="section-intro">
+<p>Functions for reading and writing data.</p>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L0-L284" class="git-link">View code on GitHub</a></div>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="eyekit.io.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>file_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Read in a JSON file. <code><a title="eyekit.fixation.FixationSequence" href="fixation.html#eyekit.fixation.FixationSequence">FixationSequence</a></code> and
+<code><a title="eyekit.text.TextBlock" href="text.html#eyekit.text.TextBlock">TextBlock</a></code> objects are automatically decoded and
+instantiated.</p></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L12-L20" class="git-link">View code on GitHub</a></div>
+</dd>
+<dt id="eyekit.io.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>data, file_path, *, compress=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Write arbitrary data to a JSON file. If <code>compress</code> is <code>True</code>, the file is
+written in the most compact way; if <code>False</code>, the file will be
+more human
+readable. <code><a title="eyekit.fixation.FixationSequence" href="fixation.html#eyekit.fixation.FixationSequence">FixationSequence</a></code> and <code><a title="eyekit.text.TextBlock" href="text.html#eyekit.text.TextBlock">TextBlock</a></code>
+objects are automatically encoded.</p></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L23-L44" class="git-link">View code on GitHub</a></div>
+</dd>
+<dt id="eyekit.io.import_asc"><code class="name flex">
+<span>def <span class="ident">import_asc</span></span>(<span>file_path, *, variables=[], placement_of_variables='after_end')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Import data from an ASC file produced from an SR Research EyeLink device
+(you will first need to use SR Research's Edf2asc tool to convert your
+original EDF files to ASC). The importer will extract all trials from the
+ASC file, where a trial is defined as a sequence of fixations (EFIX lines)
+that occur inside a START–END block. Optionally, the importer can extract
+user-defined variables from the ASC file and associate them with the
+appropriate trial. For example, if your ASC file contains messages like
+this:</p>
+<pre><code>MSG 4244101 trial_type practice
+MSG 4244101 passage_id 1
+MSG 4244592 stim_onset
+</code></pre>
+<p>then you could extract the variables <code>"trial_type"</code> and <code>"passage_id"</code>. A
+variable is some string that is followed by a space; anything that
+follows this space is the variable's value. If the variable is not
+followed by a value (e.g., <code>"stim_onset"</code> above), then the time of the
+message is recorded as its value; this can be useful for recording the
+precise timing of an event. By default, the importer looks for variables
+that follow the END tag. However, if your variables are placed before the
+START tag, then set the <code>placement_of_variables</code> argument to
+<code>"before_start"</code>. If unsure, you should first inspect your ASC file to
+see what messages you wrote to the data stream and where they are placed.
+The importer will return a list of dictionaries, where each dictionary
+represents a single trial and contains the fixations along with any other
+extracted variables. For example:</p>
+<pre><code>[
+    {
+        &quot;trial_type&quot;: &quot;practice&quot;,
+        &quot;passage_id&quot;: &quot;1&quot;,
+        &quot;stim_onset&quot;: 4244592,
+        &quot;fixations&quot;: FixationSequence[...]
+    },
+    {
+        &quot;trial_type&quot;: &quot;test&quot;,
+        &quot;passage_id&quot;: &quot;2&quot;,
+        &quot;stim_onset&quot;: 4256311,
+        &quot;fixations&quot;: FixationSequence[...]
+    }
+]
+</code></pre></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L47-L154" class="git-link">View code on GitHub</a></div>
+</dd>
+<dt id="eyekit.io.import_csv"><code class="name flex">
+<span>def <span class="ident">import_csv</span></span>(<span>file_path, *, x_header='x', y_header='y', start_header='start', end_header='end', trial_header=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Import data from a CSV file. By default, the importer expects the CSV file
+to contain the column headers, <code>x</code>, <code>y</code>, <code>start</code>, and <code>end</code>, but this can
+be customized by setting the relevant arguments to whatever column
+headers your CSV file contains. Each row of the CSV file is expected to
+represent a single fixation. If your CSV file contains data from multiple
+trials, you should also specify the column header of a trial identifier,
+so that the data can be segmented into trials. The importer will return a
+list of dictionaries, where each dictionary represents a single trial and
+contains the fixations along with the trial identifier (if specified).
+For example:</p>
+<pre><code>[
+    {
+        &quot;trial_id&quot; : 1,
+        &quot;fixations&quot; : FixationSequence[...]
+    },
+    {
+        &quot;trial_id&quot; : 2,
+        &quot;fixations&quot; : FixationSequence[...]
+    }
+]
+</code></pre></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L157-L234" class="git-link">View code on GitHub</a></div>
+</dd>
+<dt id="eyekit.io.read"><code class="name flex">
+<span>def <span class="ident">read</span></span>(<span>file_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deprecated in 0.4. Use <code><a title="eyekit.io.load" href="#eyekit.io.load">load()</a></code>.</p></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L266-L274" class="git-link">View code on GitHub</a></div>
+</dd>
+<dt id="eyekit.io.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>data, file_path, compress=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deprecated in 0.4. Use <code><a title="eyekit.io.save" href="#eyekit.io.save">save()</a></code>.</p></div>
+<div class="git-link-div"><a href="https://github.com/jwcarr/eyekit/blob/master/eyekit/io.py#L277-L285" class="git-link">View code on GitHub</a></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<header>
+<a class="homelink" rel="home" title="eyekit Home" href="index.html">
+<img src="images/logo.png" alt="Eyekit logo" width='200' style='border:none'>
+</a>
+</header>
+<br />
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = 'search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<br />
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Functions</h3>
+<ul class="">
+<li><code><a title="eyekit.io.load" href="#eyekit.io.load">load</a></code></li>
+<li><code><a title="eyekit.io.save" href="#eyekit.io.save">save</a></code></li>
+<li><code><a title="eyekit.io.import_asc" href="#eyekit.io.import_asc">import_asc</a></code></li>
+<li><code><a title="eyekit.io.import_csv" href="#eyekit.io.import_csv">import_csv</a></code></li>
+<li><code><a title="eyekit.io.read" href="#eyekit.io.read">read</a></code></li>
+<li><code><a title="eyekit.io.write" href="#eyekit.io.write">write</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>
