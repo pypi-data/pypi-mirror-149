@@ -1,0 +1,30 @@
+pbr>=1.3
+
+PyYAML
+paramiko>=2.0.1
+python-daemon>=2.0.4
+extras
+statsd>=3.0
+PrettyTable>=0.6,<0.8
+# openstacksdk before 0.27.0 is TaskManager based
+# 0.28.0-0.31.0 fail to upload images with glance tasks.
+# 0.31.1 and 0.31.2 have a bug with image deletion in tasks API
+# We expect 1.0.0 to break the API we use
+openstacksdk>=0.27.0,!=0.28.0,!=0.29.0,!=0.30.0,!=0.31.0,!=0.31.1,!=0.31.2,<1.0.0
+diskimage-builder>=3.20.2
+voluptuous
+kazoo>=2.8.0
+Paste
+WebOb>=1.8.1
+openshift>=0.13.1,<0.14.0
+boto3>=1.20.0
+google-api-python-client
+azure-mgmt-compute<17.0.0
+azure-mgmt-network<16.0.0
+azure-mgmt-resource<15.0.0
+# botocore 1.23.0 (via boto3 1.20.0) requires urllib 1.26.0 or newer:
+#  https://github.com/boto/botocore/issues/2562
+urllib3>=1.26.0
+ibm-vpc
+ibm-platform-services
+ibm-cos-sdk>=2.11.0

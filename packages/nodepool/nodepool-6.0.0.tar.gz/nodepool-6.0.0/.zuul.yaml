@@ -1,0 +1,303 @@
+- job:
+    description: |
+      Test that nodepool works with kubernetes.
+    name: nodepool-functional-k8s
+    pre-run: playbooks/nodepool-functional-k8s/pre.yaml
+    run: playbooks/nodepool-functional-k8s/run.yaml
+    post-run: playbooks/nodepool-functional-k8s/post.yaml
+    required-projects:
+      - zuul/nodepool
+
+- job:
+    description: |
+      Test that nodepool works with openshift.
+    name: nodepool-functional-openshift
+    pre-run: playbooks/nodepool-functional-openshift/pre.yaml
+    run: playbooks/nodepool-functional-openshift/run.yaml
+    nodeset:
+      nodes:
+        # Runs openshift
+        - name: cluster
+          label: centos-7
+        # Runs nodepool
+        - name: launcher
+          label: fedora-35
+    required-projects:
+      - zuul/nodepool
+
+- secret:
+    name: nodepool-dockerhub
+    data:
+      username: zuulzuul
+      password: !encrypted/pkcs1-oaep
+        - VV5m4XbsYvAz0/7T+WoIypvD3ijRsPYrGo4O5JuOHt6TX14s9B1KddeMwnabEEKapPdbb
+          cwqbzFKoHRMi8DdXiDKxrgbTSC1jb3BvKq7XE0/xF4Bq2dM+r3yDnXS6a7BuijSqFSiMG
+          /9bf0jqEAWXWCvbYUAxKOklJIRLjcKywCP5CulmW6EV8f1Iya8Y7UGpjGyL34FVQuc52Y
+          5MLp+Dra95pvBJMgikbu7LtMPCXOMctUFBpwNArCjWKGhz00UZwyAmsbPPHwQWb+884ZP
+          v9zi2FuRAL+rn4DRVwyIw28ZdCEr5F5EkZon3lSIhikhdQIyHPtW8VwMJTL4RxBdmgcEt
+          +zZBbLlOU+0AHPGLlO/yQNvHeSzwY9pe2oIGuqSu3h6zp6Y0NIE/Q0VpiIXWpOAnLOmno
+          uOd3j9tZ1beol2mg4Yk7rOaXu1Fvtfhd1K3LpLzEbiGzCMIEZuFHU2ZInAbUmtm0BtbDa
+          /bYvI9dB/uqA2xgse5rVMa++v3AfWJTJhFY/wBU4fHOWlFBUZKFuSoijUcWMfnfMMyU2B
+          A5CQKhv4Wmtzbvo/oneYkwFOTYaPNj2DS0BcFJFkR8FZDYmTBPnKoBH5wpwwnrzPOpCMa
+          L21z+Vp1Vce1XCsaOduMrmZDvuQcK1YOKIIUeElAQw8GuwTfcXqekoPvp54SeE=
+
+- job:
+    name: nodepool-build-image
+    parent: opendev-build-docker-image
+    description: Build Docker images.
+    timeout: &image_build_timeout 4800
+    dependencies:
+      - opendev-buildset-registry
+    requires:
+      - python-builder-3.9-bullseye-container-image
+      - python-base-3.9-bullseye-container-image
+    provides: nodepool-container-image
+    vars: &nodepool_image_vars
+      docker_images:
+        - context: .
+          repository: zuul/nodepool
+          target: nodepool
+          tags:
+            # If zuul.tag is defined: [ '3', '3.19', '3.19.0' ].  Only works for 3-component tags.
+            # Otherwise: ['latest']
+            &imagetag "{{ zuul.tag is defined | ternary([zuul.get('tag', '').split('.')[0], '.'.join(zuul.get('tag', '').split('.')[:2]), zuul.get('tag', '')], ['latest']) }}"
+          arch:
+            - linux/amd64
+            - linux/arm64
+        - context: .
+          repository: zuul/nodepool-launcher
+          target: nodepool-launcher
+          tags: *imagetag
+          arch:
+            - linux/amd64
+            - linux/arm64
+        - context: .
+          repository: zuul/nodepool-builder
+          target: nodepool-builder
+          tags: *imagetag
+          arch:
+            - linux/amd64
+            - linux/arm64
+
+- job:
+    name: nodepool-upload-image
+    parent: opendev-upload-docker-image
+    description: Build Docker images and upload to Docker Hub.
+    timeout: *image_build_timeout
+    requires:
+      - python-builder-3.9-bullseye-container-image
+      - python-base-3.9-bullseye-container-image
+    provides: nodepool-container-image
+    vars: *nodepool_image_vars
+    secrets:
+      - name: docker_credentials
+        secret: nodepool-dockerhub
+        pass-to-parent: true
+
+- job:
+    name: nodepool-promote-image
+    parent: opendev-promote-docker-image
+    description: Promote previously uploaded Docker images.
+    vars: *nodepool_image_vars
+    secrets:
+      - name: docker_credentials
+        secret: nodepool-dockerhub
+        pass-to-parent: true
+
+# NOTE(ianw) : kept separate as these aren't intended to be released
+- job:
+    name: nodepool-build-image-siblings
+    dependencies:
+      - opendev-buildset-registry
+    parent: opendev-build-docker-image
+    description: Build container images, with required projects as sibling from source
+    required-projects:
+      - zuul/nodepool
+      - openstack/diskimage-builder
+      - openstack/openstacksdk
+    requires:
+      - python-builder-3.9-bullseye-container-image
+      - python-base-3.9-bullseye-container-image
+    provides: nodepool-siblings-container-image
+    vars:
+      zuul_work_dir: "{{ zuul.projects['opendev.org/zuul/nodepool'].src_dir }}"
+      docker_images:
+        - context: .
+          repository: zuul/nodepool-launcher
+          target: nodepool-launcher
+          tags:
+            - siblings
+          siblings:
+            - opendev.org/openstack/openstacksdk
+        - context: .
+          repository: zuul/nodepool-builder
+          target: nodepool-builder
+          tags:
+            - siblings
+          siblings:
+            - opendev.org/openstack/openstacksdk
+            - opendev.org/openstack/diskimage-builder
+
+- job:
+    name: nodepool-functional-container-openstack-base
+    abstract: true
+    description: |
+      Test Nodepool containers with an OpenStack.
+
+      Note this is an abstract job and does not define an image to
+      build and test, and you should not inherit directly from this
+      job.
+
+      If you wish to build the nodepool containers with released
+      dependencies, you should inherit from
+      nodepool-functional-container-openstack-release-base and define
+      nodepool_diskimage for the image to build and test.
+
+      If you wish to build the nodepool containers with dependencies
+      installed from source, you should inherit from
+      nodepool-functional-container-openstack-siblings-base and define
+      nodepool_diskimage for the image build and test.
+    timeout: 5400
+    required-projects:
+      - zuul/nodepool
+    pre-run: playbooks/nodepool-functional-container-openstack/pre.yaml
+    run: playbooks/nodepool-functional-container-openstack/run.yaml
+    post-run: playbooks/nodepool-functional-container-openstack/post.yaml
+    vars:
+      zuul_copy_output:
+        /var/log/nodepool: logs
+
+- job:
+    name: nodepool-functional-container-openstack-release-base
+    abstract: true
+    description: |
+      Test Nodepool containers and OpenStack, against released
+      dependencies.
+
+      Note, this job does not define an image to build.  It should be
+      inherited from and nodepool_diskimage defined.
+    parent: nodepool-functional-container-openstack-base
+    dependencies:
+      - nodepool-build-image
+    required-projects:
+      - name: opendev/glean # note, installed by dib
+      - name: zuul/nodepool
+
+- job:
+    name: nodepool-functional-container-openstack-release
+    description: |
+      Test Nodepool containers and OpenStack, with released projects
+
+      This builds, uploads and boots a CentOS 8 image into a
+      OpenStack cloud.
+    parent: nodepool-functional-container-openstack-release-base
+    vars:
+      nodepool_diskimage:
+        base_element: centos-minimal
+        release: 9-stream
+        mirror: "http://{{ zuul_site_mirror_fqdn }}/centos"
+        env-vars:
+          DIB_SIMPLE_INIT_NETWORKMANAGER: '1'
+
+- job:
+    name: nodepool-functional-container-openstack-siblings-base
+    abstract: true
+    description: |
+      Test Nodepool containers and OpenStack, with some projects from source
+
+      Note, this job does not define an image to build.  It should be
+      inherited from and nodepool_diskimage defined.
+    parent: nodepool-functional-container-openstack-base
+    dependencies:
+      - nodepool-build-image-siblings
+    required-projects:
+      - name: opendev/glean # note, installed by dib
+      - name: zuul/nodepool
+    vars:
+      nodepool_container_tag: ':siblings'
+
+- job:
+    name: nodepool-functional-container-openstack-siblings
+    description: |
+      Test Nodepool containers and OpenStack, with some projects from source
+
+      This builds, uploads and boots a CentOS 8 image into a
+      OpenStack cloud.
+    parent: nodepool-functional-container-openstack-siblings-base
+    vars:
+      nodepool_diskimage:
+        base_element: centos-minimal
+        release: 9-stream
+        mirror: "http://{{ zuul_site_mirror_fqdn }}/centos"
+        env-vars:
+          DIB_SIMPLE_INIT_NETWORKMANAGER: '1'
+
+- job:
+    name: nodepool-tox-py38
+    description: |
+      Nodepool unit tests with ZooKeeper running
+    parent: tox-py38
+    pre-run: playbooks/nodepool-tox/pre.yaml
+    vars: &nodepool_tox_vars
+      tox_environment:
+        NODEPOOL_ZK_CA: /opt/zookeeper/ca/certs/cacert.pem
+        NODEPOOL_ZK_CERT: /opt/zookeeper/ca/certs/client.pem
+        NODEPOOL_ZK_KEY: /opt/zookeeper/ca/keys/clientkey.pem
+
+- job:
+    name: nodepool-tox-py39
+    description: |
+      Nodepool unit tests with ZooKeeper running
+    parent: tox-py39
+    pre-run: playbooks/nodepool-tox/pre.yaml
+    vars: *nodepool_tox_vars
+
+- project:
+    vars:
+      release_python: python3
+    check:
+      jobs:
+        - opendev-buildset-registry
+        - nodepool-build-image
+        - zuul-tox-docs
+        - tox-pep8
+        - nodepool-tox-py38
+        - nodepool-tox-py39
+        - nodepool-functional-container-openstack-release
+        - nodepool-functional-k8s
+        - nodepool-functional-openshift
+        - zuul-quick-start:
+            requires: zuul-container-image
+            dependencies: nodepool-build-image
+        - build-python-release
+    gate:
+      jobs:
+        - nodepool-upload-image
+        - zuul-tox-docs
+        - tox-pep8
+        - nodepool-tox-py38
+        - nodepool-tox-py39
+        - nodepool-functional-k8s
+        - nodepool-functional-openshift
+        - zuul-quick-start:
+            requires: zuul-container-image
+            dependencies: nodepool-upload-image
+        - build-python-release
+    promote:
+      jobs:
+        - nodepool-promote-image
+        - zuul-promote-docs
+        - opendev-promote-python
+    release:
+      jobs:
+        - opendev-release-python
+        - zuul-publish-tox-docs
+        - upload-docker-image:
+            timeout: *image_build_timeout
+            secrets:
+              name: docker_credentials
+              secret: nodepool-dockerhub
+              pass-to-parent: true
+            vars:
+              <<: *nodepool_image_vars
+              upload_docker_image_promote: false

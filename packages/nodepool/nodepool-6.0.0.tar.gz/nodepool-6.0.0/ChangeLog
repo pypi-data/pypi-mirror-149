@@ -1,0 +1,1957 @@
+CHANGES
+=======
+
+6.0.0
+-----
+
+* Delete AWS image builds
+* AWS tests : catch AttributeError raised by latest moto release
+* Add binutils to nodepool builder docker image
+* Fix default python paths in aws, azure, ibmvpc drivers
+* Add more debug info to AWS driver
+* Update DIB to version 3.20.2
+* Update openshift dependency
+* Support K8s 1.22.0 and newer
+* Docker image: use unstable debootstrap
+* Add support for label quota
+* Switch to using openstackclient
+* Drop support for Python 3.6
+* Don't yield to a provider with unsupported labels
+* Correct tagged version docs build
+* Pass requestor data to Nodes
+* Add a mininum version for ibm-cos-sdk-core
+* Revert "Remove openstacksdk from siblings job"
+* Fix flavor handling for openstacksdk 1.0
+* Prioritize requests with labels that can be served
+* Remove unused AWS implementation
+* Add additional tests to the aws driver
+* Add IBM Cloud VPC driver
+* functional-test : ensure glean started
+* Retain created\_time in node requests
+* Update to DIB 3.19.1
+* Add zookeeper-timeout connection config
+* Refactor AWS driver tests
+* Update AWS driver to use statemachine framework
+* Add provider image config to statemachine image upload
+* Allow disabling host-key-checking in statemachine
+* Update to DIB 3.19.0
+* Bump diskimage-builder to 3.18.0
+* Fix tenant-quota for providers without label quota infos
+* Bump Openshift test to Fedora 35
+* Dockerfile: explicitly install uidmap package
+* Bump DIB to 3.17.0
+* testing: move to CentOS 9-stream
+
+5.0.0
+-----
+
+* Add release note for 5.0.0
+* Avoid runtime errors in zk node iterator
+* nodepool-zuul-functional: remove
+* Add QuotaSupport to drivers that don't have it
+* Remove openstacksdk from siblings job
+* Stop running siblings jobs and pin SDK
+* Add tests for exporting tenant limit stats
+* Improve handling of errors in provider manager startup
+* Retry EC2 instance state GETs
+* Add option of configuring imagePullSecrets for openshift drivers
+* Export current tenant limit stats
+* builder: Remove optional extension from DibImageFile
+* builder: don't use DibImageFile to construct dib image path
+* builder: remove from\_path interface
+* builder: remove unused from\_images\_dir interface
+
+4.4.0
+-----
+
+* Switch docs theme to versioned RTD
+* Add metastatic driver
+* Bump DIB to 3.16.0
+* Replace deprecated assertEquals
+* Azure: add image filter
+* functional test: check DIB kernel flags
+* Bump DIB to 3.15.2
+* Add admin password support for Azure driver
+* Bump DIB to 3.15.1
+* Fix infinite recursion in GCE provider
+* Fix boto deps
+* Azure: add image-id support
+* Bump DIB requirement to 3.15.0
+* Fix openshift dep for arm64 docker image builds
+* Dockerfile: install podman from unstable
+* Use bullseye podman in container
+* Add py39 testing to nodepool
+* Update Docker and bindep for Bullseye base images
+* Add more log messages to azure driver
+* Azure: correct default tags value for VMs
+* Add missing schema entries for Azure driver
+* Add user-data/custom-data to Azure driver
+* Correct host\_key setting in statemachine driver
+* Add shell-type to Azure driver
+* Support node-attributes in Azure driver
+
+4.3.0
+-----
+
+* Pin minikube to 1.22.0
+* Add user\_data field to Node
+* Deregister launchers when restarting them
+* Catch more potential errors in PoolWorker run loop
+* Add Tenant-Scoped Resource Quota
+* Add commands to export/import image data from ZK
+* Require DIB 3.13.0
+
+4.2.2
+-----
+
+* Add release note for previous commit
+* First ensure ssh connection is valid before scanning keys
+
+4.2.1
+-----
+
+* kubernetes: handle situation where the configuration is empty
+
+4.2.0
+-----
+
+* Delete init nodes when resetting lost requests
+* Allow empty string in leaked port cleanup
+* Add requestor\_data field to node request
+* Fix AWS driver equality check
+* Fix static driver equality check
+* Rename pip4/6 to public\_ipv4
+* Azure: update documentation
+* openshiftpods: fix delete\_namespaced\_pod arguments
+* kubernetes: refactor client creation to utils\_k8s
+* Switch fedora-latest to use fedora-34
+* Update dib to 3.12.0
+* Azure: replace driver with state machine driver
+* Azure: fix race in leaked resources
+* Azure: use rate limiting
+* Azure: handle leaked image upload resources
+* Azure: implement support for diskimages
+* Azure: implement launch retries
+* Azure: add quota support
+* Azure: don't require full subnet id
+* Azure: Handle IPv6
+* Fix gate for Focal issues
+* Assign waiting static nodes by request priority
+* Dockerfile: podman -- handle new configuration file
+* Dockerfile: podman -- install recommends
+* Dockerfile: podman -- disable metacopy option
+* Install podman in container for container-based builds
+* Bump dib to 3.11.0
+* nodepool-functional : ignore errors copying logs
+* Stop installing docker via bindep
+* QuotaInformation : abstract resource recording
+* Remove statsd args to OpenStack API client call
+* Require dib 3.10.0
+* Log decline reason at info
+* Require dib 3.9.0
+* Add simple load testing script
+* Bump dib requirement to 3.8.0
+* Document ImagePullPolicy for kubernetes driver
+* Azure: reconcile config objects
+* Azure: delete disk based on VM reference
+* Add azure state machine driver
+* Support threadless deletes
+* Improve state machine keyscan handling
+* Add an example state machine driver
+* Add a state machine driver framework
+
+4.1.0
+-----
+
+* Uniquely identify launchers
+* Add python-logstash-async to container images
+* Azure: switch to Azul
+* Update docs for shell-type driver config
+* Format multi-line log entries
+* Add shell-type config
+* Log error message on request handler removal on session loss
+* Mention node id when unlock failed
+* Add test-setup-docker.sh
+* Increase timeout of docker release job
+
+4.0.0
+-----
+
+* Require TLS
+* Add 4.0 release note
+* Optimize list\_servers call in cleanupLeakedInstances
+* Offload waiting for server creation/deletion
+* Upgrade pip before installing zuul
+* Connect root logger to null handler by default
+* Handle ports exceeded error as quota error
+* Require diskimage-builder 3.6.0
+* Fix k8s driver when using in cluster config
+* Bump openshift dep
+* Replace call to deprecated Thread.isAlive
+* Require dib 3.5.0
+* Drop python 3.5 support
+* rename imagesdir/elementdir with underscore
+* Bump diskimage-builder requirement to 3.4.0
+* nodepool-functional-k8s: don't run on Xenial
+
+3.14.0
+------
+
+* Fix indentation error in kubernetes docs
+* Docs: correct static node uniqueness constraint
+* Fix indentation for azure driver documentation
+* Changed informations provided in openshiftpods driver
+* Fix loggername for Gce test driver
+* Remove unused labels in gce tests
+* Reorganize drivers into separate documents
+* Fix urllib3 dependency
+* Have nodepool scan as many ssh host keys as possible
+* k8s/OpenShift Provider: Remove workingDir Attribute
+* Fix fake image build under Mac OS
+* Set mininum urllib3 version
+* Ignore unparsable/empty image build ZNode data
+* [provider][static] add external\_id field like other provider
+* Stop using fedora-30
+* Cap azure dep versions due to breaking changes
+* Use rax.dfw mirror for arm64 wheels
+* Followup test improvement to use iterate\_timeout
+* Dockerfile: add xz-utils
+* [provider][aws] use one API call to create tags
+* Install gdisk/dosfstools on nodepool-builder images
+* Build arm64 images using arm64 wheels from openstack if available
+* Update bindep and vhd-util install for arm64
+* k8s Driver: Fix Node Launch For Secrets Without API Credentials
+* Load diskimage configs before building them
+* Add image-pause CLI command
+* Bump dib requirement to 3.2.1
+* [provider][aws] fix exception when instance not found during cleanup
+* OpenShift/k8s Provider: Basic Support for k8s nodeSelectors
+* Ignore unparsable/empty image upload ZNode data
+* Finish adding GCE quota support
+* Add basic max-servers handling to the k8s driver
+* Use python3 for building releases.  Everywhere
+
+3.13.1
+------
+
+* Add release note about kazoo upgrade
+* Stop building arm container images and fix devstack tls
+* Dockerfile: update vhd-util install for Ubuntu Focal
+* Require kazoo 2.8.0
+* Remove default qcow2 format in diskimage config
+* OpenShift/k8s Provider: Allow passing env vars to Pods
+* Restore release jobs
+* Improve max-servers handling for GCE
+* Add ensure-virtualenv to nodepool-functional-openstack
+* Kubernetes Driver: Allow cpu/mem resource limits
+* Run upload-docker-image on release
+* Add ensure-tox to k8s and openshift jobs
+* Implement an Azure driver
+* aws: add support for attaching instance profiles
+* Add more detail to TESTING.rst
+* doc: openshiftpods handles python-path too
+* config: add environment variable substitution
+
+3.13.0
+------
+
+* openshiftpods: define ca\_crt parameter if available
+* Use fqdn for builder hostname info
+* Build nodepool with python3.8
+* Handle ipv6 literal zookeeper addresses
+* Build multi-arch images for x86 and arm
+* Dockerfile: use local openstack-ci-core PPA key
+* container functional test : allow to specify elements-dir
+* Allow disabling build-log-retention
+* Update dib to 2.36.0
+* Add nodepool as required project to siblings image build
+* Actually install extras from nodepool\_base
+* Functional container tests: update to CentOS 8
+* func-tests: drop debuntu specific env vars
+* Siblings container build: set work dir to nodepool
+* Dockerfile: incorporate workaround deboostrap
+* Set pool info on leaked instances
+* Log openstack console at info
+* Parallelize initial static node synchronization
+* Add yappi and objgraph to an extra
+* Mark dib as deleting before erasing files from disk
+* Logs stats for nodepool automated cleanup
+* Test alternative username in unit tests
+* diskimage.username setting was not read from configuration file
+* Add ZooKeeper TLS support
+* Stop checking user\_data in func test
+* Add requires to zuul-quick-start job
+* config\_validator: refactor the schema to a static method
+* k8s/OKD Provider: Don't Set ca\_cert if TLS verification is skipped
+* Use ensure-\* roles
+* Add GCE driver tests
+* Fix shutdown ordering
+* Update tests for node-attributes
+* Add debug info on json parse error of image upload
+* Update dib dep to 2.35.0
+* Pin docker images to 3.7 explicitly
+* Add libc6-dev to bindep
+* nodepool-zuul-functional: switch to editable install
+* Support node-attributes in static driver
+* Move config merge into DiskImage object
+* Add parent and abstract flags for diskimages
+* diskimage: make name primary key
+* DiskImage : alphabetise entries
+* Support image uploads in 'info' CLI command
+* Filter active images for OpenStack provider
+* Correct dib\_path typo
+* Revert abitrary uid support
+* Stop comparing hostnames to determine ownership
+* Add visual dividers for each image in Dockerfile
+* Be explicit about base image source
+* Stop using hacking for anything
+* Enable setting label and instance name separately
+* Declare support for Python3.8
+* Install zypper on the nodepool-builder image
+* Kubernetes/OpenShift Provider: Don't Require Bash in Container Images
+* Use explicit provides/requires for container jobs
+
+3.12.0
+------
+
+* Fix for clearing assigned nodes that have vanished
+* Fix GCE volume parameters
+* k8s: allow port forwarding
+* Use Fedora 30 for openshift functional job
+* Don't build universal wheels
+* add ebs-optimized support for aws provider
+* Dockerfile: create a nodepool user with uid 10001
+* Remove duplicate log info from OpenStack driver
+* Annotate logs in zk module
+* Include event id in node request listings
+* Annotate logs in node request handler
+* Annotate logs in launcher
+* kubernetes: add release note about service account token issue
+* Lower min-ready request priority
+* add tags support for aws provider
+* Pass node request handler to launcher base class
+* Centralize logging adapters
+* Handle event id in node requests
+* Make flake8 config compatible with latest version
+* Cleanup exception logging in static provider
+
+3.11.0
+------
+
+* Use iterate\_timeout in test waits
+* Fix missing node tuple arg in static provider
+* Delete dib images when all uploads set to deleting
+* Always identify static nodes by node tuple
+* Switch to collect-container-logs
+* Make public ip configurable in aws
+* Support userdata for instances in aws
+* Parallelize test\_ec2\_machine
+* Fix resource warnings when running tests
+* Add ready endpoint to webapp
+* Add procps to packages in Dockerfile
+* Add debootstrap to builder package list
+* 'keys' must be defined for host-key-checking: false
+* Functional tests - use common verification script
+* Add a container-with-releases functional test
+* Dockerfile: install nodepool-builder dependencies
+* Add container-with-siblings functional test
+* Also build sibling container images
+* Dockerfile: add DEBUG environment flag
+* GCE: add use-internal-ip option
+* Remove uneeded shebang and exec bit on some files
+* Add Google Cloud provider
+* Dockerfile: install sudo for nodepool-builder
+* Dockerfile: create APP\_DIR
+
+3.10.0
+------
+
+* Add missing release notes
+* Aws cloud-image is referred to from pool labels section
+* Documentation fixes
+* Dockerfile: add user to shadow file too
+* Support optional post upload hooks
+* Delete images by id
+* Handle newer nova microversions
+* Ensure both kubernetes and openshift token are b64decoded
+* Cleanup openshift pre.yaml playbook
+* Remove unused functional testing playbooks
+
+3.9.0
+-----
+
+* Add libssl-dev to bindep
+* Fix register race condition in static provider
+* Set default python-path to "auto"
+* Remove unused playbook
+* Remove unused k8s log config
+* Pull minikube log data
+* Validate openstack provider pool labels have top-level labels
+* Fix typo in port-cleanup-interval description
+* Handle case where nova server is in DELETED state
+* Static provider defaults to ssh connection
+* Fix builder shutdown race in tests
+* Sort waiting static nodes by creation time
+* Don't touch static nodes that are allocated
+* Add port-cleanup-interval config option
+* AWS driver: add ability to determine AMI id using filters
+* Assign static 'building' nodes in cleanup handler
+* Use real uuids in fake cloud resource IDs
+* Switch to fedora-30 for the openshift integration job
+* Deregister a launcher when removed from config
+* dib-functional : allow extra elements to be passed
+* Add statsd\_exporter mapping
+* Do not overwrite image upload ZK data on delete
+* Reduce upload threads in tests from 4 to 1
+* k8s: make context optional
+* Log new image upload external ID
+* Fix chroot type
+* Add extra spacing to avoid monospace rendering
+* Fix Kubernetes driver documentation
+* Fix node failures when at volume quota
+* Use fedora-29 instead of fedora-28
+* Set manage\_images to false on aws
+* openstack: handle safely invalid network name
+* Add a dib-cmd option for diskimages
+
+3.8.0
+-----
+
+* builder: Log all deletions of image upload records
+* builder: Remove recency table logging
+* Avoid openstacksdk image delete bug
+* Functional testing: add journal-to-console element
+* Enable debug logs for openstack-functional tests
+* Install libffi6 on dpkg platforms
+* Add build ID to failure message
+* Fix nodepool container failure
+* Remove opendev-promote-javascript-content
+* static: add host-key-checking toggle
+* Add functional jobs to gate
+* Don't pause static pool on single label quota
+* Switch to zuul tenant jobs for docs/release
+* Add nodepool\_debug flag to openstack functional jobs
+* Update documentation for k8s in-cluster config
+* static: document multiple labels shortcomming
+* Allow nodepool for using in-cluster configs
+* Reparent nodepool-functional-openstack-src
+* Remove devstack plugin functional test jobs
+* Switch functional testing to a devstack consumer job
+* Increase port cleanup interval
+
+3.7.1
+-----
+
+* Add release note about pinning openshift client
+* Pin to openshift <= 0.8.9
+* static: enable using a single host with different user or port
+
+3.7.0
+-----
+
+* Exclude SDK with broken image upload tasks
+* Toggle host-key-checking for openstack provider.labels
+* Explicitly set use\_direct\_get to False
+* Update os-client-config references to openstacksdk
+* Add error handling when cleaning up resources
+* openstack: document the key-name parameter
+* Use py3 pathlib in DibImageFile
+* static: fix missing python-path update
+* Fix version number when installing dev release
+* Add release-zuul-python to post pipeline
+* Implement an OpenShift Pod provider
+* Add python-path option to node
+* Cleanup kube\_config temp files between test runs
+
+3.6.0
+-----
+
+* Fix leaked loggers
+* Allow openstack provider labels to configure networks
+* Update devstack settings and docs for opendev
+* OpenDev Migration Patch
+* Add support for yappi and objgraph output
+* Gather host keys for connection-type network\_cli
+* Fix for orphaned DELETED nodes
+* Implement max-servers for AWS driver
+* Dockerfile: add support for arbritary uid
+* Fix race with test\_provider\_removal unit test
+* Fix race in test\_handler\_poll\_session\_expired
+* Fix debug log message
+* Add Debian Buster boot tests
+* Use the buildset registry in zuul-quick-start
+* Use opendev docker jobs
+* Remove reference to TaskManagerStopped exception
+* Remove unused use\_taskmanager flag
+* Remove TaskManager and just use keystoneauth
+* Pin openstacsksdk to <0.27.0
+* Fix for image build leaks
+* Make local dib file cleanup method a static method
+* Use yaml.safe\_load instead of load
+* Update docs for provider removal
+* config: use yaml.safe\_load instead of load
+* Run tox-py35 jobs on xenial
+* k8s: Fix delete\_namespace to use kwargs properly
+
+3.5.0
+-----
+
+* Remove prelude from AWS release note
+* doc: add provider driver development instructions
+* Support requests for specific providers
+* doc bugfix for static provider
+* Update dib stats
+* Use a pipeline for dib stats
+* Properly handle TaskManagerStopped exception
+* docker: don't daemonize when starting images
+* bindep: add sudo
+* Rename aws flavor-name to instance-type
+* Add documentation for AWS/EC2 driver
+* Remove unused fields from AWS driver
+* EC2: Do not tag an instance until it is running
+* Revert "Revert "Add a timeout for the image build""
+* Amazon EC2 driver
+* Revert "Add a timeout for the image build"
+* Stop building an explicit nodepool-base image
+* Build images with Dockerfile instead of pbrx
+* Add a timeout for the image build
+* Improve connection timeout log message
+* Support userdata for instances in openstack
+* Revert "Revert "Cleanup down ports""
+* Fix OpenShift driver typo
+* Add dogpile.cache master to the -src tests
+* Document default values of runtime arguments
+* Implement an OpenShift resource provider
+* print-zk: convert zookeeper\_servers to a list
+* Default host\_keys to empty list in static driver
+* Extract common config parsing for ProviderConfig
+* Extract out common config parsing for ConfigPool
+
+3.4.0
+-----
+
+* Add unmanaged vm to nodepool functional tests
+* Trim devstack services used in testing
+* Run devstack zookeeper on tmpfs
+* Switch devstack jobs to Xenial
+* Include host\_id for openstack provider
+* Fix race in test\_handler\_poll\_session\_expired
+* Add an upgrade release note for schema change
+* Make estimatedNodepoolQuotaUsed more resilient
+* Set type for error'ed instances
+* Add cleanup routine to delete empty nodes
+* Fix race when deleting Node znodes
+* Set pool for error'ed instances
+* Make launcher debug slightly less chatty
+* Add more debug lines to request handler
+* Add relative priority to request list
+* Don't update caches with empty zNodes
+* Log exceptions deleting ZK nodes
+* Log exceptions in cache listener events
+* Fix leak detection in unmanaged quota calculation
+* Remove updating stats debug log
+* Block 0.20.0 of openstacksdk
+* Ensure that completed handlers are removed frequently
+* OpenStack: store ZK records for launch error nodes
+* OpenStack: count leaked nodes in unmanaged quota
+* Support relative priority of node requests
+* Asynchronously update node statistics
+* Add arbitrary node attributes config option
+* Fix test race in test\_hold\_expiration\_higher\_than\_default
+* Only setup zNode caches in launcher
+* Add second level cache to node requests
+* Add second level cache of nodes
+* Update node request during locking
+* Cache node request zNodes
+* Add extra safety belt when reusing a node
+* Update node during lockNode
+* Add resource metadata to nodes
+* Add Fedora 29 testing
+* Fix print-zk tool for python3
+* Remove nodepool-k8s-functional and install-nodepool roles
+* Move k8s install to pre playbook
+* Use openstacksdk submit\_task
+* Normalize sidebar in docs
+* Alter the metasyntactic variable in driver docs
+* Convert kubernetes config docs to zuul-sphinx
+* Support node caching in the nodeIterator
+* Pin docker for k8s test
+* Correct heading levels for Kubernetes config docs
+* Only set basepython once
+* Add tox functional testing for drivers
+* Update devstack test to Fedora 28
+
+3.3.1
+-----
+
+* Revert "Cleanup down ports"
+* Cleanup down ports
+* Implement a Kubernetes driver
+* Run test zookeeper on top of tmpfs
+* Don't let openstacksdk run a taskmanager during testing
+* Ignore removed provider in \_cleanupLeakedInstances
+* Make functional src jobs actually install from source
+* Remove sqlalchemy from requirements
+* Initialize label statistics to zero
+* Remove unneeded todo comment
+* Use quota handling code for min-ready declines
+* Add overview of config options
+* Use zuul-sphinx for configuration layout
+* Run zuul-quick-start job
+* Update pypi metadata
+* move 01-nodepool-setup to a later phase
+* Add line to setup.cfg limiting to python >=3.5
+* Add universal flag to setup.cfg
+* Reduce socket connect timeout in nodescan
+
+3.3.0
+-----
+
+* Add tox-py36 job
+* Remove tox-cover job
+* Run release-zuul-python on release
+* Normalise more of the API stats calls
+* Add release note for instance-properties config
+* Fix race in test\_launchNode\_delete\_error
+* Add instance boot properties
+* Implement liveness check for static nodes
+* Re-register missing nodes in static driver
+* Move OpenStack leak code into driver
+* Use zk connection passed to OpenStack driver
+* Use tox-docs directly
+* Do not abort node launch if failed node cannot be deleted
+* Fix label name in reported label stats
+* Fix use of wrong label static test fixture
+* Fix missing node state refresh in static driver
+* Improve static provider to check non-ssh hosts
+* Add metric for image build result
+* uncap sphinx
+* Fix node state checks after aquiring lock
+* Update static nodes in Zookeeper on config change
+* Force node hold expiration to integer type
+* Add list of metrics provided to statsd
+* Add post job to push pbrx container images
+* zk: skip node already being deleted in cleanup leaked instance task
+* Update docs build job
+* Move sphinx + deps to doc/requirements.txt
+* Bump minimum openstacksdk version to 0.17.2
+* Switch storyboard url to be by name
+* Use hostname for launch exception
+* Use pipelines for stats keys
+
+3.2.0
+-----
+
+* Make statsd key look like the keys from shade
+* Add upgrade release note about aborted node status
+* Add logging when pausing due to node abort
+* Docs: increase visibility of env secrets warning
+* Invalidate az cache on bad request
+* Ignore files produced by tox-cover
+* Use detail listing in integration testing
+* Build container images using pbrx
+* Fix plugin and examples for using openstacksdk
+* builder: do not configure provider that doesn't manage images
+* status: add pool column to nodepool list output
+* Replace shade and os-client-config with openstacksdk
+* Remove Task class
+* Remove OpenStack driver waitForImage call
+* Stop publishing docs to docs.openstack.org
+* Add ability to ignore provider quota for a pool
+* Update README and add TESTING similar to Zuul repo
+* Cleanup test\_over\_quota
+* Fix race at shutdown
+* Fix relaunch attempts when hitting quota errors
+* Add test with unresolvable static node
+* Change TaskManager from is-a to has-a thread
+* Fix for referencing cloud image by ID
+* Add test for referencing cloud image by ID
+* launcher: add pool quota debug and log information
+* Handle node no longer in pool error
+* Publish docs on release
+
+3.1.0
+-----
+
+* Fix for pools with different labels
+* zk: retry initial zookeeper connection attempts
+* Add release note for static driver changes
+* Static driver: fix node registration
+* Remove a done TODO in static driver
+* Add release note for paused handler fix
+* Fix paused handler exception handling
+* Clarify static node name uniqueness in docs
+* Pre-register static nodes
+* Make a proper driver notification API
+* Pass zk connection to ProviderManager.start()
+* fix tox python3 overrides
+* Add release note about upgrading for multi-label
+* Fix 'satisfy' spelling errors
+* Fail quickly for disabled provider pools
+* webapp: fix browser return
+* Fix adding qcow2 format without need
+* Have Drivers create Providers
+* Move QuotaInformation to driver utils
+* Create a base Driver class
+* Add opensuse-150 to nodepool dsvm
+* Add support for specifying security\_group in nodepool
+* Directly link providers and request handlers
+* Add driver interface documentation
+* builder: support setting diskimage env-vars in secure configuration
+* Add multilabel support to ZooKeeper Node model
+* Simplify driver API
+* Correctly use connection-port in static driver
+* Log connection port in static driver on timeout
+* Use ProviderConfig iface to validate labels
+* Make imagesAvailable() part of the driver API
+* Default image creation to qcow2 type
+* Fix ConfigValue comparisons
+* Make manage\_images a property of ProviderConfig
+* Remove LIBS\_FROM\_GIT
+* Force driver provider configs to define pool attr
+* Update logging format for devstack jobs
+* Clean up configuration file loading
+* Remove use of six
+* Ignore .stestr directory in .gitignore
+* Add logo to docs
+* Remove initial stub release note
+* Add openstacksdk to nodepool-functional-py35-src
+* Remove debian-jessie from nodepool dsvm testing
+* Fix typo with \_logConsole function
+* Fix test patching of clouds.yaml file locations
+* Static driver: Use node states defined in zk.py
+* Add systemd drop-in file for CentOS 7
+* Fix nodepool-launcher systemd file
+* Clarify in doc introduction that OpenStack is not required
+* Switch to stestr
+
+3.0.1
+-----
+
+* Fix race in test\_hold\_expiration\_no\_default
+* Fix awkward merging of code
+* Refactor NodeLauncher to be generic
+* Do not hardcode zookeeper host to localhost
+* Support winrm hosts in static driver
+* Add example nodepool-launcher systemd service file
+* openstack: convert rate to float
+* Refactor run\_handler to be generic
+* launcher: handle ZK session loss during handler poll
+* Reduce strictness of growroot test
+* Add a backoff for failed builds
+* Use AFS mirrors for debian-stretch testing
+* Add some more fudge factor for growroot test
+* Add connection-port to provider diskimage
+* Don't gather host keys for non ssh connections
+* Test growroot in boot tests
+* Enable AFS mirrors for ubuntu-bionic testing
+* Add debian-stretch to nodepool-functional-py35-debian-src
+* Reduce logging in \_cleanupCurrentProviderUploads function
+* add gentoo systemd image for testing
+* Add reno releasenotes support
+
+3.0.0
+-----
+
+* Switch docs to alabaster theme
+* Handle ZK session loss during node launch
+* Revert "Add support for STATSD\_IPV6"
+* Add host-key-checking option to openstack providers
+* Add support for STATSD\_IPV6
+* Publish docs to zuul-ci.org
+* Extend config API with getSupportedLabels()
+* Rename get\_schema to getSchema
+* Store label info with launcher registration
+* Add label-list webapp endpoint
+* webapp: use content detection for return
+* Consolidate node\_list, add generic filter
+* Consolidate status results
+* Revert "Add /label-list to the webapp"
+* Refactor status functions, add web endpoints, allow params
+* Support ubuntu-bionic (18.04) with nodepool dsvm
+* Add additional builder debug logging
+* Add /label-list to the webapp
+* Sort formats results from zookeeper
+* Refactor playbooks/nodepool-zuul-functional/pre.yaml
+* Use python3 for devstack testing
+* Clean held nodes automatically after configurable timeout
+* Only DeletedNodeWorker should delete nodes
+* Source /etc/ci/mirror\_info.sh for mirrors
+* Hack for test\_delete\_now rare failures
+* Simplify launcher cleanup worker
+* Avoid tools/nodepool-integration-setup.sh from zuul
+* Remove copying of legacy install-distro script
+* Fix nodepool-zuul-functional
+* Add opensuse-tumbleweed to nodepool dsvm testing
+* Use $NODEPOOL\_KEY\_NAME for dsvm testing
+* Take 2: Add functional test for key-name and glean
+* Switch to fedora-27 for nodepool dsvm
+* Clean up old images for testing
+* Ensure only python3 is installed with bindep.txt
+* Unpause Xenial build for non-src functional test
+* Revert fixes for legacy boot jobs
+* Add native distro test jobs
+* Fix legacy dsvm jobs
+* Store build logs automatically
+* Default min-ready to 0
+* Add unit test for multiple launchers
+* Resolve paths before demonization
+* Exercise pidfile before daemonizing
+* Exit launchers and builders immediately
+* Update tox docs environment to match build-sphinx-docs
+* Add default logging configuration
+* Do not delete unused but allocated nodes
+* Fix for age calculation on unused nodes
+* Add /node-list to the webapp
+* Convert nodepool-zuul-functional job
+* Provider wedge fix
+* Handle missing request during a decline
+* Refactor method node\_list in status.py
+* update supported python version in setup.cfg
+* Do not submit min-ready requests with min-ready 0
+* Remove the hold command
+* Invalidate flavor and image cache on 400 errors
+* Implement a static driver for Nodepool
+* nodeutils: use socket.getaddrinfo instead of ipaddress
+* Partial revert for disabled provider change
+* Fix race in test\_failed\_provider
+* Update docs to reflect newer Python requirement
+* Do not attempt to handle requests when disabled
+* Default max pool resources to math.inf
+* Split out erasing from 'info' command into 'erase'
+* Convert from legacy to native devstack job
+* Set app\_name and app\_version
+* Remove shade\_inner\_exceptions
+* Fix race in test\_provider\_removal
+* builder: do not cleanup image for driver not managing image
+* Drop python2 virtualenv for devstack
+* Add provider info command
+* zk: check for client in properties
+* Add a plugin interface for drivers
+* handler: fix support for handler without launch\_manager
+* license: remove dos line break
+* Fix node data retrieval race in test\_failed\_provider
+* Replace master with feature/zuulv3
+* Add test\_launcher test
+* Only fail requests if no cloud can service them
+* Use same flake8 config as in zuul
+* Do pep8 housekeeping according to zuul rules
+* Clarify provider manager vs provider config
+* Short-circuit request handling on disable provider
+* Fix races around deleting a provider
+* Log request ID on request failure
+* Improve logging around ZooKeeper suspension
+* Rename \_useBuilder method to useBuilder
+* Add support for a secure ZooKeeper configuration
+* Remove name from project stanza
+* Log unknown providers during quota calculation
+* Test that -1 works for infinite quota
+* Assume a quota limit of -1 means unlimited
+* Fail on quota-exceeded (partial revert)
+* Log provider names with quota
+* requirements: remove paramiko <2.0 cap
+* Handle invalid request lock in request cleanup
+* Support ram limit per pool
+* Support cores limit per pool
+* Make max-servers optional
+* Don't fail on quota exceeded
+* Add cloud quota handling
+* Clarify terminology around node request locks
+* Add connection-type to provider diskimage
+* Support username also for unmanaged cloud images
+* Rename ssh\_port to connection\_port
+* Remove alien\_list command
+* Refactor provider config to driver module
+* Fix broken use of pre-existing cloud images
+* Use py3 in docs generation
+* Reorg non detailed instance listing columns
+* Improve test case node\_assignment\_at\_quota
+* Apply floating ip for node according to configuration
+* Fix nodepool cmd TypeError when no arguemnts
+* [docs] Correct default image name
+* Be consistent with the ZK data model
+* Add username to build and upload information
+* Document security group
+* Reset state on unpaused, declined request
+* Unpause a declined request
+* Add additional launcher logging
+* Use >= in instance count comparison to max-servers
+
+0.5.0
+-----
+
+* Zuul: add file extension to playbook path
+* Zuul: add file extension to playbook path
+* Migrate legacy jobs for feature/zuulv3 branch
+* Add timeout for ssh negotiation on keyscan
+* Migrate legacy jobs
+* Harden exception handling around instance deletes
+* Improve exception handling around lost requests
+* Do not satisfy min-ready requests if at capacity
+* Bring back per label groups in Openstack
+* Set log after we have launcher\_id
+* Add launcher ID to log messages
+* Add debug line for deleting unlocked nodes
+* Fix node request assignment order
+* Fix node delete command
+* Remove unreachable code
+* Fix typo in variable name
+* Fix node list output
+* Add node.allocated\_to to node detail output
+* Remove opensuse-42.2 and fedora-25 from nodepool dsvm jobs
+* Fix nodepool's docs about config-drive
+* Remove the default argument to secure in nodepoolcmd
+* Set base environment as python3
+* Revert "Allow launcher to stop quicker when asked"
+* Add node.cloud to zookeeper
+* Allow launcher to stop quicker when asked
+* Fix detail headers order for nodepool list
+* Clarify diskimage names in docs
+* Add hold job to nodepool list output
+* Add --detail option to nodepool list command
+* Support fedora-26 for nodepool dsvm job
+* Move the fakeprovider module to the fake driver
+* Add zuulv3 jobs for nodepool
+* Remove FakeProvider getClient monkey-patch
+* Extend Nodepool configuration syntax to support multiple drivers
+* Collect request handling implementation in an OpenStack driver
+* Abstract Nodepool provider management code
+* Abstract Nodepool request handling code
+* Support UUID as builder identifier
+* Add support for nodepool testing of openSUSE 42.3
+* Simplify \_deleteLocalBuild parameters
+* Add SSH Host Key Verifier Strategy
+* Add support to test fedora-26
+* EOL ubuntu-precise for dsvm job
+* Add support for custom ssh port
+* Fix dict key copy operation
+* Don't join image upload workers on stop()
+* Use private attribute lookup interanlly in builder.py
+* Cleanup failed upload records
+* Disable CleanupWorker thread for test\_image\_upload\_fail
+* Add image-id and image-name options to cloud-images
+* Create group for label type
+* Add region to zookeeper
+* Support booting cloud-images by name or id
+* Add webapp port and listen\_address configuration
+* Allow loading logging config from yaml
+* Consider hostname in determining local builds
+* Add boot-from-volume support for nodes
+* Add console-log to config-validate
+* Remove unnecessary list()
+* Fix base64 encoding of server key
+* Do not request nodes for which we have no images
+* Fix removeCompletedRequests for dict iteration
+* Update keyscan for python3 compat
+* Drop -e for pip install for devstack plugin.sh
+* Fix socket.error exception usage
+* Revert "Use devstack's zookeeper support"
+* Cleanup failed upload records
+* Support both python2 and python3 virtualenv
+* Wrap map() in list() for python3
+* Python3: encode / decode data as utf8
+* Fetch server console log if ssh connection fails
+* Bump diskimage-builder dependency to 2.0.0
+* Python3: RuntimeError: dictionary changed size during iteration
+* Fix typos in \_\_eq\_\_ functions
+* Use six.reraise for python3
+* Switch to next(generator) for python3
+* Fix test\_node\_vhd\_and\_qcow2 to validate uploads
+* Set socket timeout for SSH keyscan
+* Add test config with min-ready of 0
+* Add missing cleanup to statsd fixture
+* Support externally managed images
+* Add max-ready-age to label config
+* Update exception message handling for python3
+* Replace dict.iteritems() with dict.items() for python3
+* Sort flavors with operator.itemgetter('ram')
+* Ensure zookeeper\_servers is a list
+* Fix imports for python3
+* Rename nodepool.py to launcher.py
+* Use six.moves.urllib for python3 compat
+* Block sphinx 1.6
+* Add check for ZK node empty data
+* Update devstack plugin for security groups
+* Update devstack plugin for security groups
+* Remove FakeFile from fakeprovider.py
+* Python 3.x incompatible use of print operator
+* Add waitForImage to test\_lost\_request
+* Use full path to socat in devstack plugin
+* Use full path to socat in devstack plugin
+* Fix CleanupWorker exception messages
+* Add support for specifying key-name per label
+* Validate flavor specification in config
+* Cleanup from config syntax change
+* Add ability to select flavor by name or id
+* Protect against no matches for an upload
+* Fix zuul-nodepool integration test
+* Enforce cloud as a required config value
+* Whitelist pydevd debug threads
+* Add functional test for key-name and glean
+* Switch to /etc/ci/mirror\_info.sh for nodepool mirrors
+* Add mirror support for fedora-25 DIB
+* Cleanup old keypair config option
+* Add support for specifying key-name per label
+* Remove ubuntu-precise from dsvm-nodepool jobs
+* Wait for lock when performing manual hold
+* Show message if node hold not found
+* Start adding operational docs to zuulv3
+* Fix internal doc refs to renamed section
+* Remove link to modindex
+* Add opensuse 42.2 DIB testing
+* Fix debian-jessie settings for devstack
+* Remove support for nodepool\_id
+* Fetch list of AZs from nova if it's not configured
+* Rename nodepoold to nodepool-launcher
+* Force os-client-config to use ipv4
+* Add waitForNodes() for test\_node\_assignment
+* Log return code on failed dib build
+* Remove unused timing constants
+* Docs: Remove refs to removed nodepool commands
+* Docs: Correct availability-zones documentation
+* Docs: Remove cron references
+* Remove mention of non-clouds.yaml from docs
+* Remove ipv6-preferred and rely on interface\_ip
+* Exercise statsd in tests and fix
+* Remove deprecated networks syntax
+* Remove api-timeout and provider.image-type
+* Update docs for configuration syntax change
+* Add a test for multiple provider pools
+* Update nodepool config syntax
+* Remove keypair from provider section
+* Remove legacy openstack settings from nodepool.yaml
+* Add debian-jessie DIB for dsvm testing
+* Remove SSH support from nodepool
+* Add novaclient and keystoneauth debug logging
+* Docs: Clarify secure file usage
+* Docs: Remove "jenkins" reference
+* Do not require secure file for nodepoold
+* Add check for valid zk attribute before disconnect
+* Refactor nodepool apps into base app
+* Fix test\_node\_assignment\_at\_quota
+* Add libffi development headers to bindep
+* Revert "Refactor nodepool apps into base app"
+* Unlock request if it disappears
+* Split DeleteNodeWorker into two threads
+* Create BaseCleanupWorker class
+* Rename NodeCleanupWorker to DeletedNodeWorker
+* Refactor nodepool apps into base app
+* Set node AZ after we're done waiting for it
+* Unpause when we grab a pre-ready node
+* Deallocate ready nodes with no requests
+* Reset lost requests
+* Update wait\_for\_threads
+* Populate requestor for min-ready requests
+* Remove noisy log line
+* Remove remaining apscheduler variables
+* Fix for unpaused request handlers
+* Stop writing nodepool bash variable on nodes
+* Remove ready-script support
+* Remove AllocatorTestCase and RoundRobinTestCase
+* Add request-list nodepool command
+* Fix min-ready/max-servers in test configs
+* Fix race on node state check in node cleanup
+* Don't try and delete nodes with no external\_id
+* Remove the --no-delete option from nodepool
+* Record SSH public keys for new nodes in ZK
+* Remove MySQL
+* Re-enable test\_node\_delete\_failure
+* Remove test\_\*\_cleanup\_on\_start tests
+* Remove Jenkins
+* Remove test\_nodepool.test\_job\_\* tests
+* Re-enable test\_node\_ipv6
+* Fix provider-label association
+* Re-enable test\_node\_az
+* Re-enable test\_disabled\_label
+* Store a pointer to the paused node request handler
+* Fix failure of node assignment at quota
+* Use node ID for instance leak detection
+* Stop json-encoding the nodepool metadata
+* Handle exception edge cases in node launching
+* Add destructor to SSHClient
+* Remove jenkins\_manager
+* Remove allocator
+* Fix fedora 25 pause bug with devstack
+* Rename osc to occ in tests
+* Re-enable TestWebApp tests
+* Re-enable test\_nodepool\_osc\_config\_reload
+* Re-enable test\_image\_upload\_fail
+* Remove job\_list, job\_create, job\_delete cmds/tests
+* Re-enable test\_alien\_list\_fail and alien\_list cmd
+* Add leaked instance cleanup
+* Remove old/dead classes
+* Add back statsd reporting
+* Check if /etc/apt/apt.conf.d first exists
+* Remove ubuntu-precise from AFS mirror list
+* Add 'requestor' to NodeRequest model
+* Suspend NodeCleanupWorker on ZK suspension
+* Fix comment about AZ selection
+* Group nodes by availability zone
+* Only use ready nodes from the same provider
+* Correct the quota/availability algorithm
+* Use devstack's zookeeper support
+* Add destructor to SSHClient
+* Fix logic error with nodepool-id
+* Add nodepool-id to provider section
+* Delete node request locks after a delay
+* Cleanup node request locks
+* Add reasons to decline log entries
+* Fix fulfilled log line
+* Add some lock debug lines and an exception handler
+* Clarification about the rate parameter
+* Support launch failures in FakeProviderManager
+* Allow configuring nodepool launch retries
+* Node requests should be ephemeral
+* Remove verbose logging related to config loading
+* Check for not found node in 'delete' command
+* Send min-ready requests only when images are ready
+* Bug fix: Delete instance during launch retries
+* Bug Fix: Call \_runReadyScript correctly
+* Bug fix: Delete FAILED nodes
+* Bug fix: Failed nodes were not getting unlocked
+* Disable CleanupWorker thread for test\_image\_upload\_fail
+* Fix possible race with node request handling
+* Disable test\_image\_upload\_fail
+* Use thread name in launcher ID
+* Partial dead code deletion
+* Wait for server deletion before deleting ZK node
+* Fix potential race in image upload cleanup
+* Add lock state to node listing
+* Re-enable devstack test job
+* Implement node cleanup
+* Move ProviderManagers into main NodePool thread
+* Re-enable test\_image\_upload\_fail test
+* Re-enable test\_diskimage\_build\_only test
+* Re-enable working test\_builder.py tests
+* Re-enable test\_dib\_upload\_fail test
+* Disconnect from ZooKeeper at shutdown
+* Add generator API method for node iteration
+* Set Node image\_id and launcher attributes
+* Re-enable test\_node\_vhd\_image test
+* Re-enable test\_node\_net\_name test
+* Wait for main loop when stopping
+* Use helper function to instantiate ProviderManager
+* Split up min-ready requests to 1 node per request
+* Re-enable test\_node test
+* Re-enable test\_dib\_image\_delete test
+* Re-enable test\_dib\_image\_pause / test\_dib\_image\_upload\_pause
+* Update nodepool hold to use zookeeper
+* Update nodepool 'list' command
+* Implement node launching
+* Remove subnodes from nodepool
+* Remove 'template-' from image name format
+* Add new Node ZK model attributes
+* Unallocate new nodes if request is pulled
+* Add 'hostname-format' to provider config section
+* Assign node set to node requests
+* Update Node and NodeRequest models
+* Fix race in node request state changes
+* Make web status text/plain
+* Fix storeNode() for updates
+* Fix documentation nits from earlier reviews
+* Add comment explaining test-not-create behavior
+* Revert "Create mandatory /etc/nodepool for later use"
+* Replace NodeRequestWorker with NodeRequestHandler
+* Start nodepool in the test-config phase
+* Add storeNode ZK API method
+* Fix fedora 25 pause bug with devstack
+* Manage providers in ProviderWorker threads
+* Add files for zuul-nodepool integration test
+* Add nodepoold test for request decline and fail
+* Create mandatory /etc/nodepool for later use
+* Add API methods for locking/unlocking Nodes
+* Add a serialize() method to ZK model definitions
+* Query ZooKeeper to determine image availability
+* Fix for launched node counting
+* Fixed typo in info msg
+* Add --fake command line option to builder
+* Begin implementing node request handling
+* Removed redundant 'the'
+* Move to fedora-25 for devstack testing
+* Add support for max\_concurrency for providers
+* Add framework for handling node requests
+* Handle provider removal from config
+* Remove --no-builder nodepoold option
+* Remove --no-launches nodepoold option
+* Create per-provider ZK work threads
+* Set valid states per data model class
+* Minor code cleanup
+* Remove Gearman and ZMQ
+* Disable tests for nodepoold changes
+* Add ZK API methods for node requests
+
+0.4.0
+-----
+
+* Support AFS mirrors for nodepool diskimages
+* Allow nodepool-builder to only build diskimages
+* Remove the ability for nodepoold to launch a builder
+* Source glean installs in simple-init
+* Update configuration docs for network and pool settings
+* Update README to mention bindep
+* Ensure env-vars are strings in config validate
+* Register launcher name with ZooKeeper
+* Reduce min-ram for ubuntu images for devstack
+* Revert "Reduce min-ram for ubuntu images for devstack"
+* Reduce min-ram for ubuntu images for devstack
+* Add dib-image-list.json webapp target
+* Add glean libs-from-git install
+* Mitigate config disagreement issues
+* Fix some doc typos
+* Expose the ability to build all infra diskimages
+* Change nodepoold ZK config change logic
+* Set diskimage formats for building state
+* Update operation docs
+* Docs: add Zookeeper installation section
+* Remove script-dir
+* Update documentation on diskimages/images
+* Fix image delete exception logging
+* Rename ubuntu-dib to ubuntu-trusty
+* Fix image delete exception logging
+* Accept user-home in config validator
+* Use provider images from yaml for alien\_image\_list
+* Share single ZooKeeper object among workers
+* Validate configs when used by tests
+* Add missing pause fields to config-validate
+* Validate configs when used by tests
+* Add missing pause fields to config-validate
+* Remove ZK lock variables
+* Properly cleanup failed diskimage builds
+* Make diskimage-builder command configurable for testing
+* Re-use build data when we set for DELETING
+* Check for in progress build/upload in CLI
+* Add \_\_repr\_\_ to ConfigValue objects
+* Use diskimage.name for \_checkForScheduledImageUpdates exception
+* Update waitForBuildDeletion() to protect against delete race
+* Don't use taskmanagers in builder
+* Delete builds when diskimage removed from config
+* Clean up exception message to use image / provider name
+* Add --checksum support to disk-image-create
+* Pluralize zk nodes with children
+* Fix zookeeper config in test fixture
+* Fix image-delete command
+* Include timestamps in test logs
+* Add pause option for image uploads
+* Do not truncate state\_time precision
+* Fix race in test\_image\_rotation
+* Fix race condition in test\_image\_rotation\_invalid\_external\_name
+* Sort images and providers in zookeeper
+* Delete hard upload failures from current builds
+* Make sure we clean up diskimages with invalid external\_name
+* Add stack dump handler to builder
+
+0.3.1
+-----
+
+* Use diskimage-builder checksum files
+* Add image\_name to UploadWorker INFO message
+* Activate virtualenv before running dib
+* Fail on bad options to fake-image-create
+* Make build/upload worker sleep time configurable
+* Re-enable alien-image-list command and tests
+* Stop running DIB usage report
+* Fix test\_image\_delete
+* Add znode stat structure to build/upload objects
+* Fix nits in test\_image\_upload\_fail
+* Re-enable test: test\_image\_upload\_fail
+* Re-enable test: test\_list\_nodes
+* Test rotation of builds in nodepool-builder
+* Remove unused function make\_image\_dict
+* Use database for non-zookeeper commands
+* Add pause support for diskimages
+* Remove references to node-devstack in tests
+* Initial support for bindep
+* Re-enable test\_hold test
+* Add test to validate when a node build is disabled
+* Remove waitForBuiltImages() / JobTracker() from nodepool.py
+* Re-enable TestWebApp tests
+* Enable test\_delete / test\_delete\_now tests
+* Add tools/test-setup.sh
+* Add tools/test-setup.sh
+* Re-enable test: test\_alien\_list\_fail
+* Remove image-upload command and tests
+* Remove image-update based tests
+* Add test\_image\_delete test
+* Re-enable test: test\_image\_delete\_invalid
+* Fix upload recency table bug
+* Sort existing builds properly in cleanup thread
+* Add test to validate rebuilds are scheduled
+* Print all fields of ZK objects
+* Also use a lockfile when creating the schema
+* Add secondary upload check
+* Log each worker thread separately
+* Better protect for race condition in waitForBuildDeletion()
+* Use an external lockfile when dropping the test database
+* Use image name in ImageUpload equality
+* Use constants for zk states
+* Remove builds that are no longer in use
+* Add image addition test to builder
+* Remove image delete tests from test\_nodepool
+* Update test\_dib\_image\_delete to validate delete happened
+* Add check for uploads to deleteBuild()
+* Add test\_provider\_addition to builder
+* Remove obsolete uploaded images
+* Add printZKTree debug method for tests
+* Add provider\_name to ImageUpload
+* Remove test: test\_snapshot\_image\_update
+* Re-enable tests: test\_job\_create, test\_job\_delete
+* Re-enable test: test\_image\_build
+* Fix getMostRecentImageUpload return docstring
+* Re-enable test: test\_config\_validate
+* Delete test\_handle\_dib\_build\_gear\_disconnect test
+* Replace snap\_image with cloud\_image
+* Remove SnapshotImage from the database
+* Remove DibImage from the database
+* Log image delete exception as exception
+* Sync devstack plugin from master
+* Install get-pip.py from local cached location
+* Remove stray print statement
+* Enabled zookeeper for devstack jobs
+* Re-enable test: test\_dib\_image\_delete
+* Add build\_id attribute to ImageUpload object
+* Rename zookeeper\_client to zk for nodepool.py
+* Add test for getMostRecentImageUpload
+* Make image building separable
+* Make image cleanup separable
+* Add a fallback exception handler for BuildWorker
+* Add a fallback exception handler for UploadWorker
+* Add a fallback exception handler for CleanupWorker
+* Make image uploads separable
+* Re-enable test\_job\_auto\_hold\_\* tests
+* Re-enable test\_job\_end\_event test
+* Re-enable test\_job\_start\_event test
+* Re-enable test\_leaked\_node test
+* Re-enable test\_db test
+* Re-enable test\_node\_delete\_failure test
+* Re-enable test\_node\_delete\_success test
+* Re-enable test\_node\_ipv6 test
+* Enable test\_node\_az test
+* Re-enable test\_subnodes test
+* Re-enable test\_dib\_upload\_fail test
+* Re-enable test\_node\_vhd\_and\_qcow2 test
+* Enable test\_node\_vhd\_image test
+* Re-enable test\_node\_net\_name test
+* Replace node\_dib.yaml with node.yaml for tests
+* Re-enable TestNodepool.test\_node
+* Catch all upload exceptions
+* Remove image building responsibility from nodepool.py
+* Reduce kazoo logging in tests
+* Remove Zookeeper per-test fixture
+* Fix race condition in build cleanup
+* Remove diskimage parameter from config
+* Remove snapshot support
+* Use image name in DIB image IDs
+* Do not delete DIB images that are building
+* Fix subnode deletion
+* Re-enable test\_image\_list\_empty
+* Add option to force image delete
+* Re-enable test\_dib\_image\_list
+* Add \_\_repr\_\_ methods to ZK objects
+* Override the cleanup interval in builder fixture
+* Use diskimage name when looking up image on disk
+* Update waitForImage test method for ZK
+* Assume diskimage and image names are the same
+* Add getMostRecentBuildImageUpload method to zk
+* Supply ZK connection information to test configs
+* Combine ZKTestCase with DBTestCase
+* Transition ZK API from dict to object model
+* Separate image upload logs into separate logger
+* Remove OldNodePoolBuilder class
+* Use six.iteritems() for py3
+* Add janitor thread
+* Move kazooclient in to a fixture
+* Return empty dict from getBuilds/getUploads
+* Use image name in local DIB image name
+* Correct builder exception message
+* Bring getMostRecent\* API calls into alignment
+* Add new build number lock context manager
+* Change getMostRecentBuild to get multiple builds
+* Add getBuildsWithStates ZK API method
+* Update 'image-list' cli to ZK
+* Update 'nodepool dib-image-list' command to ZK
+* Have an ending line-feed on the generated id\_rsa.pub file
+* Add a DIB configuration to fake.yaml
+* Reduce image locking during build checks
+* Rebuild DIB on missing image format
+* Add code to do the DIB build
+* Retry SSHExceptions in nodepool
+* Add provider upload framework
+* Pull get-pip.py from jenkins cache
+* Add imageUploadLock() API
+* Return build or upload number with recent data
+* No need to make sure ZK lock path exists
+* Add --no-webapp option
+* Add image id to DIB image upload name params
+* Add options to skip deleting or launching nodes
+* Add UploadWorker skeleton to the builder
+* Handle config reload race
+* Handle ZooKeeper lost connections
+* Short-circuit builder processing on shutdown
+* Client change to support ZK image build requests
+* Use sequence znodes for image upload numbers
+* Use sequence znodes for image build numbers
+* Allow deleting non-existing build requests
+* Stop using custom ZK heartbeat
+* Record DIB images in "building" state
+* Remove duplicate check for manual build request
+* Make builder recognize scheduled builds
+* Change ZK API to not auto-create build on lock
+* Disable connecting to the SSH agent for ssh\_connect
+* Disable searching for discoverable private keys
+* Make builder recognize manual build requests
+* Don't delete images in a building state
+* Update shade depend to 1.12.0
+* Use time.sleep() when waiting for workers to run
+* Add ZooKeeper connection to the BuildWorkers
+* Make builder workers proper threads
+* Replace watch thread with periodic worker threads
+* Unsubvert image and flavor caching
+* Add missing month argument
+* Remove image-update cron
+* Also use the virtualenv for checking
+* Rename BuilderScheduler to NodePoolBuilder
+* Simplify builder start/stop methods
+* Remove 'running' as a public method from builder
+* Remove unecessecary builder scheduler thread
+* Stop using NodePoolBuilder class
+* Add new ZK method for sending cluster heartbeat
+* Add new ZK method for registering a watch
+* Install nodepool and shade into a virtualenv
+* Include ip address for ssh\_connect exception
+* Add floating-ip batching settings to clouds.yaml
+* Remove unnecessary NodePoolBuilder thread
+* Don't delete building DIB images
+* Add a script to print the ZK tree
+* Have buildZooKeeperHosts accept a config object
+* Stop running DIB usage report
+* Add scheduling thread to nodepool builder
+* Add zookeeper-servers to fake config
+* Set default branch to feature/zuulv3
+* Add a fake-secure.conf
+* Add an example logging.conf for development
+* Add a fake-secure.conf
+* Add an example logging.conf for development
+* Clarify code in nodepool/cmd/builder.py
+* Remove testresources
+* Shut down gearman client in tests
+* Make ZK fixture more robust
+* Add ZooKeeper connection listener
+* Add config support for ZooKeeper servers
+* Allow extra time for initial ZooKeeper connection
+* Include subnodes in updateStats function v2
+* Revert "Include subnodes in updateStats function"
+* Include subnodes in updateStats function
+* Default config-drive to true
+* Add diskimage-builder from git to dsvm job
+* Remove discover from test-requirements
+* Add initial ZooKeeper API
+* Revert "Infer node demand from workers listing"
+* Revert "Cache function worker map"
+* Change the webapp default port
+* Cache function worker map
+* Remove dead code from nodepoolcmd
+* Add a simple status webapp
+* Use random strings for ZK test paths
+* Make ZK cleanup more resilient
+* Fix zk startup detection
+* Infer node demand from workers listing
+* Handle NO\_AUTO\_CREATE\_USER default mode
+
+0.3.0
+-----
+
+* Allow testing with external zookeeper
+* Fix race condition in disconnect test
+* Add auto-hold feature
+* Test ZMQ event handler
+* Add comment field to node and reason to hold
+* Revoke nodes via gearman on deletion
+* Set nodepool.manager.MANAGER.nodes.STATE to zero
+* Use underscore for node\_assign job
+* Add nodepool.manager.MANAGER.nodes.STATE also
+* Add nodepool.launch.manager.\* for nodes assigned via Gearman
+* Add log config option to nodepool cmd
+* Add assign-via-gearman to config validator
+* Add some tracking for image sizes
+* Add clean-floating-ips validation test
+* Remove duplicate python-jenkins code from nodepool
+* Use clean-floating-ips for yaml setting
+* Make sure worker arguments are integers
+* Cap paramiko<2.0.0
+* Cleanup leaked floating ips periodically
+* Add option to assign nodes via Gearman
+* Make stopping more reliable
+* Restore ability to run nodepoold with fakes
+* Write public IP into private when there's no private
+* Don't get extra flavor specs
+* Partially Revert "Pass extended network information in to occ/shade"
+* Pass extended network information in to occ/shade
+* Expose nodepool-builder workers settings
+* Synchronize image delete with handle completion
+* Cleanup building dib images on startup
+* Only delete keypairs if needed
+* Start using dogpile caching in devstack tests
+* Set cache parameters like we do in production
+* Remove unused functions
+* Use shade for all OpenStack interactions
+* Log shade inner exceptions
+* Add zookeeper test infrastructure
+* Be more specific in logging timeout exceptions
+* Add an error log with the server fault message
+* Enhance message for image ssh auth
+* Handle dib image deletion during periodic cleanup
+* Only try to delete floating ip if the server has it
+* Delete building images on startup
+* Enable a fake statsd server for devstack testing
+* Dont connect to gearman in cmd unless needed
+* Document clouds.yaml as the preferred configuration
+* Handle image upload job failures
+* Remove unecessary session.commit()
+* Cleanup bulder jobs and add disconnect support
+* Increase gearman timeouts
+* Add ipv6-preferred into config-validation
+* Remove unused \_stop\_running variable
+* Builder: Also unregister image-delete
+* Make builder multi-threaded
+* Don't mistake manifest dir's for images
+* Add more debug logging to image upload
+* Clarify debug statements in image-upload
+* Fix typo in debug log
+* Protect deleteNode from missing images
+* Use different pidfile for builder daemon
+* Bump APScheduler to >=3.0
+* Raise SQLAlchemy upper cap to match global requirements
+* Normalize some log lines in builder
+* Log task name more succinctly
+* Remove workaround for early paramiko import
+* Revert "Import nodepool.builder late for statsd"
+* Also handle work exceptions in builders
+* Handle dib build failures
+* Use common logging for nodepool applications
+* Don't use global statsd
+* Import nodepool.builder late for statsd
+* Builders can be run on their own
+* Decouple builders from nodepool instance
+* Builders distinguish between failure and exception
+* Decouple nodepool db and config from builders
+* Make secure.conf optional
+* Move nodepool config loading into module
+* Trigger image delete using gearman
+* Add dib deletion test
+* Trigger image uploads using gearman
+* Trigger image builds using gearman
+* Add 'public' attribute to 'networks' entry
+* Uncap pyzmq requirements
+* Deprecated tox -downloadcache option removed
+* Drop glanceclient and keystoneclient requirements
+
+0.2.0
+-----
+
+* Add LICENSE file
+* Write the cloud name into the provider info
+* Pin python-daemon to <2.1.0
+* Revert "Get public IPs from supplied networks"
+* Optimize "open" method with context manager
+* Suppress NoValidConnectionsError from paramiko
+* Revert "Allow to delete nodes with missing target or provider"
+* Get public IPs from supplied networks
+* Add provider node stats
+* Add documentation on removing a provider
+* Send fewer statsd guages
+* Revert "Remove duplicate python-jenkins code."
+* Remove wait\_for\_threads in test\_commands
+* Explicitly block in nodepool upload commands
+* Consume clouds.yaml from /etc/openstack
+* Nodepool Install failure
+* Update tox.ini to current standards
+* Don't double-log in nodepool/dsvm log output
+* Add node command tests
+* Add dib image command tests
+* Fix image-upload command image name mapping
+* Simplify command test asserts
+* Fix provider manager reloading without jenkins
+* Allow to delete nodes with missing target or provider
+* Remove the unused 'reset' setting from the doc
+* Add launch-timeout validator into config-validation
+* Use OCC cloud specifier in devstack plugin
+* Permit obsolete jenkins/mysql options in config
+* Stop nodepool once in tests
+* Handle OVH network configuration
+* Update nodepool to use secure.conf file
+* Move image location out of config location
+* Bump shade requirement to >=0.12.0
+* Check pyflakes rules
+* Remove unused dib\_image\_built
+* Install shade from source if instructed to
+* Test config-validate command
+* Add a test for the list command
+* Bust cache in leaked node test
+* Add more logging to tests and fakes
+* devstack: supply a logging config file
+* Wait for resources in devstack-plugin check
+* image.name fix for image-update command
+* Correct exception when waiting for image build
+* Correct missing DIB image detection
+* Bump pbr requirements to >=1.3
+* Continue image refresh if /etc/nodepool exists
+* Add 'debian' user in bootstrapServer()
+* Use the devstack version of nodepool.yaml
+* doc: FLUSH PRIVILEGES; is unneeded
+* Move nodepool test checks into nodepool
+* Test dib image builds with devstack too
+* Add support for project-name parameter
+* Run geard for nodepool tests
+* Fix exception formatter in instance delete
+* Fix potential race in tests
+* Fix schema validator to allow specifying a gearman port
+* Stop passing cloud config name to shade
+* Set gearman client\_id for nodepool client
+* Run gearman server for devstack plugin
+* Remove terminated image/instance delete threads
+* Fix erroneously deleting non-leaked instances
+* Shorten template hostname
+* Expand documentation on timeouts
+* nodepool devstack plugin
+* Document SIGINT / SIGUSR2
+* Support SIGINT to gracefully stop nodepoold
+* Add prerequisites for nodepool on RHEL7
+* Add MySQL DB creation example
+* Clarify meaning of Jenkins master configuration settings in target
+* Debug IP finding failures
+* Remove duplicate python-jenkins code
+* Remove slave.openstack.org from default hostname values
+* Fix untemplated images\_dir in config fixtures
+* Fixed crash in exception handler
+* Be more careful when config options are not set
+* Flush file system buffers before snapshots
+* Start passing cloud\_config object to shade
+* add option to use ipv6 for image update and node launching
+* Delete leaked instances
+* Isolate and persist fake client state
+* Enhance logging around image building
+* Adjust recorded nova metadata
+* Add hostname templates to config validator
+* Make diskimage example config work
+* Record interesting info into nova metadata
+* Simplify oscc argument conversion
+* Update Copyright year
+* Convert timing metrics to milliseconds
+* Fix racey clouds.yaml test
+* Test that we are setting region-name properly
+* Check proper providers keys when reading config
+* Add test for osc config refresh
+* Consume os-client-config directly
+* Debug dying task managers
+* Convert to use latest statsd version
+* Pretty Age in nodepool cli image/node lists
+* Replace ci.o.o links with docs.o.o/infra
+* Use shade for image uploads
+* Use shade to get the client objects
+* Remove the need for zmq in proper demand calcs
+
+0.1.1
+-----
+
+* Clarify project-id meaning for Rackspace deployment
+
+0.1.0
+-----
+
+* Change references from v1\_1 to v2
+* Allow for Jenkinsless targets
+* Allow for no ZMQ publishers
+* Improve configuration documentation
+* Add tox 'docs' env to build Sphinx documentation
+* Support spaces in Gearman functions names
+* Use correct diskimage when building diskimages
+* Just set qcow2 version
+* Support per provider image build settings
+* Do not set up managers on CLI delete
+* Don't try to delete nonexistent jenkins nodes
+* Reset the client object after proxy timeouts
+* Switch from MySQL-python to PyMySQL
+* Protect when statsd is not enabled
+* Add statsd counters to the TaskManager
+* Add node deletion tests
+* Correct diskimage-builder name usage
+* Monkeypatch Fake Clients for tests
+* Add support for requsting that config drive be used
+* Dont die on alien-image-list failure
+* Don't die while doing alien list
+* Ignore stderr for documentation program output
+* Move nodepool creation in tests to common method
+* Test snapshot image deletion command
+* Indicate error when deleting an invalid snapshot
+* Check image-list output in cmd tests
+* Fix Nodepool DIB Uploads to Glance w/o region\_name
+* Remove unused 'reset' setting from images
+* Add nodepool command tests
+* Gracefully handle upload failures
+* Test that dib failures don't stop node builds
+* Don't allocate nodes to providers without images
+* Accomodate ready nodes in min-ready checks
+* Remove duplicate code
+* Use local allocation history in scheduler
+* Add logging Popen to tests
+* Add config validation option
+* Do not try to upload building disk images
+* Fix exception in dib image cleanup
+* Write the node UUID to /etc/nodepool/uuid
+* Append file type to filename on image upload
+* Remove unnecessary path joining for dib filenames
+* Log ipv6 addresses for nodes
+* Move image uploads out of ProviderManager
+* Remove unneeded Label.\*\_providers
+* Better image checking in update\_image command
+* Fail gracefully if disk-image-create is missing
+* Remove lockfile from requirements
+* Conditionally check for targets in reconfigureManagers
+* Fix nodepool --version
+* Handle numeric "release"
+* Check env-vars is a dictionary
+* Iterate over images, not labels, when updating
+* Add more verbose image building debug logs
+* Revert "Pin python-daemon to <2.0"
+* Add doc for 'pool' parameter for nodepool provider config
+* Make update image understand both types of images
+* Add support for an API timeout to nodepool
+* Pin python-daemon to <2.0
+* Make DIB exceptions more robust
+* Cleanup DIB images in DB if they fail to build
+* Raise a more descriptive KeyError for debugging
+* Allow labels to have snapshot and dib images
+* Update Readme config -> system-config repo
+* Fix error handling when dib image builds fail
+* Update snapshots prior to dib image builts
+* Reconnect to gearman on error
+* libffi-dev/libssl-dev/qemu-utils are required
+* Fix test discovery by new testtools
+* Match novaclients transitive six dep
+* Set useful PATH before starting scripts
+* Caching floating ips as server list is done
+* Handle missing private IPs for now
+* Add private ip to /etc/nodepool
+* Add current node IP to /etc/nodepool
+
+0.0.1
+-----
+
+* Add centos to list of alternative users for login
+* Change sequence on actions in updateConfig
+* Make the external links actual hyperlinks
+* Clean up 'images' documentation
+* Remove docutils pin
+* Send environment vars to diskimage-builder per image
+* Remove hardcoded root path of a jenkins node
+* Add meta option for passing meta-data
+* Properly reference nodepool config in image update
+* Capture provider name in status logging
+* Line-by-line dib logs
+* Move the ImageUpdater base class for clarity
+* Handle config updates in dib builder thread
+* hostname & subnode-hostname is taken from targets instead of labels
+* Fix attribute error state if node not found
+* Delete correct item in image delete command
+* Pass the nodepool scriptdir to disk-image-create
+* Export image name and filename to DIB
+* Be more atomic when counting nodes
+* Paralellize image deletes
+* Record provider/region/az in /etc/nodepool
+* Ignore min-ready when at capacity
+* Don't retry forever when a provider is stopped
+* Some extra safety around negative numbers
+* Change history allocation from list to dict
+* Revert "Revert "Track last allocations to ensure forward-progress""
+* Avoid passing negative available count to allocator
+* Update documentation for using diskimage-builder
+* Correct ssh key instructions in README
+* Actually correct use of label.providers dict
+* Correct use of label.providers dict
+* Correct errant uses of label.image.is\_diskimage
+* Remove setUp() call from setup\_config
+* Move pool.stop into addCleanup
+* Logging format for FakeLogger
+* Fix "nodepool image-update provider label" cmd
+* Refactor nodepool to configure glance only when uploading imaes
+* Build images using diskimage-builder
+* Add timestamps to nodepool logging
+* Fix potential floating ip leakage issue
+* Add stdout and stderr to exception when ready script fails
+* Record provider AZ info in graphite
+* Use correct provider in test-case
+* Revert "Track last allocations to ensure forward-progress"
+* Cleaning up index.rst file
+* Drop voluptuous from requirements
+* Enable debugging output
+* Add support for network labels
+* Track last allocations to ensure forward-progress
+* Fix Configuration link in docs
+* Make template and node hostnames configurable
+* Update pbr version
+* Show expected output in test-case error
+* Add @localhost to openstack\_citest user example
+* Handle task manager shutdown more correctly
+* Use import from six.moves to import the queue module
+* Pass in hostname as a script parameter
+* Check for stale PID lock when starting
+* Remove libzmq-dev from dependency list
+* Increase watermark sleep in tests for reliability
+* Add warnings about the installation of libzmq1
+* Log task durations
+* Log task manager queue length
+* Prevent listserver tasks from piling up
+* Check the returned image status
+* Display node AZ in \`nodepool list\` output
+* Support provider AZ lists
+* Use except x as y instead of except x, y
+* Don't accept tasks for stopped managers
+* Create new provider managers on image data changes
+* Add cloud-user to non-root user list
+* Fix typo in launch stats
+* Improve logging/stats around launch errors
+* Fix race in tests
+* Correct update-image to image-update in samples
+* Create launch-timeout setting for providers
+* Fix neutron configuration error
+* Immediately delete a floating IP if doesn't attach
+* Protect against /etc/nodepool not existing
+* Fix tox's insane pip install command
+* Detect neutron net-changes on reconfigure
+* Create snapshots when min-ready is >= 0
+* Fix update-image command
+* Fix missing attribute error in subnodes
+* Add a test for subnodes
+* Add a very basic functional test
+* Add per-test database fixture
+* Finish initial docs
+* Add tests for the allocator
+* Add ready-script and multi-node support
+* Fix the allocation distribution
+* Fix image/label name typo in stats
+* Add 'labels' as a configuration primitive
+* Stop waiting for resources in ERROR state
+* Add the ability to create subnodes
+* Add SubNodes and the ability to delete them
+* Depend on hacking for its dependencies
+* Include provider names in timeout messages
+* Set paramiko version > 1.9.0
+* Delete created keypairs if nova boot fails
+* Raise min\_demand due to slow node boot times
+* Keep py3.X compatibility for urllib/urllib2
+* Roll up node stats
+* Keep current and previous snapshot images
+* Preserve HOLD state when job starts
+* Fix more str!=int bugs
+* Remove unhelpful log message
+* Coerce all ids from novaclient to str
+* Node deletion related fixes
+* Use the task manager to get extensions and flavors
+* Delete all building nodes on daemon start
+* Perform all deletes in threads
+* Check server status in batch
+* Add fedora support
+* Make nodepool more robust to offline clouds
+* Retry ssh connections on auth failure
+* Fix typo in allocation
+* Make jenkins get info task synchronous
+* Allow useage of server IDs as well as names
+* Revert delete-rework branch
+* Log state names not numbers
+* Also log provider name when debugging deletes
+* Include check in fake.yaml
+* Run per-provider cleanup threads
+* Decouple cron names from config file names
+* Move cron definition out of the inner loop
+* Move cron loading below provider loading
+* Teach periodicCleanup how to do one provider
+* Use the nonblocking cleanupServer
+* Split out the logic for deleting a nodedb node
+* Make cleanupServer optionally nonblocking
+* Consolidate duplicate logging messages
+* Log how long nodes have been in DELETE state
+* Cleanup nodes in state DELETE immediately
+* Expose paramiko's get\_pty parameter
+* Switch node id and ip in debug output
+* Revert "Provide diagnostics when task rate limiting."
+* Revert "Default to a ratelimit of 2/second for API calls"
+* Log the time a node has been in state DELETE
+* Avoid redundant updates of node.state=DELETE
+* Fix early-exit in cleanupOneNode
+* Default to a ratelimit of 2/second for API calls
+* Provide diagnostics when task rate limiting
+* Ignore vim editor backup and swap files
+* Don't load system host keys
+* Document that fake.yaml isn't usable
+* Only attempt to copy files when bootstrapping
+* Add some debugging around image checking
+* Permit using a known keypair when bootstrapping
+* Permit specifying instance networks to use
+* Catch exceptions from nova flavor-list calls
+* Add docs
+* Readme enhancements
+* Pin Sphinx to <1.2
+* Improve README.rst formatting
+* Fix README file
+* Restructure periodic cleanup
+* Add job runtime stats
+* Fix the issue which raise FloatingIpPoolNotFound
+* Improve image logging
+* Fix old pre-nodepoold reference in README
+* Add ability to filter on flavor name
+* Fix the logprint in task\_manager.py
+* Skip periodic cleanup if the node is not stale
+* Add more details to developer setup in README
+* add introduction for README document
+* Consider existing nodes when allocating to a target
+* Make ip\_id arg match calling and consuming
+* Add gear to requirements
+* Change image debug interpolation order
+* Add the ability to pass pool for AddPublicIP
+* Don't use max\_overflow with sqlite
+* Fix another wrong use of server\_id
+* Rename ASRT -> AGT
+* Add a thread dump signal handler
+* Pass correct server\_id when adding public IP
+* Make image updates independent
+* Add the ability to ignore offline targets
+* Fix stats after min\_ready change
+* Fix parsing gearman status
+* Inspect the Gearman queue for immediate demand
+* Make node SSH timeout configurable
+* Ignore hacking warnings
+* Add default location for config file
+* Fix fake provider
+* Fix HOLD state
+* Add image-delete command
+* Add a delete command
+* Add a hold command
+* Add alien-image-list command
+* Add alien-list command
+* Add image-update command
+* Add a nodepool command
+* Add image logging
+* Change use of error numbers to errno
+* Fix image delete logic
+* Fix typo in node check method
+* Fix typo in deleteImage
+* Add option to test jenkins node before use
+* Make jenkins username and private key path configurable
+* Fix error with stats for de-configured resources
+* Move setup scripts destination
+* Reduce timeout when waiting for server deletion
+* Change credentials-id parameter in config file
+* Add an ssh check periodic task
+* Add JenkinsManager
+* Add ProviderManager
+* Delay 1 min before deleting node
+* Cache novaclient objects
+* Tune SQLAlchemy pool parameters
+* Use a sensible SQLAlchemy session model
+* Make the target name required in the schema
+* Require a target name when instantiating a node
+* Use MySQL
+* Make the local script directory configurable
+* Handle paramiko and daemonization
+* Initial commit
+* Added .gitreview

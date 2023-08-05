@@ -1,0 +1,26 @@
+- name: Configure a multi node environment
+  hosts: all
+  tasks:
+    - name: Set up multi-node firewall
+      include_role:
+        name: multi-node-firewall
+
+    - name: Set up multi-node firewall
+      include_role:
+        name: multi-node-hosts-file
+
+- hosts: launcher
+  roles:
+    - role: bindep
+    - role: ensure-zookeeper
+      zookeeper_use_tls: true
+    - role: ensure-tox
+  tasks:
+    - name: Ensure oc client is installed
+      package:
+        name: origin-clients
+      become: yes
+
+- hosts: cluster
+  roles:
+    - ensure-openshift

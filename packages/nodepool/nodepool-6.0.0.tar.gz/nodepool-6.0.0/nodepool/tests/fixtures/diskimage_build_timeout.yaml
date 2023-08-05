@@ -1,0 +1,33 @@
+elements-dir: .
+images-dir: '{images_dir}'
+build-log-dir: '{build_log_dir}'
+
+zookeeper-servers:
+  - host: {zookeeper_host}
+    port: {zookeeper_port}
+    chroot: {zookeeper_chroot}
+
+zookeeper-tls:
+  ca: {zookeeper_ca}
+  cert: {zookeeper_cert}
+  key: {zookeeper_key}
+
+labels: []
+
+providers: []
+
+diskimages:
+  - name: fake-image
+    build-timeout: 2
+    formats:
+      - tar
+    elements:
+      - fedora
+      - vm
+    release: 21
+    dib-cmd: nodepool/tests/fake-image-create
+    env-vars:
+      TMPDIR: /opt/dib_tmp
+      DIB_IMAGE_CACHE: /opt/dib_cache
+      DIB_CLOUD_IMAGES: http://download.fedoraproject.org/pub/fedora/linux/releases/test/21-Beta/Cloud/Images/x86_64/
+      BASE_IMAGE_FILE: Fedora-Cloud-Base-20141029-21_Beta.x86_64.qcow2
