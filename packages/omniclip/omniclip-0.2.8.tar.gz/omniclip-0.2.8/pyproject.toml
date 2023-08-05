@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "omniclip"
+version = "0.2.8"
+description = ""
+authors = ["Philipp Boss <philipp.drewe@googlemail.com>"]
+readme = "README.md"
+repository = "https://github.com/y9c/omniCLIP"
+packages = [{ include = "omniCLIP" }]
+include = [{ path = "omniCLIP/omni_stat/viterbi.pyx" }]
+build = "build.py"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+Cython = "^0.29.28"
+numpy = "^1.22.3"
+gffutils = "^0.10.1"
+h5py = "^3.6.0"
+scipy = "^1.8.0"
+pandas = "^1.4.2"
+biopython = "^1.79"
+pysam = "^0.19.0"
+statsmodels = "^0.13.2"
+sklearn = "^0.0"
+intervaltree = "^3.1.0"
+matplotlib = "^3.5.1"
+
+[tool.poetry.scripts]
+omniCLIP = 'omniCLIP.omniCLIP:main'
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "setuptools", "cython", "numpy"]
+build-backend = "poetry.core.masonry.api"
+
