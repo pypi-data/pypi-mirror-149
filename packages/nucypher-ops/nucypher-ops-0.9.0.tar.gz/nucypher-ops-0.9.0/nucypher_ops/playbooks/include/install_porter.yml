@@ -1,0 +1,11 @@
+- name: "Setup Ethereum"
+  hosts: "{{ play_hosts }}"
+  remote_user: "{{default_user}}"
+  gather_facts: no
+  tasks:
+    - name: "pull {{docker_image}}"
+      become: yes
+      docker_image:
+        name: "{{docker_image}}"
+        source: pull
+        force_source: yes
