@@ -1,0 +1,30 @@
+@media print {
+    @page {
+        /* A5 - for booklets */
+        padding: 0;
+        margin: 20mm 12mm 12mm 12mm;
+        size: 148mm 210mm;
+    }
+    body {
+        /* A5 - for A4 and US-Letter booklets */
+        font-size: 9.5pt;
+        line-height: 1.5em;
+    }
+    img {
+        max-width: calc(148mm - 24mm);
+        max-height: calc(210mm - 32mm);
+    }
+
+    @page :left {
+        @top-left {
+            content: counter(page) "        " string(chapter);
+            margin-bottom: -5mm;
+        }
+    }
+    @page :right {
+        @top-right {
+            content: string(section) "        " counter(page);
+            margin-bottom: -5mm;
+        }
+    }
+}
