@@ -1,0 +1,79 @@
+<metal:obslist define-macro="observationlist"
+               tal:define="self python:here.restrictedTraverse('@@macros');
+               extra_classes extra_classes|nothing;
+               default_bsize default_bsize|nothing;
+               b_size python:request.get('b_size', default_bsize or 10);
+               b_start_str python:'b_start_{}'.format(idx);
+               b_start python:request.get(b_start_str, 0);
+               req_sort_order python:request.get('sort_order');
+               sort_on python:request.get('sort_on');
+               sort_order python:'ascending' if (req_sort_order != 'ascending' or not req_sort_order) else 'descending';
+               base_url string:./inboxview?section=${sec_cur}&amp;${b_start_str}:int=${b_start};
+               batch python:view.batch(observations, int(b_size), int(b_start), orphan=1, b_start_str=b_start_str);">
+<tal:nothing condition="not:observations">
+  There's nothing here.
+</tal:nothing>
+<tal:listing condition="observations">
+  <table class="observationList listing nosort ${extra_classes}">
+    <thead>
+      <tr>
+        <th style="width:17%">
+          <a href="${base_url}&amp;sort_on=id&amp;sort_order=${python:sort_order if sort_on == 'id' else 'ascending'}">
+            Observation
+            <span class="sortdirection" tal:condition="python:sort_on == 'id'">
+              <tal:asc condition="python:req_sort_order == 'ascending'">&#x25b2;</tal:asc>
+              <tal:desc condition="python:req_sort_order == 'descending'">&#x25bc;</tal:desc>
+            </span>
+          </a>
+        </th>
+        <th style="width:45%">In short</th>
+        <th>
+          <a href="${base_url}&amp;sort_on=nfr_code&amp;sort_order=${python:sort_order if sort_on == 'nfr_code' else 'ascending'}">
+            NFR code
+            <span class="sortdirection" tal:condition="python:sort_on == 'nfr_code'">
+              <tal:asc condition="python:req_sort_order == 'ascending'">&#x25b2;</tal:asc>
+              <tal:desc condition="python:req_sort_order == 'descending'">&#x25bc;</tal:desc>
+            </span>
+          </a>
+        </th>
+        <th style="width:80px">
+          <a href="${base_url}&amp;sort_on=modified&amp;sort_order=${python:sort_order if sort_on == 'modified' else 'ascending'}">
+            Modification date
+            <span class="sortdirection" tal:condition="python:sort_on == 'modified'">
+              <tal:asc condition="python:req_sort_order == 'ascending'">&#x25b2;</tal:asc>
+              <tal:desc condition="python:req_sort_order == 'descending'">&#x25bc;</tal:desc>
+            </span>
+          </a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tal:block tal:repeat="item batch">
+        <tal:item define="observation nocall:item">
+          <tr data-href="${observation/absolute_url}" class="clickableRow ${observation/observation_css_class}">
+            <td class="observationRefCell">
+              <a href="${observation/absolute_url}" target="_blank">
+                <span class="ref-num">${observation/getId}</span>
+              </a>
+              <br/>
+              <div class="potentialSignificantIssue" tal:condition="observation/observation_is_potential_significant_issue">
+                Potential significant issue
+              </div>
+              <div class="potentialTechnicalCorrectionTag" tal:condition="observation/observation_is_potential_technical_correction">
+                Potential technical correction
+              </div>
+              <div class="technicalCorrectionTag" tal:condition="observation/observation_is_technical_correction">
+                Technical correction
+              </div>
+            </td>
+            <td class="observationText">${python:self.reduce_text(observation.text)}</td>
+            <td >${observation/nfr_code_value}</td>
+            <td data-sorter="python:observation.modified()">${python:self.format_date(observation.modified())}</td>
+          </tr>
+        </tal:item>
+      </tal:block>
+    </tbody>
+  </table>
+  <tal:batchnavigation define="batchnavigation nocall:context/@@batchnavigation" replace="structure python:batchnavigation(batch)" />
+</tal:listing>
+</metal:obslist>

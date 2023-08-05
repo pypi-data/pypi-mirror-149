@@ -1,0 +1,194 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:i18n="http://namespaces.zope.org/i18n"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="emrt.necd.content">
+
+
+  <!-- Observation views -->
+  <browser:page
+    name="view"
+    for=".observation.IObservation"
+    class=".observation.ObservationView"
+    template="templates/observationview.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="diffedview"
+    for=".observation.IObservation"
+    class=".observation.ObservationView"
+    template="templates/diffedview.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="export_as_docx"
+    for=".observation.IObservation"
+    class=".observation.ExportAsDocView"
+    permission="emrt.necd.content.ExportAnObservation"
+    />
+
+  <!-- Subscription configuration -->
+  <browser:page
+    name="subscription-configuration"
+    for=".reviewfolder.IReviewFolder"
+    class=".subscriptionconfiguration.SubscriptionConfigurationReview"
+    template="templates/subscriptionconfigurationreview.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="subscription-configuration"
+    for=".observation.IObservation"
+    class=".subscriptionconfiguration.SubscriptionConfiguration"
+    template="templates/subscriptionconfiguration.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="save-subscriptions"
+    for=".reviewfolder.IReviewFolder"
+    class=".subscriptionconfiguration.SaveSubscriptionsReview"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="save-subscriptions"
+    for=".observation.IObservation"
+    class=".subscriptionconfiguration.SaveSubscriptions"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="clear-subscriptions"
+    for=".observation.IObservation"
+    class=".subscriptionconfiguration.ClearSubscriptions"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!-- Observation actions -->
+
+  <browser:page
+    name="approve-question"
+    for=".comment.IComment"
+    class=".question.ApproveAndSendView"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!--Conclusion view-->
+
+  <browser:page
+    name="view"
+    for=".conclusions.IConclusions"
+    class=".conclusions.ConclusionsView"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!--Observation views-->
+  <browser:page
+    name="add-answer-and-request-comments"
+    for=".observation.IObservation"
+    class=".observation.AddAnswerAndRequestComments"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="edit-conclusions-and-close-comments"
+    for=".observation.IObservation"
+    class=".observation.EditConclusionP2AndCloseComments"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="edit-highlights"
+    for=".observation.IObservation"
+    class=".observation.EditHighlightsForm"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    name="add-conclusions"
+    for=".observation.IObservation"
+    class=".observation.AddConclusions"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!--Comment view-->
+
+  <browser:page
+    name="view"
+    for=".comment.IComment"
+    class=".comment.CommentView"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!--Question views-->
+  <browser:page
+    name="view"
+    for=".question.IQuestion"
+    class=".question.QuestionView"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="add-follow-up-question"
+    for=".question.IQuestion"
+    class=".question.AddFollowUpQuestion"
+    permission="zope2.View"
+    attribute="render"
+    />
+
+  <browser:page
+    name="add-conclusions"
+    for=".question.IQuestion"
+    class=".question.AddConclusions"
+    permission="zope2.View"
+    attribute="render"
+    />
+
+  <browser:page
+    name="delete-last-comment"
+    for=".question.IQuestion"
+    class=".question.DeleteLastComment"
+    permission="zope2.View"
+    attribute="render"
+    />
+
+  <browser:page
+    name="delete-last-answer"
+    for=".question.IQuestion"
+    class=".question.DeleteLastAnswer"
+    permission="zope2.View"
+    attribute="render"
+    />
+
+  <!--CommentAnswer  views-->
+  <browser:page
+    name="view"
+    for=".commentanswer.ICommentAnswer"
+    class=".commentanswer.CommentAnswerView"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+  <!--CopyFileToAnswer-->
+  <browser:page
+    name="copy-attachment-to-answer"
+    for="plone.app.discussion.interfaces.IComment"
+    class=".browser.copyfiles.CopyFileToAnswer"
+    attribute="render"
+    permission="zope2.View"
+    />
+
+</configure>
