@@ -1,0 +1,55 @@
+{% extends 'contact/_common.html' %}
+{% load static %}
+{% load appointment_tags %}
+
+{% block contact %}
+<!-- ======= Contact Section ======= -->
+<section id="contact" class="contact">
+  <div data-aos="fade-up">
+    <iframe style="border:0; width: 100%; height: 350px;" src="{{ contact.google_map }}" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <div class="container" data-aos="fade-up">
+    <div class="row mt-5">
+      <div class="col-lg-4">
+        <div class="info">
+          <div class="address">
+            <i class="bi bi-geo-alt"></i>
+            <h4>Location:</h4>
+            {% autoescape off%}
+            <p>{{ contact.address }}</p>
+            {% endautoescape %}
+          </div>
+          <div class="phone">
+            <i class="bi bi-phone"></i>
+            <h4>Call:</h4>
+            <p>{{ contact.phone }}</p>
+          </div>
+          <div class="noti">
+            {% if contact.noti.title|capfirst == "Email" %}
+            <i class="bi bi-envelope"></i>
+            {% else %}
+            <i class="bi bi-chat-square-text"></i>
+            {% endif %}
+            <h4>{{ contact.noti.title }}:</h4>
+            {% autoescape off%}
+            {% for desc in contact.noti.desc %}
+              <p>{{ desc }}</p>
+            {% endfor %}
+            {% endautoescape %}
+            {% if contact.noti.image %}
+            <img src="{% static 'img/contact/'|add:contact.noti.image %}" class="img-fluid rounded" alt="">
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8 mt-5 mt-lg-0">
+        {% make_appointment %}
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Contact Section -->
+{% endblock %}
+
