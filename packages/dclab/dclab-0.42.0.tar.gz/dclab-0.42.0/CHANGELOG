@@ -1,0 +1,945 @@
+0.42.0
+ - enh: reduce computation time of file hashes in the cli submodule
+   (and thus all other software downstream) by switching from a full
+   SHA256 hash to a 5MB md5 hash; this speeds up operations on
+   slow network shares
+ - ref: minor change when installing R packages
+   (rlme tests are broken on Windows currently)
+ - ref: use np.float32 for principal inertia ratio computation
+   (compatibility with OpenCV)
+0.41.0
+ - feat: pull DCOR access token management from downstream DCOR-Aid
+ - feat: allow to set alternate DCOR server certificate bundles by
+   appending paths `dclab.rtdc_dataset.fmt_dcor.DCOR_CERTS_SEARCH_PATHS`
+ - enh: allow to skip checks and by default use the innate features
+   during export of an RTDCBase
+ - setup: remove appveyor build pipeline
+ - ref: cleanup fmt_dcor
+0.40.0
+ - setup: bump numpy from 1.17.0 to 1.21.0
+ - setup: bump scipy from 0.14.0 to 1.8.0
+ - setup: drop support for Python 3.7
+0.39.18
+ - fix: regression since 0.39.0; contours with wrong index where not
+   repaired
+ - ref: Python distutils library is deprecated
+ - ref: some scipy namespaces are deprecated
+0.39.17
+ - enh: allow to specify unique_id of PolygonFilter when loading
+   from file
+0.39.16
+ - fix: not all statistics exported if no feature was specified
+0.39.15
+ - fix: fix accessing inherited non-scalar temporary or plugin features
+   for RTDC_Hierarchy class (#165)
+ - fix: properly handle user-defined (temporary or plugin) features
+   when exporting to HDF5 (#166)
+ - enh: add "shape" keyword argument in RTDCWrite.store_feature to
+   allow the user to pass the correct data shape; this reduces warning
+   messages when using the RTDCBase.export.hdf5 functionality
+ - ref: simplify data export to HDF5 with generator function
+ - tests: use correct tdms-dataset for tdms tests
+0.39.14
+ - fix: enable loading of non-scalar plugin data as h5py.Dataset (#162)
+ - build: minor fixes in CI and testing pipeline
+0.39.13
+ - fix: recompute the "ml_class" feature if the ml_score features
+   change (either the underlying model or the number of features)
+0.39.12
+ - fix: support nan values for the computation of the "ml_class"
+   feature (#161)
+ - fix: cache of util.hashfile used access times of files (and thus
+   might not have been of any use in some cases)
+0.39.11
+ - fix: misleading error message when loading plugin features
+   with Python modules that are not available (#160)
+ - docs: add information on how to call CLI functions from within
+   Python (#145)
+0.39.10
+ - fix: make absolutely sure HDF5 files are closed if RTDCWriter is
+   used as a context manager
+ - docs: properly document the shapes option of plugin features (#146)
+0.39.9
+ - fix: spelling of Young's modulus (#159)
+ - ref: define minimal R version 3.6.0 in lme4 submodule and
+   propagate any errors with possible solutions to the user
+ - ref: extract exact version string for R
+0.39.8
+ - enh: cache computed file hashes with additional os.stat info
+ - tests: fix tests on Windows
+0.39.7
+ - fix: handle empty trace feature in RTDCWriter.rectify_metadata
+0.39.6
+ - fix: do not close H5File object passed to RTDCWriter.__init__
+0.39.5
+ - fix: write FeatureSetNotIdenticalJoinWarnings to logs in dclab-join
+0.39.4
+ - fix: KeyError object 'index_online' doesn't exist when joining
+   two datasets with dclab-join (#158)
+ - fix: generalize online_filter configuration keys (#156)
+ - fix: relax validation of online_filter configuration key types
+ - fix: make sure that only common features of the input files for
+   dclab-join are written to the output file (#157)
+ - enh: add `with_unit` keyword to `get_feature_label`
+ - ref: slightly modified online_filter configuration descriptions
+0.39.3
+ - ref: deprecate these lists/dicts in dclab.definitions:
+   config_descr, config_funcs, config_types, feature_names,
+   feature_labels, feature_name2label (#135)
+ - ref: use more intuitive trace feature in fmt_dcor
+0.39.2
+ - ref: renamed mask and contour labels
+ - ref: increase verbosity in error messages
+ - tests: add .modc test model and data
+0.39.1
+ - fix: don't create __pycache__ folders for plugin features
+ - fix: add "date" to machine-learning feature info dict
+0.39.0
+ - enh: implement .shape and .__len__ for non-scalar features
+   and all file formats (#117)
+ - ref: adjust ancillary machine-learning feature API to match
+   that of plugin features (this is not a breaking change,
+   because nobody is using machine-learning features yet)
+ - ref: minor refactoring of tdms file format code might lead to
+   faster loading of trace data
+0.38.2
+ - fix: reduce memory usage when writing "mask" feature data
+0.38.1
+ - maintenance release
+0.38.0
+ - enh: add identifier to AncillaryFeature class
+ - enh: introduce MachineLearningFeature to simplify the use of
+   machine learning models in ancillary features
+ - fix: load_modc should return a list of models
+ - ref: rename `rtdc_dataset.ancillary` submodule to `anc_feat_core`
+ - ref: rename `rtdc_dataset.plugins` submodule to `anc_feat_plugin`
+ - ref: move the `ml` submodule to `rtdc_dataset.anc_feat_ml`
+ - ref: move tensorflow-related code into its own submodule
+ - setup: bump minimum Python version to 3.7
+0.37.3
+ - fix: ignore defective feature "volume" in pre 0.37.0 .rtdc files
+ - fix: always perform version branding when using RTDCWriter context
+   manager
+ - ref: silence numpy deprecation warning in RTDCWriter
+0.37.2
+ - enh: speed-up contour computation by a factor of three
+   (volume is computed by factor of two faster)
+0.37.1
+ - enh: make IntegrityChecker class available on top level module
+0.37.0
+ - BREAKING CHANGE: The volume feature in all previous versions was
+   overestimated by about 2µm³. Please re-run your analysis pipeline.
+ - fix: volume was computed incorrectly (#141)
+0.36.1
+ - setup: bump h5py version to 3.0 (issue with integer chunk argument)
+0.36.0
+ - feat: introduce new RTDCWriter class (#144)
+ - fix: in some rare cases, an empty .rtdc file could be generated
+   when splitting an .rtdc file via the CLI dclab-split
+ - fix: user-defined metadata were not copied with CLI repack
+ - fix: support exporting non-scalar plugin features to HDF5 (#143)
+ - enh: implement consistent `.shape` property for contour data
+   (partially #117)
+ - enh: improve export speed of contour data
+ - enh: improve export speed if data filtering is disabled
+ - ref: disable `time_offset` of internal `export.hdf5_append` function
+ - ref: deprecate write_hdf5.write function
+ - ref: deprecate export.hdf5_autocomplete_config function
+ - ref: deprecate export.hdf5_append function
+0.35.8
+ - fix: write logs to fixed-length strings in HDF5 files (HDF5 never
+   supported variable length string datasets with fletcher32 or compression
+   filters)
+ - fix: non-scalar features that are not defined in dclab were silently
+   ignored upon export; temporarily raise a ValueError instead (#143)
+ - setup: release pinning of h5py
+0.35.7
+ - fix: more Shape-In versions are affected by the medium-write bug
+   addressed in 0.33.1
+ - enh: improve error handling when loading rpy2
+ - enh: add checks for negative or zero-valued metadata
+ - tests: fix broken example dataset with zero-valued metadata (#137)
+0.35.6
+ - fix: config converters were not applied to raw metadata (#139)
+0.35.5
+ - enh: add sanity_check method to IntegrityChecker
+0.35.4
+ - enh: implement function for obtaining the description of a
+   configuration key get_config_value_descr
+0.35.3
+ - enh: implement dumping of Configuration to json
+0.35.2
+ - enh: allow to compress, condense, and repack without checking for
+   the input file suffix
+ - docs: fixed example data (sphinx encountered unexpected warnings)
+0.35.1
+ - fix: ignore empty logs (raised IndexError before)
+ - tests: increase coverage (#136)
+0.35.0
+ - enh: support new configuration keys for online polygon filtering
+   in the form of "[online_filter]: area_um,deform polygon points" (#134)
+ - enh: new helper functions in dclab.definitions: get_config_value_type,
+   get_config_value_func, and config_key_exists
+ - ref: issue a warning when the data type of a configuration key is
+   not correct
+0.34.6
+ - fix: make get_job_info and get_command_log available in cli submodule
+ - tests: add documentation for test data (#119)
+0.34.5
+ - fix: cast data to float when filling with nan values when checking the
+   size of ancillary features
+ - fix: dclab-split did not work when nptdms is not installed
+ - tests: skip tests that require nptdms, requests, or rpy2 if those
+ - enh: add check to warn users from setting None-type config values
+   packaages are not installed
+ - tests: add test for non-scalar plugin feature
+ - ci: run tests with different setup.py-extras installed
+0.34.4
+ - fix: use temporary file names during CLI operations
+0.34.3
+ - fix: workaround for when rpy2 finds R_HOME, but R doesn't
+0.34.2
+ - fix: slicing of non-scalar features for hierarchy children (#128)
+ - fix: passing a directory to the CLI tdms2rtdc did not work
+ - enh: support slicing of non-scalar features for DCOR data (#132)
+ - enh: support slicing of the contour feature for HDF5 data (#132)
+ - enh: support slicing of LazyContour for contour AncillaryFeature (#132)
+ - enh: minor optimizations of the DCOR format
+ - ref: raise NotImplementedError for futile attempts to slice the image,
+   contour, or mask features for .tdms data (#132)
+ - ref: cleanup CLI code
+ - tests: increase coverage of CLI (#116)
+0.34.1
+ - enh: introduce user-defined "user" configuration section (#125)
+ - scripts: refactor fem2lutiso_std.py and fem2iso_volume.py so that
+   model-specific post-processing is done in hooks named after the FEM
+   identifier, e.g. fem_hooks/LE-2D-FEM-19.py (#90)
+ - docs: new LUT data version 10.6084/m9.figshare.12155064.v3
+ - ref: minor code cleanup
+0.34.0
+ - feat: introduce user-defined plugin features (#105)
+ - fix: dclab-verify-dataset now also prints other errors it encounters
+ - fix: installing the "lmer" R package failed, because "statmod" was not
+   installed
+ - fix: correct data types for "fluorescence:sample rate",
+   "imaging: roi position x", and "imaging: roi position y" (#124)
+ - enh: support new .rtdc attribute "online_contour:bg empty" which is
+   True when the online background image is computed only from frames
+   that do not contain any events (#124)
+ - enh: `AncillaryFeature` now populates other ancillary features when they
+   share the same method (#104)
+ - enh: dclab-verify-dataset now returns a non-zero exit code if there
+   were errors, alerts, or violations (#120)
+ - ref: streamlined dataset check function for missing meta data keys
+0.33.3
+ - fix: add "chip identifier" to "setup" configuration section and
+   make it optional during dataset checks (#109)
+ - fix: ignore empty metadata strings (partly #109); removed the
+   `check_metadata_empty_string` check function because it does
+   not apply anymore
+0.33.2
+ - fix: some datasets with unknown feature names could not be
+   opened (AssertionError regression in 0.33.1)
+ - fix: workaround for sporadic JSONDecodeError when accessing DCOR
+ - ref: cleanup cli.py
+ - ref: cleanup util.py and deprecate `hash_class` argument in
+   `hashfile`
+0.33.1
+ - fix: add dataset check for wrong medium written to .rtdc file
+   by Shape-In
+ - fix: filters were ignored when exporting trace data to hdf5 (#112)
+ - enh: allow to set ICue identifier for integrity checking
+ - ref: code cleanup in export.py
+0.33.0
+ - feat: introduce user-defined temporary features (point 2 in #98)
+ - fix: catch errors for integrity checks on non-raw datasets (#102)
+ - fix: add check for negative fluorescence values (#101)
+ - enh: add metadata keys for baseline offset (#107)
+ - setup: remove deprecated setup.py test
+0.32.5
+ - fix: add check for zero-flow rate in dclab-verify-dataset
+ - setup: added new file CREDITS for docs and only use maintainer
+   in setup.py
+ - docs: add autodoc to constant variables (#94)
+ - docs: add "features_innate" and "features_loaded" to scripting
+   goodies section
+ - ref: cleanup of RTDCBase class
+ - ref: int/bool deprecation warnings in numpy 1.20.0 (#93)
+ - tests: test for area_cvx as a float, consistent with output from
+   Shape-In (#96)
+0.32.4
+ - fix: TypeError when registering emodulus LUT (#91)
+ - ref: minor cleanup
+0.32.3
+ - build: use oldest-supported-numpy in pyproject.toml
+0.32.2
+ - fix: export trace data in chunks to avoid out-of-memory
+   errors when compressing large files
+ - ref: introduce CHUNK_SIZE in write_hdf5.py and use it when
+   exporting to .rtdc
+0.32.1
+ - enh: dclab-compress now by default does not compress any input
+   files that are already fully compressed (fully compressed means
+   that all HDF5 datasets are compressed somehow); to get the old
+   behavior back (compress in any case, use the "force" keyword
+   argument)
+0.32.0
+ - feat: allow to register external look-up tables for Young's
+   modulus computation (#88)
+ - ref: restructure look-up table file handling
+ - ref: deprecated [calculation]: "emodulus model" metadata key in favor
+   of the more descriptive "emodulus lut" key.
+ - ref: the "method" argument in the context of isoelasticity lines
+   is deprecated in favor of the "lut_identifier" argument
+0.31.5
+ - fix: writing "filtering" and "calculation" metadata sections
+   to .rtdc files should not be allowed
+0.31.4
+ - ci: fix rtd builds
+ - ci: fix PyPI releases
+0.31.3
+ - ci: migrate to GitHub Actions
+0.31.2
+ - enh: add soft type check (assertion) for "emodulus medium"
+   key in ancillary features (#86)
+ - fix: make sure that strings are not written as bytes in
+   hdf5 files
+0.31.1
+ - enh: add boolean "model converged" key to return dictionary of
+   `Rlme4.fit` (#85)
+0.31.0
+ - feat: implement (generalized) linear mixed-effects models
+   via a wrapper around R/lme4 using rpy2 (install with extra
+   "lme4")
+0.30.1
+ - fix: `new_dataset` attempts to load DCOR dataset when
+   given a non-existent path as a string (#81)
+0.30.0
+ - BREAKING CHANGE: drop support for Python 2 (#34)
+ - feat: new machine learning (ML) submodule `dclab.ml`
+ - feat: implement ML model file format .modc (#78)
+ - feat: add tensorflow helper functions for RT-DC data
+ - setup: bump numpy>=1.17.0
+ - ref: minor improvements of code readability
+ - tests: set global temp dir and remove it after testing
+0.29.1
+ - enh: lift restrictions on valid options for [setup]:medium
+   (can now be any arbitrary string)
+0.29.0
+ - feat: support the "image_bg" feature which contains the
+   rolling mean background image computed by Shape-In
+0.28.0
+ - feat: new CLI command dclab-split to split a large dataset into
+   multiple smaller datasets
+0.27.11
+ - fix: do not cache hierarchy child feature values; this might lead
+   to intransparent situations where a child has different features
+   than its parent (you cannot always rely on the user to call
+   `apply_filter`)
+ - fix: hierarchy child configuration section "calculation" was not
+   updated with the hierarchy parent values
+ - docs: add example for loading data from DCOR and computing
+   the Young's modulus
+0.27.10
+ - fix: support unicode characters when writing HDF5 in Python2
+0.27.9
+ - docs: add artwork
+ - fix: support unicode characters in sample names in Python2
+0.27.8
+ - docs: add more information on emodulus computation
+ - docs: add script for visualizing emodulus LUTs
+0.27.7
+ - ref: replace deprecated .tostring() with .tobytes()
+0.27.6
+ - fix: video seek issue workaround also for the first 100 frames
+ - cli: also skip the final event in tdms2rtdc if the image is empty
+ - cli: renamed kwarg `--include-initial-empty-image`
+   to `include-empty-boundary-images`
+ - enh: improve detection and recovery of missing images for fmt_tdms
+0.27.5
+ - maintenance build
+0.27.4
+ - maintenance build
+0.27.3
+ - fix: ignore ResourceWarning due to unknown _io.BufferedReader
+   in third-party software when converting .tdms to .rtdc
+0.27.2
+ - maintenance build
+0.27.1
+ - setup: bump imageio to 2.8.0 for Python>=3.4
+ - ref: removed NoImageWarning during export (warning is already
+   issued by fmt_tdms.event_image)
+0.27.0
+ - feat: introduce new feature names `ml_score_???` where `?`
+   can be a digit or a lower-case letter of the alphabet (#77)
+ - feat: introduce new functions `dclab.definitions.feature_exists`
+   and `dclab.definitions.scalar_feature_exists` for checking the
+   existence of features (including the `ml_score_???` features
+   which are not in `dclab.definitions.feature_names`)
+ - feat: introduce ancillary feature `ml_class` which is
+   defined by the `ml_score_???` features
+ - enh: fmt_dict automatically converts scalar features to arrays
+ - ref: replace check for `dclab.definitions.feature_names`
+   by `dclab.definitions.feature_exists` where applicable
+ - ref: replace access of `dclab.definitions.feature_name2label`
+   by `dclab.definitions.get_feature_label` where applicable
+ - ref: do not automatically fill up all the box filtering ranges
+   in `RTDCBase.config["filtering"]` with zeros; raise ValueError
+   if user forgets to set both ranges
+ - docs: major revision (promote Shape-Out 2 and DCOR)
+0.26.2
+ - fix: `kde_methods.bin_num_doane` now uses 5 as default if it
+   ecounters nan or zero-division
+ - docs: updates related to Young's modulus computation
+0.26.1
+ - enh: cache more online data in fmt_dcor 
+ - enh: add `dclab.warn.PipelineWarning` which is used as a parent
+   class for warnings that a user might be interested in
+ - fix: temperature warnings during emodulus computation revealed
+   only the lower temperature limit of the data
+0.26.0
+ - feat: implement volume-deformation isoelasticity lines (#70)
+ - fix: specifying an external LUT as ndarray did not work
+ - scripts: finish 'fem2iso_volume.py' for extracting volume-
+   deformation isoelasticity lines
+ - scripts: add 'pixelation_correction.py' for visualizing
+   pixelation effects on area_um, volume, and emodulus
+ - ref: renamed isoelasticity line text files
+0.25.0
+ - fix: appending data to an hdf5 file results in a broken "index"
+   feature (re-enumeration from 0), if the given dataset contains
+   the "index_online" feature
+ - enh: allow to set external LUT files or LUT data when computing
+   the Young's modulus with the `lut_data` keyword argument in
+   `dclab.features.emodulus.get_emodulus`.
+ - ref: refactored `features.emodulus`: New submodules `pxcorr` and
+   `scale_linear`; `convert` is deprecated in favor of `scale_feature`
+0.24.8
+ - setup: include Python 3.8 builds and remove Python<=3.5 builds
+ - scripts: renamed 'extract_lut_and_iso.py' to 'fem2lutiso_std.py' 
+0.24.7
+ - fix: `ConfigurationDict.update` did not take into account
+   invalid keys (everything is now done with (__setitem__`)
+0.24.6
+ - maintenance release
+0.24.5
+ - maintenance release
+0.24.4
+ - maintenance release
+0.24.3
+ - fix: `ConfigurationDict.update` did not actually perform the
+   requested update (does not affect `Configuration.update`)
+ - enh: also use points_in_polygon from scikit-image to determine
+   contour levels
+0.24.2
+ - build: import new skimage submodules so that PyInstaller
+   will find and use them
+0.24.1
+ - enh: improve polygon filter speed by roughly two orders of
+   magnitude with a cython version taken from scikit-image; there
+   are only minor differences to the old implementation (top right
+   point included vs. lower left point included), so this is not
+   a breaking change (#23)
+0.24.0
+ - data: refurbished LUT for linear elastic spheres provided by
+   Dominic Mokbel and Lucas Wittwer (based on the FEM simulation
+   results from https://doi.org/10.6084/m9.figshare.12155064.v2);
+   compared to the old LUT, there is a relative error in Young's
+   modulus below 0.1 %, which should not cause any breaking changes
+ - data: updated isoelasticity lines (better spacing): analytical
+   data was made available by Christoph Herold, numerical data
+   was interpolated from the new LUT
+ - scripts: added 'scripts/extract_lut_and_iso.py' for extracting
+   Young's modulus LUT and isoelastics from FEM simulation data
+   provided by Lucas Wittwer; this is now the default method for
+   extracting new LUTs and isoelastics
+ - scripts: added 'scripts/fem2rtdc.py' for generating in-silico
+   .rtdc datasets from FEM simulation data provided by Lucas Wittwer 
+ - fix: dclab-verify-dataset failed when the "logs" group was not
+   present in HDF5 files
+ - fix: use predefined chunks when writing HDF5 data to avoid
+   exploding file sizes when writing one event at a time
+ - fix: create a deep copy of the metadata dictionary when writing
+   HDF5 data because it leaked to subsequent calls
+ - ref: changed the way isoelasticity lines and emodulus LUTs
+   are stored and loaded (e.g. json metadata and a few more sanity
+   checks)
+0.23.0
+ - feat: enable emodulus extrapolation for `area_um`/`deform` values
+   outside of the given LUT.
+0.22.7
+ - enh: dclab-verify-dataset now also checks whether the sheath and
+   sample flow rates add up to the channel flow rate
+ - ref: Configuration does not anymore load unknown meta data
+   keyword arguments, but ignores them. This implies that
+   dclab-verify-dataset will not anymore check them actively.
+   Instead, any warning issued when opening a file is added
+   to the list of cues.
+ - setup: bump nptdms to 0.23.0
+0.22.6
+ - fix: data export to HDF5 did not work when the "frame rate"
+   is not given in the configuration
+0.22.5
+ - enh: add checks for valid keys in the Configuration dictionary
+   of a dataset `RTDCBase().config`; unknown keys will issue
+   an UnknownConfigurationKeyWarning (#58)
+ - ref: moved `rtdc_dataset.fmt_hdf5.UnknownKeyWarning` to
+   `rtdc_dataset.config.UnknownConfigurationKeyWarning`
+ - ref: renamed `rtdc_dataset.config.CaseInsensitiveDict`
+   to `rtdc_dataset.config.ConfigurationDict` and added option
+   to check new keys
+0.22.4
+ - fix: disable computation of Young's modulus for reservoir
+   measurements (#75)
+ - enh: new keyword argument `req_func` for `AncillaryFeature` to
+   define additional logic for checking whether a feature is
+   available for a given instance of `RTDCBase`.
+0.22.3
+ - enh: add `data` property to ICues (and use it when checking for
+   compression)
+0.22.2
+ - fix: when computing the contour from the mask image, always use
+   the longest contour - critical when the mask image contains
+   artefacts
+ - fix: minor issue with dclab-verify-dataset when nptdms was not
+   installed and an exception occured
+ - enh: dclab-verify-dataset shows some info on data compression
+0.22.1
+ - enh: remember working API Key
+ - docs: document DCOR format
+0.22.0
+ - feat: implement DCOR client
+ - enh: improved .rtdc file format detection (with wrong extension)
+0.21.2
+ - enh: dclab-verify-dataset now also checks HDF5 "mask" feature
+   attributes
+ - setup: bump h5py to 2.10.0 (need `<object>.attrs.get_id`)
+0.21.1
+ - fix: correct type of HDF5 image attributes for "mask" feature
+0.21.0
+ - feat: implement new CLI dclab-repack
+ - fix: don't write "logs" group to HDF5 files if there aren't any
+ - fix: support HDF5 files that have no "logs" group
+ - docs: fix docstring of dclab-join
+0.20.8
+ - fix: regression where old .tmds data could not be opened if
+   they did not contain the "area_msd" feature
+ - fix: convert bytes logs to string in fmt_hdf5
+ - enh: support len(ds.logs) for fmt_hdf5
+ - enh: replace "info" by "build" in CLI job info
+0.20.7
+ - fix: ensure file extension is .rtdc in dclab-join
+ - fix: correct "frame" and "index_online" features when exporting
+   to hdf5
+ - enh: allow to set metadata dictionary in dclab.cli.join
+0.20.6
+ - fix: typo in contour check resulted in small tolerance
+0.20.5
+ - fix: be more trustful when it comes to contour data in the tdms
+   file format; instead of raising errors, issue warnings (#72)
+0.20.4
+ - ref: move integrity checks to new class check.IntegrityChecker
+ - docs: document remaining dictionaries in dclab.dfn
+0.20.3
+ - docs: fix bad anchors
+0.20.2
+ - ref: using temperature values outside the range for viscosity
+   computation now issues a warning instead of raising an error;
+   warnings were added for the CellCarrier buffers
+ - fix: handle number detection correctly in get_emodulus
+0.20.1
+ - fix: always return an array when computing the KDE
+ - ref: make accessible static function RTDCBase.get_kde_spacing
+0.20.0
+ - feat: compute elastic modulus from "temp" feature (#51)
+ - enh: computing isoelastics from datasets can use
+   [setup]: "temperature" to compute the viscosity/emodulus (#51)
+ - enh: define new meta data key [setup]: "temperature"
+ - docs: add an advanced section on Young's modulus computation (#51)
+0.19.1
+ - fix: hierarchy children did not pass `force` argument to
+   hierarchy parent when `apply_filter` is called
+ - fix: revert histogram2d "density" argument to "normed" to support
+   numpy 1.10 (Shape-Out 1)
+ - fix: implement unambiguous `RTDCBase.__repr__`
+0.19.0
+ - feat: added better contour spacing computation based on percentiles
+   (dclab.kde_methods.bin_width_percentile)
+ - feat: add feature "index_online" which may be missing values (#71)
+ - feat: implement __getstate__ and __setstate__ for polygon filters
+ - fix: write UTF-8 BOM when exporting to .tsv
+ - enh: add check whether unique_id exists in PolygonFilter
+0.18.0
+ - fix: correctly handle filtering when features are removed from a
+   dataset
+ - ref: move dclab.rtdc_dataset.util to dclab.util
+ - ref: minor cleanup in computation of viscosity (support lower-case
+   `medum` values, add `dclab.features.emodulus_viscosity.KNOWN_MEDIA`)
+ - ref: cleanup dclab.rtdc_dataset.filter (use logical operators,
+   correctly display nan-warning messages, keep track of polygon
+   filters, add consistency checks, improve readability)
+0.17.1
+ - maintenance release
+0.17.0
+ - feat: add command line script for compressing HDF5 (.rtdc)
+   data "dclab-compress"
+ - enh: record warnings under "/log" for all command line scripts
+ - enh: set gzip data compression for all command line scripts
+0.16.1
+ - fix: circumvent UnicodeDecodeErrors which occured in frozen macOS
+   binaries that use dclab
+ - enh: support subsecond accuracy in the the configuration key
+   [experiment] time (e.g. "HH:MM:SS.SSS" instead of "HH:MM:SS")
+ - enh: store the correct, relative measurement time in dclab-join (#63)
+0.16.0
+ - fix: RTDCBase.downsample_scatter with ret_mask=True did not return
+   boolean array of len(RTDCBase) as indicated in the docs
+ - ref: remove RTDCBase._plot_filter, which was confusing anyway
+ - ref: deprecate usage of RTDCBase._filter
+0.15.0
+ - feat: add method RTDCBase.reset_filter
+ - feat: implement RTDCBase.features_loaded
+ - feat: allow to instantiate RTDC_Hierarchy without initially
+   applying the filter
+ - fix: non-scalar columns of RTDC_Hierarchy did not implement len()
+ - docs: add an example script dedicated to data plotting
+ - ref: remove circular references between Filter and RTDCBase
+0.14.8
+ - fix: Ignore feature "trace" when the trace folder exists but is
+   empty (HDF5 format)
+ - fix: If no contour can be found, raise an error before other
+   ancillary features produce cryptic errors
+0.14.7
+ - enh: allow to add meta data when exporting to .fcs or .tsv
+   (dclab version is saved by default)
+ - setup: bump fcswrite from 0.4.1 to 0.5.0
+0.14.6
+ - fix: improved handling of tdms trace data (split trace with fixed
+   samples per event to avoid ValueError when exporting to hdf5)
+ - fix: transposed roi size x/y config value when exporting to hdf5
+0.14.5
+ - cli: write warning messages to logs in tdms2rtdc
+ - ref: increase verbosity of warning messages
+0.14.4
+ - fix: discard trace data when "samples per event" has multiple values
+   for tdms data
+ - fix: prefer image shape over config keywords when determining the
+   shape of the event mask and check the shape in dclab-verify-dataset
+ - fix: avoid ContourIndexingError by also searching the neighboring
+   (+2/-2) events when the contour frame number does not match (#67)
+0.14.3
+ - enh: explicitly check contour data when testing whether to include
+   the first event in tdms2rtdc
+0.14.2
+ - ref: convert said ValueError to ContourIndexingError
+0.14.1
+ - fix: ValueError when verifying contour frame index due to comparison
+   of float with int
+0.14.0
+ - feat: new command line script for creating a scalar-feature-only
+   dataset with all available ancillary features "dclab-condense"
+ - enh: enable scalar feature compression for hdf5 export 
+ - docs: fix doc string for dclab-tdms2rtdc
+   (`--include-initial-empty-image` falsely shown as "enabled by default")
+0.13.0
+ - feat: allow to obtain a mask representing the filtered data with
+   the `ret_mask` kwarg in `RTDCBase.get_downsampled_scatter`
+ - feat: allow to force-exclude invalid (inf/nan) events when downsampling
+   using the `remove_invalid` keyword argument
+ - feat: exclude empty initial images in dclab-tdms2rtdc;
+   they may optionally be included with "--include-initial-empty-image"
+ - feat: new property `RTDCBase.features_innate` (measuerd feature)
+ - enh: log which ancillary features were computed in dclab-tdms2rtdc (#65)
+ - enh: improved tdms meta data import (also affects dclab-tdms2rtdc)
+ - enh: update channel count and samples per event when writing hdf5 data
+ - enh: dclab-verify-dataset now recognizes invalid tdms data
+ - enh: several other improvements when reading tdms data
+ - enh: group meta data in log files (dclab-tdms2rtdc and dclab-join)
+ - fix: correctly handle hdf5 export when the image or contour columns
+   have incorrect sizes (affects dclab-tdms2rtdc)
+ - fix: ignore empty configuration values when loading tdms data
+ - fix: image/contour files were searched recursively instead of
+   only in the directory of the tdms file
+ - fix: check for precence of "time" feature before using it to
+   correct measurement date and time
+ - fix: ancillary feature computation for brightness had wrong
+   dependency coded (contour instead of mask)
+ - fix: ancillary feature computation when contour data is involved lead to
+   error, because `LazyContourList` did not implement `identifier` (see #61)
+ - ref: remove NoContourDataWarning for tdms file format
+ - tests: improve dataset checks (#64)
+0.12.0
+ - feat: add command line script for joining measurements "dclab-join" (#57)
+ - feat: make log files available as `RTDCBase.logs`
+ - feat: include log data in "dclab-join" and "dclab-tdms2rtdc"
+ - fix: `features` property for tdms file format falsely contains
+   the keys "contour", "image", "mask", and "trace" when they are
+   actually not available.
+ - enh: support loading TDMS data using the 'with' statement
+ - docs: add example for joining measurements
+ - docs: other minor improvements
+ - setup: add Python 3.7 wheels for Windows (#62)
+ - setup: remove Python 2 wheels for macOS
+0.11.1
+ - docs: add example for fluorescence trace visualization
+ - docs: restructure advanced usage section
+ - ref: make dclab in principle compatible with imageio>=2.5.0;
+   Dependencies are pinned due to segfaults during testing
+ - setup: make tdms format support and data export dependency optional;
+   To get the previous behavior, use `pip install dclab[all]`
+0.11.0
+ - feat: compute contours lazily (#61)
+0.10.5
+ - setup: migrate to PEP 517 (pyproject.toml)
+0.10.4
+ - enh: ignore defective feature "aspect" from Shape-In 2.0.6 and 2.0.7
+ - enh: support loading HDF5 data using the 'with' statement
+   (e.g. `with dclab.new_dataset(rtdc_path) as ds:`)
+0.10.3
+ - fix: add numpy build dependency (setup_requires)
+0.10.2
+ - fix: HDF5-export did not re-enumerate "index" feature
+0.10.1
+ - fix: support nan-valued events when computing quantile levels
+   in submodule `kde_contours`
+0.10.0
+ - BREAKING CHANGE: Change np.meshgrid indexing in
+   `RTDCBase.get_kde_contour` from "xy" to "ij"
+ - feat: new submodule `kde_contours` for computing kernel density
+   contour lines at specific data percentiles (#60)
+ - fix: range for contour KDE computation did not always contain end
+   value (`RTDCBase.get_kde_contour`)
+ - fix: `positions` keyword argument in `RTDCBase.get_kde_scatter`
+   was not correctly scaled in the logarithmic case
+ - ref: cleanup and document PolygonFilter.point_in_poly
+ - ref: move skimage code to separate submodule "external"
+ - ref: drop dependency on statsmodels and move relevant code
+   to submodule "external"
+0.9.1
+ - fix: all-zero features were treated as non-existent due to relic
+   from pre-0.3.3 era
+ - fix: correct extraction of start time from tdms format
+   (1h offset from local time and measurement duration offset)
+ - fix: correct extraction of module composition from tdms format
+   (replace "+" with ",")
+ - enh: add configuration key mapping for tdms format to simplify
+   conversion to hdf5 format (see ``fmt_tdms.naming``)
+ - enh: do not add laser info for unused lasers for tdms format
+ - enh: dclab-verify-dataset checks for image attribute dtype
+ - enh: include original software version when exporting to rtdc format
+0.9.0
+ - feat: add new feature: gravitational force, temperature,
+   and ambient temperature
+ - ref: remove unused `has_key` function in
+   `rtdc_dataset.config.CaseInsensitiveDict`
+ - setup: require numpy>=1.10.0 because of `equal_nan` argument in `allclose`
+0.8.0
+ - fix: usage of "xor" (^) instead of "or" (|) in statistics
+ - feat: support `remove_invalid=False` in downsampling.downsample_rand (#27)
+ - feat: add keyword arguments `xscale` and `yscale` to improve data
+   visualization in `RTDCBase.get_downsampled_scatter`,
+   `RTDCBase.get_kde_contour`, and `RTDCBase.get_kde_scatter` (#55) 
+ - enh: make downsampling code more transparent
+ - BREAKING CHANGE: low-level downsampling methods refactored
+   - downsampling.downsample_grid: removed keyword argument
+     `remove_invalid`, because setting it to `False` makes no sense
+     in this context
+   - downsampling.downsample_rand: changed default value of `remove_invalid`
+     to `False`, because this is more objective
+   - rename keyword argument `retidx` to `ret_idx`
+   - these changes do not affect any other higher level functionalities
+     in `dclab.rtdc_dataset` or in Shape-Out
+0.7.0
+ - feat: add new ancillary feature: principal inertia ratio (#46)
+ - feat: add new ancillary feature: absolute tilt (#53)
+ - feat: add computation of viscosity for water (#52)
+0.6.3
+ - fix: channel width not correctly identified for old tdms files
+0.6.2
+ - ci: automate release to PyPI with appveyor and travis-ci
+0.6.0
+ - fix: image export as .avi did not have option to use unfiltered data
+ - fix: avoid a few unicode gotchas
+ - feat: use Doane's formula for kernel density estimator defaults (#42)
+ - docs: usage examples, advanced scripting, and code reference update (#49)
+0.5.2
+ - Migrate from os.path to pathlib (#50)
+ - fmt_hdf5: Add run index to title
+0.5.1
+ - Setup: add dependencies for statsmodels
+ - Tests: filter known warnings
+ - fmt_hdf5: import unknown keys such that "dclab-verify-dataset"
+   can complain about them
+0.5.0
+ - BREAKING CHANGES:
+   - definitions.feature_names now contains non-scalar
+     features (inlcuding "image", "contour", "mask", and "trace"). To
+     test for scalar features, use definitions.scalar_feature_names.
+   - features bright_* are computed from mask instead of from contour
+ - Bugfixes:
+   - write correct event count in exported hdf5 data files
+   - improve implementation of video file handling in fmt_tdms
+ - add new non-scalar feature "mask" (#48)
+ - removed configuration key [online_contour]: "bin margin" (#47)
+ - minor improvements for the tdms file format
+0.4.0
+ - Bugfix: CLI "dclab-tdms2rtdc" did not work for single tdms files (#45)
+ - update configuration keys:
+   - added new keys for [fluorescence]
+   - added [setup]: "identifier"
+   - removed [imaging]: "exposure time", "flash current"
+   - removed [setup]: "temperature", "viscosity"
+ - renamed feature "ncells" to "nevents"
+0.3.3
+ - ref: do not import missing features as zeros in fmt_tdms 
+ - CLI:
+   - add tdms-to-rtdc converter "dclab-tdms2rtdc" (#36)
+   - improve "dclab-verify-dataset" user experience
+ - Bugfixes:
+   - "limit events" filtering must be integer not boolean (#41)
+   - Support opening tdms files with capitalized "userDef" column names
+   - OSError when trying to open files from repository root
+0.3.2
+ - CLI: add rudimentary dataset checker "dclab-verify-dataset" (#37)
+ - Add logic to compute parent/root/child event indices of RTDC_Hierarchy
+   - Hierarchy children now support contour, image, and traces
+   - Hierarchy children now support and remember manual filters (#22)
+ - Update emodulus look-up table with larger values for deformation
+ - Implement pixel size correction for emodulus computation
+ - Allow to add pixelation error to isoelastics (`add_px_err=True`) (#28)
+ - Bugfixes:
+   - Pixel size not read from tdms-based measurements
+   - Young's modulus computation wrong due to faulty FEM simulations (#39)
+0.3.1
+ - Remove all-zero dummy columns from dict format
+ - Implement hdf5-based RT-DC data reader (#32)
+ - Implement hdf5-based RT-DC data writer (#33)
+ - Bugfixes:
+   - Automatically fix inverted box filters 
+   - RTDC_TDMS trace data contained empty arrays when no trace
+     data was present (trace key should not have been accessible) 
+   - Not possible to get isoelastics for circularity
+0.3.0
+ - New fluorescence crosstalk correction feature recipe (#35)
+ - New ancillary features "fl1_max_ctc", "fl2_max_ctc", "fl3_max_ctc" (#35)
+ - Add priority for multiple ancillary features with same name
+ - Bugfixes:
+   - Configuration key values were not hashed for ancillary features
+ - Code cleanup:
+   - Refactoring: Put ancillary columns into a new folder module
+   - Refactoring: Use the term "feature" consistently
+   - Unify trace handling in dclab (#30)
+   - Add functions to convert input config data
+0.2.9
+ - Bugfixes:
+   - Regression when loading configuration strings containing quotes
+   - Parameters missing when loading ShapeIn 2.0.1 tdms data
+0.2.8
+ - Refactor configuration class to support new format (#26)
+0.2.7
+ - New submodule and classes for managing isoelastics
+ - New ancillary columns "inert_ratio_raw" and "inert_ratio_cvx"
+ - Bugfixes:
+   - Typo when finding contour data files (tdms file format)
+ - Rrefactoring:
+   - "features" submodule with basic methods for ancillary columns
+0.2.6
+ - Return event images as gray scale (#17) 
+ - Bugfixes:
+   - Shrink ancillary column size if it exceeds dataset size
+   - Generate random RTDCBase.identifier (do not use RTDCBase.hash)
+     to fix problem with identical identifiers for hierarchy children
+   - Correctly determine contour data files (tdms file format)
+   - Allow contour data indices larger than uint8
+0.2.5
+ - Add ancillary columns "bright_avg" and "bright_sd" (#18, #19)
+ - Standardize attributes of RTDCBase subclasses (#12)
+ - Refactoring:
+   - New column names and removal of redundant column identifiers (#16)
+   - Minor improvements towards PEP8 (e.g. #15)
+   - New class for handling filters (#13)
+ - Bugfixes:
+   - Hierarchy child computed all ancillary columns of parent upon
+     checking availability of a column
+0.2.4
+ - Replace OpenCV with imageio
+ - Add (ancilliary) computation of volume (#11)
+ - Add convenience methods for `Configuration`
+ - Refactoring (#8):
+   - Separate classes for .tdms, dict-based, and hierarchy datasets
+   - Introduce "_events" attribute for stored data
+   - Data columns (including image, trace, contour) are accessed via
+     keys instead of attributes.
+   - Make space for new hdf5-based file format
+   - Introduce ancilliary columns that are computed on-the-fly
+     (new "_ancilliaries" attribute and "ancilliary_columns.py")
+0.2.3
+ - Add look-up table for elastic modulus (#7)
+ - Add filtering option "remove invalid events" to remove nan/inf
+ - Support nan and inf in data analysis
+ - Improve downsampling performance
+ - Refactor downsampling methods (#6)
+0.2.2
+ - Add new histogram-based kernel density estimator (#2)
+ - Refactoring:
+   - Configuration fully handled by RTDC_DataSet module (#5)
+   - Simplify video export function (#4)
+   - Removed "Plotting" configuration key
+   - Removed .cfg configuration files
+0.2.1
+ - Support npTDMS 0.9.0
+ - Add AVI-Export function
+ - Add lazy submodule for event trace data and rename `RTDC_DataSet.traces`
+   to `RTDC_DataSet.trace`
+ - Add "Event index" column
+0.2.0
+ - Compute sensible default configuration parameters for
+   KDE estimation and contour plotting
+ - Speed-up handling of contour text files
+ - Add support for "User Defined" column in tdms files
+0.1.9
+ - Implement hierarchical instantiation of RTDC_DataSet
+ - Bugfix: Prevent instances of PolygonFilter that have same id
+ - Load InertiaRatio and InertiaRatioRaw from tdms files
+0.1.8
+ - Allow to instantiate RTDC_DataSet without a tdms file
+ - Add statistics submodule
+ - Bugfixes:
+   - Faulty hashing strategy in `RTDC_DataSet.GetDownSampledScatter`
+ - Code cleanup (renamed methods, cleaned structure)
+ - Corrections/additions in definitions (fRT-DC)
+0.1.7
+ - Added channel: distance between to first fl. peaks
+ - Added fluorescence channels: peak position, peak area, number of peaks
+ - Allow to disable KDE computation
+ - Add filter array for manual (user-defined) filtering
+ - Add config parameters for log axis scaling
+ - Add channels: bounding box x- and y-size
+ - Bugfixes:
+   - cached.py did not handle `None`
+   - Limiting number of events caused integer/bool error
+0.1.6
+ - Added `RTDC_DataSet.ExportTSV` for data export
+ - Bugfixes:
+   - Correct determination of video file in RTDCDataSet
+   - Fix multivariate KDE computation
+   - Contour accuracy for Defo overridden by that of Circ
+0.1.5
+ - Fix regressions with filtering.
+   https://github.com/ZELLMECHANIK-DRESDEN/ShapeOut/issues/43 
+ - Ignore empty columns in .tdms files (#1)
+ - Moved RTDC_DataSet and PolygonFilter classes to separate files
+ - Introduce more transparent caching - improves speed in some cases
+0.1.4
+ - Added support for 3-channel fluorescence data (FL-1..3 max/width)
+0.1.3
+ - Fixed minor polygon filter problems.
+ - Fix a couple of Shape-Out-related issues:
+   - https://github.com/ZELLMECHANIK-DRESDEN/ShapeOut/issues/17 
+   - https://github.com/ZELLMECHANIK-DRESDEN/ShapeOut/issues/20
+   - https://github.com/ZELLMECHANIK-DRESDEN/ShapeOut/issues/37
+   - https://github.com/ZELLMECHANIK-DRESDEN/ShapeOut/issues/38
+0.1.2
+ - Add support for limiting amount of data points analyzed
+   with the configuration keyword "Limit Events"
+ - Comments refer to "events" instead of "points" from now on
