@@ -1,0 +1,3092 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keywordspec name="RPA.Cloud.Google" type="LIBRARY" format="REST" scope="GLOBAL" generated="2022-05-02T14:23:03Z" specversion="4" source="./src/RPA/Cloud/Google/__init__.py" lineno="40">
+<version/>
+<doc>`Google` is a library for operating with Google API endpoints.
+
+Usage requires the following steps:
+
+- Create a GCP project
+- Enable approriate APIs
+- Create credentials (OAuth or service account)
+- Install rpaframework-google package
+
+**Google authentication**
+
+Authentication for Google is set with `service account JSON file` which can be given to the library
+in three different ways or with `OAuth2 token`, which is used for OAuth authentication.
+
+Methods when using service account:
+
+- Method 1 as environment variables, ``GOOGLE_APPLICATION_CREDENTIALS`` with path to service account file.
+- Method 2 as keyword parameter to ``Init Storage`` for example.
+- Method 3 as Robocorp vault secret. The vault name and secret key name needs to be given in library init
+  or with keyword ``Set Robocorp Vault``. Secret value should contain JSON file contents.
+
+Method 1. service account using environment variable
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+
+    *** Tasks ***
+    Init Google services
+        # NO parameters for Init Vision, expecting to get JSON
+        # with GOOGLE_APPLICATION_CREDENTIALS environment variable
+        Init Vision
+
+Method 2. service account with keyword parameter
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+
+    *** Tasks ***
+    Init Google services
+        Init Speech To Text   /path/to/service_account.json
+
+Method 3. setting Robocorp Vault in the library init
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+    ...       vault_name=googlecloud
+    ...       vault_secret_key=servicecreds
+
+    *** Tasks ***
+    Init Google services
+        Init Storage
+
+Method 3. setting Robocorp Vault with keyword
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+
+    *** Tasks ***
+    Init Google services
+        Set Robocorp Vault   vault_name=googlecloud  vault_secret_key=servicecreds
+        Init Storage    use_robocorp_vault=${TRUE}
+
+Methods when using OAuth token:
+
+- Method 1 as keyword parameter ``token_file`` to ``Init Storage`` for example.
+- Method 2 as Robocorp vault secret. The vault name and secret key name needs to be given in library init
+  or with keyword ``Set Robocorp Vault``. Secret value should contain JSON file contents.
+
+Method 1. The Google Apps Script and Google Drive services are authenticated using this method.
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+
+    *** Variables ***
+    @{SCRIPT_SCOPES}     forms   spreadsheets
+
+    *** Tasks ***
+    Init Google OAuth services
+        Init Apps Script    token_file=oauth_token   ${SCRIPT_SCOPES}
+
+Method 2. setting Robocorp Vault in the library init
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+    ...       vault_name=googlecloud
+    ...       vault_secret_key=oauth
+    ...       cloud_auth_type=token
+
+    *** Tasks ***
+    Init Google services
+        Init Storage
+
+
+**Creating and using OAuth token file**
+
+The token file can be created using `credentials.json` by running command:
+
+``rpa-google-oauth --credentials &lt;filepath&gt; --service drive`` or
+``rpa-google-oauth --credentials &lt;filepath&gt; --scopes drive.appdata,drive.file,drive.install``
+
+This will start web based authentication process, which outputs the token at the end.
+Token could be stored into ``Robocorp Vault``.
+
+Example Vault content.
+
+.. code-block:: json
+
+    "googlecloud": {
+        "oauth-token": "gANfd123321aabeedYsc"
+    }
+
+Using the Vault.
+
+.. code-block:: robotframework
+
+    *** Keywords ***
+    Set up Google Drive authentication
+        Set Robocorp Vault   vault_name=googlecloud
+        ...  vault_secret_key=oauth-token
+        ...  cloud_auth_type=token
+        Init Drive
+
+
+**Installation**
+
+This library, ``RPA.Cloud.Google`` is available via **rpaframework-google** package.
+
+Check the latest package version from `PyPI`_.
+
+.. _PyPI: https://pypi.org/project/rpaframework-google/
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library   RPA.Cloud.Google
+
+    *** Variables ***
+    ${SERVICE_ACCOUNT}    ${/}path${/}to${/}service_account.json
+    ${BUCKET_NAME}            testbucket12213123123
+
+    *** Tasks ***
+    Upload a file into a new storage bucket
+        [Setup]   Init Storage    ${SERVICE_ACCOUNT}
+        Create Storage Bucket    ${BUCKET_NAME}
+        Upload Storage File      ${BUCKET_NAME}
+        ...   ${/}path${/}to${/}file.pdf
+        ...   myfile.pdf
+        @{files}         List Storage Files   ${BUCKET_NAME}
+        FOR   ${file}  IN   @{files}
+            Log  ${file}
+        END
+
+**Python**
+
+.. code-block:: python
+
+    from RPA.Cloud.Google import Google
+
+    library = Google
+    service_account = '/path/to/service_account.json'
+
+    library.init_vision(service_account)
+    library.init_text_to_speech(service_account)
+
+    response = library.detect_text('imagefile.png', 'result.json')
+    library.synthesize_speech('I want this said aloud', target_file='said.mp3')</doc>
+<tags>
+<tag>apps script</tag>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>gmail</tag>
+<tag>init</tag>
+<tag>natural language</tag>
+<tag>sheets</tag>
+<tag>speech to text</tag>
+<tag>storage</tag>
+<tag>text to speech</tag>
+<tag>translation</tag>
+<tag>v2.0.0</tag>
+<tag>video intelligence</tag>
+<tag>vision</tag>
+</tags>
+<inits>
+<init name="__init__" lineno="228">
+<arguments repr="service_account: str | None = None, vault_name: str | None = None, vault_secret_key: str | None = None, cloud_auth_type: str = serviceaccount">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="vault_name: str | None = None">
+<name>vault_name</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="vault_secret_key: str | None = None">
+<name>vault_secret_key</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="cloud_auth_type: str = serviceaccount">
+<name>cloud_auth_type</name>
+<type typedoc="string">str</type>
+<default>serviceaccount</default>
+</arg>
+</arguments>
+<doc>Library initialization
+
+:param service_account: path to service account
+:param vault_name: Robocorp vault name
+:param vault_secret_key: Robocorp secret key
+:param cloud_auth_type: "serviceaccount" or "token",
+ defaults to "serviceaccount"</doc>
+<shortdoc>Library initialization</shortdoc>
+</init>
+</inits>
+<keywords>
+<kw name="Add Drive Share" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="716">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, source: str | None = None, email: str | None = None, domain: str | None = None, role: DriveRole = READER, share_type: DriveType = USER, notification: bool = False, notification_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="email: str | None = None">
+<name>email</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="domain: str | None = None">
+<name>domain</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="role: DriveRole = READER">
+<name>role</name>
+<type typedoc="DriveRole">DriveRole</type>
+<default>READER</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="share_type: DriveType = USER">
+<name>share_type</name>
+<type typedoc="DriveType">DriveType</type>
+<default>USER</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="notification: bool = False">
+<name>notification</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="notification_message: str | None = None">
+<name>notification_message</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Keyword for sharing drive file or folder.
+
+Parameters `file_id`, `file_dict`, `query` and `source` can be
+used to select files to which sharing is added to.
+
+If share is added to a folder, all files within that folder get same
+sharing permissions.
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target file, needs to match 1 file
+:param source: name of the folder to search files in, is by default drive's
+ `root` folder
+:param email: user or group email address if share type
+ is DriveType.USER or DriveType.GROUP
+:param domain: domain name if share type is DriveType.DOMAIN
+:param role: see ``DriveRole`` enum for possible values,
+ defaults to DriveRole.READER
+:param share_type: see ``DriveType`` enum for possible values,
+ defaults to DriveType.USER
+:param notification: whether to send notificatin email, defaults to False
+:param notification_message: optional message to include with the notification
+:return: share response dictionary containing 'file_id' and 'permission_id'
+
+Example:
+
+.. code-block:: robotframework
+
+    # Add file share for a email address with email notification
+    Add Drive Share
+    ...    query=name = 'okta.png'
+    ...    email=robocorp.tester@gmail.com
+    ...    notification=True
+    ...    notification_message=Hello. I have shared 'okta.png' with you for review.
+    # Add file share for a domain
+    Add Drive Share
+    ...    query=name = 'okta.png'
+    ...    domain=robocorp.com
+    # Add folder share for a email address
+    ${folder}=    Create Drive Directory   attachments-for-the-task
+    ${share}=  Add Drive Share
+    ...   file_id=${folder}[id]
+    ...   email=robocorp.tester@gmail.com
+    ...   role=writer
+    Log To Console  Share details: ${share}[file_id], ${share}[permission_id]</doc>
+<shortdoc>Keyword for sharing drive file or folder.</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="Analyze Sentiment" source="./src/RPA/Cloud/Google/keywords/natural_language.py" lineno="36">
+<arguments repr="text: str | None = None, text_file: str | None = None, file_type: TextType = TEXT, json_file: str | None = None, lang: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="text: str | None = None">
+<name>text</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="text_file: str | None = None">
+<name>text_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_type: TextType = TEXT">
+<name>file_type</name>
+<type typedoc="TextType">TextType</type>
+<default>TEXT</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="lang: str | None = None">
+<name>lang</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Analyze sentiment in a text file
+
+:param text: source text
+:param text_file: source text file
+:param file_type: type of text, PLAIN_TEXT (default) or HTML
+:param json_file: json target to save result, defaults to None
+:param lang: language code of the source, defaults to None
+:return: analysis response
+
+# For list of supported languages:
+# https://cloud.google.com/natural-language/docs/languages
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Analyze Sentiment  ${text}
+    ${result}=   Analyze Sentiment  text_file=${CURDIR}${/}test.txt</doc>
+<shortdoc>Analyze sentiment in a text file</shortdoc>
+<tags>
+<tag>natural language</tag>
+</tags>
+</kw>
+<kw name="Annotate Image" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="123">
+<arguments repr="image_file: str, image_uri: str, json_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="image_file: str">
+<name>image_file</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="image_uri: str">
+<name>image_uri</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Annotate image
+
+:param image_file: source image file path
+:param image_uri: Google Cloud Storage URI
+:param json_file: json target to save result
+:return: detection response
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Annotate Image   image_file=${CURDIR}${/}test.png
+    ...  json_file=${CURDIR}${/}result.json</doc>
+<shortdoc>Annotate image</shortdoc>
+<tags>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Annotate Video" source="./src/RPA/Cloud/Google/keywords/video_intelligence.py" lineno="36">
+<arguments repr="video_file: str | None = None, video_uri: str | None = None, features: str | None = None, output_uri: str | None = None, json_file: str | None = None, timeout: int = 300">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="video_file: str | None = None">
+<name>video_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="video_uri: str | None = None">
+<name>video_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="features: str | None = None">
+<name>features</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="output_uri: str | None = None">
+<name>output_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: int = 300">
+<name>timeout</name>
+<type typedoc="integer">int</type>
+<default>300</default>
+</arg>
+</arguments>
+<doc>Annotate video
+
+Possible values for features:
+
+- FEATURE_UNSPECIFIED, Unspecified.
+- LABEL_DETECTION, Label detection. Detect objects, such as dog or flower.
+- SHOT_CHANGE_DETECTION, Shot change detection.
+- EXPLICIT_CONTENT_DETECTION, Explicit content detection.
+- SPEECH_TRANSCRIPTION, Speech transcription.
+- TEXT_DETECTION, OCR text detection and tracking.
+- OBJECT_TRACKING, Object detection and tracking.
+- LOGO_RECOGNITION, Logo detection, tracking, and recognition.
+
+If `video_uri` is given then that is used even if `video_file` is given.
+
+:param video_file: local file path to input video
+:param video_uri: Google Cloud Storage URI to input video
+:param features: list of annotation features to detect,
+    defaults to LABEL_DETECTION,SHOT_CHANGE_DETECTION
+:param output_uri: Google Cloud Storage URI to store response json
+:param json_file: json target to save result
+:param timeout: timeout for operation in seconds
+:return: annotate result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Annotate Video   video_uri=gs://videointelligence/movie.mp4
+    ...  features=TEXT_DETECTION,LABEL_DETECTION
+    ...  output_uri=gs://videointelligence/movie_annotations.json
+    ...  json_file=${CURDIR}${/}videoannotations.json</doc>
+<shortdoc>Annotate video</shortdoc>
+<tags>
+<tag>video intelligence</tag>
+</tags>
+</kw>
+<kw name="Classify Text" source="./src/RPA/Cloud/Google/keywords/natural_language.py" lineno="70">
+<arguments repr="text: str | None = None, text_file: str | None = None, file_type: TextType = TEXT, json_file: str | None = None, lang: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="text: str | None = None">
+<name>text</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="text_file: str | None = None">
+<name>text_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_type: TextType = TEXT">
+<name>file_type</name>
+<type typedoc="TextType">TextType</type>
+<default>TEXT</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="lang: str | None = None">
+<name>lang</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Classify text
+
+:param text: source text
+:param text_file: source text file
+:param file_type: type of text, PLAIN_TEXT (default) or HTML
+:param json_file: json target to save result, defaults to None
+:param lang: language code of the source, defaults to None
+:return: classify response
+
+# For list of supported languages:
+# https://cloud.google.com/natural-language/docs/languages
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Classify Text  ${text}
+    ${result}=   Classify Text  text_file=${CURDIR}${/}test.txt</doc>
+<shortdoc>Classify text</shortdoc>
+<tags>
+<tag>natural language</tag>
+</tags>
+</kw>
+<kw name="Clear Sheet Values" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="194">
+<arguments repr="sheet_id: str, sheet_range: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_id: str">
+<name>sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_range: str">
+<name>sheet_range</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Clear cell values for range of cells within a sheet
+
+:param sheet_id: target sheet
+:param sheet_range: target sheet range
+:return: operation result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=  Clear Sheet Values  ${SHEET_ID}  A1:C1</doc>
+<shortdoc>Clear cell values for range of cells within a sheet</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Copy Sheet" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="220">
+<arguments repr="sheet_id: str, target_sheet_id: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_id: str">
+<name>sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="target_sheet_id: str">
+<name>target_sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Copy spreadsheet to target spreadsheet
+
+*NOTE:* service account user must have access to
+target sheet also
+
+:param sheet_id: ID of the sheet to copy
+:param target_sheet_id: ID of the target sheet
+:return: operation result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=  Copy Sheet   ${SHEET_ID}  ${NEW_SHEET}</doc>
+<shortdoc>Copy spreadsheet to target spreadsheet</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Create Drive Directory" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="617">
+<arguments repr="folder: str | None = None, parent_folder: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="folder: str | None = None">
+<name>folder</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="parent_folder: str | None = None">
+<name>parent_folder</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Create new directory to Google Drive
+
+:param folder: name for the new directory
+:param parent_folder: top level directory for new directory
+:return: dictionary containing folder ID and folder URL
+
+Example:
+
+.. code-block:: robotframework
+
+    ${folder}=  Create Drive Directory   example-folder
+    Log To Console    Google Drive folder ID: ${folder}[id]
+    Log To Console    Google Drive folder URL:  ${folder}[url]</doc>
+<shortdoc>Create new directory to Google Drive</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Create Sheet" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="47">
+<arguments repr="title: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="title: str">
+<name>title</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Create empty sheet with a title
+
+:param title: name as string
+:return: created `sheet_id`
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=  Create Sheet   Example Sheet</doc>
+<shortdoc>Create empty sheet with a title</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Create Storage Bucket" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="42">
+<arguments repr="bucket_name: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Create Google Cloud Storage bucket
+
+:param bucket_name: name as string
+:return: bucket
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Create Storage Bucket   visionfolder</doc>
+<shortdoc>Create Google Cloud Storage bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Delete Drive File" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="332">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, multiple_ok: bool = False, suppress_errors: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="multiple_ok: bool = False">
+<name>multiple_ok</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="suppress_errors: bool = False">
+<name>suppress_errors</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Delete file specified by id, file dictionary or query string
+
+Note. Be extra careful when calling this keyword!
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target file, needs to match 1 file
+ unless parameter `multiple_ok` is set to `True`
+:param multiple_ok: set to `True` if it is ok to perform delete
+ on more than 1 file
+:param suppress_errors: on True will log warning message instead of
+ raising an exception, defaults to False
+:return: how many files where deleted
+
+Example:
+
+.. code-block:: robotframework
+
+    ${folder_id}=  Get Drive Folder Id   datafolder
+    ${deleted}=    Delete Drive File  query=name contains '.json' and '${folder_id}' in parents
+    ...            multiple_ok=True</doc>
+<shortdoc>Delete file specified by id, file dictionary or query string</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Delete Storage Bucket" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="60">
+<arguments repr="bucket_name: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Delete Google Cloud Storage bucket
+
+Bucket needs to be empty before it can be deleted.
+
+:param bucket_name: name as string
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Delete Storage Bucket   visionfolder</doc>
+<shortdoc>Delete Google Cloud Storage bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Delete Storage Files" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="119">
+<arguments repr="bucket_name: str, files: Any">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="files: Any">
+<name>files</name>
+<type>Any</type>
+</arg>
+</arguments>
+<doc>Delete files in the bucket
+
+Files need to be object name in the bucket.
+
+:param bucket_name: name as string
+:param files: single file, list of files or comma separated list of files
+:return: list of files which could not be deleted
+
+ **Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Delete Storage Files   ${BUCKET_NAME}   file1,file2</doc>
+<shortdoc>Delete files in the bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Detect Document" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="98">
+<arguments repr="image_file: str | None = None, image_uri: str | None = None, json_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_file: str | None = None">
+<name>image_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_uri: str | None = None">
+<name>image_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Detect document
+
+:param image_file: source image file path
+:param image_uri: Google Cloud Storage URI
+:param json_file: json target to save result
+:return: detection response
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Detect Document   image_file=${CURDIR}${/}test.png
+    ...  json_file=${CURDIR}${/}result.json</doc>
+<shortdoc>Detect document</shortdoc>
+<tags>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Detect Labels" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="48">
+<arguments repr="image_file: str | None = None, image_uri: str | None = None, json_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_file: str | None = None">
+<name>image_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_uri: str | None = None">
+<name>image_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Detect labels in the image
+
+:param image_file: source image file path
+:param image_uri: source image uri
+:param json_file: json target to save result
+:return: detection response
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Detect Labels   image_file=${CURDIR}${/}test.png
+    ...  json_file=${CURDIR}${/}result.json</doc>
+<shortdoc>Detect labels in the image</shortdoc>
+<tags>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Detect Text" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="73">
+<arguments repr="image_file: str | None = None, image_uri: str | None = None, json_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_file: str | None = None">
+<name>image_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_uri: str | None = None">
+<name>image_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Detect text in the image
+
+:param image_file: source image file path
+:param image_uri: Google Cloud Storage URI
+:param json_file: json target to save result
+:return: detection response
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Detect Text   image_file=${CURDIR}${/}test.png
+    ...  json_file=${CURDIR}${/}result.json</doc>
+<shortdoc>Detect text in the image</shortdoc>
+<tags>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Download Drive Files" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="179">
+<arguments repr="file_dict: dict | None = None, query: str | None = None, source: str | None = None, limit: int | None = None, timeout: float | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="limit: int | None = None">
+<name>limit</name>
+<type typedoc="integer">int</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: float | None = None">
+<name>timeout</name>
+<type typedoc="float">float</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Download files specified by file dictionary or query string
+
+Parameters `start`, `limit` and `timeout` are used only when
+downloading files defined by `query` parameter.
+
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target files, defaults to None
+:param source: source directory where query is executed
+:param limit: maximum amount of files that are downloaded, defaults to None
+:param timeout: maximum allowed time in seconds for download process
+:return: list of downloaded files
+
+Example:
+
+.. code-block:: robotframework
+
+    ${files}=    Search Drive Files    query=name contains '.json'
+    FOR    ${f}    IN    @{files}
+        IF  ${f}[size] &lt; 2000
+            Download Drive Files  file_dict=${f}
+        END
+    END
+
+    ${folder_id}=   Get Drive Folder Id   datafolder
+    Download Drive Files  query=name contains '.json' and '${folder_id}' in parents</doc>
+<shortdoc>Download files specified by file dictionary or query string</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Download Storage Files" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="227">
+<arguments repr="bucket_name: str, files: Any">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="files: Any">
+<name>files</name>
+<type>Any</type>
+</arg>
+</arguments>
+<doc>Download files from a bucket
+
+Example `files`:
+files = {"mytestimg": "image1.png", "mydoc": "google.pdf"}
+
+:param bucket_name: name as string
+:param files: list of object names or dictionary of
+    object names and target files
+:return: list of files which could not be downloaded
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=  Download Storage Files  ${BUCKET_NAME}   test1.txt,test2.txt</doc>
+<shortdoc>Download files from a bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Export Drive File" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="667">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, target_file: str | None = None, mimetype: str = application/pdf">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="target_file: str | None = None">
+<name>target_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mimetype: str = application/pdf">
+<name>mimetype</name>
+<type typedoc="string">str</type>
+<default>application/pdf</default>
+</arg>
+</arguments>
+<doc>Export Google Drive file using Drive export links
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param target_file: name for the exported file
+:param mimetype: export mimetype, defaults to "application/pdf"
+:return: file path to the exported file
+
+Example:
+
+.. code-block:: robotframework
+
+    ${files}=  Drive Search Files  query=name contains 'my example worksheet'
+    Export Drive File  file_dict=${files}[0]</doc>
+<shortdoc>Export Google Drive file using Drive export links</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Face Detection" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="148">
+<arguments repr="image_file: str | None = None, image_uri: str | None = None, json_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_file: str | None = None">
+<name>image_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="image_uri: str | None = None">
+<name>image_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="json_file: str | None = None">
+<name>json_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Detect faces
+
+:param image_file: source image file path
+:param image_uri: Google Cloud Storage URI
+:param json_file: json target to save result
+:return: detection response
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Face Detection   image_uri=gs://vision/faces.png
+    ...  json_file=${CURDIR}${/}result.json</doc>
+<shortdoc>Detect faces</shortdoc>
+<tags>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Get Drive File By Id" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="1027">
+<arguments repr="file_id: str, suppress_errors: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="file_id: str">
+<name>file_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="suppress_errors: bool = False">
+<name>suppress_errors</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Get file dictionary by its file id.
+
+:param file_id: id of the file in the Google Drive
+:param suppress_errors: on True will log warning message instead of
+ raising an exception, defaults to False (exception is raised)
+:return: dictionary containing file information
+
+Example:
+
+.. code-block:: robotframework
+
+    ${file_dict}=  Get Drive File By ID    file_id=${FILE_ID}</doc>
+<shortdoc>Get file dictionary by its file id.</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="Get Drive Folder Id" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="377">
+<arguments repr="folder: str | None = None, parent_folder: str | None = None, details: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="folder: str | None = None">
+<name>folder</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="parent_folder: str | None = None">
+<name>parent_folder</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="details: bool = False">
+<name>details</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Get file id for the folder
+
+:param folder: name of the folder to identify, by default returns drive's
+ `root` folder id
+:param parent_folder: can be used to narrow search by giving parent
+ folder name
+:param details: on True will return folder dictionary, on False (default)
+ folder id is returned
+:return: file id of the folder or file dictionary when details = True
+
+Example:
+
+.. code-block:: robotframework
+
+    ${root_id}=    Get Drive Folder Id   # returns Drive root folder id
+    ${folder_id}=  Get Drive Folder Id  subdir</doc>
+<shortdoc>Get file id for the folder</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Get Sheet Values" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="156">
+<arguments repr="sheet_id: str, sheet_range: str, value_render_option: str = UNFORMATTED_VALUE, datetime_render_option: str = FORMATTED_STRING">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_id: str">
+<name>sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_range: str">
+<name>sheet_range</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="value_render_option: str = UNFORMATTED_VALUE">
+<name>value_render_option</name>
+<type typedoc="string">str</type>
+<default>UNFORMATTED_VALUE</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="datetime_render_option: str = FORMATTED_STRING">
+<name>datetime_render_option</name>
+<type typedoc="string">str</type>
+<default>FORMATTED_STRING</default>
+</arg>
+</arguments>
+<doc>Get values from the range in the sheet
+
+:param sheet_id: target sheet
+:param sheet_range: target sheet range
+:param value_render_option: how values should be represented
+ in the output defaults to "UNFORMATTED_VALUE"
+:param datetime_render_option: how dates, times, and durations should be
+ represented in the output, defaults to "FORMATTED_STRING"
+:return: operation result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${values}=  Get Sheet Values  ${SHEET_ID}  A1:C1</doc>
+<shortdoc>Get values from the range in the sheet</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Get Storage Bucket" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="82">
+<arguments repr="bucket_name: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Get Google Cloud Storage bucket
+
+:param bucket_name: name as string
+:return: bucket
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Get Bucket   visionfolder</doc>
+<shortdoc>Get Google Cloud Storage bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Init Apps Script" source="./src/RPA/Cloud/Google/keywords/apps_script.py" lineno="22">
+<arguments repr="service_account: str | None = None, credentials: str | None = None, use_robocorp_vault: bool | None = None, scopes: list | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="credentials: str | None = None">
+<name>credentials</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="scopes: list | None = None">
+<name>scopes</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Apps Script client
+
+:param service_account: file path to service account file
+:param credentials: file path to credentials file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param scopes: list of extra authentication scopes
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Apps Script client</shortdoc>
+<tags>
+<tag>apps script</tag>
+<tag>init</tag>
+</tags>
+</kw>
+<kw name="Init Drive" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="32">
+<arguments repr="service_account: str | None = None, credentials: str | None = None, use_robocorp_vault: bool | None = None, scopes: list | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="credentials: str | None = None">
+<name>credentials</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="scopes: list | None = None">
+<name>scopes</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Drive client
+
+:param service_account: file path to service account file
+:param credentials: file path to credentials file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param scopes: list of extra authentication scopes
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Drive client</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>init</tag>
+</tags>
+</kw>
+<kw name="Init Gmail" source="./src/RPA/Cloud/Google/keywords/gmail.py" lineno="52">
+<arguments repr="service_account: str | None = None, credentials: str | None = None, use_robocorp_vault: bool | None = None, scopes: list | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="credentials: str | None = None">
+<name>credentials</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="scopes: list | None = None">
+<name>scopes</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Gmail client
+
+:param service_account: file path to service account file
+:param credentials: file path to credentials file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param scopes: list of extra authentication scopes
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Gmail client</shortdoc>
+<tags>
+<tag>gmail</tag>
+<tag>init</tag>
+</tags>
+</kw>
+<kw name="Init Natural Language" source="./src/RPA/Cloud/Google/keywords/natural_language.py" lineno="16">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Natural Language client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Natural Language client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>natural language</tag>
+</tags>
+</kw>
+<kw name="Init Sheets" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="17">
+<arguments repr="service_account: str | None = None, credentials: str | None = None, use_robocorp_vault: bool | None = None, scopes: list | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="credentials: str | None = None">
+<name>credentials</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="scopes: list | None = None">
+<name>scopes</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Sheets client
+
+:param service_account: file path to service account file
+:param credentials: file path to credentials file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param scopes: list of extra authentication scopes
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Sheets client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Init Speech To Text" source="./src/RPA/Cloud/Google/keywords/speech_to_text.py" lineno="46">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Speech to Text client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Speech to Text client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>speech to text</tag>
+</tags>
+</kw>
+<kw name="Init Storage" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="25">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Storage client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Storage client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Init Text To Speech" source="./src/RPA/Cloud/Google/keywords/text_to_speech.py" lineno="29">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Text to Speech client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Text to Speech client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>text to speech</tag>
+</tags>
+</kw>
+<kw name="Init Translation" source="./src/RPA/Cloud/Google/keywords/translation.py" lineno="22">
+<arguments repr="project_identifier: str, service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="project_identifier: str">
+<name>project_identifier</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Translation client
+
+:param project_identifier: identifier for Translation project
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Translation client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>translation</tag>
+</tags>
+</kw>
+<kw name="Init Video Intelligence" source="./src/RPA/Cloud/Google/keywords/video_intelligence.py" lineno="16">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Video Intelligence client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Video Intelligence client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>video intelligence</tag>
+</tags>
+</kw>
+<kw name="Init Vision" source="./src/RPA/Cloud/Google/keywords/vision.py" lineno="18">
+<arguments repr="service_account: str | None = None, use_robocorp_vault: bool | None = None, token_file: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="service_account: str | None = None">
+<name>service_account</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="use_robocorp_vault: bool | None = None">
+<name>use_robocorp_vault</name>
+<type typedoc="boolean">bool</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="token_file: str | None = None">
+<name>token_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Initialize Google Cloud Vision client
+
+:param service_account: file path to service account file
+:param use_robocorp_vault: use credentials in `Robocorp Vault`
+:param token_file: file path to token file</doc>
+<shortdoc>Initialize Google Cloud Vision client</shortdoc>
+<tags>
+<tag>init</tag>
+<tag>vision</tag>
+</tags>
+</kw>
+<kw name="Insert Sheet Values" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="73">
+<arguments repr="sheet_id: str, sheet_range: str, values: list, major_dimension: str = COLUMNS, value_input_option: str = USER_ENTERED">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_id: str">
+<name>sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_range: str">
+<name>sheet_range</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="values: list">
+<name>values</name>
+<type typedoc="list">list</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="major_dimension: str = COLUMNS">
+<name>major_dimension</name>
+<type typedoc="string">str</type>
+<default>COLUMNS</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="value_input_option: str = USER_ENTERED">
+<name>value_input_option</name>
+<type typedoc="string">str</type>
+<default>USER_ENTERED</default>
+</arg>
+</arguments>
+<doc>Insert values into sheet cells
+
+:param sheet_id: target sheet
+:param sheet_range: target sheet range
+:param values: list of values to insert into sheet
+:param major_dimension: major dimension of the values, default `COLUMNS`
+:param value_input_option: controls whether input strings are parsed or not,
+ default `USER_ENTERED`
+:return: operation result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${values}   Evaluate   [[11, 12, 13], ['aa', 'bb', 'cc']]
+    ${result}=  Insert Sheet Values   ${SHEET_ID}  A:B  ${values}
+    ${result}=  Insert Sheet Values   ${SHEET_ID}  A:B  ${values}  ROWS</doc>
+<shortdoc>Insert values into sheet cells</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="List Messages" source="./src/RPA/Cloud/Google/keywords/gmail.py" lineno="256">
+<arguments repr="user_id: str, query: str, folder_name: str | None = None, label_ids: list | None = None, max_results: int | None = None, include_json: bool = False, include_spam: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="user_id: str">
+<name>user_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="query: str">
+<name>query</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="folder_name: str | None = None">
+<name>folder_name</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="label_ids: list | None = None">
+<name>label_ids</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="max_results: int | None = None">
+<name>max_results</name>
+<type typedoc="integer">int</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="include_json: bool = False">
+<name>include_json</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="include_spam: bool = False">
+<name>include_spam</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>List messages
+
+:param user_id: user's email address. The special value me can
+ be used to indicate the authenticated user.
+:param query: message query
+:param folder_name: path where attachments are saved, default current
+ directory
+:param label_ids: message label ids
+:param max_results: maximum number of message to return
+:param include_json: include original response json
+:param include_spam: include messages from SPAM and TRASH
+:return: messages
+
+Example:
+
+.. code-block:: robotframework
+
+    ${messages}=    List Messages    me
+    ...    from:mika@robocorp.com
+    ...    folder_name=${CURDIR}${/}target
+    ...    include_json=True
+    FOR    ${msg}    IN    @{messages}
+        Log Many    ${msg}
+    END</doc>
+<shortdoc>List messages</shortdoc>
+<tags>
+<tag>gmail</tag>
+</tags>
+</kw>
+<kw name="List Shared Drive Files" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="486">
+<arguments repr="query: str | None = None, source: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Keyword for listing shared files in the source folder.
+
+Alias keyword for ``Search Drive Files`` which can be used to list
+only files which have been shared.
+
+:param query: drive query string to find target files
+:param source: source directory where query is executed
+:return: list of shared files
+
+Example:
+
+.. code-block:: robotframework
+
+    ${shared}=    List Shared Drive Files    source=subfolder
+    FOR    ${file}    IN    @{shared}
+        Log To Console    ${file}
+    END</doc>
+<shortdoc>Keyword for listing shared files in the source folder.</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="List Storage Buckets" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="100">
+<arguments repr="">
+</arguments>
+<doc>List Google Cloud Storage buckets
+
+:return: list of buckets
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${buckets}=   List Storage Buckets
+    FOR  ${bucket}  IN   @{buckets}
+        Log  ${bucket}
+    END</doc>
+<shortdoc>List Google Cloud Storage buckets</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="List Storage Files" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="150">
+<arguments repr="bucket_name: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>List files in the bucket
+
+:param bucket_name: name as string
+:return: list of object names in the bucket
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${files}=   List Storage Files  ${BUCKET_NAME}
+    FOR  ${bucket}  IN   @{files}
+        Log  ${file}
+    END</doc>
+<shortdoc>List files in the bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="List Supported Voices" source="./src/RPA/Cloud/Google/keywords/text_to_speech.py" lineno="49">
+<arguments repr="language_code: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="language_code: str | None = None">
+<name>language_code</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>List supported voices for the speech
+
+:param language_code: voice languages to list, defaults to None (all)
+:return: list of supported voices
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   List Supported Voices   en-US</doc>
+<shortdoc>List supported voices for the speech</shortdoc>
+<tags>
+<tag>text to speech</tag>
+</tags>
+</kw>
+<kw name="Move Drive File" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="423">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, source: str | None = None, target: str | None = None, multiple_ok: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="target: str | None = None">
+<name>target</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="multiple_ok: bool = False">
+<name>multiple_ok</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Move file specified by id, file dictionary or query string into target folder
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target file, needs to match 1 file
+:param source: name of the folder to move file from, is by default drive's
+ `root` folder id
+:param target: name of the folder to move file into, is by default drive's
+ `root` folder id
+:param multiple_ok: if `True` then moving more than 1 file
+:return: list of file ids
+
+Example:
+
+.. code-block:: robotframework
+
+    ${source_id}=  Get Drive Folder Id  sourcefolder
+    ${query}=      Set Variable  name contains '.json' and '${sourceid}' in parents
+    ${files}=      Move Drive File  query=${query}  folder=target_folder  multiple_ok=True</doc>
+<shortdoc>Move file specified by id, file dictionary or query string into target folder</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Recognize Text From Audio" source="./src/RPA/Cloud/Google/keywords/speech_to_text.py" lineno="63">
+<arguments repr="audio_file: str | None = None, audio_uri: str | None = None, encoding: str | None = None, language_code: str = en_US, audio_channel_count: int = 2, sample_rate: int | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="audio_file: str | None = None">
+<name>audio_file</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="audio_uri: str | None = None">
+<name>audio_uri</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="encoding: str | None = None">
+<name>encoding</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="language_code: str = en_US">
+<name>language_code</name>
+<type typedoc="string">str</type>
+<default>en_US</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="audio_channel_count: int = 2">
+<name>audio_channel_count</name>
+<type typedoc="integer">int</type>
+<default>2</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="sample_rate: int | None = None">
+<name>sample_rate</name>
+<type typedoc="integer">int</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Recognize text in the audio file
+
+:param audio_file: local audio file path
+:param audio_uri: Google Cloud Storage URI
+:param encoding: audio file encoding
+:param language_code: language in the audio
+:param audio_channel_count: number of audio channel
+:param sample_rate: rate in hertz, for example 16000
+:return: recognized texts
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=  Recognize Text From Audio   audio_file=${CURDIR}${/}test.mp3</doc>
+<shortdoc>Recognize text in the audio file</shortdoc>
+<tags>
+<tag>speech to text</tag>
+</tags>
+</kw>
+<kw name="Remove All Drive Shares" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="984">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, suppress_errors: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="suppress_errors: bool = False">
+<name>suppress_errors</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Keyword for removing all shares from selected files (only owner
+permission is retained).
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target files
+:param suppress_errors: on True will log warning message instead of
+ raising an exception, defaults to False (exception is raised)
+:return: list of dictionaries containing information of file permissions removed
+
+Example:
+
+.. code-block:: robotframework
+
+    ${removed}=  Remove All Drive Shares    file_id=${FOLDER_ID}</doc>
+<shortdoc>Keyword for removing all shares from selected files (only owner permission is retained).</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="Remove Drive Share By Criteria" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="877">
+<arguments repr="email: str | None = None, domain: str | None = None, permission_id: str | None = None, file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, source: str | None = None, suppress_errors: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="email: str | None = None">
+<name>email</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="domain: str | None = None">
+<name>domain</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="permission_id: str | None = None">
+<name>permission_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="suppress_errors: bool = False">
+<name>suppress_errors</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Keyword for removing share from file or folder
+based on criteria.
+
+Parameters `file_id`, `file_dict`, `query` and `source` can be
+used to select files from which sharing is removed.
+
+Parameters `email`, `domain` or `permission_id` can be
+used to select which share is removed from selected files.
+
+:param email: email address of the permission to remove
+:param domain: domain name of the permission to remove
+:param permission_id: id of the permission to remove
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target files
+:param source: name of the folder to search files in, is by default drive's
+ `root` folder
+:param suppress_errors: on True will log warning message instead of
+ raising an exception, defaults to False (exception is raised)
+:return: list of dictionaries containing information of file permissions removed
+
+Example:
+
+.. code-block:: robotframework
+
+    # Remove domain shares for files in the folder ${FOLDER_NAME}
+    ${removed}=    Remove Drive Share By Criteria
+    ...    domain=robocorp.com
+    ...    source=${FOLDER_NAME}
+    # Remove email share for a file
+    ${removed}=    Remove Drive Share By Criteria
+    ...    query=name = 'okta.png'
+    ...    email=robocorp.tester@gmail.com</doc>
+<shortdoc>Keyword for removing share from file or folder based on criteria.</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="Remove Drive Share By Permission Id" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="815">
+<arguments repr="permission_id: str, file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, source: str | None = None, suppress_errors: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="permission_id: str">
+<name>permission_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="suppress_errors: bool = False">
+<name>suppress_errors</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Keyword for removing share permission of file or folder
+permission id.
+
+Parameters `file_id`, `file_dict`, `query` and `source` can be
+used to select files from which sharing is removed.
+
+:param permission_id: id of the permission to remove
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Search Drive Files`
+:param query: drive query string to find target file, needs to match 1 file
+:param source: name of the folder to search files in, is by default drive's
+ `root` folder
+:param suppress_errors: on True will log warning message instead of
+ raising an exception, defaults to False (exception is raised)
+:return: dictionary of permission response
+
+Example:
+
+.. code-block:: robotframework
+
+    ${share}=   Add Drive Share
+    ...  query=name = 'sharable-files' and mimeType = 'application/vnd.google-apps.folder'
+    ...  email=robocorp.tester@gmail.com
+    #
+    # actions on shared files in the folder 'shareable-files' ....
+    #
+    Remove Drive Share By Permission Id   ${share}[permission_id]  ${share}[file_id]</doc>
+<shortdoc>Keyword for removing share permission of file or folder permission id.</shortdoc>
+<tags>
+<tag>drive</tag>
+<tag>drive share</tag>
+<tag>v2.0.0</tag>
+</tags>
+</kw>
+<kw name="Run Script" source="./src/RPA/Cloud/Google/keywords/apps_script.py" lineno="52">
+<arguments repr="script_id: str, function_name: str, parameters: dict | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="script_id: str">
+<name>script_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="function_name: str">
+<name>function_name</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="parameters: dict | None = None">
+<name>parameters</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Run the Google Apps Script function
+
+:param script_id: Google Script identifier
+:param function_name: name of the script function
+:param parameters: script function parameters as a dictionary
+:raises AssertionError: thrown when Google Script returns errors
+
+Example:
+
+.. code-block:: robotframework
+
+    &amp;{params}=    Create Dictionary  formid=aaad4232  formvalues=1,2,3
+    ${response}=  Run Script    abc21397283712da  submit_form   ${params}
+    Log Many   ${response}</doc>
+<shortdoc>Run the Google Apps Script function</shortdoc>
+<tags>
+<tag>apps script</tag>
+</tags>
+</kw>
+<kw name="Search Drive Files" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="509">
+<arguments repr="query: str | None = None, recurse: bool = False, source: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="recurse: bool = False">
+<name>recurse</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Search Google Drive for files matching query string
+
+:param query: search string, defaults to None which means that all files
+ and folders are returned
+:param recurse: set to `True` if search should recursive
+:param source: source directory where query is executed
+:return: list of files
+
+Example:
+
+.. code-block:: robotframework
+
+    ${files}=  Search Drive Files   query=name contains 'hello'
+    ${files}=  Search Drive Files   query=modifiedTime &gt; '2020-06-04T12:00:00'
+    ${files}=  Search Drive Files   query=mimeType contains 'image/' or mimeType contains 'video/'
+    ${files}=  Search Drive Files   query=name contains '.yaml'  recurse=True
+    ${files}=  Search Drive Files   query=name contains '.yaml'  source=datadirectory</doc>
+<shortdoc>Search Google Drive for files matching query string</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Send Message" source="./src/RPA/Cloud/Google/keywords/gmail.py" lineno="129">
+<arguments repr="sender: str, to: str, subject: str, message_text: str, attachments: list | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sender: str">
+<name>sender</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="to: str">
+<name>to</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="subject: str">
+<name>subject</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="message_text: str">
+<name>message_text</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="attachments: list | None = None">
+<name>attachments</name>
+<type typedoc="list">list</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Send an email message.
+
+:param sender: message sender
+:param to: message recipient
+:param subject: message subject
+:param message_text: message body text
+:param attachment: list of files to add as message attachments
+:return: sent message
+
+Example:
+
+.. code-block:: robotframework
+
+    ${attachments}=  Create List
+    ...  ${CURDIR}${/}random.txt
+    ...  ${CURDIR}${/}source.png
+    Send Message    me
+    ...    mika@robocorp.com
+    ...    message subject
+    ...    body of the message
+    ...    ${attachments}</doc>
+<shortdoc>Send an email message.</shortdoc>
+<tags>
+<tag>gmail</tag>
+</tags>
+</kw>
+<kw name="Set Robocorp Vault" source="./src/RPA/Cloud/Google/keywords/base.py" lineno="11">
+<arguments repr="vault_name: str | None = None, vault_secret_key: str | None = None, auth_type: str = serviceaccount">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="vault_name: str | None = None">
+<name>vault_name</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="vault_secret_key: str | None = None">
+<name>vault_secret_key</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="auth_type: str = serviceaccount">
+<name>auth_type</name>
+<type typedoc="string">str</type>
+<default>serviceaccount</default>
+</arg>
+</arguments>
+<doc>Set Robocorp Vault name and secret key name
+:param vault_name: Robocorp Vault name
+:param vault_secret_key: Robocorp Vault secret key name</doc>
+<shortdoc>Set Robocorp Vault name and secret key name :param vault_name: Robocorp Vault name :param vault_secret_key: Robocorp Vault secret key name</shortdoc>
+</kw>
+<kw name="Synthesize Speech" source="./src/RPA/Cloud/Google/keywords/text_to_speech.py" lineno="70">
+<arguments repr="text: str, language: str = en-US, name: str = en-US-Standard-B, gender: str = MALE, encoding: str = MP3, target_file: str = synthesized.mp3">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="text: str">
+<name>text</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="language: str = en-US">
+<name>language</name>
+<type typedoc="string">str</type>
+<default>en-US</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="name: str = en-US-Standard-B">
+<name>name</name>
+<type typedoc="string">str</type>
+<default>en-US-Standard-B</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="gender: str = MALE">
+<name>gender</name>
+<type typedoc="string">str</type>
+<default>MALE</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="encoding: str = MP3">
+<name>encoding</name>
+<type typedoc="string">str</type>
+<default>MP3</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="target_file: str = synthesized.mp3">
+<name>target_file</name>
+<type typedoc="string">str</type>
+<default>synthesized.mp3</default>
+</arg>
+</arguments>
+<doc>Synthesize speech synchronously
+
+:param text: input text to synthesize
+:param language: voice language, defaults to "en-US"
+:param name: voice name, defaults to "en-US-Standard-B"
+:param gender: voice gender, defaults to "MALE"
+:param encoding: result encoding type, defaults to "MP3"
+:param target_file: save synthesized output to file,
+    defaults to "synthesized.mp3"
+:return: synthesized output in bytes
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Synthesize Speech   ${text}</doc>
+<shortdoc>Synthesize speech synchronously</shortdoc>
+<tags>
+<tag>text to speech</tag>
+</tags>
+</kw>
+<kw name="Translate" source="./src/RPA/Cloud/Google/keywords/translation.py" lineno="45">
+<arguments repr="text: list | str, source_language: str | None = None, target_language: str | None = None, mime_type: TextType | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="text: list | str">
+<name>text</name>
+<type typedoc="list">list</type>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source_language: str | None = None">
+<name>source_language</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="target_language: str | None = None">
+<name>target_language</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mime_type: TextType | None = None">
+<name>mime_type</name>
+<type typedoc="TextType">TextType</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Translate text
+
+:param text: text to translate
+:param source_language: language code
+:param target_language: language code
+:param mime_type: text or html
+:return: translated text
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${result}=   Translate   ${TEXT}  target_language=de</doc>
+<shortdoc>Translate text</shortdoc>
+<tags>
+<tag>translation</tag>
+</tags>
+</kw>
+<kw name="Update Drive File" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="242">
+<arguments repr="file_id: str | None = None, file_dict: dict | None = None, query: str | None = None, source: str | None = None, action: UpdateAction = star, multiple_ok: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_id: str | None = None">
+<name>file_id</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="file_dict: dict | None = None">
+<name>file_dict</name>
+<type typedoc="dictionary">dict</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="query: str | None = None">
+<name>query</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="source: str | None = None">
+<name>source</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="action: UpdateAction = star">
+<name>action</name>
+<type typedoc="UpdateAction">UpdateAction</type>
+<default>star</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="multiple_ok: bool = False">
+<name>multiple_ok</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Update file specified by id, file dictionary or query string
+
+Possible actions:
+- star
+- unstar
+- trash
+- untrash
+
+:param file_id: drive file id
+:param file_dict: file dictionary returned by `Drive Search Files`
+:param query: drive query string to find target file, needs to match 1 file
+:param source: source directory where query is executed
+:param action: update action, default star file
+:param multiple_ok: set to `True` if it is ok to perform update
+ on more than 1 file
+:return: number of updated files
+
+Example:
+
+.. code-block:: robotframework
+
+    ${folder_id}=  Get Drive Folder Id   datafolder
+    ${updated}=    Update Drive File  query=name contains '.json' and '${folder_id}' in parents
+    ...            action=star
+    ...            multiple_ok=True</doc>
+<shortdoc>Update file specified by id, file dictionary or query string</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Update Sheet Values" source="./src/RPA/Cloud/Google/keywords/sheets.py" lineno="115">
+<arguments repr="sheet_id: str, sheet_range: str, values: list, major_dimension: str = COLUMNS, value_input_option: str = USER_ENTERED">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_id: str">
+<name>sheet_id</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sheet_range: str">
+<name>sheet_range</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="values: list">
+<name>values</name>
+<type typedoc="list">list</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="major_dimension: str = COLUMNS">
+<name>major_dimension</name>
+<type typedoc="string">str</type>
+<default>COLUMNS</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="value_input_option: str = USER_ENTERED">
+<name>value_input_option</name>
+<type typedoc="string">str</type>
+<default>USER_ENTERED</default>
+</arg>
+</arguments>
+<doc>Insert values into sheet cells
+
+:param sheet_id: target sheet
+:param sheet_range: target sheet range
+:param values: list of values to insert into sheet
+:param major_dimension: major dimension of the values, default `COLUMNS`
+:param value_input_option: controls whether input strings are parsed or not,
+ default `USER_ENTERED`
+:return: operation result
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${row}  Evaluate   [[22, 33 ,44]]
+    ${result}=  Update Sheet Values  ${SHEET_ID}  A6:C6  ${row}   ROWS</doc>
+<shortdoc>Insert values into sheet cells</shortdoc>
+<tags>
+<tag>sheets</tag>
+</tags>
+</kw>
+<kw name="Upload Drive File" source="./src/RPA/Cloud/Google/keywords/drive.py" lineno="68">
+<arguments repr="filename: str | None = None, folder: str | None = None, overwrite: bool = False, make_dir: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="filename: str | None = None">
+<name>filename</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="folder: str | None = None">
+<name>folder</name>
+<type typedoc="string">str</type>
+<type typedoc="None">None</type>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite: bool = False">
+<name>overwrite</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="make_dir: bool = False">
+<name>make_dir</name>
+<type typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Upload files into Drive
+
+:param filename: name of the file to upload
+:param folder: target folder for upload
+:param overwrite: set to `True` if already existing file should be overwritten
+:param make_dir: set to `True` if folder should be created if it does not exist
+:return: uploaded file id
+
+Example:
+
+.. code-block:: robotframework
+
+    ${file1_id}=  Upload Drive File  data.json  # Upload file to drive root
+    ${file2_id}=  Upload Drive File  newdata.json  new_folder  make_dir=True
+    ${file3_id}=  Upload Drive File  data.json  overwrite=True</doc>
+<shortdoc>Upload files into Drive</shortdoc>
+<tags>
+<tag>drive</tag>
+</tags>
+</kw>
+<kw name="Upload Storage File" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="175">
+<arguments repr="bucket_name: str, filename: str, target_name: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="filename: str">
+<name>filename</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="target_name: str">
+<name>target_name</name>
+<type typedoc="string">str</type>
+</arg>
+</arguments>
+<doc>Upload a file into a bucket
+
+:param bucket_name: name as string
+:param filename: filepath to upload file
+:param target_name: target object name
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    Upload Storage File  ${BUCKET_NAME}
+    ...   ${CURDIR}${/}test.txt    test.txt</doc>
+<shortdoc>Upload a file into a bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+<kw name="Upload Storage Files" source="./src/RPA/Cloud/Google/keywords/storage.py" lineno="199">
+<arguments repr="bucket_name: str, files: dict">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="bucket_name: str">
+<name>bucket_name</name>
+<type typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="files: dict">
+<name>files</name>
+<type typedoc="dictionary">dict</type>
+</arg>
+</arguments>
+<doc>Upload files into a bucket
+
+Example `files`:
+files = {"mytestimg": "image1.png", "mydoc": "google.pdf"}
+
+:param bucket_name: name as string
+:param files: dictionary of object names and filepaths
+
+**Examples**
+
+**Robot Framework**
+
+.. code-block:: robotframework
+
+    ${files}=   Create Dictionary
+    ...   test1.txt   ${CURDIR}${/}test1.txt
+    ...   test2.txt   ${CURDIR}${/}test2.txt
+    Upload Storage Files   ${BUCKET_NAME}   ${files}</doc>
+<shortdoc>Upload files into a bucket</shortdoc>
+<tags>
+<tag>storage</tag>
+</tags>
+</kw>
+</keywords>
+<datatypes>
+<enums>
+<enum name="DriveRole">
+<doc>Possible Drive user roles</doc>
+<members>
+<member name="OWNER" value="owner"/>
+<member name="ORGANIZER" value="organizer"/>
+<member name="FILE_ORGANIZER" value="fileOrganizer"/>
+<member name="WRITER" value="writer"/>
+<member name="COMMENTER" value="commenter"/>
+<member name="READER" value="reader"/>
+</members>
+</enum>
+<enum name="DriveType">
+<doc>Possible Drive Share types</doc>
+<members>
+<member name="USER" value="user"/>
+<member name="GROUP" value="group"/>
+<member name="DOMAIN" value="domain"/>
+<member name="ANY" value="anyone"/>
+</members>
+</enum>
+<enum name="TextType">
+<doc>Possible text types.</doc>
+<members>
+<member name="TEXT" value="Type.PLAIN_TEXT"/>
+<member name="HTML" value="Type.HTML"/>
+</members>
+</enum>
+<enum name="UpdateAction">
+<doc>Possible file update actions.</doc>
+<members>
+<member name="trash" value="1"/>
+<member name="untrash" value="2"/>
+<member name="star" value="3"/>
+<member name="unstar" value="4"/>
+</members>
+</enum>
+</enums>
+</datatypes>
+<typedocs>
+<type name="boolean" type="Standard">
+<doc>Strings ``TRUE``, ``YES``, ``ON`` and ``1`` are converted to Boolean ``True``,
+the empty string as well as strings ``FALSE``, ``NO``, ``OFF`` and ``0``
+are converted to Boolean ``False``, and the string ``NONE`` is converted
+to the Python ``None`` object. Other strings and other accepted values are
+passed as-is, allowing keywords to handle them specially if
+needed. All string comparisons are case-insensitive.
+
+Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
+``example`` (used as-is)
+</doc>
+<accepts>
+<type>string</type>
+<type>integer</type>
+<type>float</type>
+<type>None</type>
+</accepts>
+<usages>
+<usage>Add Drive Share</usage>
+<usage>Delete Drive File</usage>
+<usage>Get Drive File By Id</usage>
+<usage>Get Drive Folder Id</usage>
+<usage>Init Apps Script</usage>
+<usage>Init Drive</usage>
+<usage>Init Gmail</usage>
+<usage>Init Natural Language</usage>
+<usage>Init Sheets</usage>
+<usage>Init Speech To Text</usage>
+<usage>Init Storage</usage>
+<usage>Init Text To Speech</usage>
+<usage>Init Translation</usage>
+<usage>Init Video Intelligence</usage>
+<usage>Init Vision</usage>
+<usage>List Messages</usage>
+<usage>Move Drive File</usage>
+<usage>Remove All Drive Shares</usage>
+<usage>Remove Drive Share By Criteria</usage>
+<usage>Remove Drive Share By Permission Id</usage>
+<usage>Search Drive Files</usage>
+<usage>Update Drive File</usage>
+<usage>Upload Drive File</usage>
+</usages>
+</type>
+<type name="dictionary" type="Standard">
+<doc>Strings must be Python [https://docs.python.org/library/stdtypes.html#dict|dictionary]
+literals. They are converted to actual dictionaries using the
+[https://docs.python.org/library/ast.html#ast.literal_eval|ast.literal_eval]
+function. They can contain any values ``ast.literal_eval`` supports, including
+dictionaries and other containers.
+
+Examples: ``{'a': 1, 'b': 2}``, ``{'key': 1, 'nested': {'key': 2}}``
+</doc>
+<accepts>
+<type>string</type>
+<type>Mapping</type>
+</accepts>
+<usages>
+<usage>Add Drive Share</usage>
+<usage>Delete Drive File</usage>
+<usage>Download Drive Files</usage>
+<usage>Export Drive File</usage>
+<usage>Move Drive File</usage>
+<usage>Remove All Drive Shares</usage>
+<usage>Remove Drive Share By Criteria</usage>
+<usage>Remove Drive Share By Permission Id</usage>
+<usage>Run Script</usage>
+<usage>Update Drive File</usage>
+<usage>Upload Storage Files</usage>
+</usages>
+</type>
+<type name="DriveRole" type="Enum">
+<doc>Possible Drive user roles</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>Add Drive Share</usage>
+</usages>
+<members>
+<member name="OWNER" value="owner"/>
+<member name="ORGANIZER" value="organizer"/>
+<member name="FILE_ORGANIZER" value="fileOrganizer"/>
+<member name="WRITER" value="writer"/>
+<member name="COMMENTER" value="commenter"/>
+<member name="READER" value="reader"/>
+</members>
+</type>
+<type name="DriveType" type="Enum">
+<doc>Possible Drive Share types</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>Add Drive Share</usage>
+</usages>
+<members>
+<member name="USER" value="user"/>
+<member name="GROUP" value="group"/>
+<member name="DOMAIN" value="domain"/>
+<member name="ANY" value="anyone"/>
+</members>
+</type>
+<type name="float" type="Standard">
+<doc>Conversion is done using Python's
+[https://docs.python.org/library/functions.html#float|float] built-in function.
+
+Starting from RF 4.1, spaces and underscores can be used as visual separators
+for digit grouping purposes.
+
+Examples: ``3.14``, ``2.9979e8``, ``10 000.000 01``
+</doc>
+<accepts>
+<type>string</type>
+<type>Real</type>
+</accepts>
+<usages>
+<usage>Download Drive Files</usage>
+</usages>
+</type>
+<type name="integer" type="Standard">
+<doc>Conversion is done using Python's [https://docs.python.org/library/functions.html#int|int]
+built-in function. Floating point
+numbers are accepted only if they can be represented as integers exactly.
+For example, ``1.0`` is accepted and ``1.1`` is not.
+
+Starting from RF 4.1, it is possible to use hexadecimal, octal and binary
+numbers by prefixing values with ``0x``, ``0o`` and ``0b``, respectively.
+
+Starting from RF 4.1, spaces and underscores can be used as visual separators
+for digit grouping purposes.
+
+Examples: ``42``, ``-1``, ``0b1010``, ``10 000 000``, ``0xBAD_C0FFEE``
+</doc>
+<accepts>
+<type>string</type>
+<type>float</type>
+</accepts>
+<usages>
+<usage>Annotate Video</usage>
+<usage>Download Drive Files</usage>
+<usage>List Messages</usage>
+<usage>Recognize Text From Audio</usage>
+</usages>
+</type>
+<type name="list" type="Standard">
+<doc>Strings must be Python [https://docs.python.org/library/stdtypes.html#list|list]
+literals. They are converted to actual lists using the
+[https://docs.python.org/library/ast.html#ast.literal_eval|ast.literal_eval]
+function. They can contain any values ``ast.literal_eval`` supports, including
+lists and other containers.
+
+Examples: ``['one', 'two']``, ``[('one', 1), ('two', 2)]``
+</doc>
+<accepts>
+<type>string</type>
+<type>Sequence</type>
+</accepts>
+<usages>
+<usage>Init Apps Script</usage>
+<usage>Init Drive</usage>
+<usage>Init Gmail</usage>
+<usage>Init Sheets</usage>
+<usage>Insert Sheet Values</usage>
+<usage>List Messages</usage>
+<usage>Send Message</usage>
+<usage>Translate</usage>
+<usage>Update Sheet Values</usage>
+</usages>
+</type>
+<type name="None" type="Standard">
+<doc>String ``NONE`` (case-insensitive) is converted to Python ``None`` object.
+Other values cause an error.
+</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>__init__</usage>
+<usage>Add Drive Share</usage>
+<usage>Analyze Sentiment</usage>
+<usage>Annotate Image</usage>
+<usage>Annotate Video</usage>
+<usage>Classify Text</usage>
+<usage>Create Drive Directory</usage>
+<usage>Delete Drive File</usage>
+<usage>Detect Document</usage>
+<usage>Detect Labels</usage>
+<usage>Detect Text</usage>
+<usage>Download Drive Files</usage>
+<usage>Export Drive File</usage>
+<usage>Face Detection</usage>
+<usage>Get Drive Folder Id</usage>
+<usage>Init Apps Script</usage>
+<usage>Init Drive</usage>
+<usage>Init Gmail</usage>
+<usage>Init Natural Language</usage>
+<usage>Init Sheets</usage>
+<usage>Init Speech To Text</usage>
+<usage>Init Storage</usage>
+<usage>Init Text To Speech</usage>
+<usage>Init Translation</usage>
+<usage>Init Video Intelligence</usage>
+<usage>Init Vision</usage>
+<usage>List Messages</usage>
+<usage>List Shared Drive Files</usage>
+<usage>List Supported Voices</usage>
+<usage>Move Drive File</usage>
+<usage>Recognize Text From Audio</usage>
+<usage>Remove All Drive Shares</usage>
+<usage>Remove Drive Share By Criteria</usage>
+<usage>Remove Drive Share By Permission Id</usage>
+<usage>Run Script</usage>
+<usage>Search Drive Files</usage>
+<usage>Send Message</usage>
+<usage>Set Robocorp Vault</usage>
+<usage>Translate</usage>
+<usage>Update Drive File</usage>
+<usage>Upload Drive File</usage>
+</usages>
+</type>
+<type name="string" type="Standard">
+<doc>All arguments are converted to Unicode strings.</doc>
+<accepts>
+<type>Any</type>
+</accepts>
+<usages>
+<usage>__init__</usage>
+<usage>Add Drive Share</usage>
+<usage>Analyze Sentiment</usage>
+<usage>Annotate Image</usage>
+<usage>Annotate Video</usage>
+<usage>Classify Text</usage>
+<usage>Clear Sheet Values</usage>
+<usage>Copy Sheet</usage>
+<usage>Create Drive Directory</usage>
+<usage>Create Sheet</usage>
+<usage>Create Storage Bucket</usage>
+<usage>Delete Drive File</usage>
+<usage>Delete Storage Bucket</usage>
+<usage>Delete Storage Files</usage>
+<usage>Detect Document</usage>
+<usage>Detect Labels</usage>
+<usage>Detect Text</usage>
+<usage>Download Drive Files</usage>
+<usage>Download Storage Files</usage>
+<usage>Export Drive File</usage>
+<usage>Face Detection</usage>
+<usage>Get Drive File By Id</usage>
+<usage>Get Drive Folder Id</usage>
+<usage>Get Sheet Values</usage>
+<usage>Get Storage Bucket</usage>
+<usage>Init Apps Script</usage>
+<usage>Init Drive</usage>
+<usage>Init Gmail</usage>
+<usage>Init Natural Language</usage>
+<usage>Init Sheets</usage>
+<usage>Init Speech To Text</usage>
+<usage>Init Storage</usage>
+<usage>Init Text To Speech</usage>
+<usage>Init Translation</usage>
+<usage>Init Video Intelligence</usage>
+<usage>Init Vision</usage>
+<usage>Insert Sheet Values</usage>
+<usage>List Messages</usage>
+<usage>List Shared Drive Files</usage>
+<usage>List Storage Files</usage>
+<usage>List Supported Voices</usage>
+<usage>Move Drive File</usage>
+<usage>Recognize Text From Audio</usage>
+<usage>Remove All Drive Shares</usage>
+<usage>Remove Drive Share By Criteria</usage>
+<usage>Remove Drive Share By Permission Id</usage>
+<usage>Run Script</usage>
+<usage>Search Drive Files</usage>
+<usage>Send Message</usage>
+<usage>Set Robocorp Vault</usage>
+<usage>Synthesize Speech</usage>
+<usage>Translate</usage>
+<usage>Update Drive File</usage>
+<usage>Update Sheet Values</usage>
+<usage>Upload Drive File</usage>
+<usage>Upload Storage File</usage>
+<usage>Upload Storage Files</usage>
+</usages>
+</type>
+<type name="TextType" type="Enum">
+<doc>Possible text types.</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>Analyze Sentiment</usage>
+<usage>Classify Text</usage>
+<usage>Translate</usage>
+</usages>
+<members>
+<member name="TEXT" value="Type.PLAIN_TEXT"/>
+<member name="HTML" value="Type.HTML"/>
+</members>
+</type>
+<type name="UpdateAction" type="Enum">
+<doc>Possible file update actions.</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>Update Drive File</usage>
+</usages>
+<members>
+<member name="trash" value="1"/>
+<member name="untrash" value="2"/>
+<member name="star" value="3"/>
+<member name="unstar" value="4"/>
+</members>
+</type>
+</typedocs>
+</keywordspec>
