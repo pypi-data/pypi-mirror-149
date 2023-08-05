@@ -1,0 +1,490 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --text-accent-color: #500B89;
+}
+
+.root {
+    background-color: #F5F5F5;
+    font-family: 'Roboto', sans-serif;
+    color: #383838;
+}
+
+.flex-container {
+    display: flex;
+}
+
+.grid-container {
+    display: grid;
+}
+
+/*********************/
+/*    HEADER         */
+.main-header {
+    min-height: 10rem;
+    width: 100%;
+    background-image: url("/assets/dao-analyzer_header.svg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-left: -0.1rem;
+}
+
+.header-logo {
+    height: auto;
+    width: 14rem;
+    margin: 1% 0 0 2%;
+}
+
+@media screen and (max-width: 1280px) {
+    .header-logo {
+        width: 10rem;
+        margin: 4% 0 0 4%;
+    }
+}
+/*********************/
+
+/*********************/
+/*      BODY         */
+
+/****** Body-Header ***/
+.body-header {
+    justify-content: space-around;
+    background-color: white;
+    margin-top: -2rem;
+    z-index: 2;
+    position: relative;
+}
+
+.ecosystem {
+    height: 80px;
+    width: 150px;
+    border: 4px solid transparent;
+}
+
+.ecosystem-overlay {
+    position: relative;
+    float: left;
+    opacity: 0;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+}
+
+.ecosystem-overlay:hover {
+    opacity: 0.4;
+    cursor: pointer;
+}
+
+.ecosystem-img {
+    position: relative;
+    top: -80px;
+    height: auto;
+    max-width: 150px;
+}
+
+@media screen and (min-width: 1920px) {
+    .body-header {
+        font-size: 1.4em;
+    }
+
+    .ecosystem {
+        height: 110px;
+        width: 200px;
+    }
+    
+    .ecosystem-img {
+        top: -110px;
+        max-width: 200px;
+    }
+
+    #org-dropdown {
+        font-size: medium;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .body-header {
+        font-size: x-small;
+    }
+
+    .ecosystem {
+        height: 50px;
+        width: 100px;
+    }
+    
+    .ecosystem-img {
+        top: -50px;
+        max-width: 100px;
+    }
+}
+
+.daostack-color {
+    background-color: #74CAE8;
+}
+
+.aragon-color {
+    background-color: #4DDEA4;
+}
+
+.daohaus-color {
+    background-color: #9960B1;
+}
+
+.daostack-selected {
+    border: 4px solid #74CAE8;
+}
+
+.aragon-selected {
+    border: 4px solid #4DDEA4;
+}
+
+.daohaus-selected {
+    border: 4px solid #9960B1;
+}
+
+.daostack-ecosystem:hover {
+    border: 4px solid #74CAE8;
+}
+
+.daohaus-ecosystem:hover {
+    border: 4px solid #9960B1;
+}
+
+.aragon-ecosystem:hover {
+    border: 4px solid #4DDEA4;
+}
+
+#org-dropdown {
+    flex-grow: 3;
+    margin-left: 1rem;
+}
+/*********************/
+
+/****** Dao-Info *****/
+.dao-header-container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.dao-info {
+    color: #235370;
+}
+
+.dao-info-name {
+    font-size: 2.5em;
+}
+
+.dao-info-network {
+    font-size: 1em;
+}
+
+.dao-info-address {
+    font-size: 1em;
+}
+
+.dao-info-label {
+    font-size: small;
+    color: gray;
+    text-transform: uppercase;
+}
+/*********************/
+
+/***** DAO SUMMARY ******/
+.dao-summary-container {
+    color: white;
+    background-color: #8944c1;
+}
+
+.dao-summary-hdr {
+    border-bottom: 2px solid var(--text-accent-color);
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dao-summary-hdr:empty {
+    display: none;
+}
+
+.dao-summary-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 10px;
+}
+
+.dao-summary-datapoint {
+    padding: 5px;
+}
+
+.dao-summary-datapoint-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: x-small;
+}
+
+.dao-summary-datapoint-number {
+    font-size: x-large;
+}
+
+.dao-summary-datapoint-lastmonth {
+    font-size: x-small;
+    text-transform: capitalize;
+}
+
+.dp-icon-up {
+    color: #4ddea4;
+}
+
+.dp-icon-down {
+    color: #ea44cd;
+}
+/************************/
+
+/****** Body *********/
+.body {
+    background-color: white;
+}
+
+.tab {
+    font-weight: normal;
+    text-transform: uppercase;
+    color: var(--text-accent-color);
+    border: 0 !important;
+}
+
+.tab.tab--selected {
+    font-weight: bold;
+    border-top: 2px solid var(--text-accent-color)!important;
+    border-left: 1px solid #E8DFF0!important;
+    border-right: 1px solid #E8DFF0!important;
+}
+
+.tab:first-child {
+    border-left: 0 !important;
+}
+
+.tab:last-child {
+    border-right: 0 !important;
+}
+
+.two-column {
+    width: 50%;
+}
+
+.section-title {
+    color: #4d98c7;
+    font-size: 2.5em;
+    margin-bottom: 2rem;
+
+    /* Break long names and URLS */
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.graph-pane-title {
+    font-weight: bolder;
+    font-size: large;
+}
+
+.chart-header {
+    margin-bottom: -1rem;
+    z-index: 2;
+}
+
+@media screen and (max-width: 992px) {
+    .two-column {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .chart-header {
+        margin-bottom: 0;
+    }
+}
+
+.chart {
+    margin-bottom: 4rem;
+}
+
+/*********************/
+/*********************/
+
+/*********************/
+/*      FOOT         */
+
+.main-foot {
+    display: flex;
+    flex-direction: row;
+    min-height: 10rem;
+    background-color: #2F2F2F;
+    color: #CCCCCC;
+    font-size: x-small;
+}
+
+.foot-left {
+    justify-content: space-evenly;
+}
+
+.foot-ack-logos {
+    margin-right: 1.5rem;
+    justify-content: space-around;
+}
+
+@media screen and (max-width: 1280px) {
+    .main-foot {
+        font-size: xx-small;
+    }
+
+    .sponsor-img {
+        max-width: 100px;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    .main-foot {
+        font-size: small;
+    }
+}
+
+/*********************/
+
+/*************************/
+/*      Aligners         */
+.left-padding-aligner {
+    padding-left: 5%;
+}
+
+.section-left-padding-aligner {
+    padding-left: 3%;
+}
+
+.chart-text-left-padding-aligner {
+    padding-left: 6.5%;
+}
+
+.right-padding-aligner {
+    padding-right: 5%;
+}
+
+.small-text-aligner {
+    margin: 0 0.2rem 0 0.2rem;
+}
+
+.foot-left-aligner {
+    margin-left: 5rem;
+}
+
+.small-padding {
+    padding: 2%;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.flex-align-start {
+    align-items: start;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-space-around {
+    justify-content: space-around;
+}
+
+.flex-space-between {
+    justify-content: space-between;
+}
+
+.flex-space-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+/*********************/
+
+/*********************/
+/*      URL         */
+.url-color {
+    text-decoration: none;
+}
+
+.url-color:link {
+    color: #74CAE8;
+}
+
+.url-color:visited {
+    color: #74CAE8;
+}
+/*********************/
+
+/*********************/
+/*      SIZERS         */
+
+.flex-size-1 {
+    flex-grow: 1;
+}
+
+.flex-size-2 {
+    flex-grow: 2;
+}
+
+.flex-size-3 {
+    flex-grow: 3;
+}
+
+/*********************/
+
+.v-separator {
+    border-left: 1px solid #979797;
+    height: 6vw;
+}
+
+.h-separator {
+    border-top: 1px solid #979797;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.display-none {
+    display: none;
+}
+
+/*********************/
+/*      TEXT         */
+.small-font {
+    font-size: small;
+}
+
+.xsmall-font {
+    font-size: x-small;
+}
+
+.address {
+    color: #2F2F2F;
+    margin-top: 0.3em;
+    font-family: 'Courier New', Courier, monospace;
+    max-width: fit-content;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+/*********************/
