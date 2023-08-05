@@ -1,0 +1,82 @@
+<odoo>
+  <data noupdate="1">
+
+    <record id="presenter_model_base" model="cm.presenter.model">
+      <field name="name">Base Presenter</field>
+      <field name="json_dataschema">
+{}
+      </field>
+      <field name="json_schema">
+{
+  "type":"object",
+  "properties":{
+    "description": { "type": "string", "format": "markdown" },
+    "warning": { "type": "string", "format": "markdown" },
+    "buy-hours-link": { "type": "string", "format": "uri" },
+    "leaflet": { "type": "string", "format": "uri" },
+    "leaflet-react": { "type": "string", "format": "uri" },
+    "jsonforms": { "type": "string", "format": "uri" },
+    "progress": { "type": "number", "format": "progress" }
+  }
+}
+      </field>
+      <field name="json_uischema">
+{
+  "type":"VerticalLayout",
+  "elements": [
+    {
+      "type": "Display",
+      "scope": "#/properties/warning",
+      "options": { "warning": true }
+    },
+    {
+      "type": "Links",
+      "elements": [
+        {
+          "type": "Display",
+          "label": "",
+          "scope": "#/properties/leaflet",
+          "options": {
+            "hideExternalIcon": true
+          }
+        },
+        {
+          "type": "Display",
+          "label": "",
+          "scope": "#/properties/leaflet-react",
+          "options": {
+            "hideExternalIcon": true
+          }
+        },
+        {
+          "type": "Display",
+          "label": "",
+          "scope": "#/properties/jsonforms",
+          "options": {
+            "hideExternalIcon": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Display",
+      "scope": "#/properties/description"
+    },
+    {
+      "type": "Display",
+      "label": "",
+      "scope": "#/properties/jsonforms"
+    },
+    {
+      "type": "Display",
+      "label": "",
+      "scope": "#/properties/progress",
+      "options": { "progress": true }
+    }
+  ]
+}
+      </field>
+    </record>
+
+  </data>
+</odoo>

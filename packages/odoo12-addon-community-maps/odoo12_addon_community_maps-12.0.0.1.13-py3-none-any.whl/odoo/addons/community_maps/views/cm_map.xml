@@ -1,0 +1,99 @@
+<odoo>
+  <data>
+
+    <record id="view_map_window" model="ir.actions.act_window">
+      <field name="name">Maps</field>
+      <field name="res_model">cm.map</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_map_tree" model="ir.ui.view">
+      <field name="name">cm.map.tree</field>
+      <field name="model">cm.map</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="slug_id"/>
+          <field name="crowdfunding_type"/>
+          <field name="colorschema_id"/>
+          <field name="tile_style"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_map_form" model="ir.ui.view">
+      <field name="name">cm.map.form</field>
+      <field name="model">cm.map</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <notebook>
+              <page string="General">
+                <group>
+                  <field name="name" attrs="{'required': True}"/>
+                  <field name="slug_id" attrs="{'required': True}"/>
+                  <field name="crowdfunding_type" attrs="{'required': True}"/>
+                  <field name="colorschema_id" attrs="{'required': True}"/>
+                  <field name="tile_style" attrs="{'required': True}"/>
+                </group>
+                <group>
+                  <field name="show_progress_on_marker"/>
+                  <field name="allow_filter_by_status"/>
+                  <field name="allow_filter_by_category"/>
+                  <field name="allow_filter_by_crowdfunding"/>
+                </group>
+                <group>
+                  <field name="privacy_link"/>
+                  <field name="cookies_link"/>
+                </group>
+                <group>
+                  <field name="proposal_form_model_id"/>
+                  <field name="allowed_form_model_mids" widget="many2many_list">
+                    <tree create="true" edit="false" delete="true" open="false">
+                      <field name="name"/>
+                      <field name="slug_id"/>
+                    </tree>
+                  </field>
+                  <field name="allowed_place_category_mids" widget="many2many_list">
+                    <tree create="true" edit="false" delete="true" open="false">
+                      <field name="name"/>
+                      <field name="slug_id"/>
+                      <field name="icon"/>
+                      <field name="color"/>
+                    </tree>
+                  </field>
+                  <field name="allowed_place_category_inproposal_mids" widget="many2many_list">
+                    <tree create="true" edit="false" delete="true" open="false">
+                      <field name="name"/>
+                      <field name="slug_id"/>
+                      <field name="icon"/>
+                      <field name="color"/>
+                    </tree>
+                  </field>
+                  <field name="allowed_presenter_model_mids" widget="many2many_list">
+                    <tree create="true" edit="false" delete="true" open="false">
+                      <field name="name"/>
+                    </tree>
+                  </field>
+                </group>
+              </page>
+              <page string="Admin notifications">
+                <group>
+                  <field name="crowdfunding_notification_request_ids" widget="one2many_list">
+                    <tree create="true" edit="true" delete="true" open="false" editable="top">
+                      <field name="percentage"/>
+                    </tree>
+                  </field>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <menuitem name="Maps" id="community_maps.map" parent="community_maps.menu_root" action="view_map_window" sequence="1"/>
+
+  </data>
+</odoo>

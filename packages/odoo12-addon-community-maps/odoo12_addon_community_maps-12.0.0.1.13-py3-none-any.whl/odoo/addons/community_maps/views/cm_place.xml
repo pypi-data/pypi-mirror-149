@@ -1,0 +1,226 @@
+<odoo>
+  <data>
+
+    <record id="view_place_window" model="ir.actions.act_window">
+      <field name="name">Places</field>
+      <field name="res_model">crm.team</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{
+        'default_team_type':'map_place'
+      }</field>
+      <field name="domain">[('team_type','=','map_place')]</field>
+    </record>
+    <record id="view_place_proposal_window" model="ir.actions.act_window">
+      <field name="name">Place proposals</field>
+      <field name="res_model">crm.team</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{
+        'default_team_type':'map_place_proposal'
+      }</field>
+      <field name="domain">[('team_type','=','map_place_proposal')]</field>
+    </record>
+
+    <!-- TODO: Tree and Form view. invisible attr is always true. Why?! -->
+
+    <record id="view_place_tree" model="ir.ui.view">
+      <field name="name">cm.place.tree</field>
+      <field name="model">crm.team</field>
+      <field name="inherit_id" ref="sales_team.crm_team_view_tree"/>
+      <field name="arch" type="xml">
+        <xpath
+          expr="//tree"
+          position="replace">
+          <tree>
+            <field name="active" invisible="1"/>
+            <field name="team_type"/>
+            <field name="name"/>
+            <field name="status"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="map_id"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="slug_id"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="lat"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="lng"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="place_category_id"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="presenter_model_id"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="form_model_id"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="crowdfunding_type"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="completed_percentage"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="total_committed_invoicing"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="total_committed_submissions"
+              attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+          </tree>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_place_form" model="ir.ui.view">
+      <field name="name">cm.place.form</field>
+      <field name="model">crm.team</field>
+      <field name="type">form</field>
+      <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+      <field name="arch" type="xml">
+        <xpath
+          expr="//field[@name='name']"
+          position="before">
+            <h4 style="color:green;" attrs="{'invisible': ['|',('team_type', '!=', 'map_place'),('status','!=','published')]}">Published place</h4>
+            <h4 style="color:orange;" attrs="{'invisible': ['|',('team_type', '!=', 'map_place'),('status','!=','draft')]}">Draft Place</h4>
+            <h4 style="color:red;" attrs="{'invisible': [('team_type', '!=', 'map_place_proposal')]}">Place Proposal</h4>
+        </xpath>
+        <xpath
+          expr="//label[@for='alias_name']"
+          position="attributes">
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath>
+        <xpath
+          expr="//div[@name='alias_def']"
+          position="attributes">
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath>
+        <xpath
+          expr="//field[@name='alias_contact']"
+          position="attributes">
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath>
+        <!-- <xpath
+          expr="//field[@name='user_id']"
+          position="attributes" >
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath> -->
+        <xpath
+          expr="//page[@name='members']"
+          position="attributes" >
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath>
+        <xpath
+          expr="//page[@name='dashboard']"
+          position="attributes"
+        >
+          <attribute name='invisible'>[('team_type','in',['map_place','map_place_proposal'])]</attribute>
+        </xpath>
+        <!-- <xpath
+          expr="//sheet"
+          position="after" >
+            <div class="oe_chatter">
+              <field name="message_follower_ids" widget="mail_followers"/>
+              <field name="message_ids" widget="mail_thread" options="{'post_refresh': 'recipients'}"/>
+            </div>
+        </xpath> -->
+        <xpath
+          expr="//sheet"
+          position="before" >
+            <header>
+              <button name="accept_place_proposal_workflow_action" type="object"
+              string="Convert to place"
+              confirm="Are you sure?"
+              attrs="{'invisible': [('team_type','!=','map_place_proposal')]}"/>
+              <button name="publish_place_workflow_action" type="object"
+              string="Publish"
+              attrs="{'invisible': ['|',('team_type','!=','map_place'),('status','!=','draft')]}"/>
+              <button name="unpublish_place_workflow_action" type="object"
+              string="Unpublish"
+              attrs="{'invisible': ['|',('team_type','!=','map_place'),('status','!=','published')]}"/>
+              <field name="status" widget="statusbar" attrs="{'invisible': [('team_type', '!=','map_place')]}"/>
+            </header>
+        </xpath>
+        <xpath
+          expr="//notebook"
+          position="before" >
+          <group string="Data" attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}">
+            <field name="map_id" attrs="{'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="slug_id" attrs="{'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="allow_filter_by_status" invisible="True"/>
+            <field name="has_active_service" attrs="{'invisible': [('allow_filter_by_status', '=', False)]}"/>
+            <field name="address_txt"/>
+            <field name="lat" attrs="{'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="lng" attrs="{'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="place_category_id"
+              attrs="{'invisible': [('map_id', '=', False)],'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="presenter_model_id"
+              attrs="{'invisible': [('map_id', '=', False)],'required': [('team_type', 'in', ['map_place','map_place_proposal'])]}"/>
+            <field name="form_model_id" attrs="{'invisible': [('map_id', '=', False)]}"/>
+          </group>
+          <group string="Crowdfunding" attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}">
+            <field name="crowdfunding_type"/>
+            <field name="completed_percentage" attrs="{'invisible': ['|',('team_type', 'not in', ['map_place','map_place_proposal']),('crowdfunding_type','=','none')]}"/>
+            <field
+              name="invoiced_target"
+              attrs="{'invisible': [('crowdfunding_type', '!=', 'invoicing_amount')],'required': True}" />
+            <field
+              name="submissions_target"
+              attrs="{'invisible': [('crowdfunding_type', '!=', 'submission_amount')],'required': True}" />
+            <field name="total_committed_invoicing" attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+            <field name="total_committed_submissions" attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}"/>
+          </group>
+        </xpath>
+        <xpath
+          expr="//page[@name='dashboard']"
+          position="before"
+        >
+          <page string="Presenter" attrs="{'invisible': ['|',('presenter_model_id', '=', False),('team_type', 'not in', ['map_place','map_place_proposal'])]}">
+            <group>
+              <field name="place_presenter_metadata_ids" widget="one2many_list">
+                <tree create="false" edit="true" delete="false" open="false" editable="top">
+                  <field name="key" readonly="True"/>
+                  <field name="type" readonly="True"/>
+                  <field name="format" readonly="True"/>
+                  <field name="value"/>
+                </tree>
+              </field>
+            </group>
+          </page>
+          <page string="Form Submissions"
+            attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}">
+            <group>
+              <field name="form_submission_ids" widget="one2many_list" >
+                <tree>
+                  <field name="create_date"/>
+                  <field name="name"/>
+                  <field name="submission_type"/>
+                </tree>
+              </field>
+            </group>
+          </page>
+          <page string="Proposal Data" attrs="{'invisible': [('team_type', 'not in', ['map_place','map_place_proposal'])]}">
+            <group>
+              <field name="proposal_form_submission_id"/>
+            </group>
+          </page>
+          <page string="Admin notifications">
+            <group>
+              <field name="crowdfunding_notification_ids" widget="one2many_list" readonly="True">
+                <tree create="true" edit="true" delete="true" open="false" editable="top">
+                  <field name="percentage"/>
+                </tree>
+              </field>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+
+    <menuitem
+      name="Places"
+      id="community_maps.place"
+      parent="community_maps.menu_root"
+      action="view_place_window"
+      sequence="2"/>
+
+    <menuitem
+      name="Place proposals"
+      id="community_maps.place_proposal"
+      parent="community_maps.menu_root"
+      action="view_place_proposal_window"
+      sequence="3"/>
+
+  </data>
+</odoo>
