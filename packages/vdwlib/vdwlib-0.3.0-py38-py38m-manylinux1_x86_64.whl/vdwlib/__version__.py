@@ -1,0 +1,8 @@
+__title__ = 'vdwlib'
+__url__ = 'https://sebastianwellig.github.io/vdwlib'
+__version__ = '0.3.0'
+__build__ = ''
+__description__ = 'Van der Waals radii library'
+__author__ = 'Sebastian Wellig'
+__license__ = 'GPL-2.0-only'
+__copyright__ = 'Copyright © 2021 Sebastian Wellig'
