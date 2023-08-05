@@ -1,0 +1,104 @@
+Metadata-Version: 2.1
+Name: embedops-cli
+Version: 0.3.2
+Summary: EmbedOps Command Line Tools
+Home-page: https://embedops.io
+Author: Dojo Five, LLC
+Author-email: embedops@dojofive.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Environment :: Console
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Embedded Systems
+Classifier: License :: Free To Use But Restricted
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: dynaconf (==3.1.7)
+Requires-Dist: setuptools (>=21.0.0)
+Requires-Dist: flask (>=2.0.2)
+Requires-Dist: python-dotenv (>=0.19.0)
+Requires-Dist: click (==7.1.2)
+Requires-Dist: pyyaml (==5.4.1)
+Requires-Dist: docker (==5.0.3)
+Requires-Dist: requests (==2.26.0)
+Requires-Dist: certifi (>=14.05.14)
+Requires-Dist: six (>=1.10)
+Requires-Dist: python-dateutil (>=2.5.3)
+Requires-Dist: urllib3 (>=1.15.1)
+
+# EmbedOps Tools
+CLI tool for enabling easier and smoother local development for embedded systems via the command line. Promotes usage of Docker and best practices for modern embedded development. 
+
+## Current Features
+
+Parse CI YAML files to allow for jobs to be run in the same containers and the same way locally as they do on CI. 
+
+### YAML finding and parsing
+Functionality:
+- Show names of all jobs
+- Show detailed job context
+
+Limitations:
+- No guarantee of YAML written by anyone other than Dojo Five employees will be able to run as expected
+- Can only be run from the current working directory your pipeline scripts expect to be in as there is no way to set cwd explicitly
+- Only works with BitBucket and GitLab YAML files
+- Will not use, search for, nor help set environment variables
+- no way to mark that a job shouldn't be run locally or hide non-runnable jobs
+- Will show "hidden" GitLab jobs and allow them to be run
+- Does not handle `extends:` keyword in GitLab CI/CD
+- Only handle multi-line script with a **complete command** in each line.
+  - This is applied to both `|` (literal) and `>` (folded) YAML multiline block scalar indicator.
+  - For example, it doesn't work if the `if-else` statement is called in multiple lines. \
+    Working example:
+
+    ```bash
+    script: |
+      FILE=.clang-format
+      if [ -f "$FILE" ]; then echo "$FILE exists. Use repository $FILE."; else echo "$FILE does not exist. Use container $FILE."; cp /tools/.clang-format .clang-format; fi
+    ```
+
+    Failing example:
+
+    ```bash
+    script: |
+      FILE=.clang-format
+      if [ -f "$FILE" ]; then 
+          echo "$FILE exists. Use repository $FILE."
+      else 
+          echo "$FILE does not exist. Use container $FILE."
+          cp /tools/.clang-format .clang-format
+      fi
+    ```
+
+Not Implemented:
+- Info to pull from YAML:
+  - after/before scripts?
+- `include:`, `extends:` on GitLab, `uses:` on GitHub, `pipe:` on BitBucket not supported
+
+### Docker container launching / checking /running
+Functionality:
+- use parsed YAML information
+- map cwd to Docker container and launch (sets mounted directory as container's cwd)
+- Run script in docker container found above
+- Output any artifacts in the mounted directory
+- Login to the EmbedOps registry for paying clients
+
+Limitations:
+- Assume all jobs have an explicit image tag or a default image tag in yaml
+- Assume all jobs have a script (not handling entrypoints)
+- Must be launched from the top level working directory of the project (where YAML is stored)
+- doesn't clean up after itself - all artifacts are left behind, not just desired ones. 
+- no way to specify clean and build vs rebuild unless explicitly defined in YAML
+- Env variables used but not defined in YAML must be set by user in .env file manually, no error checking
+
+Not Implemented:
+- Run before or after script 
+- run entire pipeline or workflow at once
+- shell and any other non-Docker based runners are not supported on any system at this time
+
+## License
+Copyright 2021 Dojo Five, LLC
+
