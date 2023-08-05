@@ -1,0 +1,45 @@
+[tool.poetry]
+name = 'python-service-tools'
+version = '0.5.1'
+description = "Utilities for working with python services."
+authors = [
+    "Alexander Costas <alexander.costas@mongodb.com>",
+    "David Bradford <david.bradford@mongodb.com",
+]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/mongodb-labs/python-service-tools"
+packages = [
+    { include = "servicetools", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+python-json-logger = ">=0.1"
+structlog = ">=19"
+starlette = ">=0.13"
+dramatiq = {extras = ["rabbitmq", "watch"], version = ">=1.10"}
+pika = ">=1.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6"
+pytest-flake8 = "^1.0"
+black = "^20.8b1"
+pytest-black = "^0.3"
+pytest-mypy = "^0.7"
+mypy = "^0.782"
+pytest-cov = "^2.10"
+pytest-asyncio = "^0.14"
+pytest-pydocstyle = "^2.2"
+
+[tool.pytest.ini_options]
+addopts = "--flake8 --black --pydocstyle --mypy --cov=servicetools --cov-fail-under=90 --cov-branch --cov-report=term-missing"
+flake8-ignore = "W605 W503 W291 E203 E501 F821"
+
+[tool.black]
+line-length = 100
+target-version = ['py37']
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
