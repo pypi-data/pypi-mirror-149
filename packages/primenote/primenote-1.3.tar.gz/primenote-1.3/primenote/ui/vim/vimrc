@@ -1,0 +1,204 @@
+"######################################################
+" CORE FEATURES : DO NOT EDIT
+"######################################################
+
+" Enable vim enhancements
+set nocompatible
+
+" Disable 'garbage' files
+set nobackup
+set nowritebackup
+set noswapfile
+
+" Unicode
+set encoding=utf-8  " The encoding displayed.
+set fileencoding=utf-8  " The encoding written to file.
+
+" Auto save as text is typed
+autocmd TextChanged,TextChangedI <buffer> silent write
+
+" Refresh content on file change
+set autoread
+if ! exists("g:CheckUpdateStarted")
+    let g:CheckUpdateStarted=1
+    call timer_start(1,'CheckUpdate')
+endif
+function! CheckUpdate(timer)
+    silent! checktime
+    call timer_start(1000,'CheckUpdate')
+endfunction
+
+"######################################################
+" GENERAL
+"######################################################
+
+" Indentation and tab spacing of 2
+set expandtab
+set shiftwidth=2
+set tabstop=2
+
+" Show as much as possible of a wrapped last line, not just '@'
+set display=lastline
+
+" Undo history
+set history=1024
+
+" Enable system clipboard
+set clipboard=unnamedplus
+
+" Enable word wrap
+set wrap linebreak nolist
+
+" Enable 'regular' backspace behavior
+set backspace=indent,eol,start
+
+" Prevent backward movement on mode change
+au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
+
+" Disable auto comment insertion when using 'o'
+autocmd FileType * set formatoptions-=o
+
+"Enable mouse
+set mouse=a
+
+" Display extra whitespace
+set list listchars=tab:»·,trail:·,nbsp:·
+
+" Enable incremental search
+set incsearch
+
+" Disable Q keymap (Entering ex mode..)
+map Q <Nop>
+
+" Disable ctrl+left click no tag error
+noremap <C-LeftMouse> <LeftMouse>
+
+" Disable default Vim exit hotkey
+nnoremap <S-z> <Nop>
+
+" Remove regex-like mode with substitute :s%
+set nomagic
+
+" Reduce delay when leaving insert mode
+set ttimeoutlen=10
+
+" Paste over without yanking the replaced text
+vnoremap p "_dP
+
+"######################################################
+" THEME
+"######################################################
+
+" General
+color flattown
+set t_Co=256
+set colorcolumn=0
+set cursorline
+
+" Show the current mode
+set showmode
+
+" Set background and foregound of selected paranthesis/brackets
+hi MatchParen cterm=none ctermbg=white ctermfg=black
+
+" Search highlight + Keypad Return key disable highlight
+set hlsearch
+noremap <CR> :noh<CR>
+highlight Search ctermbg=red
+
+" Hybrid line numbering and Automatic toggling between line number modes
+set number relativenumber
+augroup numbertoggle
+  autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu | set rnu   | endif
+    autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu | set nornu | endif
+augroup END
+
+" Line number width
+set numberwidth=4
+
+"######################################################
+" HOTKEYS : Vim
+"######################################################
+
+" [Shift+W] Toggle word wrap
+nnoremap <S-w> :set wrap!<CR>
+
+" [Shift+#] Add comment at the beginning of the line
+nnoremap <bar> :normal ^i#<CR><ESC>
+
+" [Ctrl+A] Copy whole line
+nnoremap <C-a> yyp
+
+" [Ctrl+P] Special paste: paste the content of the "+ register without newlines
+nnoremap <C-P> :put =substitute(strtrans(@+),'\^@',' ','g')<CR><CR>
+
+" [Backspace] Goto last change
+nnoremap <BS> :normal g; <CR>
+
+" Always search forward, map 'z' to search next
+nnoremap <expr> n (v:searchforward ? 'n' : 'N')
+nnoremap <expr> N (v:searchforward ? 'N' : 'n')
+nnoremap z n
+
+" Shortcut for @q macro
+nnoremap ,q @q
+
+" Repeat last command with ,,
+nnoremap ,, :<Up><CR>
+
+" Quick indent of code blocks
+nnoremap < <<
+nnoremap > >>
+
+" [Ctrl+Up/Down] Shift lines vertically
+function! s:swap_lines(n1, n2)
+    let line1 = getline(a:n1)
+    let line2 = getline(a:n2)
+    call setline(a:n1, line2)
+    call setline(a:n2, line1)
+endfunction
+
+function! s:swap_up()
+    let n = line('.')
+    if n == 1
+        return
+    endif
+    call s:swap_lines(n, n - 1)
+    exec n - 1
+endfunction
+
+function! s:swap_down()
+    let n = line('.')
+    if n == line('$')
+        return
+    endif
+    call s:swap_lines(n, n + 1)
+    exec n + 1
+endfunction
+
+nnoremap <silent> <C-Up> :call <SID>swap_up()<CR>
+nnoremap <silent> <C-Down> :call <SID>swap_down()<CR>
+inoremap <silent> <C-Up> <Esc>:call <SID>swap_up()<CR>
+inoremap <silent> <C-Down> <Esc>:call <SID>swap_down()<CR>
+
+"######################################################
+" HOTKEYS : Command-line interface example
+"######################################################
+
+function! Core(cmd)
+  let job = job_start('pnote --core "' . a:cmd . '"')
+endfunction
+
+function! Note(cmd)
+  let job = job_start('pnote --note "' . a:cmd . '" --path "' . expand('%:p') . '"')
+endfunction
+
+" [Shift+R] Rename prompt
+nnoremap <s-r> :call Note("rename")<CR>
+
+" [Shift+M] Move prompt
+nnoremap <s-m> :call Note("move")<CR>
+
+" [Shift+Q] Hide all windows
+nnoremap <s-q> :call Core("hide")<CR>
