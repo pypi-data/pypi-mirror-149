@@ -1,0 +1,75 @@
+Metadata-Version: 2.1
+Name: libumccr
+Version: 0.2.dev1
+Summary: UMCCR Reusable Python modules
+Home-page: https://github.com/umccr/libumccr
+Author: UMCCR and Contributors
+Author-email: services@umccr.org
+License: MIT
+Project-URL: Bug Tracker, https://github.com/umccr/libumccr/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: botocore
+Requires-Dist: cachetools
+Requires-Dist: requests
+Requires-Dist: pandas
+Requires-Dist: gspread
+Requires-Dist: gspread-pandas
+Requires-Dist: google-auth
+Provides-Extra: all
+Requires-Dist: Django ; extra == 'all'
+Provides-Extra: dev
+Requires-Dist: pipdeptree ; extra == 'dev'
+Requires-Dist: twine ; extra == 'dev'
+Requires-Dist: setuptools ; extra == 'dev'
+Requires-Dist: wheel ; extra == 'dev'
+Requires-Dist: build ; extra == 'dev'
+Requires-Dist: pdoc3 ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: detect-secrets ; extra == 'dev'
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+Requires-Dist: flake8 ; extra == 'test'
+Requires-Dist: mockito ; extra == 'test'
+Requires-Dist: tox ; extra == 'test'
+Requires-Dist: nose2 ; extra == 'test'
+
+# libumccr
+
+[![Pull Request Build Status](https://github.com/umccr/libumccr/workflows/Pull%20Request%20Build/badge.svg)](https://github.com/umccr/libumccr/actions) [![PyPI - Downloads](https://img.shields.io/pypi/dm/libumccr?style=flat)](https://pypistats.org/packages/libumccr) [![PyPI](https://img.shields.io/pypi/v/libumccr?style=flat)](https://pypi.org/project/libumccr) 
+[![PyPI - License](https://img.shields.io/pypi/l/libumccr?style=flat)](https://opensource.org/licenses/MIT)
+
+UMCCR Reusable Python modules
+
+## Usage
+
+- Install through ``pip`` like so
+```commandline
+pip install libumccr
+```
+
+- Somewhere in your Python code
+```python
+from libumccr.aws import libssm
+
+ssm_value = libssm.get_ssm_param("my_param_name")
+```
+
+## Development
+
+- Create Python virtual environment
+```
+git clone https://github.com/umccr/libumccr.git
+cd libumccr
+make install
+make test
+```
+
+
