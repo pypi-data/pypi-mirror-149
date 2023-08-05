@@ -1,0 +1,91 @@
+# Default Pint units definition file
+# Based on the International System of Units
+# Language: english
+# author: Andreas Geiges
+
+# Refer to https://pint.readthedocs.io/en/stable/defining.html for documentation
+
+# economical dimension
+
+Th = 1e3 = th-
+Mi- = 1e6 = mi-
+Bi- = 1e9 = bi-
+Tr- = 1e12 = tr
+
+thousand = 1e3
+million = 1e6
+billion = 1e9
+
+USD = [dollar_currency] = usd
+USD_2005 = [dollar_currency_2005] = USD2005 
+USD_2010 = [dollar_currency_2010] = USD2010
+USD_2011 = [dollar_currency_2011] = USD2011
+USD_2016 = [dollar_currency_2016] = USD2016
+USD_2018 = [dollar_currency_2018] = USD2018
+USD_2019 = [dollar_currency_2019] = USD2019
+USD_2020 = [dollar_currency_2020] = USD2020
+
+billion_USD = 1e9 * USD
+billion_USD_2005 = 1e9 * USD_ppp_2005
+billion_USD_2010 = 1e9 * USD_ppp_2010
+
+
+EUR = [euro_currency] = eur
+USD_ppp_2005 = [constant_PPP2005]
+USD_ppp_2010 = [constant_PPP2010]
+USD_ppp_2011 = [constant_PPP2011]
+million_USD_ppp_2011 = USD_ppp_2011 * 1e6
+USD_ppp_2012 = [constant_PPP2012]
+USD_ppp_2015 = [constant_PPP2015]
+USD_ppp_2016 = [constant_PPP2016]
+USD_ppp_2018 = [constant_PPP2018]
+USD_MER_2018 = [constant_MER2018]
+cuPPP = [current_PPP]
+
+USD_const_2010 = [constant_2010]
+
+DM = [demand]
+
+# climate context
+[AGWP] = [Power] * [time] / [area] / [mass]
+AGWP_CO2 =  9.17E-14 * W * yr /m**2 / kg
+#CO2eq = [CO2-equiv]
+#CO2eq = 1 * [GWP]
+
+# social dimension
+capita = [count]
+cap = 1* capita
+person = 1 * capita
+thousands = 1000 * count
+millions = 1000000 * count
+
+# Transport
+[person_travelled] = [count] * [length]
+pkm = person * km
+[mass_transported] = [mass] * [length]
+tkm = tonnes *km
+
+
+# energy related
+oe = 41.868 * 1e6 * J / kg = oil_equivalent
+kg oil_equivalent =  41.868 *1e6* J
+
+km3 = km * km * km
+m3  = m * m * m
+ 
+#NF3 = NF3
+#NO2 = 265 * CO2eq
+CH4eq = [CH4 equivalent]
+CF4eq = [CF4 equivalent]
+HFC134aeq = [HFC134a equivalent]
+# relative
+#percent = 100 * dimensionless
+#none = dimensionless
+
+@context(n=1) spectroscopy = sp
+    # n index of refraction of the medium.
+    [length] <-> [frequency]: speed_of_light / n / value
+    [frequency] -> [energy]: planck_constant * value
+    [energy] -> [frequency]: value / planck_constant
+@end
+
