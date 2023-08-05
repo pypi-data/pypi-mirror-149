@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "relycomply_client"
+version = "0.13.3"
+description = "A python client for the RelyComply platform"
+authors = ["James Saunders <james@relycomply.com>"]
+# license = ""
+readme = "README.md"
+# documentation = "https://fn-graph.readthedocs.io/"
+repository = "https://github.com/relycomply/relycomply_client/"
+homepage = "https://www.relycomply.com"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4"
+requests = "*"
+pandas = "*"
+gql = ">=3.0.0"
+boto3 = "*"
+requests-toolbelt = "*"
+littleutils = "*"
+toml = "*"
+Pygments = "*"
+tabulate = "*"
+termcolor = "*"
+PyYAML = "*"
+pyarrow = "*"
+typer = "*"
+
+[tool.poetry.dev-dependencies]
+black = { version = "*", allow-prereleases = true }
+dephell = "*"
+sh = "*"
+GitPython = "*"
+
+[tool.dephell.main]
+from = { format = "poetry", path = "pyproject.toml" }
+to = { format = "setuppy", path = "setup.py" }
+
+[tool.poetry.scripts]
+rely = 'relycomply_client.cli:main'
+rely-sync = 'relycomply_client.sync:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
