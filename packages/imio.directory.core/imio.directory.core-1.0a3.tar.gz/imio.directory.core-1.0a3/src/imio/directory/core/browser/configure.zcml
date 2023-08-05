@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="overrides"
+      layer="imio.directory.core.interfaces.IImioDirectoryCoreLayer"
+      />
+
+  <!-- Publish static files -->
+  <plone:static
+      name="imio.directory.core"
+      type="plone"
+      directory="static"
+      />
+
+  <browser:page
+      name="utils"
+      for="*"
+      class=".utils.UtilsView"
+      allowed_attributes="can_export_contact_to_vcard export_contact_to_vcard can_import_contacts"
+      permission="zope2.View"
+      layer="imio.directory.core.interfaces.IImioDirectoryCoreLayer"
+      />
+
+  <browser:page
+    for="*"
+    name="import_contacts"
+    class=".import.ImportContactForm"
+    permission="zope2.View"
+    />
+
+</configure>

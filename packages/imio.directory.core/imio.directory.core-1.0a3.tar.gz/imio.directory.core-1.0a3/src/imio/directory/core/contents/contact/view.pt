@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/@@main_template/macros/master"
+      i18n:domain="imio.smartweb">
+<body>
+
+<metal:main fill-slot="main">
+    <!-- fix some css for usage in Plone  -->
+    <style type="text/css">
+     #spotlight .header { padding-right: 120px !important; }
+     #content-core a { border-bottom: 0px solid transparent !important;}
+    </style>
+    <h1 class="documentFirstHeading" tal:content="context/Title" />
+
+    <p class="documentDescription" tal:content="structure context/@@description" />
+
+    <tal:block repeat="widget view/widgets/values">
+        <div class="field" tal:condition="python:widget.__name__ not in ('IBasic.title', 'IBasic.description', 'title', 'description',)">
+            <label tal:content="widget/label" />
+            <br />
+            <div tal:content="structure widget/render" />
+        </div>
+    </tal:block>
+
+    <fieldset tal:repeat="group view/groups"
+              tal:attributes="id python:''.join((group.prefix, 'groups.', group.__name__)).replace('.', '-')">
+        <legend tal:content="group/label" />
+        <div class="field" tal:repeat="widget group/widgets/values">
+            <label tal:content="widget/label" />
+            <br />
+            <div tal:content="structure widget/render" />
+        </div>
+    </fieldset>
+
+    <div tal:define="images view/images;"
+         tal:condition="images"
+         class="contact-gallery flexbin flexbin-margin">
+        <tal:images tal:repeat="item images">
+            <a class="spotlight gallery_item"
+               tal:define="image_view item/@@images;
+                           large python: image_view.scale('image', 'large')"
+               tal:attributes="href large/url | nothing;
+                               title item/title;
+                               data-description item/description">
+              <img tal:define="thumb python: image_view.scale('image', 'preview')"
+                   tal:attributes="src thumb/url | nothing;
+                                   alt item/title;
+                                   title item/title" />
+            </a>
+        </tal:images>
+    </div>
+
+    <div class="contact-files"
+         tal:define="files view/files"
+         tal:condition="files">
+      <ul>
+        <li tal:repeat="item files">
+            <div tal:define="file_view nocall:item/@@file_view;
+                             item_has_image item/image | nothing;
+                             thumb_scale view/get_thumb_scale_list;
+                             image_scale item/@@images;">
+              <a tal:attributes="href item/absolute_url;
+                                 alt item/title">
+                <span>
+                    <img class="mime-icon"
+                         tal:attributes="src file_view/get_mimetype_icon">
+                    <span tal:content="item/title">Item Title</span>
+                    <span class="discreet">&mdash; <span tal:replace="file_view/human_readable_size" /></span>
+                </span>
+                <p>
+                  <span tal:replace="structure item/description" />
+                </p>
+                <img tal:condition="item_has_image"
+                     tal:replace="structure python:image_scale.tag('image', scale=thumb_scale)" />
+              </a>
+            </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="contact-site" tal:condition="context/urls">
+        <tal:loop repeat="site context/urls">
+            <span i18n:translate=""
+                  tal:content="string:${site/type} : "></span>
+            <a target="_blank"
+               tal:attributes="href string:${site/url}"
+               tal:content="string:${site/url}"></a>
+        </tal:loop>
+    </div>
+
+    <tal:def tal:define="sub_contacts view/sub_contacts">
+      <div class="sub_contacts" tal:condition="sub_contacts">
+        <h3 i18n:translate="">Sub contacts</h3>
+        <span tal:repeat="sub_contact_type sub_contacts">
+          <h4 tal:content="sub_contact_type" />
+          <ul>
+            <li tal:repeat="sub_contact python: sub_contacts[sub_contact_type]">
+              <a tal:attributes="href sub_contact/getURL" tal:content="sub_contact/Title"></a>
+            </li>
+          </ul>
+        </span>
+      </div>
+    </tal:def>
+</metal:main>
+
+</body>
+</html>

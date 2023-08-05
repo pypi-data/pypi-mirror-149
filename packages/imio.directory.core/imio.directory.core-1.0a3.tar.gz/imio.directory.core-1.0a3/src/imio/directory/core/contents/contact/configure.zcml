@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <adapter factory=".serializer.SerializeContactToJson" />
+
+  <adapter
+      for=".content.Contact"
+      provides="imio.smartweb.common.interfaces.ICropping"
+      factory=".content.ContactCroppingProvider"
+      />
+
+  <!-- Custom add view and form - invoked from ++add++ traverser -->
+  <adapter
+      for="Products.CMFCore.interfaces.IFolderish
+           imio.directory.core.interfaces.IImioDirectoryCoreLayer
+           plone.dexterity.interfaces.IDexterityFTI"
+      provides="zope.publisher.interfaces.browser.IBrowserPage"
+      factory=".forms.ContactCustomAddView"
+      name="imio.directory.Contact"
+      />
+  <class class=".forms.ContactCustomAddView">
+      <require
+          permission="cmf.AddPortalContent"
+          interface="zope.publisher.interfaces.browser.IBrowserPage"
+          />
+  </class>
+
+  <!-- Custom edit view -->
+  <browser:page
+      for="imio.directory.core.contents.IContact"
+      name="edit"
+      class=".forms.ContactCustomEditView"
+      permission="cmf.ModifyPortalContent"
+      layer="imio.directory.core.interfaces.IImioDirectoryCoreLayer"
+      />
+
+  <browser:page
+      name="view"
+      for="imio.directory.core.contents.IContact"
+      template="view.pt"
+      class=".view.ContactView"
+      permission="zope2.View"
+      layer="imio.directory.core.interfaces.IImioDirectoryCoreLayer"
+      />
+
+</configure>

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    name="imio.directory.Contact"
+    meta_type="Dexterity FTI"
+    i18n:domain="imio.smartweb">
+
+  <!-- Basic properties -->
+  <property
+      i18n:translate=""
+      name="title">Contact</property>
+  <property
+      i18n:translate=""
+      name="description">Contact content type</property>
+
+  <property name="icon_expr"></property>
+
+  <!-- Hierarchy control -->
+  <property name="global_allow">False</property>
+  <property name="filter_content_types">True</property>
+  <property name="allowed_content_types">
+    <element value="imio.directory.Contact" />
+    <element value="Image" />
+    <element value="File" />
+  </property>
+  <!-- Schema, class and security -->
+  <property name="add_permission">imio.directory.core.AddContact</property>
+  <property name="klass">imio.directory.core.contents.Contact</property>
+  <property name="schema">imio.directory.core.contents.IContact</property>
+
+  <!-- Enabled behaviors -->
+  <property name="behaviors" purge="true">
+    <element value="plone.basic"/>
+    <element value="plone.locking"/>
+    <element value="plone.leadimage"/>
+    <element value="plone.imagecropping"/>
+    <element value="geolocatable"/>
+    <element value="collective.schedulefield.behavior.IMultiScheduledContent"/>
+    <element value="collective.schedulefield.behavior.IExceptionalClosureContent"/>
+    <element value="collective.taxonomy.generated.contact_category"/>
+    <element value="imio.smartweb.topics"/>
+    <element value="imio.smartweb.iam"/>
+    <element value="plone.categorization"/>
+  </property>
+
+  <!-- View information -->
+  <property name="default_view">view</property>
+  <property name="default_view_fallback">False</property>
+  <property name="immediate_view">view</property>
+  <property name="view_methods">
+    <element value="view"/>
+  </property>
+
+</object>
