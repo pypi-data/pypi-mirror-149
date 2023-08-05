@@ -1,0 +1,102 @@
+Metadata-Version: 2.1
+Name: managedtenants-cli
+Version: 1.24.2
+Summary: A CLI tool commonly used by MT-SRE projects at Red Hat
+Home-page: https://github.com/mt-sre/managed-tenants-cli
+Author: Red Hat Managed Tenants SRE Team
+Author-email: sd-mt-sre@redhat.com
+License: Apache-2.0
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.9
+Requires-Dist: Jinja2 (~=2.10)
+Requires-Dist: markupsafe (~=2.0.1)
+Requires-Dist: PyYAML (~=5.4.1)
+Requires-Dist: jsonschema (~=3.1)
+Requires-Dist: requests (~=2.23)
+Requires-Dist: sretoolbox (~=1.2.4)
+Requires-Dist: semver (~=2.13.0)
+Requires-Dist: python-gitlab (~=2.6)
+Requires-Dist: checksumdir (~=1.2)
+Requires-Dist: docker (~=5.0.3)
+
+# Managed Tenants CLI
+
+A CLI tool commonly used by MT-SRE projects at Red Hat.
+
+## Usage
+
+### Available subcommands
+
+| Subcommand       | Description                                                                        |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| `load`           | Loads the addons inventory                                                         |
+| `run`            | Runs the task                                                                      |
+| `tasks_reference` | [path:search] "path" for the directory or file and "search" string to filter tasks |
+
+### Available flags
+
+| Flag                 | Description                            |
+| -------------------- | -------------------------------------- |
+| `-v` or `--version`  | CLI version                            |
+| `--environment`      | Target environment                     |
+| `--addon-name`        | Load only a given addon                |
+| `--addons-dir`        | [path] "path" for the addons directory |
+| `--ocm-api`          | Override the environments in OCM API   |
+| `--ocm-api-insecure` | Allow Insecure connections to OCM API  |
+
+## Install
+
+From PyPI:
+
+```bash
+$ pip install managedtenants_cli
+```
+
+From source:
+
+```bash
+$ python setup.py install
+```
+
+## Develop
+
+Install `pre-commit` hooks:
+```bash
+$ pre-commit install
+```
+
+Install the development requirements:
+
+```bash
+$ make develop
+```
+
+Run the code checks:
+
+```bash
+$ make check
+```
+
+Run the tests:
+
+```bash
+$ make test
+```
+
+## Release
+
+Edit the VERSION file and change the new version. Submit a pull request to master. When it is merged, create a tag and push it to app-sre/sretoolbox.
+
+This will trigger a CI job that will publish the package on pypi.
+
+## License
+
+The default license of the code in this repository is [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0). That applies for most of the code here, as they were written from scratch, but exceptions exist. In any case, each module carries the corresponding licensing information.
+
+
