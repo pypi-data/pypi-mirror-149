@@ -1,0 +1,151 @@
+#!/bin/bash
+
+testdir="$(dirname "$(readlink -f "$0")")"
+
+export PATH="$testdir/../${PATH+:$PATH}"
+
+tests="
+    dockerfile
+    docker-cmd
+    docker-entrypoint
+    docker-labels
+    macros
+    macros-cmdline
+    macros-from
+    macros-short
+    minimal-dockerfile
+    multispec
+    non-ascii-chars
+    pkginstaller
+    no-spec
+    keep-block-whitespaces
+"
+
+success=:
+fail()
+{
+    success=false
+    echo "$@" >&2
+}
+
+
+output_equals_stdout()
+{
+    local wd="$testdir/SAMPLE"
+    local rv=0
+    echo "testing: 'dg --output out' matches 'dg > out'"
+    for i in "rhel-7-x86_64.yaml"; do
+        local cmd="dg --projectdir '$wd' \
+           --distro '$i' \
+           --spec '$wd/test.yaml' \
+           --template '$wd/test.tpl'"
+
+        eval "$cmd --output '$wd/.output'"
+        eval "$cmd > '$wd/.stdout'"
+
+        diff "$wd"/.{output,stdout} \
+            || fail "--output differs from stdout"
+    done
+}
+
+
+can_load_relative_paths()
+{
+    local wd="$testdir/SAMPLE"
+    echo "testing: pass template by relative path"
+    local cmd="cd $wd/subdir && \
+       dg --projectdir '$wd' \
+       --distro 'rhel-7-x86_64.yaml' \
+       --spec '../test.yaml' \
+       --template '../test.tpl'"
+
+    eval "$cmd > /dev/null"
+    [ $? -eq 0 ] || \
+        fail "failed to pass template by relative path"
+}
+
+respects_umask()
+{
+
+    local wd="$testdir/SAMPLE"
+    local orig_umask=`umask`
+    echo "testing: dg respects umask"
+    for i in 0000,-rw-rw-rw- 0002,-rw-rw-r--; do
+        IFS="," read mask bits <<< $i
+        umask $mask
+        local cmd="dg --projectdir '$wd' \
+           --distro 'rhel-7-x86_64.yaml' \
+           --spec '$wd/test.yaml' \
+           --template '$wd/test.tpl' \
+           --output '$wd/.output'"
+
+        eval "$cmd"
+	perm_bits=`stat -c "%A" $wd/.output`
+	[ "$perm_bits" == "$bits" ] || \
+            fail "umask not respected"
+    done
+}
+
+
+for i in $tests; do
+    wd="$testdir/$i"
+    echo "testing: $wd"
+    rm -rf "$wd/test.err" "$wd/test.out" "$wd/test.diff"
+
+    first=:
+    dg_success=:
+    while read distro ; do
+        # clear args
+        set dummy ; shift
+
+        outfile="$wd/test.out"
+        if $first; then
+            first=false
+        else
+            echo -e "\n" >> "$outfile"
+        fi
+
+        echo -e "=== $distro ===\n" >> "$outfile"
+
+        test -f "$wd/container_opt" && set dummy --container `cat "$wd/container_opt"`
+        shift
+        additional_opts=
+        test -f "$wd/dg-opts" && additional_opts=`cat "$wd/dg-opts"`
+        eval set dummy '$@' "$additional_opts" && shift
+
+        spec_opts=()
+        multispec_opts=()
+        test -f "$wd/test.yaml" && spec_opts=(--spec "$wd/test.yaml")
+        test -f "$wd/multispec.yaml" && \
+          multispec_opts=(--multispec "$wd/multispec.yaml" \
+                          --multispec-selector version=2.4)
+
+        PYTHON=${PYTHON}                                \
+        dg  --projectdir    "$wd"                       \
+            --distro        "$distro"                   \
+            ${spec_opts[@]}                             \
+            ${multispec_opts[@]}                        \
+            --template      "$wd/test.tpl"              \
+            "$@"                                        \
+        >> "$outfile"
+
+        if test $? -ne 0; then
+            dg_success=false
+            break
+        fi
+    done < <(cat "$wd/distros")
+
+    $dg_success || {
+        fail "test '$i' failed (dg command)'"
+        continue
+    }
+
+    diff -ruN "$wd/test.exp" "$wd/test.out" > "$wd/test.diff" 2>> "$wd/test.err" \
+        || { fail "test '$i' failed (diff)'" ; continue ; }
+done
+
+output_equals_stdout
+can_load_relative_paths
+respects_umask
+
+$success && echo "success"

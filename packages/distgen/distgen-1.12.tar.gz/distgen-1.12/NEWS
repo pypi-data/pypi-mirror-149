@@ -1,0 +1,176 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.12:
+
+* Added support for CentOS Stream 8
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.11:
+
+* CentOS Stream is separated from CentOS distro
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.10:
+
+* Preferably using 'unittest.mock' than third-party 'mock' for testing
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.9:
+
+* Fixed detection of OS/RELEASE on Fedora 35+
+
+* Added Fedora 36 and 35 configuration
+
+* Added CentOS Stream 9 configuration
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.8:
+
+* Spec file fix for FTBFS issue on Fedora.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.7:
+
+* New features:
+
+  - Added 'fedora-34' config, and rawhide moved to 'fedora-35'.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.6:
+
+* New features:
+
+  - Added 'fedora-33' config, and rawhide moved to 'fedora-34'.
+  - Added 'centos-8-x86_64' config
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.5:
+
+* New features:
+
+  - Added 'fedora-32' config, and rawhide moved to 'fedora-33'.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.4:
+
+* New features:
+
+  - Added 'fedora-31' config, and rawhide moved to 'fedora-32'.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.3:
+
+* New features:
+
+  - Added 'fedora-30' config, and rawhide moved to 'fedora-31'.
+
+  - Compatibility fixes for new PyYAML 5.1.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.2:
+
+* New features
+
+  - Added 'fedora-29' and 'fedora-30' dist config.
+
+  - The distconf 'fedora-rawhide-x86_64' now uses value 'fedora:rawhide'
+    for 'docker.from', instead of 'fedora:NN'.
+
+  - The 'combination_extras' member in matrix section of 'multipec' allow
+    to list extras, mapping of key-value pairs, which are only added to the
+    specific distro and version combination.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.1:
+
+* Bugfixes:
+
+  - fix pip installation and 'python setup.py install --user', #69
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 1.0:
+
+* Incompatible changes
+
+  - The 'trim_blocks' and 'lstrip_blocks' jinja2 options are enabled by
+    default for more convenient white-space maintenance.  The macros blocks
+    (conditions, loops, etc.) can look like '{% .. %}' instead of '{%- -%}'
+    in most cases.  This might require updating the templates (if
+    whitespaces matters) or using --keep-block-whitespaces to use the
+    old behavior.
+
+* New features
+
+  - Added option '--version'.
+
+  - Added 'centos-6-x86_64' and 'rhel-8-x86_64' dist config.
+
+  - When the --distro flag is not specified, 'dg' newly automatically
+    detects the underlying distribution for the defaults, instead of
+    instantiating the templates artificially for 'fedora-21-x86_64'.
+
+  - The --distro flag accepts arguments both with/without ".yaml" suffix.
+
+  - Error output is printed out consistently through fatal() to stderr.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 0.20:
+
+* New features
+
+  - Recursive re-rendering is done only for specs, not for the whole
+    template (performance, step towards having a library), PR#64.
+
+  - Recursive re-rendering is enabled by default, with default 32 passes.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 0.19:
+
+  - Template files can be specified also with relative path.
+
+  - Files created through '--output' option are created according to the
+    umask setup.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 0.18:
+
+* Bugfixes
+
+  - Lint fixes.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 0.17:
+
+* New features
+
+  - Started shipping 'dg.1' manual page.
+
+* Bugfixes
+
+  - Distconf update for docker registries.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+New in 0.16:
+
+* New features
+
+  - recursive re-rendering, disabled by default (PR#41)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
