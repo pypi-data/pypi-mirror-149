@@ -1,0 +1,28 @@
+"""Contains synchronous methods for accessing the API"""
+
+from . import (
+    about,
+    assignment,
+    auto_test,
+    comment,
+    course,
+    course_price,
+    file,
+    git_provider,
+    group,
+    group_set,
+    login_link,
+    lti,
+    notification,
+    oauth_provider,
+    permission,
+    plagiarism,
+    site_settings,
+    snippet,
+    submission,
+    task_result,
+    tenant,
+    transaction,
+    user,
+    user_setting,
+)
