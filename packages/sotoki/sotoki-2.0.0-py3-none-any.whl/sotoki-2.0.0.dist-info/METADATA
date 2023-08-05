@@ -1,0 +1,83 @@
+Metadata-Version: 2.1
+Name: sotoki
+Version: 2.0.0
+Summary: Turn StackExchange dumps into ZIM files for offline usage
+Home-page: https://github.com/openzim/sotoki
+Author: Kiwix
+Author-email: contact+dev@kiwix.org
+License: GPLv3+
+Keywords: kiwix zim offline stackechange stackoverflow
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.9
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: kiwixstorage (<1.0,>=0.8.1)
+Requires-Dist: pif (<0.9,>=0.8.2)
+Requires-Dist: libzim (<1.1,>=1.0.0)
+Requires-Dist: zimscraperlib (<1.5,>=1.4.0)
+Requires-Dist: xml-to-dict (<0.2,>=0.1.6)
+Requires-Dist: cli-formatter (<1.3,>=1.2.0)
+Requires-Dist: py7zr (<0.17,>=0.16.1)
+Requires-Dist: python-slugify (<6.0,>=5.0.2)
+Requires-Dist: jinja2 (<3.1,>=3.0.1)
+Requires-Dist: redis (<3.6,>=3.5.3)
+Requires-Dist: beautifulsoup4 (<5.0,>=4.9.3)
+Requires-Dist: lxml (<4.7,>=4.6.3)
+Requires-Dist: jinja2-pluralize (<0.4,>=0.3.0)
+Requires-Dist: tld (<0.13,>=0.12.6)
+Requires-Dist: mistune (<2.1,>=2.0.0rc1)
+Requires-Dist: python-dateutil (<2.9,>=2.8.2)
+Requires-Dist: psutil (<5.9,>=5.8.0)
+Requires-Dist: python-snappy (<1.0,>=0.6.0)
+Requires-Dist: bidict (<0.22,>=0.21.2)
+Requires-Dist: cchardet (<2.2,>=2.1.7)
+
+Sotoki
+========
+
+`sotoki` (*stackoverflow to kiwix*) is an [OpenZIM](https://github.com/openzim) scraper to create offline versions of [Stack Exchange](https://stackexchange.com) websites such as [stack overflow](https://stackoverflow.com/).
+
+It is based on Stack Exchange's Data Dumps hosted by [The Internet Archive](https://archive.org/download/stackexchange/).
+
+[![CodeFactor](https://www.codefactor.io/repository/github/openzim/sotoki/badge)](https://www.codefactor.io/repository/github/openzim/sotoki)
+[![Docker](https://img.shields.io/docker/v/openzim/sotoki?label=docker&sort=semver)](https://hub.docker.com/r/openzim/sotoki)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/sotoki.svg)](https://pypi.org/project/sotoki/)
+
+## ⚠️ Warning
+
+`sotoki` is undergoing a major rewrite to use libzim7 and its python binding in order to bypass filesystem limitations seen in version `1.x`. Use tagged version until this warning is removed as **current master is not-functionnal**.
+
+## Usage
+
+`sotoki` works off a `domain` that you must provide. That is the domain-name of the stackexchange website you want to scrape. Run `sotoki --list-all` to get a list of those
+
+**Note**: when running off the git repository, you'll need to download a few external dependencies that we pack in Python releases. Just run `python src/sotoki/dependencies.py`
+
+### Docker
+
+```bash
+docker run -v my_dir:/output openzim/sotoki sotoki --help
+```
+
+### Virtualenv
+
+`sotoki` is a Python3 software. If you are not using the [Docker](https://docker.com) image, you are advised to use it in a virtual environment to avoid installing software dependencies on your system.
+
+```bash
+python3 -m venv env      # Create virtualenv
+source env/bin/Activate  # Activate the virtualenv
+pip3 install sotoki # Install dependencies
+sotoki --help       # Display kolibri2zim help
+```
+
+Call `deactivate` to quit the virtual environment.
+
+See `requirements.txt` for the list of python dependencies.
+
+
+
