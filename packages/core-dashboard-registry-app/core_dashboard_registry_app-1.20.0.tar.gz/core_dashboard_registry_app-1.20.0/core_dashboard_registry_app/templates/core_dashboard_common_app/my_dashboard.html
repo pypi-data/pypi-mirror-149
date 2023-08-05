@@ -1,0 +1,94 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+{% load special_plural %}
+
+{% block box_title %}
+
+    {% if data.title %}
+        {{data.title}}
+    {% else %}
+        {% if come_from_admin %} {{ data.document|title|special_plural}} list {% else %} My {{data.document|special_plural}} {% endif %}
+    {% endif %}
+
+{% endblock %}
+
+
+{% block box_tools %}
+    {% if data.create_workspace %}
+    <a class="m-3 btn btn-secondary create-workspace-btn">
+        <i class="fas fa-file-alt"></i> Create workspace
+    </a>
+    {% endif %}
+
+    {% if data.title %}
+        <a href="#" class="m-3 btn btn-secondary back-to-previous">
+             <i class="fas fa-arrow-left"></i> Previous page
+        </a>
+    {% endif %}
+{% endblock %}
+
+
+{% block box_body %}
+
+{% if data.user_data %}
+    Total number of {{data.document|special_plural}}: {{ data.number_total }}
+{% endif %}
+
+    {% if data.menu and not data.title %}
+        <div class="dropdown" id="id_actions" style="display:none">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Choose action
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for value, text in data.action_form.fields.actions.choices %}
+                    <li style="cursor:  pointer;" onclick="action_dashboard({{value}});">{{text}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if data.resources %}
+        {% include 'core_main_registry_app/resource_banner/resource_banner.html' %}
+        <ul class="nav nav-tabs">
+            <li class="nav-item pointer">
+            {% if data.ispublished == None %}
+                <a class="nav-link active" onclick="get_url('None', '');">All</a>
+            {%else%}
+                <a class="nav-link" onclick="get_url('None', '');">All</a>
+            {% endif%}
+
+            </li>
+            <li class="nav-item pointer">
+            {% if data.ispublished == 'true' %}
+                <a class="nav-link active" onclick="get_url('true', '');">Published</a>
+            {%else%}
+                <a class="nav-link" onclick="get_url('true', '');">Published</a>
+            {% endif%}
+            </li>
+            <li class="nav-item pointer">
+            {% if data.ispublished == 'false' %}
+                <a class="nav-link active" onclick="get_url('false', '');">Not Published</a>
+            {%else%}
+                    <a class="nav-link" onclick="get_url('false', '');">Not Published</a>
+            {% endif%}
+            </li>
+            <li id="draft" class="nav-item pointer">
+            {% if data.ispublished == 'draft' %}
+                <a class="nav-link active" onclick="get_url('draft', '');">Drafts</a>
+            {%else%}
+                <a class="nav-link" onclick="get_url('draft', '');">Drafts</a>
+            {% endif%}
+            </li>
+        </ul>
+    {% endif %}
+
+    <div class="tab-content">
+        {% if data.user_data %}
+            {% include data.template with objects=data.user_data group='user' %}
+        {% else %}
+            No {{data.document|special_plural}} found.
+        {% endif %}
+    </div>
+{% endblock %}
+
+

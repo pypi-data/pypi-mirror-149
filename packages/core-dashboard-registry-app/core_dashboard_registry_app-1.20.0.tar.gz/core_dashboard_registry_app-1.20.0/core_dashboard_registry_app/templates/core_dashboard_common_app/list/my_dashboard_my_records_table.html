@@ -1,0 +1,112 @@
+{% load dict_key_extras %}
+{% load draft_extras %}
+{% load timestamptags %}
+
+<thead>
+    {% if data.menu and not data.title %}
+        <th> <input type="checkbox" id="select_all_{{group}}" onchange="selectAll(this, '{{group}}')"> </th>
+    {% endif %}
+    <th>Name</th>
+    <th>Role</th>
+    <th>Last Modification date</th>
+    {% if data.username_list %}
+        <th>User</th>
+    {% endif %}
+    {% if not data.title%}
+        <th>Workspace</th>
+    {% endif %}
+    <th>Actions</th>
+    <th>Status</th>
+</thead>
+<tbody>
+    {% for data_loaded in objects %}
+        <tr objectid="{{data_loaded.data.id}}">
+            {% if data.menu and not data.title %}
+            <td id="actionCheckbox_{{forloop.counter}}">
+                <input type="checkbox" id={{data_loaded.data.id}} name={{group}}>
+            </td>
+            {% endif %}
+            <td>
+                {{ data_loaded.data.title }}{% if data_loaded.data|has_draft:request.user %},<text class="text-danger">&nbsp;Draft</text>{% endif %}
+            </td>
+            <td>
+                {{ data_loaded.data_role }}
+            </td>
+            <td>
+                {{ data_loaded.data.last_modification_date|print_datetime_utc_unaware }}
+            </td>
+            {% if data.username_list %}
+            <td>
+                {% with key=data_loaded.data.user_id %}
+                  {{ data.username_list|get:key }}
+                {% endwith %}
+            </td>
+            {% endif %}
+            {% if not data.title%}
+            <td>
+                {% if data_loaded.data.workspace %}
+                    {{ data_loaded.data.workspace.title }}
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>
+                {% if data_loaded.can_read %}
+                    <a class="btn btn-secondary view-record-btn">
+                        <i class="far fa-file-alt"></i> View
+                    </a>
+                {% endif %}
+                {% if data_loaded.can_write %}
+                    <a class="btn btn-secondary edit-record-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    {% if data_loaded.can_change_workspace %}
+                        <a class="btn btn-secondary assign-workspace-record-btn">
+                            <i class="fas fa-folder"></i> Change workspace
+                        </a>
+                    {% endif %}
+                {% endif %}
+                {% if data_loaded.is_owner %}
+                    <a class="btn btn-secondary change-owner-btn">
+                        <i class="fas fa-user-circle"></i> Change Owner
+                    </a>
+                {% endif %}
+                {% if data_loaded.can_set_public %}
+                    <a class="btn btn-secondary publish-record-btn">
+                        <i class="fas fa-share-alt"></i> Publish
+                    </a>
+                {% endif %}
+            </td>
+            <td class="status-cell-admin">
+                <span class="float-right dropdown">
+                    {% if data_loaded.data_status == data_loaded.data_status_values.ACTIVE  %}
+                        <span data-status="active" class="dropbtn status-active"></span>
+                    {% endif %}
+                    {% if data_loaded.data_status == data_loaded.data_status_values.INACTIVE  %}
+                        <span data-status="inactive" class="dropbtn status-inactive"></span>
+                    {% endif %}
+                    {% if data_loaded.data_status == data_loaded.data_status_values.DELETED  %}
+                        <span data-status="deleted" class="dropbtn status-deleted"></span>
+                    {% endif %}
+                  <div class="dropdown-content">
+                      <a data-status="active" class="switch font-active">Active</a>
+                      <a data-status="inactive" class="switch font-inactive">Inactive</a>
+                        {% if data_loaded.data.workspace.is_public %}
+                            <a data-status="deleted" class="switch font-deleted">Deleted</a>
+                        {% endif %}
+                  </div>
+                </span>
+                {% if data_loaded.data_status == data_loaded.data_status_values.ACTIVE  %}
+                    <span class="float-right label-status font-active">Active</span>
+                {% endif %}
+                {% if data_loaded.data_status == data_loaded.data_status_values.INACTIVE  %}
+                    <span class="float-right label-status font-inactive">Inactive</span>
+                {% endif %}
+                {% if data_loaded.data_status == data_loaded.data_status_values.DELETED  %}
+                    <span class="float-right label-status font-deleted">Deleted</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
