@@ -1,0 +1,11 @@
+{% if labels|length > 1 %}
+    {% with menuId='dropdownMenuLabel', menuText='Response', values=labels, menuDivVisible='explain-all' %}
+        {% include "dropdown.html" %}
+    {% endwith %}
+{% else %}
+{% endif %}
+{% for label in labels %}
+    <div class="row" id="explain-all-div-{{ label['name'] }}" style="{% if label['index'] != 0 %}display:none;{% endif %} margin-right:5px; margin-left:5px; margin-top:5px;">
+        {{ label['feature_importance_plot'] }}
+            </div>
+{% endfor %}
