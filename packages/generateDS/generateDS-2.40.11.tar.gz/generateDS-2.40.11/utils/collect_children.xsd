@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
+
+    <xsd:element name="container" type="containerType"/>
+
+    <xsd:complexType name="containerType">
+        <xsd:choice>
+            <xsd:element name="field1" type="xsd:integer"/>
+            <xsd:element name="field1A" type="xsd:integer"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="field2" type="xsd:string"/>
+            <xsd:element name="field2A" type="xsd:string"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="field3" type="plantType"/>
+            <xsd:element name="field3A" type="plantType"
+                minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="plantType">
+        <xsd:sequence>
+            <xsd:element name="plantname" type="xsd:string"/>
+            <xsd:element name="plantcolor" type="xsd:integer"/>
+            <xsd:element name="plantcolorA" type="xsd:integer"
+                minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>
+

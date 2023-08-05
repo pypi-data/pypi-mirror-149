@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="mailbox" type="mailboxType"/>
+
+    <xs:complexType name="mailboxType">
+        <xs:sequence>
+            <xs:element name="owner" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <!-- We store all multi-valued instances of simple types
+                 and any xs:simpleType derived from them
+                 as JSON arrays in a Django models CharField.
+             -->
+            <!-- A list of integer values.  Store as a JSON array. -->
+            <xs:element name="codes" type="xs:integer"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <!-- A list of float values.  Store as a JSON array. -->
+            <xs:element name="average_load" type="xs:float"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <!-- A list of string values.  Store as a JSON array. -->
+            <xs:element name="tags" type="xs:string"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="messages" type="messageType"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="backup_messages" type="messageType"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="secure_messages" type="secureMessageType"
+                minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="configuration" type="configurationType"
+                minOccurs="1" maxOccurs="1"/>
+            <!--
+            <xs:element name="altconfiguration" type="minConfigurationType"
+                minOccurs="1" maxOccurs="1"/>
+            -->
+        </xs:sequence>
+        <xs:attribute name="priority" type="xs:integer"/>
+        <xs:attribute name="division" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="messageType">
+        <xs:sequence>
+            <xs:element name="from" type="xs:string"/>
+            <xs:element name="to" type="xs:string"/>
+            <xs:element name="subject" type="xs:string"/>
+            <xs:element name="body" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="secureMessageType">
+        <xs:sequence>
+            <xs:element name="from" type="xs:string"/>
+            <xs:element name="to" type="xs:string"/>
+            <xs:element name="subject" type="xs:string"/>
+            <xs:element name="body" type="xs:string"/>
+            <xs:element name="securitylevel" type="xs:integer"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="configurationType">
+        <xs:sequence>
+            <xs:element name="warninglevel" type="warningLevelType"/>
+            <xs:element name="spamcheck" type="xs:integer"/>
+            <xs:element name="granularity" type="xs:float"/>
+            <xs:element name="color" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="altwarninglevel" type="warningLevelType"/>
+        <xs:attribute name="from" type="warningLevelType"/>
+    </xs:complexType>
+    
+    <xs:complexType name="minConfigurationType">
+        <xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="altwarninglevel" type="warningLevelType"/>
+        <xs:attribute name="from" type="warningLevelType"/>
+    </xs:complexType>
+    
+    <xs:simpleType name="warningLevelType">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="9"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+</xs:schema>

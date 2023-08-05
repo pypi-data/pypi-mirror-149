@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+		xmlns="http://example.com/valueof.xsd" 
+		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://example.com/valueof.xsd" 
+		elementFormDefault="qualified" 
+		attributeFormDefault="unqualified">
+	<xsd:element name="root">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="child" minOccurs="1" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+								<xsd:attribute name="name" type="xsd:string" use="required"/>
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: genericRailML.xsd 667 2016-03-09 14:55:32Z christian.rahmig $ -->
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    elementFormDefault="unqualified" 
+    >
+
+    <xs:element name="container" type="containerType"/>
+    <xs:complexType name="containerType">
+        <xs:sequence>
+            <xs:element name="geoData" type="tGeoData"
+                minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="tGeoData">
+        <xs:sequence>
+            <xs:element name="coordChild" type="tDoubleListRestriction"
+                minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="extraHeight" type="xs:double" />
+        <xs:attribute name="extraData" type="tFloat" />
+        <xs:attribute name="doubleListData" type="tDoubleListRestriction" use="required" />
+        <xs:attribute name="integerListData" type="tIntegerListRestriction" />
+        <xs:attribute name="floatListData" type="tFloatListRestriction" />
+        <xs:attribute name="dateTimeListData" type="tDateTimeListRestriction" />
+        <xs:attribute name="dateListData" type="tDateListRestriction" />
+        <xs:attribute name="timeListData" type="tTimeListRestriction" />
+        <xs:attribute name="booleanListData" type="tBooleanListRestriction" />
+    </xs:complexType>
+
+    <xs:simpleType name="tDoubleList">
+        <xs:list itemType="xs:double" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tDoubleListRestriction">
+        <xs:restriction base="tDoubleList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tIntegerList">
+        <xs:list itemType="xs:integer" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tIntegerListRestriction">
+        <xs:restriction base="tIntegerList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tFloatList">
+        <xs:list itemType="xs:float" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tFloatListRestriction">
+        <xs:restriction base="tFloatList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tDateTimeList">
+        <xs:list itemType="xs:dateTime" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tDateTimeListRestriction">
+        <xs:restriction base="tDateTimeList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tDateList">
+        <xs:list itemType="xs:date" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tDateListRestriction">
+        <xs:restriction base="tDateList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tTimeList">
+        <xs:list itemType="xs:time" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tTimeListRestriction">
+        <xs:restriction base="tTimeList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tBooleanList">
+        <xs:list itemType="xs:boolean" />
+    </xs:simpleType>
+
+    <xs:simpleType name="tBooleanListRestriction">
+        <xs:restriction base="tBooleanList">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="tFloat">
+        <xs:restriction base="xs:float">
+            <xs:minInclusive value="1.0" />
+            <xs:maxInclusive value="3.99" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
