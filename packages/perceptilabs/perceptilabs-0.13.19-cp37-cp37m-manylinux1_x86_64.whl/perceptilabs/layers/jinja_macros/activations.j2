@@ -1,0 +1,17 @@
+{% macro activation_function(name, input_var, assigned_var) %}
+{% filter remove_lspaces(8) %}
+    {% if name == 'Sigmoid' %}
+        {{assigned_var}} = tf.nn.sigmoid({{input_var}})
+    {% elif name == 'ReLU' %}
+        {{assigned_var}} = tf.nn.relu({{input_var}})
+    {% elif name == 'Tanh' %}
+        {{assigned_var}} = tf.nn.tanh({{input_var}})
+    {% elif name == 'LeakyReLU' %}
+        {{assigned_var}} = tf.nn.leaky_relu({{input_var}})
+    {% elif name == 'Softmax' %}
+        {{assigned_var}} = tf.nn.softmax({{input_var}})
+    {% elif (name == 'None') or (name == none) %}
+        {{assigned_var}} = {{input_var}}    
+    {% endif %}
+{% endfilter %}
+{% endmacro %}

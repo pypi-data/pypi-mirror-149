@@ -1,0 +1,50 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+
+
+{% macro layer_tfmodel(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def call(self, inputs, training=True):
+        """ Takes a tensor and sends it as input to the loaded tensorflow model."""
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8) }}           
+        input_ = inputs['input']
+        {% call indented_if(not layer_spec.trainable) %}
+            output = self.model(input_, training=False)
+        {% endcall %} 
+        {% call indented_if(layer_spec.trainable) %}
+            output = self.model(input_, training=training)
+        {% endcall %}
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'preview': 'output'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+
+    def build(self, input_shape):
+        """ Called by the Keras framework upon the first invocation of the call method """        
+        handle = "{{layer_spec.url}}"
+        self.model = hub.KerasLayer(handle=handle, trainable={{layer_spec.trainable}})
+        self.kernel = 0 
+        self.bias = 0
+
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """    
+        return self.kernel, self.bias
+        
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+{% endmacro %}
+
