@@ -1,0 +1,12 @@
+_target_: "${resolve_hf_generation_module_on_transformer_model:${transformer_model}}"
+transformer_model: ${transformer_model}
+additional_special_tokens: []
+decoding_skip_special_tokens: True
+decoding_clean_up_tokenization_spaces: False
+optim_conf:
+  _target_: classy.optim.factories.RAdamFactory
+  lr: 1e-5
+  weight_decay: 0.01
+  no_decay_params:
+    - bias
+    - LayerNorm.weight
