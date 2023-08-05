@@ -1,0 +1,88 @@
+Metadata-Version: 2.1
+Name: ewoksjob
+Version: 0.0.3a0
+Summary: Asynchronous and distributed scheduling of Ewoks workflows from python
+Home-page: https://gitlab.esrf.fr/workflow/ewoks/ewoksjob/
+Author: ESRF
+Author-email: wout.de_nolf@esrf.fr
+License: MIT
+Project-URL: Source, https://gitlab.esrf.fr/workflow/ewoks/ewoksjob/
+Project-URL: Documentation, https://workflow.gitlab-pages.esrf.fr/ewoks/ewoksjob/
+Project-URL: Tracker, https://gitlab.esrf.fr/workflow/ewoks/ewoksjob/issues/
+Platform: UNKNOWN
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Provides-Extra: fullclient
+Provides-Extra: worker
+Provides-Extra: redis
+Provides-Extra: sqlalchemy
+Provides-Extra: test
+Provides-Extra: dev
+Provides-Extra: doc
+License-File: LICENSE.md
+
+# ewoksjob
+
+Utilities for job scheduling of [Ewoks](https://gitlab.esrf.fr/workflow/ewoks/ewoks) workflows.
+
+Ewoks has different interfaces to execute an ewoks workflow: python API, CLI, REST API, Qt GUI, Web GUI.
+
+Ewoksjob provides an ewoks interface for asynchronous and distributed scheduling of ewoks workflows from python.
+
+Note that ewoksjob distributes the execution of workflows while [ewoksdask](https://gitlab.esrf.fr/workflow/ewoks/ewoksdask)
+distributes the execution of tasks in a workflow. So in the context of workflows, job scheduling exists on two levels.
+
+The primary clients that need to schedule workflows are
+* [Ewoksserver](https://gitlab.esrf.fr/workflow/ewoks/ewoksserver): web backend for ewoks.
+* [Bliss](https://gitlab.esrf.fr/bliss/bliss): the ESRF beamline control system.
+* [Daiquiri](https://gitlab.esrf.fr/ui/daiquiri): web backend for Bliss.
+
+## Installation
+
+Install on the client side
+
+```bash
+pip install ewoksjob[fullclient]
+```
+
+The optional `fullclient` install option should be used when you want full client-side capabilities,
+for exampe dereference URL's of ewoks task results.
+
+Install on the worker side
+
+```bash
+pip install ewoksjob[worker]
+```
+
+## Tests
+
+```bash
+pytest --pyargs ewoksjob
+```
+
+The test environment needs `redis-server` (e.g. `conda install redis-server`).
+
+## Getting started
+
+Start a worker pool that can execute ewoks graphs
+
+```bash
+examples/worker.sh
+```
+
+Start a workflow on the client side
+
+```bash
+python examples/job.py
+```
+
+Adapt the three URL's as needed (ewoks events, celery message broker, celery job result storage).
+
+## Documentation
+
+https://ewoksjob.readthedocs.io/
+
+
