@@ -1,0 +1,51 @@
+Metadata-Version: 2.1
+Name: Outlog
+Version: 1.0.4
+Summary: Easy way to log data!.
+Home-page: https://github.com/zsendokame/outlog
+Author: Sendokame
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+# Outlog
+Outlog it's a library to make logging a simple task!.
+
+I'm a lazy python user, the times that i do logging on my apps it's hard to do, a lot of useless code just for print some things or saving to files.<br>
+**Really simple to use**.!
+
+# How-to Install
+```sh
+git clone https://github.com/zsendokame/outlog; cd outlog; pip install -e .
+# Or
+pip install outlog
+```
+
+# How-to Use
+This is a little tutorial!
+```py
+import outlog
+
+outlog.createLogger('logFile.log')
+outlog.save('logLevel', 'logMessage')
+
+outlog.log('logLevel', 'logMessage')
+'''
+Levels:
+debug
+info
+warn
+error
+critical
+'''
+
+@outlog.catch
+def functionWithAnError():
+    1 / 0
+'''
+[ 00:00:00 ] ERROR: There's an error with functionWithAnError() on line 3: division by zero
+'''
+
+print('And i still alive!')
+```
+
