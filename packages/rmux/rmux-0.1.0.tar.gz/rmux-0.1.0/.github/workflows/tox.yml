@@ -1,0 +1,191 @@
+name: tox
+
+on:
+  create:  # is used for publishing to PyPI and TestPyPI
+    tags:  # any tag regardless of its name, no branches
+    - "**"
+  push:  # only publishes pushes to the main branch to TestPyPI
+    branches:  # any integration branch but not tag
+    - "main"
+  pull_request:
+
+jobs:
+  linters:
+    name: ${{ matrix.env.TOXENV }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - "3.10"
+        os:
+        - ubuntu-latest
+        env:
+        - TOXENV: lint
+        - TOXENV: packaging
+    env:
+      TOX_PARALLEL_NO_SPINNER: 1
+      FORCE_COLOR: 1
+
+    steps:
+    - name: Check out src from Git
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # needed by setuptools-scm
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install tox
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install --upgrade tox
+    - name: Log installed dists
+      run: >-
+        python -m pip freeze --all
+    - name: >-
+        Initialize tox envs
+      run: >-
+        python -m
+        tox
+        --parallel auto
+        --parallel-live
+        --notest
+        --skip-missing-interpreters false
+        -vv
+      env: ${{ matrix.env }}
+    - name: Test with tox
+      run: |
+        python -m tox --parallel auto --parallel-live
+      env: ${{ matrix.env }}
+    - name: Archive logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: logs.zip
+        path: .tox/**/log/
+
+  unit:
+    name: ${{ matrix.tox_env }}@${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        # keep list sorted as it determines UI order too
+        - 3.8
+        - 3.9
+        - "3.10"
+        os:
+        # https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners
+        - ubuntu-latest
+        # - windows-latest
+        # - windows-2016
+        include:
+        - tox_env: py38
+          os: ubuntu-latest
+          python-version: 3.8
+          devel: true
+        - tox_env: py39
+          os: ubuntu-latest
+          python-version: 3.9
+          devel: true
+        - tox_env: py310
+          os: ubuntu-latest
+          python-version: "3.10"
+        - tox_env: py310
+          os: macOS-latest
+          python-version: "3.10"
+
+    env:
+      TOX_PARALLEL_NO_SPINNER: 1
+      FORCE_COLOR: 1
+
+    steps:
+    - name: MacOS workaround for https://github.com/actions/virtual-environments/issues/1187
+      if: ${{ matrix.os == 'macOS-latest' }}
+      run: |
+        sudo sysctl -w net.link.generic.system.hwcksum_tx=0
+        sudo sysctl -w net.link.generic.system.hwcksum_rx=0
+
+    - name: Enable ssh to localhost
+      run: |
+        set -ex
+        ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N ''
+        cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
+        ssh-keyscan localhost >> ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/id_ed25519
+        chmod 644 ~/.ssh/known_hosts
+        chmod 700 ~/.ssh
+        ssh -v localhost id
+
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # needed by setuptools-scm
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: >-
+        Log the currently selected Python
+        version info (${{ matrix.python-version }})
+      run: |
+        python --version --version
+        which python
+    # - name: Pip cache
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: ~/.cache/pip
+    #     key: ${{ runner.os }}-pip-${{ env.PY_SHA256 }}-${{ hashFiles('setup.cfg') }}-${{ hashFiles('tox.ini') }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('.pre-commit-config.yaml') }}-${{ hashFiles('pytest.ini') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-pip-
+    #       ${{ runner.os }}-
+    - name: Install tox
+      run: |
+        python3 -m pip install --upgrade tox
+    - name: Log installed dists
+      run: >-
+        python3 -m pip freeze --all
+    - name: >-
+        Initialize tox envs
+      run: >-
+        python3 -m
+        tox
+        --parallel auto
+        --parallel-live
+        --notest
+        --skip-missing-interpreters false
+        -vv
+      env:
+        TOXENV: py
+    - name: "Test with tox"
+      run: |
+        python3 -m tox
+      env:
+        TOXENV: py
+    - name: Archive logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: logs.zip
+        path: .tox/**/log/
+      # https://github.com/actions/upload-artifact/issues/123
+      continue-on-error: true
+    - name: Report junit failures
+      uses: shyim/junit-report-annotations-action@3d2e5374f2b13e70f6f3209a21adfdbc42c466ae
+      with:
+        path: .tox/junit.*.xml
+      if: always()
+
+  check:  # This job does nothing and is only used for the branch protection
+    if: always()
+
+    needs:
+    - linters
+    - unit
+
+    runs-on: Ubuntu-latest
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
