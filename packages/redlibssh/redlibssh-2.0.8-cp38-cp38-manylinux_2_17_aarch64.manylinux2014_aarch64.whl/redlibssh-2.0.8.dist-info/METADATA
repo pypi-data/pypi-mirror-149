@@ -1,0 +1,111 @@
+Metadata-Version: 2.1
+Name: redlibssh
+Version: 2.0.8
+Summary: Alternate bindings for libssh C library
+Home-page: https://github.com/Red-M/Redlibssh
+Author: Red_M
+Author-email: redlibssh_pypi@red-m.net
+License: LGPLv2.1
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: C
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: System :: Shells
+Classifier: Topic :: System :: Networking
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: POSIX :: BSD
+Classifier: Operating System :: MacOS :: MacOS X
+License-File: LICENSE
+License-File: COPYING
+Provides-Extra: tests
+Requires-Dist: coveralls ; extra == 'tests'
+Requires-Dist: pytest-cov ; extra == 'tests'
+Requires-Dist: bandit ; extra == 'tests'
+Requires-Dist: safety ; extra == 'tests'
+Requires-Dist: pylint ; extra == 'tests'
+
+redlibssh
+============
+
+Bindings for libssh_ C library.
+
+.. image:: https://coveralls.io/repos/github/Red-M/Redlibssh/badge.svg?branch=master
+   :target: https://coveralls.io/github/Red-M/Redlibssh?branch=master
+   :alt: Coverage
+.. image:: https://readthedocs.org/projects/redlibssh/badge/?version=latest
+   :target: http://redlibssh.readthedocs.org/en/latest/
+   :alt: Latest documentation
+.. image:: https://img.shields.io/pypi/v/redlibssh.svg
+   :target: https://pypi.python.org/pypi/redlibssh
+   :alt: Latest Version
+.. image:: https://img.shields.io/pypi/wheel/redlibssh.svg
+   :target: https://pypi.python.org/pypi/redlibssh
+.. image:: https://img.shields.io/pypi/pyversions/redlibssh.svg
+   :target: https://pypi.python.org/pypi/redlibssh
+.. image:: https://img.shields.io/badge/License-LGPL%20v2-blue.svg
+   :target: https://pypi.python.org/pypi/redlibssh
+   :alt: License
+
+
+Installation
+_____________
+
+Binary wheels are provided for Linux (manylinux 2010), OSX (10.14 and 10.15).
+
+Wheels have *no dependencies*.
+
+For building from source, see `documentation <https://redlibssh.readthedocs.io/en/latest/installation.html#building-from-source>`_.
+
+
+.. code-block:: shell
+
+   pip install redlibssh
+
+Pip may need to be updated to be able to install binary wheels.
+
+.. code-block:: shell
+
+   pip install -U pip
+   pip install redlibssh
+
+
+Quick Start
+_____________
+
+See `command execution script <https://github.com/Red-M/redlibssh/blob/master/examples/exec.py>`_ for complete example.
+
+Features
+_________
+
+The library uses `Cython`_ based native code extensions as wrappers to ``libssh``.
+
+* Thread safe - GIL released as much as possible
+
+  * libssh threading limitations apply - anything not supported in C is not supported in Python
+* Very low overhead thin wrapper
+* Object oriented
+
+  * Memory freed automatically and safely as objects are garbage collected by Python
+* Uses Python semantics where applicable
+
+  * channel/file handle context manager support
+  * channel/file handle iterator support
+* Raises low level C errors as Python exceptions
+
+
+.. _libssh: https://www.libssh.org
+.. _Cython: https://www.cython.org
+
+
