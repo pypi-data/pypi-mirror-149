@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: pylibao
+Version: 0.1.2
+Summary: Python library for accessing the Libao API
+Home-page: https://github.com/NCBM/pyao
+Author: HivertMoZara
+Author-email: worldmozara@gmail.com
+License: MIT
+Keywords: audio
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pyao
+
+Python libao interface.
+
+## Overview
+
+PyAO is a Python wrapper for libao. It provides a simple interface for playing audio data.
+
+## Installation
+
+```
+pip install pylibao
+```
+
+## Usage
+
+Here is a simple example:
+
+```python
+import pyao
+
+pyao.init()
+
+preset = pyao.presets.FMT_B16C2R44100LE
+
+with pyao.AO.open_live(pyao.get_default_driver_id(), preset) as ao:
+    ao.play(b'\x00\x01\x02\x03')  # play data
+
+pyao.shutdown()
+```
+
