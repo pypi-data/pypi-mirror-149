@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.results &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.results</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.results</h1><div class="highlight"><pre>
+<span></span><span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pandas.errors</span> <span class="kn">import</span> <span class="n">EmptyDataError</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">utilities to manage results</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="integrons_report"><a class="viewcode-back" href="../../developer_guide/api/results.html#integron_finder.results.integrons_report">[docs]</a><span class="k">def</span> <span class="nf">integrons_report</span><span class="p">(</span><span class="n">integrons</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param integrons: list of integrons used to generate a report</span>
+<span class="sd">    :type integrons: list of :class:`integron_finder.integron.Integron` object.</span>
+<span class="sd">    :return: a report off all integrons from a replicon</span>
+<span class="sd">    :rtype: :class:`pandas.DataFrame` object.</span>
+<span class="sd">            this datafame have following columns:</span>
+
+<span class="sd">            &quot;ID_integron&quot;, &quot;ID_replicon&quot;, &quot;element&quot;,</span>
+<span class="sd">            &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;strand&quot;, &quot;evalue&quot;,</span>
+<span class="sd">            &quot;type_elt&quot;, &quot;annotation&quot;, &quot;model&quot;,</span>
+<span class="sd">            &quot;type&quot;, &quot;default&quot;, &quot;distance_2attC&quot;, &quot;considered_topology&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">integrons_describe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">integrons</span><span class="p">])</span>
+    <span class="n">dic_id</span> <span class="o">=</span> <span class="p">{</span><span class="n">id_</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:02}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">id_</span> <span class="ow">in</span>
+              <span class="nb">enumerate</span><span class="p">(</span><span class="n">integrons_describe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ID_integron</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)}</span>
+    <span class="n">integrons_describe</span><span class="o">.</span><span class="n">ID_integron</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;integron_&quot;</span> <span class="o">+</span> <span class="n">dic_id</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">integrons_describe</span><span class="o">.</span><span class="n">ID_integron</span><span class="p">]</span>
+    <span class="n">integrons_describe</span> <span class="o">=</span> <span class="n">integrons_describe</span><span class="p">[[</span><span class="s2">&quot;ID_integron&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_replicon&quot;</span><span class="p">,</span> <span class="s2">&quot;element&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;type_elt&quot;</span><span class="p">,</span> <span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;distance_2attC&quot;</span><span class="p">,</span> <span class="s2">&quot;considered_topology&quot;</span><span class="p">]]</span>
+    <span class="n">integrons_describe</span><span class="p">[</span><span class="s1">&#39;evalue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">integrons_describe</span><span class="o">.</span><span class="n">evalue</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">integrons_describe</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">&quot;ID_integron&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">integrons_describe</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">integrons_describe</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">integrons_describe</span></div>
+
+
+<div class="viewcode-block" id="merge_results"><a class="viewcode-back" href="../../developer_guide/api/results.html#integron_finder.results.merge_results">[docs]</a><span class="k">def</span> <span class="nf">merge_results</span><span class="p">(</span><span class="o">*</span><span class="n">results_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param results_file: The path of the files to merge.</span>
+<span class="sd">                         The files can be parsed by pandas as DataFrame</span>
+<span class="sd">                         and have the same columns.</span>
+<span class="sd">                         It is used to merge the integrons files (.integrons)</span>
+<span class="sd">                         or summary files (.summary) from different replicons.</span>
+<span class="sd">    :type results_file: str</span>
+<span class="sd">    :return: all results aggregated in one :class:`pandas.DataFrame` object.</span>
+<span class="sd">             if there is no results to merge, return an empty DataFrame.</span>
+<span class="sd">    :rtype: a :class:`pandas.DataFrame` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;merging_results &quot;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results_file</span><span class="p">))</span>
+    <span class="n">all_res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">one_result</span> <span class="ow">in</span> <span class="n">results_file</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">one_result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">EmptyDataError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">all_res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">all_res</span><span class="p">:</span>
+        <span class="n">agg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">all_res</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">agg_results</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">or</span> <span class="n">agg_results</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="c1"># it&#39;s a summary file</span>
+            <span class="c1"># 4 fields old Integron finder</span>
+            <span class="c1"># 6 fields new Integron finder (2 new cols &#39;topology&#39; and &#39;size&#39;)</span>
+            <span class="n">agg_results</span> <span class="o">=</span> <span class="n">agg_results</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;ID_replicon&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">agg_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ID_integron&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_replicon&#39;</span><span class="p">,</span> <span class="s1">&#39;element&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;pos_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_end&#39;</span><span class="p">,</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="s1">&#39;evalue&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;type_elt&#39;</span><span class="p">,</span> <span class="s1">&#39;annotation&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                                            <span class="s1">&#39;distance_2attC&#39;</span><span class="p">,</span> <span class="s1">&#39;considered_topology&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">agg_results</span></div>
+
+
+<div class="viewcode-block" id="summary"><a class="viewcode-back" href="../../developer_guide/api/results.html#integron_finder.results.summary">[docs]</a><span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a summary of an integron report.</span>
+<span class="sd">    Count the number of &#39;CALIN&#39;, &#39;In0&#39; or &#39;complete&#39; for each replicon.</span>
+
+<span class="sd">    :param result: the integron to summarize</span>
+<span class="sd">    :return: a :class:`pandas.DataFrame` object.</span>
+<span class="sd">             with columns &#39;ID_replicon&#39;, &#39;ID_integron&#39;, &#39;complete&#39;, &#39;In0&#39;, &#39;CALIN&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dropped</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ID_integron&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_replicon&#39;</span><span class="p">])</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">([</span><span class="n">dropped</span><span class="o">.</span><span class="n">ID_replicon</span><span class="p">,</span> <span class="n">dropped</span><span class="o">.</span><span class="n">ID_integron</span><span class="p">],</span> <span class="n">dropped</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+    <span class="n">empty_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;CALIN&#39;</span><span class="p">,</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="s1">&#39;In0&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">empty_col</span> <span class="ow">in</span> <span class="n">empty_cols</span><span class="p">:</span>
+        <span class="n">summary</span><span class="p">[</span><span class="n">empty_col</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">summary</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">aggregate</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ID_replicon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">aggregate</span> <span class="o">=</span> <span class="n">aggregate</span><span class="o">.</span><span class="n">reindex</span><span class="p">([</span><span class="s1">&#39;CALIN&#39;</span><span class="p">,</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="s1">&#39;In0&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">aggregate</span></div>
+
+
+<div class="viewcode-block" id="filter_calin"><a class="viewcode-back" href="../../developer_guide/api/results.html#integron_finder.results.filter_calin">[docs]</a><span class="k">def</span> <span class="nf">filter_calin</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    filter integron report, remove &#39;CALIN&#39; integron where number of attC sites is lower than threshold.</span>
+
+<span class="sd">    :param result: the output of :func:`integrons_report`</span>
+<span class="sd">    :type result: :class:`pandas.dataFrame` object</span>
+<span class="sd">    :param int threshold: the integron CALIN with less attc site than *threshold* are removed</span>
+<span class="sd">    :return: filtered integron report</span>
+<span class="sd">    :rtype: :class:`pandas.dataFrame` object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#     In [87]: %%timeit</span>
+    <span class="c1">#     ...: d = pd.read_csv(&#39;Results_Integron_Finder_multi_fasta/multi_fasta.integrons&#39;, sep=&#39;\t&#39;)</span>
+    <span class="c1">#     ...: d.set_index([&#39;ID_integron&#39;, &#39;ID_replicon&#39;], inplace=True)</span>
+    <span class="c1">#     ...: idx = d[(d.type_elt==&#39;attC&#39;) &amp; (d.type==&#39;CALIN&#39;)].groupby(level=[&#39;ID_replicon&#39;, &#39;ID_integron&#39;]).filter(lambda x: x[&#39;type&#39;].size&lt;=1).index</span>
+    <span class="c1">#     ...: d.loc[d.index.difference(idx)].drop_duplicates()</span>
+    <span class="c1">#     ...:</span>
+    <span class="c1"># 10 loops, best of 3: 30.4 ms per loop</span>
+
+    <span class="c1"># In [88]: %%timeit</span>
+    <span class="c1">#     ...: d = pd.read_csv(&#39;Results_Integron_Finder_multi_fasta/multi_fasta.integrons&#39;, sep=&#39;\t&#39;)</span>
+    <span class="c1">#     ...: d[&#39;ID&#39;] = d.ID_replicon + &#39;_&#39; + d.ID_integron</span>
+    <span class="c1">#     ...: idx = d[(d.type_elt==&#39;attC&#39;) &amp; (d.type==&#39;CALIN&#39;)].groupby(&#39;ID&#39;).filter(lambda x: x[&#39;type&#39;].size&lt;2).ID</span>
+    <span class="c1">#     ...: d[~d.ID.isin(idx)]</span>
+    <span class="c1">#     ...:</span>
+    <span class="c1"># 100 loops, best of 3: 13.8 ms per loop</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">result</span><span class="p">[(</span><span class="n">result</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s1">&#39;attC&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;CALIN&#39;</span><span class="p">)]</span><span class="o">.</span>\
+        <span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ID_integron&#39;</span><span class="p">)</span><span class="o">.</span>\
+        <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">ID_integron</span>
+    <span class="n">filtered</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="o">~</span><span class="n">result</span><span class="o">.</span><span class="n">ID_integron</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">filtered</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

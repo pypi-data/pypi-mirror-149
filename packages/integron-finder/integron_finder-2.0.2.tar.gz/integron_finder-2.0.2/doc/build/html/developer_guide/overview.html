@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture Overview &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Integron_finder API Reference" href="api/index.html" />
+    <link rel="prev" title="Developer installation" href="dev_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Developer Guide</a> &raquo;</li>
+      <li>Architecture Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/developer_guide/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="architecture-overview">
+<span id="overview"></span><h1>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline"></a></h1>
+<section id="project-files-and-directories">
+<h2>Project files and directories<a class="headerlink" href="#project-files-and-directories" title="Permalink to this headline"></a></h2>
+<section id="files">
+<h3>Files<a class="headerlink" href="#files" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt>COPYING</dt><dd><p>The integron_finder licensing.</p>
+</dd>
+<dt>COPYRIGHT</dt><dd><p>The integron finder copy rights holders.</p>
+</dd>
+<dt>MANIFEST.in</dt><dd><p>What must be or should not included in the distribution.</p>
+</dd>
+<dt>README.md</dt><dd><p>The file to red in first.</p>
+</dd>
+<dt>requirements.txt</dt><dd><p>The requirements need to use integron_finder.</p>
+</dd>
+<dt>requirements_dev.txt</dt><dd><p>The extra requirements to develop on integron_finder.</p>
+</dd>
+<dt>setup.cfg</dt><dd><p>The setup.py configuration file.</p>
+</dd>
+<dt>setup.py</dt><dd><p>The file to define how to build/install/release/test/… integron finder.</p>
+</dd>
+</dl>
+</section>
+<section id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt>integron_finder</dt><dd><p>The core of the projects contains integron_finder library
+The <strong>scripts/finder</strong> contain the main entry point.</p>
+</dd>
+<dt>tests</dt><dd><p>Contains all needed for tests, the tests themselves, are a the top level and the
+name must start by <code class="docutils literal notranslate"><span class="pre">test_</span></code>.
+The data directory contains all data needed to perform the tests. (see <a class="reference internal" href="dev_guide.html#tests"><span class="std std-ref">Tests</span></a> for further details)</p>
+</dd>
+<dt>doc</dt><dd><p>Contains the documentation write in sphinx. The <strong>source</strong> directory contains the .rst files,
+whereas the <strong>build</strong> directory contains the generated documentation.
+To know how to contribute or generate documentation see <a class="reference internal" href="dev_guide.html#documentation"><span class="std std-ref">Documentation</span></a></p>
+</dd>
+<dt>Singularity</dt><dd><p>Contains the definition file for singularity container.</p>
+</dd>
+<dt>data</dt><dd><p>TODO</p>
+</dd>
+<dt>dist</dt><dd><p>This directory is generated when a distribution is created (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">sdist</span></code>).</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="technical-overview">
+<h2>Technical overview<a class="headerlink" href="#technical-overview" title="Permalink to this headline"></a></h2>
+<p>The main entry point is in integron_finder/scripts/finder.py
+there are 3 functions</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">intgeron_finder.scripts.main()</span></code> which is the real main entry point</p>
+<p><code class="docutils literal notranslate"><span class="pre">main</span></code> call <code class="xref py py-func docutils literal notranslate"><span class="pre">scripts/finder.parse_args()</span></code> which parse the commandline and
+generate a <code class="xref py py-class docutils literal notranslate"><span class="pre">config.Config</span></code> object.
+and do a loop over replicon and run <code class="xref py py-func docutils literal notranslate"><span class="pre">intgeron_finder.scripts/find_integron_in_one_replicon()</span></code></p>
+<p>all results are store in a directory named <code class="docutils literal notranslate"><span class="pre">Results_Integron_Finder_&lt;replicon_file_name&gt;</span></code> this directory is created by
+<code class="xref py py-func docutils literal notranslate"><span class="pre">intgeron_finder.scripts/find_integron_in_one_replicon()</span></code> store results in this directory
+or in a subdirectory call tmp_&lt;replicon_id&gt; these subdirectories will be keep only if <code class="docutils literal notranslate"><span class="pre">--keep-tmp</span></code> option
+is set, otherwise they are removed at the end of the <code class="xref py py-func docutils literal notranslate"><span class="pre">intgeron_finder.scripts/find_integron_in_one_replicon()</span></code></p>
+<p>when all replicons are computed the <code class="docutils literal notranslate"><span class="pre">main</span></code> function call <code class="xref py py-func docutils literal notranslate"><span class="pre">integron_finder.utils.merge_results()</span></code> to gather
+all results files <code class="docutils literal notranslate"><span class="pre">&lt;replicons_id&gt;.integtrons</span></code> and generate a unique file with these information.</p>
+<p>to have details on <code class="docutils literal notranslate"><span class="pre">find_integron_in_one_replicon</span></code> works see <a class="reference internal" href="../user_guide/introduction.html#introduction"><span class="std std-ref">Introduction</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="dev_guide.html" class="btn btn-neutral float-left" title="Developer installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/index.html" class="btn btn-neutral float-right" title="Integron_finder API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

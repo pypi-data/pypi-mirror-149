@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick start &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="web server" href="webserver.html" />
+    <link rel="prev" title="What’s new ?" href="changes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+      <li>Quick start</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/tutorial.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quick-start">
+<span id="tutorial"></span><h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h1>
+<p>We assume here that the program is <a class="reference internal" href="installation.html#install"><span class="std std-ref">installed</span></a>.</p>
+<p>You can see all available options with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<section id="for-impatient">
+<h2>For impatient<a class="headerlink" href="#for-impatient" title="Permalink to this headline"></a></h2>
+<p>Go to the directory containing your input file(s), or specify the path to that
+file and call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<p>It will perform a search, and outputs the results in a directory called
+<code class="docutils literal notranslate"><span class="pre">Results_Integron_Finder_mysequences</span></code>.</p>
+</section>
+<section id="input-and-outputs">
+<span id="io"></span><h2>Input and Outputs<a class="headerlink" href="#input-and-outputs" title="Permalink to this headline"></a></h2>
+<section id="inputs">
+<h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> can take as an input:</p>
+<ul class="simple">
+<li><p>a fasta file</p></li>
+<li><p>a multi-fasta file</p></li>
+<li><p>many (multi-)fasta files</p></li>
+<li><p>several replicon in gembase format</p></li>
+</ul>
+<section id="gembase-format">
+<h4>Gembase format<a class="headerlink" href="#gembase-format" title="Permalink to this headline"></a></h4>
+<p>Integron_Finder can use <em>gembase</em> formatted protein
+files instead of re-annotating genes with <em>Prodigal</em>.
+This feature enables the user to use <em>Integron_Finder</em> with its own annotations.
+The <em>gembase</em> format is the typical result of <em>PanACoTA’s</em>
+<a class="reference external" href="https://aperrin.pages.pasteur.fr/pipeline_annotation/html-doc/examples.html#annotate-step">annotation step</a>
+It must contain, at least, a <em>LSTINF</em> and a Protein file per replicon.
+Folder structure must have the following architecture.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>gembase/
+├── Genes
+│   ├── ACBA.0917.00019.gen       # genome in fasta format one seq/gene
+│   └── ESCO001.C.00001.C001.gen
+├── LSTINFO
+│   ├── ACBA.0917.00019.lst       # information in space separated values
+│   └── ESCO001.C.00001.C001.lst
+├── Proteins
+│   ├── ACBA.0917.00019.prt       # proteins in fasta format
+│   └── ESCO001.C.00001.C001.prt
+└── Replicons
+    ├── ACBA.0917.00019.fna             # genome in fasta format one seq/replicon
+    └── ESCO001.C.00001.C001.fst
+</pre></div>
+</div>
+<p>5 first sequences headers in gembase/Genes/ACBA.0917.00019.gen file</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt;ACBA.0917.00019.b0001_00001 1215 tyrS | Tyrosine--tRNA ligase | 6.1.1.1 | similar to AA sequence:UniProtKB:P41256
+&gt;ACBA.0917.00019.i0001_00002 1128 anmK | Anhydro-N-acetylmuramic acid kinase | 2.7.1.170 | similar to AA sequence:UniProtKB:Q8EHB5
+&gt;ACBA.0917.00019.i0001_00003 846 ephA | Epoxide hydrolase A | 3.3.2.10 | similar to AA sequence:UniProtKB:I6YGS0
+&gt;ACBA.0917.00019.i0001_00004 336 erpA | Iron-sulfur cluster insertion protein ErpA | NA | similar to AA sequence:UniProtKB:P45344
+&gt;ACBA.0917.00019.i0001_00005 1005 NA | hypothetical protein | NA | NA
+...
+</pre></div>
+</div>
+<p>5 first sequences headers in gembase/Genes/ACBA.0917.00019.gen file</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt;ACBA.0917.00019.b0001_00001 1215 tyrS | Tyrosine--tRNA ligase | 6.1.1.1 | similar to AA sequence:UniProtKB:P41256
+&gt;ACBA.0917.00019.i0001_00002 1128 anmK | Anhydro-N-acetylmuramic acid kinase | 2.7.1.170 | similar to AA sequence:UniProtKB:Q8EHB5
+&gt;ACBA.0917.00019.i0001_00003 846 ephA | Epoxide hydrolase A | 3.3.2.10 | similar to AA sequence:UniProtKB:I6YGS0
+&gt;ACBA.0917.00019.i0001_00004 336 erpA | Iron-sulfur cluster insertion protein ErpA | NA | similar to AA sequence:UniProtKB:P45344
+&gt;ACBA.0917.00019.i0001_00005 1005 NA | hypothetical protein | NA | NA
+...
+</pre></div>
+</div>
+<p>5 first lines in gembase/LSTINFO/ACBA.0917.00019.lst</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>266     1480    C       CDS     ACBA.0917.00019.b0001_00001     tyrS    | Tyrosine--tRNA ligase | 6.1.1.1 | similar to AA sequence:UniProtKB:P41256
+1560    2687    D       CDS     ACBA.0917.00019.i0001_00002     anmK    | Anhydro-N-acetylmuramic acid kinase | 2.7.1.170 | similar to AA sequence:UniProtKB:Q8EHB5
+2815    3660    D       CDS     ACBA.0917.00019.i0001_00003     ephA    | Epoxide hydrolase A | 3.3.2.10 | similar to AA sequence:UniProtKB:I6YGS0
+3716    4051    C       CDS     ACBA.0917.00019.i0001_00004     erpA    | Iron-sulfur cluster insertion protein ErpA | NA | similar to AA sequence:UniProtKB:P45344
+4176    5180    C       CDS     ACBA.0917.00019.i0001_00005     NA      | hypothetical protein | NA | NA
+...
+</pre></div>
+</div>
+<p><strong>all</strong> sequences headers in gembase/Replicons/ACBA.0917.00019.fna</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt;ACBA.0917.00019.0001
+&gt;ACBA.0917.00019.0002
+</pre></div>
+</div>
+<p>Integron_finder will use <em>LSTINF</em> and <em>Proteins</em> folders.
+Hence if you want to analyze a replicon located in a <em>gembase</em>, the command line should look like</p>
+<blockquote>
+<div><p>integron_finder –gembase  data/Replicons/ACBA.0917.00019.fna</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the replicon you want to analyze is not in the gembase directory, but you still want to take advantage of the
+<em>gembase</em> annotation, then you have to specify the <em>–gembase-path</em> option to indicate where to find it.
+A typical command line could be:</p>
+<blockquote>
+<div><p>integron_finder –gembase –gembase-path data/gembase/  My_replicons/ACBA.0917.00019.fna</p>
+</div></blockquote>
+</div>
+</section>
+</section>
+<section id="custom-protein-file">
+<h3>Custom protein file<a class="headerlink" href="#custom-protein-file" title="Permalink to this headline"></a></h3>
+<p>Integron_Finder allow the user to provide it’s own protein file with it’s own annotations
+instead of using <em>prodigal</em> (default).
+In this case you have to specified the protein file to use with the option <em>–prot-file</em>
+and the path to the parser to extract information from this file <em>–annot-parser</em>.
+A typical command line could be:</p>
+<blockquote>
+<div><p>integron_finder –prot-file &lt;path/to/custom/protein /file&gt; –annot-parser &lt;my_annot_paser.py&gt; &lt;replicon_path&gt;</p>
+</div></blockquote>
+<p>The annotation parser must be a python file (with the <em>.py</em> extension’) with one function called <em>description_parser</em>
+This function must take <strong>one</strong> argument which is the header of a fasta sequence header (without the first character &gt;)
+and must return a <strong>tuple with 4 elements</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>sequence id: the id of the sequence (string)</p></li>
+<li><p>start: the beginning position of the protein on the genome (positive int)</p></li>
+<li><p>stop: the end position of the protein on the genome (positive int)</p></li>
+<li><p>strand: the strand 1 if the protein os coded on the direct strand or -1 on the reverse</p></li>
+</ul>
+</div></blockquote>
+<p>Below a description_parser to parse annotation in prodigal format:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+
+<span class="k">def</span> <span class="nf">description_parser</span><span class="p">(</span><span class="n">seq_header</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract description features from protein sequence fasta header</span>
+
+<span class="sd">    :param str seq_header: the fasta header of a sequence (without &#39;&gt;&#39; char)</span>
+<span class="sd">    :return: features</span>
+<span class="sd">                - sequence id (string)</span>
+<span class="sd">                - start the beginning of the protein (positive integer)</span>
+<span class="sd">                - stop the end position of the protein (positive integer)</span>
+<span class="sd">                - strand 1 if prot is coded on direct strand or -1 if it&#39;s on reverse</span>
+<span class="sd">    :rtypes: tuple (str, int, int, 1/-1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">id_</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">seq_header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; # &quot;</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+    <span class="n">strand</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">strand</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">id_</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">strand</span>
+
+
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="outputs">
+<h3>Outputs<a class="headerlink" href="#outputs" title="Permalink to this headline"></a></h3>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> will output 3 files under <code class="docutils literal notranslate"><span class="pre">Results_Integron_Finder_mysequences</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mysequences.integrons</span></code> : A file with all integrons and their elements detected in all sequences in the input file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mysequences.summary</span></code> : A summary file with the number and type of integrons per sequence.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">integron_finder.out</span></code> : A copy standard output. The stdout can be silenced with the argument <code class="docutils literal notranslate"><span class="pre">--mute</span></code></p></li>
+</ul>
+<p>The amount of log in the standard output can be controlled with <code class="docutils literal notranslate"><span class="pre">--verbose</span></code> for more or <code class="docutils literal notranslate"><span class="pre">--quiet</span></code> for less,
+and both are cumulative arguments, eg. <code class="docutils literal notranslate"><span class="pre">-vv</span></code> or <code class="docutils literal notranslate"><span class="pre">-qq</span></code>.</p>
+<p>Other files can be created on demand:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--gbk</span></code>: Creates a Genbank files with all the annotations found (present in the <code class="docutils literal notranslate"><span class="pre">.integrons</span></code> file)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--pdf</span></code>: Creates a simple pdf graphic with complete integrons</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--split-results</span></code>: Creates a <code class="docutils literal notranslate"><span class="pre">.integrons</span></code> a <code class="docutils literal notranslate"><span class="pre">.summary</span></code> file per replicon if the input is a multifasta file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--keep-tmp</span></code>: Keep temporary files. See <a class="reference internal" href="#tempfile"><span class="std std-ref">Keep intermediate files</span></a> for more.</p></li>
+</ul>
+</section>
+</section>
+<section id="for-everyone">
+<h2>For everyone<a class="headerlink" href="#for-everyone" title="Permalink to this headline"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The different options will be shown separately, but they can be used
+altogether unless otherwise stated.</p>
+</div>
+<section id="thorough-local-detection">
+<span id="local-max"></span><h3>Thorough local detection<a class="headerlink" href="#thorough-local-detection" title="Permalink to this headline"></a></h3>
+<p>This option allows a much more sensitive search of <em>attC</em> sites. It will be slower if integrons are
+found, but will be as fast if nothing is detected.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>integron_finder mysequences.fst --local-max
+</pre></div>
+</div>
+</section>
+<section id="calin-detection">
+<span id="calin-threshold"></span><h3>CALIN detection<a class="headerlink" href="#calin-detection" title="Permalink to this headline"></a></h3>
+<p>By default CALIN are reported if they are composed of at least 2 <em>attC</em> sites, in order to avoid false positives.
+This value was chosen as CALIN with 2 attC sites were unlikely to be false positive.
+The probability of a false CALIN with at least 2 attC sites within 4kb was estimated between 4.10^-6 and 7.10^-9.
+However, one can modify this value with the option <cite>–calin-threshold</cite> and use a lower or higher value depending on the risk one is willing to take:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">calin</span><span class="o">-</span><span class="n">threshold</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">--local-max</span></code> is called, it will run around CALINs with single attC sites, even if <code class="docutils literal notranslate"><span class="pre">--calin-threshold</span></code> is 2.
+The filtering step is done after the search with local max in that case.</p>
+</div>
+</section>
+<section id="functional-annotation">
+<span id="func-annot"></span><h3>Functional annotation<a class="headerlink" href="#functional-annotation" title="Permalink to this headline"></a></h3>
+<p>This option allows to annotate cassettes given HMM profiles. As AMRFinderPlus database
+is distributed, to annotate antibiotic resistance genes, just use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">func</span><span class="o">-</span><span class="n">annot</span>
+</pre></div>
+</div>
+<p>IntegronFinder will look in the directory
+<code class="docutils literal notranslate"><span class="pre">Integron_Finder-x.x/data/Functional_annotation</span></code> and use all <code class="docutils literal notranslate"><span class="pre">.hmm</span></code> files
+available to annotate. By default, there is only <code class="docutils literal notranslate"><span class="pre">NCBIfam-AMRFinder.hmm</span></code>, but one can
+add any other HMM file here. Alternatively, if one wants to use a database which
+is present elsewhere on the user’s computer without copying it into that
+directory, one can specify the following option</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">path_func_annot</span> <span class="n">bank_hmm</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">bank_hmm</span></code> is a file containing one absolute path to a hmm file per
+line, and you can comment out a line</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">Downloads</span><span class="o">/</span><span class="n">Integron_Finder</span><span class="o">-</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">Functional_annotation</span><span class="o">/</span><span class="n">NCBIfam</span><span class="o">-</span><span class="n">AMRFinder</span><span class="o">.</span><span class="n">hmm</span>
+<span class="o">~/</span><span class="n">Documents</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">Pfam</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">hmm</span>
+<span class="c1"># ~/Documents/Data/Pfam-B.hmm</span>
+</pre></div>
+</div>
+<p>Here, annotation will be made using Pfam-A et NCBIfam-AMRFinder, but not Pfam-B. If a
+protein is hit by 2 different profiles, the one with the best e-value will be kept.</p>
+</section>
+<section id="search-for-promoter-and-atti-sites">
+<h3>Search for promoter and <em>attI</em> sites<a class="headerlink" href="#search-for-promoter-and-atti-sites" title="Permalink to this headline"></a></h3>
+<p>By default <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> look for <em>attC</em> sites and site-specific integron integrase,,
+If you want to search for known promoters (integrase, Pc-int1 and Pc-int3) and AttI sites
+in integrons elements you need to add the <code class="docutils literal notranslate"><span class="pre">--promoter-attI</span></code> option on the command line.</p>
+</section>
+<section id="keep-intermediate-results">
+<span id="tempfile"></span><h3>Keep intermediate results<a class="headerlink" href="#keep-intermediate-results" title="Permalink to this headline"></a></h3>
+<p>Integrons finder needs some intermediate results to run completely.
+It includes notably the protein file in fasta (mysequences.prt), but also the outputs from hmmer and infernal.
+A folder containing these outputs is generated for each replicon and have name <code class="docutils literal notranslate"><span class="pre">tmp_&lt;replicon_id&gt;</span></code>
+This directory is removed at the end. You can keep this directory to analyse further each <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> steps
+with the option <code class="docutils literal notranslate"><span class="pre">--keep-tmp</span></code>. Using this argument allows you to rerun <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code>
+on the same sequences without redetecting proteins and attC sites. It is useful if one wants to change
+clustering parameters, evalues of attC sites, or size of them. Note that it won’t search for new attC sites
+so it is better to start with relaxed parameters and then rerun <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> with more strict parameters.
+See the section <a class="reference internal" href="#advance"><span class="std std-ref">for integron diggers</span></a> for more informations</p>
+<p>For each tmp file, there are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;.fst</span></code>: a single fasta file with the replicon_name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;.prt</span></code>: a multifasta file with the sequences of the detected proteins.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_intI_table.res</span></code>: hmm result for the intI hmm profile in tabular format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_intI.res</span></code>: hmm result for the intI hmm profile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_phage_int_table.res</span></code>: hmm result for the tyrosine recombinase hmm profile in tabular format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_phage_int.res</span></code>: hmm result for the tyrosine recombinase hmm profile in tabular format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_attc_table.res</span></code>: cmsearch result for the attC sites covariance model in tabular format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;replicon_id&gt;_attc.res</span></code>: significant (according to <code class="docutils literal notranslate"><span class="pre">evalue-attc</span></code>) attC sites aligned in stockholm format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">integron_max.pickle</span></code>: pickle file so <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> reuse this instead of re-running the local_max part</p></li>
+</ul>
+</section>
+<section id="topology">
+<h3>Topology<a class="headerlink" href="#topology" title="Permalink to this headline"></a></h3>
+<p>By default, IntegronFinder assumes that</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>your replicon is considered as <strong>circular</strong> if there is <strong>only one replicon</strong> in the input file.</p></li>
+<li><p>your replicons are considered as <strong>linear</strong> if there are <strong>several replicons</strong> in the input file.</p></li>
+</ul>
+</div></blockquote>
+<p>However, you can change this default behavior and specify the default topology with options
+<code class="docutils literal notranslate"><span class="pre">--circ</span></code> or <code class="docutils literal notranslate"><span class="pre">--lin</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="o">--</span><span class="n">lin</span> <span class="n">mylinearsequence</span><span class="o">.</span><span class="n">fst</span>
+<span class="n">integron_finder</span> <span class="o">--</span><span class="n">circ</span> <span class="n">mycircularsequence</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<p>If you have multiple replicon in the input file with different topologies you can specify a topology for each
+replicon by providing a topology file.
+The syntax for the topology file is simple:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>one topology by line</p></li>
+<li><p>one line start by the seqid followed by ‘circ’ or ‘lin’ for circular or linear topologies.</p></li>
+</ul>
+</div></blockquote>
+<p>example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seq_id_1</span> <span class="n">circ</span>
+<span class="n">seq_id_2</span> <span class="n">lin</span>
+</pre></div>
+</div>
+<p>You can also mix the options <code class="docutils literal notranslate"><span class="pre">--circ</span></code> or <code class="docutils literal notranslate"><span class="pre">--lin</span></code> with option <code class="docutils literal notranslate"><span class="pre">--topology-file</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="o">--</span><span class="n">circ</span> <span class="o">--</span><span class="n">topology</span><span class="o">-</span><span class="n">file</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">topofile</span> <span class="n">mysequencess</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<p>In the example above the default topology is set to <em>circular</em>.
+The replicons specified in topofile supersede the default topology.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>However, if the replicon is smaller than <code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">x</span> <span class="pre">dt</span></code>
+(where <code class="docutils literal notranslate"><span class="pre">dt</span></code> is the distance threshold, so 4kb by default), the replicon is considered linear
+to avoid clustering problem.
+The topology used to searching integron is report in the <em>*.integrons file</em></p>
+</div>
+</section>
+</section>
+<section id="for-big-data-people">
+<h2>For big data people<a class="headerlink" href="#for-big-data-people" title="Permalink to this headline"></a></h2>
+<section id="parallelization">
+<span id="parallel"></span><h3>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline"></a></h3>
+<p>The time limiting part are HMMER (search integrase) and INFERNAL (search <em>attC</em> sites).
+So if you have to analyze one or few replicons the user can set the number of CPU used by HMMER and INFERNAL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">cpu</span> <span class="mi">4</span>
+</pre></div>
+</div>
+<p>Default is 1.</p>
+<p>If you want to deal with a fasta file with a lot of replicons (from 10 to more than thousand) we provide a workflow to parallelize the execution of the data.
+This mean that we cut the data input into chunks (by default of one replicon) then execute
+IntegronFinder in parallel on each replicon (the number of parallel tasks can be limited) then aggregate the results
+in one global summary.
+The workflow use the <a class="reference external" href="https://www.nextflow.io/">nextflow</a> framework and can be run on a single machine or a cluster.</p>
+<p>First, you have to install <a class="reference external" href="https://www.nextflow.io/">nextflow</a> first, and  <a class="reference internal" href="installation.html#install"><span class="std std-ref">integron_finder</span></a>.
+Then we provide 2 files (you need to download them from the IntegronFinder github repo.)</p>
+<ul class="simple">
+<li><p><cite>parallel_integron_finder.nf</cite> which is the workflow itself in nextflow syntax</p></li>
+<li><p><cite>nextflow.config</cite> which is a configuration file to execute the workflow.</p></li>
+</ul>
+<p>The workflow file should not be modified. Whereas the profile must be adapted to the local architecture.</p>
+<dl class="simple">
+<dt>The file <cite>nextflow.config</cite> provide for profiles:</dt><dd><ul class="simple">
+<li><p>a standard profile for local use</p></li>
+<li><p>a cluster profile</p></li>
+<li><p>a standard profile using singularity container</p></li>
+<li><p>a cluster profile using singularity container</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>On Ubuntu Bionic Beaver (18.04) The default java is not suitable to run nextflow
+So you have to install another jvm</p>
+<blockquote>
+<div><p>sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer</p>
+</div></blockquote>
+<p>for more details see: <a class="reference external" href="https://medium.com/coderscorner/installing-oracle-java-8-in-ubuntu-16-10-845507b13343">https://medium.com/coderscorner/installing-oracle-java-8-in-ubuntu-16-10-845507b13343</a></p>
+<p>so now install nextflow.
+If you have  capsule error like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CAPSULE</span> <span class="n">EXCEPTION</span><span class="p">:</span> <span class="n">Error</span> <span class="n">resolving</span> <span class="n">dependencies</span><span class="o">.</span> <span class="k">while</span> <span class="n">processing</span> <span class="n">attribute</span> <span class="n">Allow</span><span class="o">-</span><span class="n">Snapshots</span><span class="p">:</span> <span class="n">false</span> <span class="p">(</span><span class="k">for</span> <span class="n">stack</span> <span class="n">trace</span><span class="p">,</span> <span class="n">run</span> <span class="k">with</span> <span class="o">-</span><span class="n">Dcapsule</span><span class="o">.</span><span class="n">log</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+<span class="n">Unable</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">nextflow</span> <span class="n">environment</span>
+</pre></div>
+</div>
+<p>install nextflow (&gt;=0.29.0) as follow (change the nextflow version with the last release)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">nextflow</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">nextflow</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">v0</span><span class="mf">.30.2</span><span class="o">/</span><span class="n">nextflow</span><span class="o">-</span><span class="mf">0.30.2</span><span class="o">-</span><span class="nb">all</span>
+<span class="n">chmod</span> <span class="mi">777</span> <span class="n">nextflow</span>
+</pre></div>
+</div>
+<p>for more details see: <a class="reference external" href="https://github.com/nextflow-io/nextflow/issues/770#issuecomment-400384617">https://github.com/nextflow-io/nextflow/issues/770#issuecomment-400384617</a></p>
+</div>
+<section id="how-to-get-parallel-integron-finder">
+<h4>How to get parallel_integron_finder<a class="headerlink" href="#how-to-get-parallel-integron-finder" title="Permalink to this headline"></a></h4>
+<p>The release contains the workflow <cite>parallel_integron_finder.nf</cite> and the <cite>nextflow.config</cite> at the top level of the archive
+But If you use pip to install Integron_Finder you have not easily access to them.
+But they can be downloaded or executed directly by using nextflow.</p>
+<p>to download it</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">pull</span> <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span>
+</pre></div>
+</div>
+<p>to get the latest version or use <em>-r</em>    option to specify a version</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">pull</span> <span class="o">-</span><span class="n">r</span> <span class="n">release_2</span><span class="mf">.0</span> <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span>
+</pre></div>
+</div>
+<p>to see what you download</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">see</span> <span class="n">Integron_Finder</span>
+</pre></div>
+</div>
+<p>to execute it directly</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">r</span> <span class="n">release_2</span><span class="mf">.0</span> <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+</section>
+<section id="standard-profile">
+<h4>standard profile<a class="headerlink" href="#standard-profile" title="Permalink to this headline"></a></h4>
+<p>This profile is used if you want to parallelize IntegronFinder on your machine.
+You can specify the number of tasks in parallel by setting the queueSize value</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>standard {
+        executor {
+            name = &#39;local&#39;
+            queueSize = 7
+        }
+        process{
+            executor = &#39;local&#39;
+            $integron_finder{
+                errorStrategy = &#39;ignore&#39;
+                cpu=params.cpu
+            }
+        }
+ }
+</pre></div>
+</div>
+<p>If you installed IntegronFinder with singularity, just uncomment the container line in the script,
+and set the proper path to the container.</p>
+<p>All options available in non parallel version are also available for the parallel one.
+except the <code class="docutils literal notranslate"><span class="pre">--outdir</span></code> which is not available and <code class="docutils literal notranslate"><span class="pre">--replicons</span></code> option which is specific to the parallelized version.
+<code class="docutils literal notranslate"><span class="pre">--replicons</span></code> allows to specify the path of a file containing the replicons.</p>
+<p>A typical command line will be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Joker as <code class="docutils literal notranslate"><span class="pre">*</span></code> or <code class="docutils literal notranslate"><span class="pre">?</span></code> can be used in path to specify several files as input.</p>
+<p>But <strong>do not forget</strong> to protect the wild card from the shell
+for instance by enclosing your glob pattern with simple quote.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">--</span><span class="n">replicons</span> <span class="s1">&#39;replicons_dir/*.fst&#39;</span>
+</pre></div>
+</div>
+<p>Two asterisks, i.e. <code class="docutils literal notranslate"><span class="pre">**</span></code>, works like <code class="docutils literal notranslate"><span class="pre">*</span></code> but crosses directory boundaries.
+Curly brackets specify a collection of sub-patterns.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">--</span><span class="n">replicons</span> <span class="s1">&#39;data/**.fa&#39;</span>
+<span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">--</span><span class="n">replicons</span> <span class="s1">&#39;data/**/*.fa&#39;</span>
+<span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">--</span><span class="n">replicons</span> <span class="s1">&#39;data/file_{1,2}.fa&#39;</span>
+</pre></div>
+</div>
+<p>The first line will match files ending with the suffix <cite>.fa</cite> in the <cite>data</cite> folder and recursively in all its sub-folders.
+While the second one only match the files which have the same suffix in any sub-folder in the data path.
+Finally the last example capture two files: <cite>data/file_1.fa</cite>, <cite>data/file_2.fa</cite></p>
+<p>More than one path or glob pattern can be specified in one time using comma.
+<strong>Do not</strong> insert spaces surrounding the comma</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="n">parallel_integron_finder</span> <span class="o">--</span><span class="n">replicons</span> <span class="s1">&#39;some/path/*.fa,other/path/*.fst&#39;</span>
+</pre></div>
+</div>
+<p>The command above will analyze all files ending by <cite>.fa</cite> in <cite>/some/path</cite>
+with <cite>.fst</cite> extension in <cite>other/path</cite></p>
+<p>For further details see: <a class="reference external" href="https://www.nextflow.io/docs/latest/channel.html#frompath">https://www.nextflow.io/docs/latest/channel.html#frompath</a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The option <cite>–outdir</cite> is not allowed. Because you can specify several replicon files as input,
+So in this circumstances specify only one name for the output is a none sense.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The options starting with one dash are for nextflow workflow engine,
+whereas the options starting by two dashes are for integron_finder workflow.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Replicons will be considered linear by default (see above),
+here we use <cite>–circ</cite> to consider replicons circular.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you specify several input files, the split and merge steps will be parallelized.</p>
+</div>
+<p>If you execute this line, 2 kinds of directories will be created.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>One named <cite>work</cite> containing lot of subdirectories this for all jobs
+launch by nextflow.</p></li>
+<li><p>Directories named <cite>Results_Integron_Finder_XXX</cite> where XXX is the name of the replicon file.
+So, one directory per replicon file will be created. These directories contain the final results
+as in non parallel version.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="cluster-profile">
+<h4>cluster profile<a class="headerlink" href="#cluster-profile" title="Permalink to this headline"></a></h4>
+<p>The cluster profile is intended to work on a cluster managed by SLURM.
+If You cluster is managed by an other drm change executor name by the right value
+(see <a class="reference external" href="https://www.nextflow.io/docs/latest/executor.html">nextflow supported cluster</a> )</p>
+<p>You can also managed</p>
+<ul>
+<li><p>The number of task in parallel with the <cite>executor.queueSize</cite> parameter (here 500).
+If you remove this line, the system will send in parallel as many jobs as there are replicons in your data set.</p></li>
+<li><p>The queue with <cite>process.queue</cite> parameter (here common,dedicated)</p></li>
+<li><p>and some options specific to your cluster management systems with <cite>process.clusterOptions</cite> parameter</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cluster {
+    executor {
+        name = &#39;slurm&#39;
+        queueSize = 500
+    }
+
+    process{
+        executor = &#39;slurm&#39;
+        queue= &#39;common,dedicated&#39;
+        clusterOptions = &#39;--qos=fast&#39;
+        $integron_finder{
+            cpu=params.cpu
+        }
+    }
+}
+</pre></div>
+</div>
+</li>
+</ul>
+<p>To run the parallel version on cluster, for instance on a cluster managed by slurm,
+I can launch the main nextflow process in one slot. The parallelization and the submission on the other slots
+is made by nextflow itself.
+Below a command line to run parallel_integron_finder and use 2 cpus per integron_finder task,
+each integron_finder task can be executed on different machines, each integron_finder task claim 2 cpus to speed up
+the attC sites or integrase search:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="o">--</span><span class="n">qos</span> <span class="n">fast</span> <span class="o">-</span><span class="n">p</span> <span class="n">common</span> <span class="n">nextflow</span> <span class="n">run</span>  <span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">cluster</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">cpu</span> <span class="mi">2</span> <span class="o">--</span><span class="n">local</span><span class="o">-</span><span class="nb">max</span> <span class="o">--</span><span class="n">gbk</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<p>The results will be the same as describe in local execution.</p>
+</section>
+<section id="singualrity-profiles">
+<h4>singualrity profiles<a class="headerlink" href="#singualrity-profiles" title="Permalink to this headline"></a></h4>
+<p>If you use the singularity integron_finder image, use the profile <em>standard_singularity</em>.
+With the command line below nextflow will download parallel_integron_finder from github and
+download the integron_finder image from the singularity-hub so you haven’t to install anything except
+nextflow and singularity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span> <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard_singularity</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<p>You can also use the integron_finder singularity image on a cluster, for this use the profile <em>cluster_singularity</em>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="o">--</span><span class="n">qos</span> <span class="n">fast</span> <span class="o">-</span><span class="n">p</span> <span class="n">common</span> <span class="n">nextflow</span> <span class="n">run</span>  <span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">Integron_Finder</span><span class="p">:</span><span class="mf">2.0</span> <span class="o">-</span><span class="n">profile</span> <span class="n">cluster_singualrity</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">cpu</span> <span class="mi">2</span> <span class="o">--</span><span class="n">local</span><span class="o">-</span><span class="nb">max</span> <span class="o">--</span><span class="n">gbk</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<p>In the case of your cluster cannot reach the world wide web. you have to download the singularity image</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">pull</span> <span class="o">--</span><span class="n">name</span> <span class="n">Integron_Finder</span> <span class="n">shub</span><span class="p">:</span><span class="o">//</span><span class="n">gem</span><span class="o">-</span><span class="n">pasteur</span><span class="o">/</span><span class="n">integron_finder</span><span class="p">:</span><span class="mf">2.0</span>
+</pre></div>
+</div>
+<p>the move the image on your cluster
+modify the nextflow.config to point on the location of the image, and adapt the cluster options
+(executor, queue, …) to your architecture</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> cluster_singularity {
+        executor {
+            name = &#39;slurm&#39;
+            queueSize = 500
+        }
+
+        process {
+            container = /path/to/integron_finder
+            queue = &#39;common,dedicated&#39;
+            clusterOptions = &#39;--qos=fast&#39;
+            withName: integron_finder {
+                cpus = params.cpu
+            }
+        }
+        singularity {
+            enabled = true
+            runOptions = &#39;-B /pasteur&#39;
+            autoMounts = false
+       }
+    }
+}
+</pre></div>
+</div>
+<p>then run it</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="o">--</span><span class="n">qos</span> <span class="n">fast</span> <span class="o">-</span><span class="n">p</span> <span class="n">common</span> <span class="n">nextflow</span> <span class="n">run</span>  <span class="o">./</span><span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">cluster_singualrity</span> <span class="o">--</span><span class="n">replicons</span> <span class="n">all_coli</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">cpu</span> <span class="mi">2</span> <span class="o">--</span><span class="n">local</span><span class="o">-</span><span class="nb">max</span> <span class="o">--</span><span class="n">gbk</span> <span class="o">--</span><span class="n">circ</span>
+</pre></div>
+</div>
+<p>If you want to have more details about the jobs execution you can add some options to generate report:</p>
+</section>
+<section id="execution-report">
+<h4>Execution report<a class="headerlink" href="#execution-report" title="Permalink to this headline"></a></h4>
+<p>To enable the creation of this report add the <code class="docutils literal notranslate"><span class="pre">-with-report</span></code> command line option when
+launching the pipeline execution. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span>  <span class="o">./</span><span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">report</span> <span class="p">[</span><span class="n">file</span> <span class="n">name</span><span class="p">]</span> <span class="o">--</span><span class="n">replicons</span>
+</pre></div>
+</div>
+<p>It creates an HTML execution report: a single document which includes many useful metrics about
+a workflow execution. For further details see <a class="reference external" href="https://www.nextflow.io/docs/latest/tracing.html#execution-report">https://www.nextflow.io/docs/latest/tracing.html#execution-report</a></p>
+</section>
+<section id="trace-report">
+<h4>Trace report<a class="headerlink" href="#trace-report" title="Permalink to this headline"></a></h4>
+<p>In order to create the execution trace file add the <code class="docutils literal notranslate"><span class="pre">-with-trace</span></code> command line option when launching the pipeline
+execution. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span>  <span class="o">./</span><span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">trace</span> <span class="o">--</span><span class="n">replicons</span>
+</pre></div>
+</div>
+<p>It creates an HTML timeline for all processes executed in your pipeline.
+For further details see <a class="reference external" href="https://www.nextflow.io/docs/latest/tracing.html#timeline-report">https://www.nextflow.io/docs/latest/tracing.html#timeline-report</a></p>
+</section>
+<section id="timeline-report">
+<h4>Timeline report<a class="headerlink" href="#timeline-report" title="Permalink to this headline"></a></h4>
+<p>To enable the creation of the timeline report add the <code class="docutils literal notranslate"><span class="pre">-with-timeline</span></code>
+command line option when launching the pipeline execution. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nextflow</span> <span class="n">run</span>  <span class="o">./</span><span class="n">parallel_integron_finder</span><span class="o">.</span><span class="n">nf</span> <span class="o">-</span><span class="n">profile</span> <span class="n">standard</span> <span class="o">-</span><span class="k">with</span><span class="o">-</span><span class="n">timeline</span> <span class="p">[</span><span class="n">file</span> <span class="n">name</span><span class="p">]</span> <span class="o">--</span><span class="n">replicons</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>It creates an execution tracing file that contains some useful information about
+each process executed in your pipeline script, including: submission time, start time, completion time,
+cpu and memory used. For further details see <a class="reference external" href="https://www.nextflow.io/docs/latest/tracing.html#trace-report">https://www.nextflow.io/docs/latest/tracing.html#trace-report</a></p>
+</section>
+</section>
+</section>
+<section id="for-integron-diggers">
+<span id="advance"></span><h2>For integron diggers<a class="headerlink" href="#for-integron-diggers" title="Permalink to this headline"></a></h2>
+<p>Many options are set to prevent false positives.
+However, one may want higher sensitivity at the expense of having potentially false positives.
+Ultimately, only experimental experiments will tell whether a given <em>attC</em> sites or integrase is functional.</p>
+<p>Also, note that because of how local_max works (ie. around already detected elements), true <em>attC</em> sites
+may be found thanks to false <em>attC</em> sites, because false <em>attC</em> sites may trigger local_max around them.
+Hence, one may want to use very relaxed parameters first with the <code class="docutils literal notranslate"><span class="pre">--keep-tmp</span></code> flag to rerun the analysis on
+the same data while restrincting the parameters.</p>
+<section id="clustering-of-elements">
+<span id="distance-threshold"></span><h3>Clustering of elements<a class="headerlink" href="#clustering-of-elements" title="Permalink to this headline"></a></h3>
+<p><em>attC</em> sites are clustered together if they are on the same strand and if they
+are less than 4 kb apart (<code class="docutils literal notranslate"><span class="pre">-dt</span> <span class="pre">4000</span></code> by default). To cluster an array of <em>attC</em> sites and an integron
+integrase, they also must be less than 4 kb apart. This value has been
+empirically estimated and is consistent with previous observations showing that
+biggest gene cassettes are about 2 kb long. This value of 4 kb can be modified
+though:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">distance</span><span class="o">-</span><span class="n">thresh</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<p>or, equivalently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">-</span><span class="n">dt</span> <span class="mi">10000</span>
+</pre></div>
+</div>
+<p>This sets the threshold for clustering to 10 kb.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The option <code class="docutils literal notranslate"><span class="pre">--outdir</span></code> allows you to chose the location of the Results folder (<code class="docutils literal notranslate"><span class="pre">Results_Integron_Finder_mysequences</span></code>).
+If this folder already exists, IntegronFinder will not re-run analyses already done, except functional annotation.
+It allows you to re-run rapidly IntegronFinder with a different <code class="docutils literal notranslate"><span class="pre">--distance-thresh</span></code> value.
+Functional annotation needs to re-run each time because depending on the aggregation parameters,
+the proteins associated with an integron might change.</p>
+</div>
+</section>
+<section id="integrase">
+<h3>Integrase<a class="headerlink" href="#integrase" title="Permalink to this headline"></a></h3>
+<p>We use two HMM profiles for the detection of the integron integrase.
+One for tyrosine recombinase and one for a specific part of the integron integrase.
+To be specific we use the intersection of both hits,
+but one might want to use the union of both hits (and sees whether it exists cluster of attC sites nearby non integron-integrase…).
+To do so, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">union</span><span class="o">-</span><span class="n">integrases</span>
+</pre></div>
+</div>
+</section>
+<section id="attc-evalue">
+<h3><em>attC</em> evalue<a class="headerlink" href="#attc-evalue" title="Permalink to this headline"></a></h3>
+<p>The default evalue is 1. Sometimes, degenerated <em>attC</em> sites can have a evalue
+above 1 and one may want to increase this value to have a better sensitivity.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">evalue</span><span class="o">-</span><span class="n">attc</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>Here is a plot of how the sensitivity and false positive rate evolve as a function of the evalue:</p>
+<p><a class="reference internal" href="../_images/evalue_attC.png"><img alt="attC evalue" class="align-middle" src="../_images/evalue_attC.png" style="width: 400px;" /></a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If one wants to have maximum sensitivity, use a high evalue (max is 10), and then
+integron_finder can be run again on the same data with a lower evalue. It won’t work
+the other way around (starting with low evalue), as attC sites are not searched again.</p>
+</div>
+</section>
+<section id="attc-size">
+<h3><em>attC</em> size<a class="headerlink" href="#attc-size" title="Permalink to this headline"></a></h3>
+<p>By default, <em>attC</em> sites’ size ranges from 40 to 200bp. This can be changed with the <code class="docutils literal notranslate"><span class="pre">--min-attc-size</span></code> or <code class="docutils literal notranslate"><span class="pre">--max-attc-size</span></code> parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">attc</span><span class="o">-</span><span class="n">size</span> <span class="mi">50</span> <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">attc</span><span class="o">-</span><span class="n">size</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</section>
+<section id="palindromes">
+<h3>Palindromes<a class="headerlink" href="#palindromes" title="Permalink to this headline"></a></h3>
+<p><em>attC</em> sites are more or less palindromic sequences, and sometimes, a single
+<em>attC</em> site can be detected on the 2 strands. By default, the one with the
+highest evalue is discarded, but you can choose to keep them with the following
+option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">integron_finder</span> <span class="n">mysequences</span><span class="o">.</span><span class="n">fst</span> <span class="o">--</span><span class="n">keep</span><span class="o">-</span><span class="n">palindromes</span>
+</pre></div>
+</div>
+</section>
+<section id="attc-alignements">
+<h3><em>attC</em> alignements<a class="headerlink" href="#attc-alignements" title="Permalink to this headline"></a></h3>
+<p>One can get the alignements of <em>attC</em> sites in the temporary files (use <code class="docutils literal notranslate"><span class="pre">--keep-tmp</span></code>)
+to have them. Under <code class="docutils literal notranslate"><span class="pre">Results_Integron_Finder_mysequences/tmp_repliconA/repliconA_attc.res</span></code>
+one can find alignements of <em>attC</em> sites from repliconA, in Stokholm format, where R and L core regions
+are aligned with each others:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># STOCKHOLM 1.0</span>
+<span class="c1">#=GF AU Infernal 1.1.2</span>
+
+<span class="n">ACBA</span><span class="mf">.0917.00019.0001</span><span class="o">/</span><span class="mi">315102</span><span class="o">-</span><span class="mi">315161</span>         <span class="n">GUCUAACAAUUC</span><span class="o">---</span><span class="n">GUUCAAGCcgacgccgcu</span><span class="o">.................................................</span><span class="n">ucgcggcgcgGCUUAACUCAAGC</span><span class="o">----</span><span class="n">GUUAGAU</span>
+<span class="c1">#=GR ACBA.0917.00019.0001/315102-315161 PP ************...******************.................................................***********************....*******</span>
+<span class="n">ACBA</span><span class="mf">.0917.00019.0001</span><span class="o">/</span><span class="mi">313260</span><span class="o">-</span><span class="mi">313368</span>         <span class="n">ACCUAACAAUUC</span><span class="o">---</span><span class="n">GUUCAAGCcgagaucgcuucgcggccgcggaguuguucggaaaaauugucacaacgccgcggccgcaaagcgcuccgGCUUAACUCAGGC</span><span class="o">----</span><span class="n">GUUGGGC</span>
+<span class="c1">#=GR ACBA.0917.00019.0001/313260-313368 PP ************...******************************************************************************************....*******</span>
+<span class="n">ACBA</span><span class="mf">.0917.00019.0001</span><span class="o">/</span><span class="mi">313837</span><span class="o">-</span><span class="mi">313906</span>         <span class="n">GCCCAACAUGGC</span><span class="o">---</span><span class="n">GCUCAAGCcgaccggccagcccu</span><span class="o">.......................................</span><span class="n">gcgggcuguccgucgGCUUAGCUAGGGC</span><span class="o">----</span><span class="n">GUUAGAG</span>
+<span class="c1">#=GR ACBA.0917.00019.0001/313837-313906 PP ************...***********************.......................................****************************....*******</span>
+<span class="c1">#=GC SS_cons                               &lt;&lt;&lt;&lt;&lt;&lt;&lt;--------&lt;&lt;&lt;-&lt;&lt;&lt;&lt;.....................................................................&gt;&gt;&gt;&gt;&gt;&gt;&gt;----------&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span>
+<span class="c1">#=GC RF                                    [Rsec=]========[=Lsec=].....................................................................[Lprim]==========[Rprim]</span>
+<span class="o">//</span>
+</pre></div>
+</div>
+<p>Which you can manipulate easily with <code class="docutils literal notranslate"><span class="pre">esl-alimanip</span></code> tools provided by infernal (the following examples should work if your <code class="docutils literal notranslate"><span class="pre">cmsearch</span></code> is in your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>).
+You can convert the same alignement in dna alphabet (cmsearch use RNA alphabet):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ esl-alimanip --dna Results_Integron_Finder_mysequences/tmp_ACBA.0917.00019.0001/ACBA.0917.00019.0001_attc.res
+# STOCKHOLM 1.0
+#=GF AU Infernal 1.1.2
+
+ACBA.0917.00019.0001/315102-315161         GTCTAACAATTC---GTTCAAGCCGACGCCGCT-------------------------------------------------TCGCGGCGCGGCTTAACTCAAGC----GTTAGAT
+#=GR ACBA.0917.00019.0001/315102-315161 PP ************...******************.................................................***********************....*******
+ACBA.0917.00019.0001/313260-313368         ACCTAACAATTC---GTTCAAGCCGAGATCGCTTCGCGGCCGCGGAGTTGTTCGGAAAAATTGTCACAACGCCGCGGCCGCAAAGCGCTCCGGCTTAACTCAGGC----GTTGGGC
+#=GR ACBA.0917.00019.0001/313260-313368 PP ************...******************************************************************************************....*******
+ACBA.0917.00019.0001/313837-313906         GCCCAACATGGC---GCTCAAGCCGACCGGCCAGCCCT---------------------------------------GCGGGCTGTCCGTCGGCTTAGCTAGGGC----GTTAGAG
+#=GR ACBA.0917.00019.0001/313837-313906 PP ************...***********************.......................................****************************....*******
+#=GC SS_cons                               &lt;&lt;&lt;&lt;&lt;&lt;&lt;--------&lt;&lt;&lt;-&lt;&lt;&lt;&lt;.....................................................................&gt;&gt;&gt;&gt;&gt;&gt;&gt;----------&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+#=GC RF                                    [Rsec=]========[=Lsec=].....................................................................[Lprim]==========[Rprim]
+//
+</pre></div>
+</div>
+<p>You can also convert it to fasta format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ esl-alimanip --dna --outformat afa Results_Integron_Finder_mysequences/tmp_ACBA.0917.00019.0001/ACBA.0917.00019.0001_attc.res
+&gt;ACBA.0917.00019.0001/315102-315161
+GTCTAACAATTC---GTTCAAGCCGACGCCGCT---------------------------
+----------------------TCGCGGCGCGGCTTAACTCAAGC----GTTAGAT
+&gt;ACBA.0917.00019.0001/313260-313368
+ACCTAACAATTC---GTTCAAGCCGAGATCGCTTCGCGGCCGCGGAGTTGTTCGGAAAAA
+TTGTCACAACGCCGCGGCCGCAAAGCGCTCCGGCTTAACTCAGGC----GTTGGGC
+&gt;ACBA.0917.00019.0001/313837-313906
+GCCCAACATGGC---GCTCAAGCCGACCGGCCAGCCCT----------------------
+-----------------GCGGGCTGTCCGTCGGCTTAGCTAGGGC----GTTAGAG
+</pre></div>
+</div>
+<p>The possible outformat are:</p>
+<ul class="simple">
+<li><p>stockholm</p></li>
+<li><p>pfam</p></li>
+<li><p>a2m</p></li>
+<li><p>psiblast</p></li>
+<li><p>afa</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="changes.html" class="btn btn-neutral float-left" title="What’s new ?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="webserver.html" class="btn btn-neutral float-right" title="web server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

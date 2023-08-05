@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="What’s new ?" href="changes.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user_guide/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<span id="install"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
+<section id="integronfinder-dependencies">
+<span id="dependencies"></span><h2>IntegronFinder dependencies<a class="headerlink" href="#integronfinder-dependencies" title="Permalink to this headline"></a></h2>
+<p>IntegronFinder is built with Python &gt;= 3.4, and a few libraries are needed:</p>
+<ul class="simple">
+<li><p>Python &gt;=3.7,&lt;=3.10</p></li>
+<li><p>Pandas &gt;=1.1.5,&lt;=1.4.0</p></li>
+<li><p>Numpy &gt;=1.19.4,&lt;=1.22.1</p></li>
+<li><p>Biopython &gt;=1.78,&lt;=1.79</p></li>
+<li><p>Matplotlib &gt;=3.3.3,&lt;=3.5.1</p></li>
+<li><p>colorlog</p></li>
+</ul>
+<p>From version 1.5.1, integron_finder will check and install theses libraries for you.</p>
+<p>In addition, IntegronFinder has external dependencies, which have to be
+installed prior the use of the program (click to access the corresponding
+website).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://hmmer.janelia.org/">HMMER</a> &gt;=3.1b2,&lt;=3.3.2</p></li>
+<li><p><a class="reference external" href="http://infernal.janelia.org/">INFERNAL</a> &gt;=1.1.2,&lt;=1.1.4</p></li>
+<li><p><a class="reference external" href="https://github.com/hyattpd/Prodigal/releases">Prodigal</a> &gt;V2.6.2,&lt;=V2.6.3</p></li>
+<li><p><a class="reference external" href="https://www.nextflow.io/">Nextflow</a> (for parallelization)</p></li>
+</ul>
+<p>After installation of these programs, they should be in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code> (<em>i.e.</em>
+you can type in a terminal <code class="docutils literal notranslate"><span class="pre">hmmsearch</span></code>, <code class="docutils literal notranslate"><span class="pre">cmsearch</span></code>, or <code class="docutils literal notranslate"><span class="pre">prodigal</span></code> and a
+<code class="docutils literal notranslate"><span class="pre">command</span> <span class="pre">not</span> <span class="pre">found</span></code> shall not be displayed). If you have them installed
+somewhere else, please refer to integron_finder’s parameters to give complete path to
+IntegronFinder.</p>
+</section>
+<section id="installation-procedure">
+<span id="id1"></span><h2>Installation procedure<a class="headerlink" href="#installation-procedure" title="Permalink to this headline"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When installing a new version (up to 2.0 included) of IntegronFinder,
+do not forget to <a class="reference internal" href="#uninstallation"><span class="std std-ref">uninstall</span></a> the previous version installed !</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If You upgrading from version prior to 2.0 to 2.0 be careful the python used changed for 3.x.
+The python 2.7 is not supported anymore. So if you installed <code class="docutils literal notranslate"><span class="pre">integron_finder</span></code> within a virtualenv
+you need to create a new one based on python3.</p>
+</div>
+<section id="from-version-2-0">
+<h3>From Version 2.0<a class="headerlink" href="#from-version-2-0" title="Permalink to this headline"></a></h3>
+<section id="system-wide-installation">
+<h4>System wide installation<a class="headerlink" href="#system-wide-installation" title="Permalink to this headline"></a></h4>
+<ol class="arabic">
+<li><p>Open a terminal and hit (not recommended):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>On recent Debian/Ubuntu the –user option is forced. So use of –root option give an unexpected behavior
+and you cannot use –prefix option at all unless you add option –system
+for instance</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">system</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">tmp</span><span class="o">/</span><span class="n">test_if</span> <span class="o">--</span><span class="n">system</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</div>
+<ol class="arabic" start="2">
+<li><p>To get an updated version (no need to uninstall):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="user-wide-installation">
+<h4>User wide installation<a class="headerlink" href="#user-wide-installation" title="Permalink to this headline"></a></h4>
+<ol class="arabic">
+<li><p>Open a terminal and hit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="installation-in-a-virtualenv">
+<h4>Installation in a virtualenv<a class="headerlink" href="#installation-in-a-virtualenv" title="Permalink to this headline"></a></h4>
+<p>The virtual environment (<a class="reference external" href="https://docs.python.org/3/library/venv.html">virtualenv</a>) is a system to isolate a python program from the system and avoid libraries conflict.
+So you can install a different python or libraries version than your system in each virtualenv.
+So if you update the system it will not change anything for your program and <em>vice versa</em>.
+If you want to remove the program just remove the virtual environment.</p>
+<p>Create a virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">Integron_Finder</span>
+</pre></div>
+</div>
+<p>or on some systems:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">virtualenv</span> <span class="o">-</span><span class="n">p</span> <span class="n">python3</span> <span class="n">Integron_Finder</span>
+</pre></div>
+</div>
+<p>activate you virtualenv:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">Integron_Finder</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>The name of the virtualenv appear in parenthesis at the beginning of the prompt.
+Then install integron_finder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+<p>To run integron finder, you have to activate (once per session) the virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span>  <span class="n">Integron_Finder</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>When you do not need to use integron_finder just deactivate the virtual environment.
+In the active terminal just type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deactivate</span>
+</pre></div>
+</div>
+<p>The integron_finder command will disappear from the path.
+The name of the virtualenv disappear from the prompt.</p>
+</section>
+<section id="conda-package">
+<h4>Conda Package<a class="headerlink" href="#conda-package" title="Permalink to this headline"></a></h4>
+<p>From 2.0 version, Integron_Finder is available as <a class="reference external" href="https://conda.io/docs/index.html">conda</a> package.
+Integron_finder is in <a class="reference external" href="https://bioconda.github.io/">bioconda</a> From 2.0 version, Integron_Finder is available as [conda](<a class="reference external" href="https://conda.io/docs/index.html">https://conda.io/docs/index.html</a>) package.
+Integron_finder is in [bioconda](<a class="reference external" href="https://bioconda.github.io/">https://bioconda.github.io/</a>) channel.
+(The advantage with this solution is that it will install prodigal, hmmer, and infernal too.)</p>
+<ol class="arabic">
+<li><p>install conda</p></li>
+<li><p>Set up channels</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">defaults</span>
+<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">bioconda</span>
+</pre></div>
+</div>
+</li>
+<li><p>install integron_finder</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+<p>(The advantage with this solution is that it will install prodigal, hmmer, and infernal too.)</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="from-version-1-5-1-and-after">
+<h3>From Version 1.5.1 and after<a class="headerlink" href="#from-version-1-5-1-and-after" title="Permalink to this headline"></a></h3>
+<ol class="arabic">
+<li><p>Open a terminal and hit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</li>
+<li><p>To get an updated version (no need to uninstall):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="for-version-1-5-and-before">
+<h3>For Version 1.5 and before<a class="headerlink" href="#for-version-1-5-and-before" title="Permalink to this headline"></a></h3>
+<ol class="arabic">
+<li><p>Download the <a class="reference external" href="https://github.com/gem-pasteur/Integron_Finder/releases">latest release</a> that can be installed like this (v1.5)</p></li>
+<li><p>Uncompress it</p></li>
+<li><p>In a shell (<em>e.g.</em> a terminal), go to the directory and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Super-user privileges (<em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">sudo</span></code>) are necessary if you want to
+install the program in the general file architecture.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you do not have the privileges, or if you do not want to install
+IntegronFinder in the Python libraries of your system, you can install
+IntegronFinder in a virtual environment. See <a class="reference external" href="https://docs.python.org/3/library/venv.html">virtualenv</a> or if you’re using
+Canopy, see <a class="reference external" href="http://docs.enthought.com/canopy/configure/canopy-cli.html#canopy-cli-venv">Canopy CLI</a></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The installer does not work with pure setuptools procedure, it does not work in egg.
+Unless you disable egg by using the <code class="docutils literal notranslate"><span class="pre">--root</span></code> option.
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span> <span class="pre">--root</span> <span class="pre">/prefix/where/to/install/integron_finder</span></code></p>
+</div>
+</section>
+</section>
+<section id="uninstallation-procedure">
+<span id="uninstallation"></span><h2>Uninstallation procedure<a class="headerlink" href="#uninstallation-procedure" title="Permalink to this headline"></a></h2>
+<section id="id2">
+<h3>From Version 1.5.1 and after<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<p>To uninstall IntegronFinder, run in the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">pip</span> <span class="n">uninstall</span> <span class="n">integron_finder</span>
+</pre></div>
+</div>
+<p>It will uninstall integron_finder executable</p>
+</section>
+<section id="from-version-1-0-to-version-1-5">
+<h3>From Version 1.0 to Version 1.5<a class="headerlink" href="#from-version-1-0-to-version-1-5" title="Permalink to this headline"></a></h3>
+<p>Go to the directory from where you installed IntegronFinder (e.g. Integron_Finder-1.5), and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">uninstall</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="how-to-install-python">
+<span id="python-install"></span><h2>How to install Python<a class="headerlink" href="#how-to-install-python" title="Permalink to this headline"></a></h2>
+<p>The purpose of this section is to provide some help about installing python
+dependencies for IntegronFinder if you never installed any python package.</p>
+<p>As IntegronFinder has not been tested on Windows, we assume Unix-based operating system.
+For Windows users, the best would be to install a unix virtual machine on your computer.</p>
+<p>Usually a python distribution is already installed on your machine.
+However, if you don’t know how to install libraries, we recommend to re-install it from a distribution which contains pre-compiled libraries.
+There are two main distributions (click to access website):</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://store.enthought.com/">Enthought Canopy</a></p></li>
+<li><p><a class="reference external" href="https://www.anaconda.com/download/">Anaconda</a></p></li>
+</ul>
+<p>Download version 3.x which correspond to your machine,
+then make sure that python from these distributions is the default one
+(you can possibly choose that in the preference and/or during installation).
+Make sure Biopython is installed, otherwise, you will have to install Biopython.
+<code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span></code> are recommended as a python packages installer.</p>
+<p>It works as follow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span><span class="p">)</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">Biopython</span><span class="o">==</span><span class="mf">1.71</span>
+</pre></div>
+</div>
+<p>To install version 1.71 of Biopython (recommended for IntegronFinder).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t manage to install all the packages, try googling the error, or don’t hesitate to ask a question on <a class="reference external" href="http://stackoverflow.com/">stackoverflow</a>.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changes.html" class="btn btn-neutral float-right" title="What’s new ?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

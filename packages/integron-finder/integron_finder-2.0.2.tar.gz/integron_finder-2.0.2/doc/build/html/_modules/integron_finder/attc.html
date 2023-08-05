@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.attc &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.attc</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.attc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.infernal</span> <span class="kn">import</span> <span class="n">local_max</span><span class="p">,</span> <span class="n">expand</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="search_attc"><a class="viewcode-back" href="../../developer_guide/api/attc.html#integron_finder.attc.search_attc">[docs]</a><span class="k">def</span> <span class="nf">search_attc</span><span class="p">(</span><span class="n">attc_df</span><span class="p">,</span> <span class="n">keep_palindromes</span><span class="p">,</span> <span class="n">dist_threshold</span><span class="p">,</span> <span class="n">replicon_size</span><span class="p">,</span> <span class="n">rep_topology</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse the attc data set (sorted along start site) for the given replicon and return list of arrays.</span>
+<span class="sd">    One array is composed of attC sites on the same strand and separated by a distance less than dist_threshold.</span>
+
+<span class="sd">    :param attc_df:</span>
+<span class="sd">    :type attc_df: :class:`pandas.DataFrame`</span>
+<span class="sd">    :param bool keep_palindromes: True if the palindromes must be kept in attc result, False otherwise</span>
+<span class="sd">    :param int dist_threshold: the maximal distance between 2 elements to aggregate them</span>
+<span class="sd">    :param int replicon_size: the replicon number of base pair</span>
+<span class="sd">    :param str rep_topology: the replicon topology should be &#39;lin&#39; or &#39;circ&#39;</span>
+<span class="sd">    :return: a list attC sites found on replicon</span>
+<span class="sd">    :rtype: list of :class:`pandas.DataFrame` objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">overlap</span><span class="p">(</span><span class="n">attc1</span><span class="p">,</span> <span class="n">attc2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        compare two attc sites (attc2 must start at smae position or after attc1)</span>
+<span class="sd">        and remove attc sites which overlap more than 50%</span>
+<span class="sd">        keep the one with lower evalue</span>
+
+<span class="sd">        :param attc1: the first attc to compare</span>
+<span class="sd">        :type attc1: pandas.Series with fields</span>
+<span class="sd">                     &quot;Accession_number&quot;, &quot;cm_attC&quot;, &quot;cm_debut&quot;, &quot;cm_fin&quot;, &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;sens&quot;, &quot;evalue&quot;</span>
+<span class="sd">        :param attc2: the second attc to compare</span>
+<span class="sd">        :type attc2: pandas.Series with fields</span>
+<span class="sd">                     &quot;Accession_number&quot;, &quot;cm_attC&quot;, &quot;cm_debut&quot;, &quot;cm_fin&quot;, &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;sens&quot;, &quot;evalue&quot;</span>
+<span class="sd">        :return: a tuple of attc (pandas Series)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attc2</span><span class="o">.</span><span class="n">pos_beg</span> <span class="o">&gt;=</span> <span class="n">attc1</span><span class="o">.</span><span class="n">pos_end</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">attc1</span><span class="p">,</span> <span class="n">attc2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attc_1_len</span> <span class="o">=</span> <span class="n">attc1</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">-</span> <span class="n">attc1</span><span class="o">.</span><span class="n">pos_beg</span>
+            <span class="n">overlap</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">attc1</span><span class="o">.</span><span class="n">pos_end</span><span class="p">,</span> <span class="n">attc2</span><span class="o">.</span><span class="n">pos_end</span><span class="p">)</span> <span class="o">-</span> <span class="n">attc2</span><span class="o">.</span><span class="n">pos_beg</span> <span class="c1"># by def attc_2.pos_beg &gt;= attc_1.pos_beg</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">overlap</span> <span class="o">/</span> <span class="n">attc_1_len</span>
+            <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="mf">.5</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">attc1</span><span class="p">,</span> <span class="p">)</span> <span class="k">if</span> <span class="n">attc1</span><span class="o">.</span><span class="n">evalue</span> <span class="o">&lt;</span> <span class="n">attc2</span><span class="o">.</span><span class="n">evalue</span> <span class="k">else</span> <span class="p">(</span><span class="n">attc2</span><span class="p">,</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">attc1</span><span class="p">,</span> <span class="n">attc2</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">position_bkp_minus</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">position_bkp_plus</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">attc_plus</span> <span class="o">=</span> <span class="n">attc_df</span><span class="p">[</span><span class="n">attc_df</span><span class="o">.</span><span class="n">sens</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">attc_minus</span> <span class="o">=</span> <span class="n">attc_df</span><span class="p">[</span><span class="n">attc_df</span><span class="o">.</span><span class="n">sens</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_palindromes</span><span class="p">:</span>
+        <span class="n">attc_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">attc_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">attc_to_keep</span> <span class="o">=</span> <span class="p">[</span><span class="n">attc_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">row_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">attc_df</span><span class="p">)):</span>
+                <span class="n">previous_attc</span> <span class="o">=</span> <span class="n">attc_to_keep</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="n">attc_to_keep</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">overlap</span><span class="p">(</span><span class="n">previous_attc</span><span class="p">,</span> <span class="n">attc_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row_idx</span><span class="p">]))</span>
+            <span class="n">attc_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">attc_to_keep</span><span class="p">)</span>
+        <span class="n">attc_plus</span> <span class="o">=</span> <span class="n">attc_df</span><span class="p">[</span><span class="n">attc_df</span><span class="o">.</span><span class="n">sens</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">attc_minus</span> <span class="o">=</span> <span class="n">attc_df</span><span class="p">[</span><span class="n">attc_df</span><span class="o">.</span><span class="n">sens</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># can be reordered</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">attc_plus</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">dist_threshold</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span><span class="n">attc_minus</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">dist_threshold</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">attc_plus</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">bkp_plus</span> <span class="o">=</span> <span class="n">attc_plus</span><span class="p">[</span><span class="n">attc_plus</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">dist_threshold</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">position_bkp_plus</span> <span class="o">=</span> <span class="p">[</span><span class="n">attc_plus</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bkp_plus</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">attc_minus</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">bkp_minus</span> <span class="o">=</span> <span class="n">attc_minus</span><span class="p">[(</span><span class="n">attc_minus</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">dist_threshold</span><span class="p">)]</span><span class="o">.</span><span class="n">index</span>
+            <span class="n">position_bkp_minus</span> <span class="o">=</span> <span class="p">[</span><span class="n">attc_minus</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_loc</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bkp_minus</span><span class="p">]</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">attc_plus</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">attc_minus</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attc_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">attc_array</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attc_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">attc_df</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attc_plus</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">array_plus</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array_plus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">attc_plus</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">position_bkp_plus</span><span class="p">)</span>
+            <span class="c1"># array_plus is a list of np.array</span>
+            <span class="n">first_pos_beg</span> <span class="o">=</span> <span class="n">array_plus</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">last_pos_beg</span> <span class="o">=</span> <span class="n">array_plus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_plus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> \
+                    <span class="ow">and</span> <span class="n">rep_topology</span> <span class="o">==</span> <span class="s1">&#39;circ&#39;</span> \
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">first_pos_beg</span> <span class="o">-</span> <span class="n">last_pos_beg</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span> <span class="o">&lt;</span> <span class="n">dist_threshold</span><span class="p">:</span>
+
+                <span class="n">array_plus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">array_plus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">array_plus</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">del</span> <span class="n">array_plus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">attc_minus</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">array_minus</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">array_minus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">attc_minus</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">position_bkp_minus</span><span class="p">)</span>
+            <span class="c1"># array_minus is a list of np.array</span>
+            <span class="n">first_pos_beg</span> <span class="o">=</span> <span class="n">array_minus</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">last_pos_beg</span> <span class="o">=</span> <span class="n">array_minus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_minus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> \
+                    <span class="ow">and</span> <span class="n">rep_topology</span> <span class="o">==</span> <span class="s1">&#39;circ&#39;</span> \
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">first_pos_beg</span> <span class="o">-</span> <span class="n">last_pos_beg</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span> <span class="o">&lt;</span> <span class="n">dist_threshold</span><span class="p">:</span>
+                <span class="n">array_minus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">array_minus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">array_minus</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">del</span> <span class="n">array_minus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">last_pos_beg</span> <span class="o">=</span> <span class="n">array_minus</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">array_plus</span> <span class="o">+</span> <span class="n">array_minus</span>
+
+        <span class="n">attc_array</span> <span class="o">=</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_attC&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span>
+                                               <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;sens&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">]</span>
+        <span class="c1"># convert positions to int, and evalue to float</span>
+        <span class="n">intcols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attc_array</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">intcols</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">intcols</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">a</span><span class="p">[</span><span class="s2">&quot;evalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="s2">&quot;evalue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">attc_array</span></div>
+
+
+<div class="viewcode-block" id="find_attc_max"><a class="viewcode-back" href="../../developer_guide/api/attc.html#integron_finder.attc.find_attc_max">[docs]</a><span class="k">def</span> <span class="nf">find_attc_max</span><span class="p">(</span><span class="n">integrons</span><span class="p">,</span> <span class="n">replicon</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="p">,</span>
+                  <span class="n">model_attc_path</span><span class="p">,</span>
+                  <span class="n">max_attc_size</span><span class="p">,</span> <span class="n">min_attc_size</span><span class="p">,</span>
+                  <span class="n">evalue_attc</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                  <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+                  <span class="n">cmsearch_bin</span><span class="o">=</span><span class="s1">&#39;cmsearch&#39;</span><span class="p">,</span>
+                  <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Look for attC site with cmsearch --max option which remove all heuristic filters.</span>
+<span class="sd">    As this option make the algorithm way slower, we only run it in the region around a</span>
+<span class="sd">    hit. We call it local_max or eagle_eyes.</span>
+
+<span class="sd">    **Default hit**</span>
+
+<span class="sd">    .. code-block:: text</span>
+<span class="sd">    </span>
+<span class="sd">                         attC</span>
+<span class="sd">        __________________--&gt;____--&gt;_________--&gt;_____________</span>
+<span class="sd">        ______&lt;--------______________________________________</span>
+<span class="sd">                 intI</span>
+<span class="sd">                      ^-------------------------------------^</span>
+<span class="sd">                     Search-space with --local_max</span>
+
+<span class="sd">    **Updated hit**</span>
+
+<span class="sd">    .. code-block:: text</span>
+
+<span class="sd">                         attC          ***         ***</span>
+<span class="sd">        __________________--&gt;____--&gt;___--&gt;___--&gt;___--&gt;_______</span>
+<span class="sd">        ______&lt;--------______________________________________</span>
+<span class="sd">                 intI</span>
+
+<span class="sd">    :param integrons: the integrons may contain or not attC or intI.</span>
+<span class="sd">    :type integrons: list of :class:`Integron` objects.</span>
+<span class="sd">    :param replicon: replicon where the integrons were found (genomic fasta file).</span>
+<span class="sd">    :type replicon: :class:`Bio.Seq.SeqRecord` object.</span>
+<span class="sd">    :param int distance_threshold: the maximal distance between 2 elements to aggregate them.</span>
+<span class="sd">    :param float evalue_attc: evalue threshold to filter out hits above it.</span>
+<span class="sd">    :param str model_attc_path: path to the attc model (Covariance Matrix).</span>
+<span class="sd">    :param int max_attc_size: maximum value for the attC size.</span>
+<span class="sd">    :param int min_attc_size: minimum value for the attC size.</span>
+<span class="sd">    :param bool circular: True if replicon is circular, False otherwise.</span>
+<span class="sd">    :param str out_dir: The directory where to write results</span>
+<span class="sd">                        used indirectly by some called functions as :func:`infernal.local_max` or `infernal.expand`.</span>
+<span class="sd">    :param str cmsearch_bin: The path to the `cmsearch_bin` binary to use</span>
+<span class="sd">    :param int cpu: call local_max with the right number of cpu</span>
+<span class="sd">    :return:</span>
+<span class="sd">    :rtype: :class:`pd.DataFrame` object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">size_replicon</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">replicon</span><span class="p">)</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Accession_number&#39;</span><span class="p">,</span> <span class="s1">&#39;cm_attC&#39;</span><span class="p">,</span> <span class="s1">&#39;cm_debut&#39;</span><span class="p">,</span> <span class="s1">&#39;cm_fin&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_end&#39;</span><span class="p">,</span> <span class="s1">&#39;sens&#39;</span><span class="p">,</span> <span class="s1">&#39;evalue&#39;</span><span class="p">]</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Accession_number&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;cm_attC&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;cm_debut&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;cm_fin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;pos_beg&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_end&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;sens&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;evalue&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span>
+                 <span class="p">}</span>
+
+    <span class="n">max_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">merge_previous_attc_w_local_max</span><span class="p">(</span><span class="n">integron</span><span class="p">,</span> <span class="n">local_max</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param integron:</span>
+<span class="sd">        :param local_max:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">previous_attc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+            <span class="s1">&#39;Accession_number&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="p">),</span>
+            <span class="s1">&#39;cm_attC&#39;</span><span class="p">:</span> <span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="s1">&#39;cm_debut&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="p">),</span>  <span class="c1"># not use</span>
+            <span class="s1">&#39;cm_fin&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="p">),</span>  <span class="c1"># not use</span>
+            <span class="s1">&#39;pos_beg&#39;</span><span class="p">:</span> <span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="o">.</span><span class="n">pos_beg</span><span class="p">,</span>
+            <span class="s1">&#39;pos_end&#39;</span><span class="p">:</span> <span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="o">.</span><span class="n">pos_end</span><span class="p">,</span>
+            <span class="s1">&#39;sens&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span> <span class="k">if</span> <span class="n">strand</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;+&#39;</span> <span class="k">for</span> <span class="n">strand</span> <span class="ow">in</span> <span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="o">.</span><span class="n">strand</span><span class="p">],</span>
+            <span class="s1">&#39;evalue&#39;</span><span class="p">:</span> <span class="n">integron</span><span class="o">.</span><span class="n">attC</span><span class="o">.</span><span class="n">evalue</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">previous_attc</span> <span class="o">=</span> <span class="n">previous_attc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+
+        <span class="n">all_attc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">previous_attc</span><span class="p">,</span> <span class="n">local_max</span><span class="p">))</span>
+        <span class="n">all_attc</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">attc_init</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">all_attc</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="c1"># there is only one row in attc_init</span>
+        <span class="n">attc_init</span><span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attc_init</span><span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span>
+        <span class="n">attc_init</span><span class="p">[</span><span class="s2">&quot;pos_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attc_init</span><span class="p">[</span><span class="s2">&quot;pos_end&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">10</span>
+        <span class="c1"># I add a first row otherwise the first row is always discarded</span>
+        <span class="c1"># as diff return NaN</span>
+        <span class="n">all_attc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">attc_init</span><span class="p">,</span> <span class="n">all_attc</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">all_attc</span> <span class="o">=</span> <span class="n">all_attc</span><span class="o">.</span><span class="n">loc</span><span class="p">[((</span><span class="n">all_attc</span><span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span>
+                                 <span class="p">(</span><span class="n">all_attc</span><span class="p">[</span><span class="s2">&quot;pos_end&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">))</span> <span class="o">&amp;</span>
+                                <span class="p">(</span><span class="n">all_attc</span><span class="p">[</span><span class="s2">&quot;sens&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">all_attc</span><span class="p">[</span><span class="s2">&quot;sens&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">())</span>
+                                 <span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">all_attc</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">integrons</span><span class="p">:</span>
+        <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">max_elt</span> <span class="o">=</span> <span class="n">max_elt</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+        <span class="n">full_element</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>  <span class="c1"># dataframe</span>
+        <span class="c1"># full_element structure</span>
+        <span class="c1"># &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;strand&quot;, &quot;evalue&quot;, &quot;type_elt&quot;, &quot;model&quot;,</span>
+        <span class="c1"># &quot;distance_2attC&quot;, &quot;annotation&quot;, &quot;considered_topology&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">full_element</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span><span class="p">):</span>
+            <span class="c1"># Where is the integrase compared to the attc sites (no matter the strand) :</span>
+            <span class="n">integrase_is_left</span> <span class="o">=</span> <span class="p">((</span><span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                                  <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">%</span> <span class="n">size_replicon</span> <span class="o">&lt;</span>
+                                 <span class="p">(</span><span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span>
+                                  <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="n">size_replicon</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">integrase_is_left</span><span class="p">:</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">distance_threshold_left</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">distance_threshold_right</span> <span class="o">=</span> <span class="n">distance_threshold</span>
+
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># is right</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">distance_threshold_left</span> <span class="o">=</span> <span class="n">distance_threshold</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">distance_threshold_right</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold_left</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold_right</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold_left</span><span class="p">)</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">size_replicon</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold_right</span><span class="p">)</span>
+
+            <span class="n">strand</span> <span class="o">=</span> <span class="s2">&quot;top&quot;</span> <span class="k">if</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strand</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bottom&quot;</span>
+            <span class="n">df_max</span> <span class="o">=</span> <span class="n">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span> <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">model_attc_path</span><span class="p">,</span>
+                               <span class="n">strand_search</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                               <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                               <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                               <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                               <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                               <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                               <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+            <span class="n">all_attc</span> <span class="o">=</span> <span class="n">merge_previous_attc_w_local_max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">df_max</span><span class="p">)</span>
+            <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_elt</span><span class="p">,</span> <span class="n">all_attc</span><span class="p">])</span>
+
+            <span class="c1"># If we find new attC after the last found with default algo and if the integrase is on the left</span>
+            <span class="c1"># (We don&#39;t expand over the integrase) :</span>
+            <span class="c1"># pos_beg - pos_end so it&#39;s the same, the distance will always be &gt; distance_threshold</span>
+
+            <span class="n">go_left</span> <span class="o">=</span> <span class="p">(</span><span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">all_attc</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                       <span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span> <span class="o">&lt;</span> <span class="n">distance_threshold</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">integrase_is_left</span>
+            <span class="n">go_right</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_attc</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span> <span class="o">&lt;</span> <span class="n">distance_threshold</span> <span class="ow">and</span> <span class="n">integrase_is_left</span>
+            <span class="n">max_elt</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                             <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">max_elt</span><span class="p">,</span>
+                             <span class="n">circular</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="p">,</span>
+                             <span class="n">model_attc_path</span><span class="p">,</span>
+                             <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                             <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                             <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                             <span class="n">search_left</span><span class="o">=</span><span class="n">go_left</span><span class="p">,</span> <span class="n">search_right</span><span class="o">=</span><span class="n">go_right</span><span class="p">,</span>
+                             <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                             <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                             <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">full_element</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;CALIN&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">max_final</span><span class="o">.</span><span class="n">pos_beg</span><span class="p">)]</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="c1"># if cluster don&#39;t overlap already max-searched region</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+                    <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+                    <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold</span><span class="p">)</span>
+                    <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">size_replicon</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold</span><span class="p">)</span>
+                <span class="n">strand</span> <span class="o">=</span> <span class="s2">&quot;top&quot;</span> <span class="k">if</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strand</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;bottom&quot;</span>
+
+                <span class="n">df_max</span> <span class="o">=</span> <span class="n">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span> <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span>
+                                   <span class="n">model_attc_path</span><span class="p">,</span>
+                                   <span class="n">strand_search</span><span class="o">=</span><span class="n">strand</span><span class="p">,</span>
+                                   <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                                   <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                                   <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                                   <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                                   <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                                   <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+                <span class="n">all_attc</span> <span class="o">=</span> <span class="n">merge_previous_attc_w_local_max</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">df_max</span><span class="p">)</span>
+
+                <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_elt</span><span class="p">,</span> <span class="n">all_attc</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">df_max</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>  <span class="c1"># Max can sometimes find bigger attC than permitted</span>
+                    <span class="n">go_left</span> <span class="o">=</span> <span class="p">(</span><span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">all_attc</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                               <span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span> <span class="o">&lt;</span> <span class="n">distance_threshold</span>
+                    <span class="n">go_right</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_attc</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">type_elt</span> <span class="o">==</span> <span class="s2">&quot;attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                                <span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span> <span class="o">&lt;</span> <span class="n">distance_threshold</span>
+                    <span class="n">max_elt</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                                     <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">max_elt</span><span class="p">,</span>
+                                     <span class="n">circular</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="p">,</span>
+                                     <span class="n">model_attc_path</span><span class="p">,</span>
+                                     <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                                     <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                                     <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                                     <span class="n">search_left</span><span class="o">=</span><span class="n">go_left</span><span class="p">,</span> <span class="n">search_right</span><span class="o">=</span><span class="n">go_right</span><span class="p">,</span>
+                                     <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                                     <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                                     <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">full_element</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;In0&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">full_element</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="s2">&quot;Phage_integrase&quot;</span><span class="p">):</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_beg</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="n">full_element</span><span class="p">[</span><span class="n">full_element</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="s2">&quot;intI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pos_end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+                    <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+                    <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">size_replicon</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">-</span> <span class="n">distance_threshold</span><span class="p">)</span>
+                    <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">size_replicon</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">+</span> <span class="n">distance_threshold</span><span class="p">)</span>
+                <span class="n">df_max</span> <span class="o">=</span> <span class="n">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                                   <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span>
+                                   <span class="n">model_attc_path</span><span class="p">,</span>
+                                   <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                                   <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                                   <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                                   <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                                   <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                                   <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+                <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_elt</span><span class="p">,</span> <span class="n">df_max</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">max_elt</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="n">max_elt</span> <span class="o">=</span> <span class="n">expand</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                                     <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">max_elt</span><span class="p">,</span>
+                                     <span class="n">circular</span><span class="p">,</span> <span class="n">distance_threshold</span><span class="p">,</span>
+                                     <span class="n">model_attc_path</span><span class="p">,</span>
+                                     <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                                     <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                                     <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                                     <span class="n">search_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">search_right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                                     <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                                     <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">)</span>
+
+        <span class="n">max_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_final</span><span class="p">,</span> <span class="n">max_elt</span><span class="p">])</span>
+        <span class="n">max_final</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">max_final</span><span class="o">.</span><span class="n">columns</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">max_final</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">max_final</span><span class="p">)))</span>
+    <span class="n">max_final</span> <span class="o">=</span> <span class="n">max_final</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">max_final</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

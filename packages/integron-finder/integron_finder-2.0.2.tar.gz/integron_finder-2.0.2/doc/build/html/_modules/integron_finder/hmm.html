@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.hmm &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.hmm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.hmm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># display warning only for non installed integron_finder</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">BiopythonExperimentalWarning</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">BiopythonExperimentalWarning</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SearchIO</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="scan_hmm_bank"><a class="viewcode-back" href="../../developer_guide/api/hmm.html#integron_finder.hmm.scan_hmm_bank">[docs]</a><span class="k">def</span> <span class="nf">scan_hmm_bank</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param str path: - if the path is a dir:</span>
+<span class="sd">                       return all files ending with .hmm in the dir</span>
+<span class="sd">                     - if the path is a file:</span>
+<span class="sd">                       parse the file, each line must be an expression (glob)</span>
+<span class="sd">                       pointing to hmm files</span>
+<span class="sd">    :return: lists of hmm files to consider for annotation</span>
+<span class="sd">    :rtype: list of str</span>
+<span class="sd">    :raise IOError: if the path does not exists</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">real_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">real_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">real_path</span><span class="p">):</span>
+            <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_path</span><span class="p">,</span> <span class="s1">&#39;*.hmm&#39;</span><span class="p">))</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">real_path</span><span class="p">,</span> <span class="s1">&#39;*.HMM&#39;</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">real_path</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">real_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">hmm_bank</span><span class="p">:</span>
+                <span class="n">wrong_lines</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">bank_path</span> <span class="ow">in</span> <span class="n">hmm_bank</span><span class="p">:</span>
+                    <span class="n">bank_path</span> <span class="o">=</span> <span class="n">bank_path</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">bank_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                        <span class="k">continue</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isabs</span><span class="p">(</span><span class="n">bank_path</span><span class="p">):</span>
+                        <span class="n">bank_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">bank_path</span><span class="p">)</span>
+                    <span class="n">bank_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">bank_path</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">bank_files</span><span class="p">:</span>
+                        <span class="n">wrong_lines</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;func_annot &#39;</span><span class="si">{}</span><span class="s2">&#39; does not match any files.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bank_path</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">wrong_lines</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Too many lines with no hmm file in </span><span class="si">{}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Is there right file?&quot;</span> \
+                                  <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">see documentation tutorial functional annotation&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">real_path</span><span class="p">)</span>
+                            <span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">bank_files</span><span class="p">:</span>
+                            <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;the hmm </span><span class="si">{}</span><span class="s2"> will be used for functional annotation&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                        <span class="n">files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bank_files</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">files</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> no such file or directory&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="read_hmm"><a class="viewcode-back" href="../../developer_guide/api/hmm.html#integron_finder.hmm.read_hmm">[docs]</a><span class="k">def</span> <span class="nf">read_hmm</span><span class="p">(</span><span class="n">replicon_id</span><span class="p">,</span> <span class="n">prot_db</span><span class="p">,</span> <span class="n">infile</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">evalue</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">coverage</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that parse hmmer --out output and returns a pandas DataFrame</span>
+<span class="sd">    filter output by evalue and coverage. (Being % of the profile aligned)</span>
+
+<span class="sd">    :param str replicon_id: the id of the replicon</span>
+<span class="sd">    :param prot_db: The protein database corresponding to the replicon translation</span>
+<span class="sd">    :type prot_db: :class:`integron_finder.prot_db.ProteinDB` object.</span>
+<span class="sd">    :param str infile: the hmm output (in tabulated format) to parse</span>
+<span class="sd">    :param cfg: the config</span>
+<span class="sd">    :type cfg: :class:`integron_finder.config.Config` object.</span>
+<span class="sd">    :param float evalue: filter out hits with evalue greater tha evalue.</span>
+<span class="sd">    :param float coverage: filter out hits with coverage under coverage (% of the profile aligned)</span>
+<span class="sd">    :returns: data Frame with columns:</span>
+
+<span class="sd">              | &quot;Accession_number&quot;, &quot;query_name&quot;, &quot;ID_query&quot;, &quot;ID_prot&quot;, &quot;strand&quot;, &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;evalue&quot;</span>
+<span class="sd">              | each row correspond to a hit.</span>
+
+<span class="sd">    :rtype: a :class:`pandas.DataFrame`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;query_name&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_query&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;ID_prot&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;evalue&quot;</span><span class="p">,</span> <span class="s2">&quot;hmmfrom&quot;</span><span class="p">,</span> <span class="s2">&quot;hmmto&quot;</span><span class="p">,</span> <span class="s2">&quot;alifrom&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;alito&quot;</span><span class="p">,</span> <span class="s2">&quot;len_profile&quot;</span><span class="p">])</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Parse </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">infile</span><span class="p">))</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">SearchIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;hmmer3-text&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">query_result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gen</span><span class="p">):</span>
+        <span class="n">len_profile</span> <span class="o">=</span> <span class="n">query_result</span><span class="o">.</span><span class="n">seq_len</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query_result</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">id_query</span> <span class="o">=</span> <span class="n">query_result</span><span class="o">.</span><span class="n">accession</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">id_query</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+        <span class="k">for</span> <span class="n">idx2</span><span class="p">,</span> <span class="n">hit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">query_result</span><span class="o">.</span><span class="n">hits</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">hit</span><span class="o">.</span><span class="n">hsps</span><span class="p">:</span>
+                <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> does not contains any hsps. skip it.&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">id_prot</span> <span class="o">=</span> <span class="n">hit</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="n">_</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">pos_beg</span><span class="p">,</span> <span class="n">pos_end</span> <span class="o">=</span> <span class="n">prot_db</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="n">evalue_tmp</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">hmmfrom</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">hmmto</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">alifrom</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">alito</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">hsp</span> <span class="ow">in</span> <span class="n">hit</span><span class="o">.</span><span class="n">hsps</span><span class="p">:</span>
+                <span class="c1"># strand = hsp.query_strand</span>
+                <span class="n">evalue_tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hsp</span><span class="o">.</span><span class="n">evalue</span><span class="p">)</span>
+                <span class="n">hmmfrom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hsp</span><span class="o">.</span><span class="n">query_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">hmmto</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hsp</span><span class="o">.</span><span class="n">query_end</span><span class="p">)</span>
+                <span class="n">alifrom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hsp</span><span class="o">.</span><span class="n">hit_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">alito</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hsp</span><span class="o">.</span><span class="n">hit_end</span><span class="p">)</span>
+
+            <span class="n">best_evalue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">evalue_tmp</span><span class="p">)</span>
+
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;ID_prot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_prot</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;ID_query&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_query</span>  <span class="c1"># &quot;-&quot;  # remnant of ancient parsing function to keep data structure</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos_beg</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos_end</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">strand</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">evalue_tmp</span><span class="p">[</span><span class="n">best_evalue</span><span class="p">]</span>   <span class="c1"># i-evalue</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;hmmfrom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmfrom</span><span class="p">[</span><span class="n">best_evalue</span><span class="p">]</span>   <span class="c1"># hmmfrom</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;hmmto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hmmto</span><span class="p">[</span><span class="n">best_evalue</span><span class="p">]</span>     <span class="c1"># hmm to</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;alifrom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alifrom</span><span class="p">[</span><span class="n">best_evalue</span><span class="p">]</span>   <span class="c1"># alifrom</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;alito&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alito</span><span class="p">[</span><span class="n">best_evalue</span><span class="p">]</span>  <span class="c1"># ali to</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;len_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">len_profile</span><span class="p">)</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;Accession_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">replicon_id</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="n">idx2</span><span class="p">,</span> <span class="s2">&quot;query_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">query</span>
+
+    <span class="n">intcols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;strand&quot;</span><span class="p">]</span>
+    <span class="n">floatcol</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;evalue&quot;</span><span class="p">,</span> <span class="s2">&quot;len_profile&quot;</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">intcols</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">intcols</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">floatcol</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">floatcol</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(((</span><span class="n">df</span><span class="o">.</span><span class="n">hmmto</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">hmmfrom</span><span class="p">)</span> <span class="o">/</span> <span class="n">df</span><span class="o">.</span><span class="n">len_profile</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">coverage</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">evalue</span> <span class="o">&lt;</span> <span class="n">evalue</span><span class="p">)]</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+
+    <span class="n">df_out</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;query_name&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_query&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_prot&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;strand&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">df_out</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

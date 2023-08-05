@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.utils &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="make_multi_fasta_reader"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.make_multi_fasta_reader">[docs]</a><span class="k">def</span> <span class="nf">make_multi_fasta_reader</span><span class="p">(</span><span class="n">alphabet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fasta generator maker</span>
+
+<span class="sd">    :param alphabet: the alphabet store in the fasta generator closure</span>
+<span class="sd">    :return: generator to iterate on the fasta file in the same order as in fasta file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">fasta_iterator</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param path: The path to the fasta file.</span>
+<span class="sd">        :return: The sequence parsed.</span>
+<span class="sd">        :rtype: :class:`Bio.SeqRecord.SeqRecord` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">get_name_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">alphabet</span><span class="p">:</span>
+            <span class="n">seq_it</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">alphabet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seq_it</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">seq_it</span><span class="p">:</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="k">yield</span> <span class="n">seq</span>
+
+    <span class="k">return</span> <span class="n">fasta_iterator</span></div>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">Seq</span><span class="o">.</span><span class="n">IUPAC</span>
+    <span class="n">read_multi_prot_fasta</span> <span class="o">=</span> <span class="n">make_multi_fasta_reader</span><span class="p">(</span><span class="n">Seq</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">extended_protein</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="n">read_multi_prot_fasta</span> <span class="o">=</span> <span class="n">make_multi_fasta_reader</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FastaIterator"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator">[docs]</a><span class="k">class</span> <span class="nc">FastaIterator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allow to parse over a multi fasta file, and iterate over it</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        **The sequences order is not guarantee.**</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FastaIterator.__init__"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">replicon_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist_threshold</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1">#def __init__(self, path, alphabet=Seq.IUPAC.ambiguous_dna, replicon_name=None, dist_threshold=4000):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param str path: The path to the file containing the sequences.</span>
+<span class="sd">        :param alphabet: The authorized alphabet</span>
+<span class="sd">        :type alphabet: Bio.SeqIUPAC member</span>
+<span class="sd">        :param str replicon_name: The name of the replicon, if this specify all sequence.name will have this value</span>
+<span class="sd">        :param int dist_threshold: The minimum length for a replicon to be considered as circular.</span>
+<span class="sd">                                   Under this threshold even the provided topology is &#39;circular&#39;</span>
+<span class="sd">                                   the computation will be done with a &#39;linear&#39; topology.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span> <span class="o">=</span> <span class="n">Seq</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">ambiguous_dna</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">,</span>  <span class="n">alphabet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq_gen</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topologies</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replicon_name</span> <span class="o">=</span> <span class="n">replicon_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dist_threshold</span> <span class="o">=</span> <span class="n">dist_threshold</span></div>
+
+<div class="viewcode-block" id="FastaIterator._set_topologies"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator._set_topologies">[docs]</a>    <span class="k">def</span> <span class="nf">_set_topologies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param topologies:</span>
+<span class="sd">        :type topologies: :class:`integron_finder.Topology` onject</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topologies</span> <span class="o">=</span> <span class="n">topologies</span></div>
+
+    <span class="n">topologies</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">fset</span><span class="o">=</span><span class="n">_set_topologies</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FastaIterator._check_seq_alphabet_compliance"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator._check_seq_alphabet_compliance">[docs]</a>    <span class="k">def</span> <span class="nf">_check_seq_alphabet_compliance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param seq: the sequence to check</span>
+<span class="sd">        :type seq: :class:`Bio.Seq.Seq` instance</span>
+<span class="sd">        :return: True if sequence letters are a subset of the alphabet, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seq_letters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="c1"># the Bio.Alphabet has been removed from Biopython. from v1.78</span>
+        <span class="c1"># I hard coded the IUPAC.ambiguous_dna</span>
+        <span class="c1"># for compatibilty reasons</span>
+        <span class="n">alphabet</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;GATCRYWSMKHBVDN&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seq_letters</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FastaIterator.__next__"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator.__next__">[docs]</a>    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: The next sequence (the order of sequences is not guaranteed).</span>
+<span class="sd">        :rtype: a :class:`Bio.SeqRecord` object or None if the sequence is not compliant with the alphabet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">seq</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq_gen</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">err</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_seq_alphabet_compliance</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">seq</span><span class="p">):</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;sequence </span><span class="si">{}</span><span class="s2"> contains invalid characters, the sequence is skipped.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;sequence </span><span class="si">{}</span><span class="s2"> is too short (</span><span class="si">{}</span><span class="s2"> bp), the sequence is skipped (must be &gt; 50bp).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                                                                              <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon_name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topologies</span><span class="p">:</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topologies</span><span class="p">[</span><span class="n">seq</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+            <span class="c1"># If sequence is too small, it can be problematic when using circularity</span>
+            <span class="k">if</span> <span class="n">topology</span> <span class="o">==</span> <span class="s1">&#39;circ&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_threshold</span><span class="p">:</span>
+                <span class="n">topology</span> <span class="o">=</span> <span class="s1">&#39;lin&#39;</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">topology</span> <span class="o">=</span> <span class="n">topology</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">topology</span> <span class="o">=</span> <span class="s1">&#39;circ&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;lin&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alphabet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seq</span><span class="o">.</span><span class="n">annotations</span><span class="p">[</span><span class="s2">&quot;molecule_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;DNA&#39;</span>
+        <span class="k">return</span> <span class="n">seq</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+
+<div class="viewcode-block" id="FastaIterator.__len__"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.FastaIterator.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:returns: The number of sequence in the file&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq_index</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="model_len"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.model_len">[docs]</a><span class="k">def</span> <span class="nf">model_len</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param str path: the path to the covariance model file</span>
+<span class="sd">    :return: the length of the model</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Path to model_attc &#39;</span><span class="si">{}</span><span class="s2">&#39; does not exists&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">model_file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">model_file</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CLEN&#39;</span><span class="p">):</span>
+                <span class="n">model_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">model_length</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;CLEN not found in &#39;</span><span class="si">{}</span><span class="s2">&#39;, maybe it&#39;s not infernal model file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_name_from_path"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.get_name_from_path">[docs]</a><span class="k">def</span> <span class="nf">get_name_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param path: The path to extract name for instance the fasta file to the replicon</span>
+<span class="sd">    :return: the name of replicon for instance</span>
+<span class="sd">             if path = /path/to/replicon.fasta name = replicon</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="p">)[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="log_level"><a class="viewcode-back" href="../../developer_guide/api/utils.html#integron_finder.utils.log_level">[docs]</a><span class="k">def</span> <span class="nf">log_level</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :return: the level to apply to loggers. 0 &lt;= level &lt;=50</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">default</span> <span class="o">=</span> <span class="mi">20</span>  <span class="c1"># info</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="n">default</span> <span class="o">-</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">verbose</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">quiet</span><span class="p">)</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">level</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

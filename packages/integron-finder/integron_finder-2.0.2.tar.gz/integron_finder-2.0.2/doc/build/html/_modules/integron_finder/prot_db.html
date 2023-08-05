@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.prot_db &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.prot_db</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.prot_db</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">importlib.util</span>
+
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span><span class="p">,</span> <span class="n">Seq</span>
+<span class="kn">from</span> <span class="nn">integron_finder</span> <span class="kn">import</span> <span class="n">IntegronError</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;Sequence description with fields: id strand start stop&quot;&quot;&quot;</span>
+<span class="n">SeqDesc</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SeqDesc&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="ProteinDB"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB">[docs]</a><span class="k">class</span> <span class="nc">ProteinDB</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AbstractClass defining the interface for ProteinDB.</span>
+<span class="sd">    ProteinDB provide an abstraction and a way to access to proteins corresponding</span>
+<span class="sd">    to the replicon/contig CDS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ProteinDB.__init__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replicon</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">prot_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param replicon:</span>
+<span class="sd">        :param cfg:</span>
+<span class="sd">        :param prot_file:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span> <span class="o">=</span> <span class="n">replicon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_protfile</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">prot_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_db</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ProteinDB.__getitem__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB.__getitem__">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot_seq_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param str prot_seq_id: the id of a protein sequence</span>
+<span class="sd">        :return: The Sequence corresponding to the prot_seq_id.</span>
+<span class="sd">        :rtype: :class:`Bio.SeqRecord` object</span>
+<span class="sd">        :raise KeyError: when seq_id does not match any sequence in DB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ProteinDB.__iter__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB.__iter__">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a generator which iterate on the protein seq_id which constitute the contig.</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ProteinDB._make_protfile"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB._make_protfile">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_make_protfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create fasta file with protein corresponding to the nucleic sequence (replicon)</span>
+
+<span class="sd">        :return: the path of the created protein file</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ProteinDB._make_db"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB._make_db">[docs]</a>    <span class="k">def</span> <span class="nf">_make_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: an index of the sequence contains in protfile corresponding to the replicon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># for biopython &lt; 1.78</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">Seq</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">extended_protein</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># for biopython &gt; 1.76</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">idx</span></div>
+
+
+<div class="viewcode-block" id="ProteinDB.get_description"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProteinDB.get_description">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str gene_id: a protein/gene identifier</span>
+<span class="sd">        :return: The description of the protein corresponding to the gene_id</span>
+<span class="sd">        :rtype: :class:`SeqDesc` namedtuple object</span>
+<span class="sd">        :raise IntegronError: when gene_id is not a valid Gembase gene identifier</span>
+<span class="sd">        :raise KeyError: if gene_id is not found in GembaseDB instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">protfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: The absolute path to the protein file corresponding to contig id</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB">[docs]</a><span class="k">class</span> <span class="nc">GembaseDB</span><span class="p">(</span><span class="n">ProteinDB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements :class:`ProteinDB` from a Gembase.</span>
+<span class="sd">    Managed proteins from Proteins directory corresponding to a replicon/contig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="GembaseDB.__init__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replicon</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">gembase_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prot_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param replicon: The replicon used to create ProteinDB (protein files and extra information)</span>
+<span class="sd">        :type replicon: :class:`Bio.SeqRecord` object with a extra attribute path</span>
+<span class="sd">        :param cfg: The integron_finder configuration</span>
+<span class="sd">        :type cfg: :class:`integron_finder.config.Config` object</span>
+<span class="sd">        :param prot_file: The path to a protein file in fasta format</span>
+<span class="sd">                          which is the translation of the replicon</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            The replicon is a modified Bio.SeqRecord object.</span>
+<span class="sd">            The attribute *path* must be injected in the object</span>
+<span class="sd">            This attribute represent the path to a fasta file representing this replicon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;call GembaseDB with gembase_path= </span><span class="si">{</span><span class="n">gembase_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span>
+        <span class="k">if</span> <span class="n">gembase_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">input_seq_path</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">gembase_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span> <span class="o">=</span> <span class="n">replicon</span>
+        <span class="c1"># in GemBase Draft the files ar based on replicon id</span>
+        <span class="c1"># but one file can contains several contig</span>
+        <span class="c1"># the sequence id contains the contig number</span>
+        <span class="c1"># for instance ACBA.0917.00019 vs ACBA.0917.00019.0001</span>
+        <span class="c1"># the filenames are based on replicon id</span>
+        <span class="c1"># but in code the replicon id contains the contig number</span>
+        <span class="c1"># for gembase complete both filename and seq_id contains contig number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_replicon_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">input_seq_path</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_file_basename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_gembase_file_basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">input_seq_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_lst</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prot_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_protfile</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span> <span class="o">=</span> <span class="n">prot_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_db</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB._find_gembase_file_basename"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB._find_gembase_file_basename">[docs]</a>    <span class="k">def</span> <span class="nf">_find_gembase_file_basename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gembase_path</span><span class="p">,</span> <span class="n">input_seq_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        from the input file name, try to retrieve the basename which is used in gembase</span>
+<span class="sd">        This specially useful when IF is run in parallel. The input sequence is split</span>
+<span class="sd">        in chunks and treat in parallel. But in this case the name of the chunk does not math</span>
+<span class="sd">        neither the lstinfo file nor the protein file.</span>
+<span class="sd">        So this method try retrieve the original basename without extension</span>
+<span class="sd">        for instance: ::</span>
+
+<span class="sd">            ACBA.0917.00019.fna               =&gt; ACBA.0917.00019</span>
+<span class="sd">            ACBA.0917.00019.0001.fna          =&gt; ACBA.0917.00019</span>
+<span class="sd">            ESCO001.C.00001.C001.fst          =&gt; ESCO001.C.00001.C001</span>
+<span class="sd">            ESCO001.C.00001.C001_chunk_1.fst  =&gt; ESCO001.C.00001.C001</span>
+
+<span class="sd">        :return: the gemabse basename corresponding to the input file</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lst_dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gembase_path</span><span class="p">,</span> <span class="s1">&#39;LSTINFO&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_dir_path</span><span class="p">):</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lst_dir_path</span><span class="si">}</span><span class="s2"> directory nout found. check LSTINF&quot;</span><span class="p">)</span>
+            <span class="n">lst_dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gembase_path</span><span class="p">,</span> <span class="s1">&#39;LSTINF&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_dir_path</span><span class="p">):</span>
+                <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lst_dir_path</span><span class="si">}</span><span class="s2"> directory nout found.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lst_dir_path</span><span class="si">}</span><span class="s2">O directory nout found.&quot;</span><span class="p">)</span>
+        <span class="n">gembase_file_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_seq_path</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># when IF is run through nextflow &amp; parallel_integron_finder</span>
+        <span class="c1"># the input data is split the name of the chunks can vary</span>
+        <span class="c1"># it can be</span>
+        <span class="c1"># the name of input file with suffix _chunk_&lt;id&gt;</span>
+        <span class="c1"># it can be the name of the contig</span>
+        <span class="c1"># so wee need to find the original name to find the</span>
+        <span class="c1"># - lstinfo file</span>
+        <span class="c1"># - protein file</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;_chunk_\d+$&quot;</span><span class="p">,</span> <span class="n">gembase_file_basename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">gembase_file_basename</span> <span class="o">=</span> <span class="n">gembase_file_basename</span><span class="p">[:</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
+
+        <span class="n">lst_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lst_dir_path</span><span class="p">,</span> <span class="n">gembase_file_basename</span> <span class="o">+</span> <span class="s1">&#39;.lst&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_path</span><span class="p">):</span>
+            <span class="c1"># it is a complete genome</span>
+            <span class="k">return</span> <span class="n">gembase_file_basename</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># it is a contig</span>
+            <span class="c1"># let&#39;s find the draft genome lst file</span>
+            <span class="n">gembase_file_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">gembase_file_basename</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lst_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lst_dir_path</span><span class="p">,</span> <span class="n">gembase_file_basename</span> <span class="o">+</span> <span class="s1">&#39;.lst&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_path</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">gembase_file_basename</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;cannot find lst file matching </span><span class="si">{}</span><span class="s2"> sequence&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">input_seq_path</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB._make_protfile"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB._make_protfile">[docs]</a>    <span class="k">def</span> <span class="nf">_make_protfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create fasta file with protein corresponding to this sequence, from the corresponding Gembase protfile</span>
+<span class="sd">        This step is necessary because in Gembase Draft</span>
+<span class="sd">        One nucleic file can contains several contigs, but all proteins are in the same file.</span>
+
+<span class="sd">        :return: the path of the created protein file</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">prot_file_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_prot_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span><span class="p">,</span> <span class="s1">&#39;Proteins&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_file_basename</span> <span class="o">+</span> <span class="s1">&#39;.prt&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">all_prots</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">all_prot_path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">Seq</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">extended_protein</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">all_prots</span> <span class="o">=</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">all_prot_path</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">)):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="n">prot_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s1">&#39;.prt&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prot_file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">prot_file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">seq_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;seq_id&#39;</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">seq</span> <span class="o">=</span> <span class="n">all_prots</span><span class="p">[</span><span class="n">seq_id</span><span class="p">]</span>
+                        <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">prot_file</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Sequence describe in LSTINF file </span><span class="si">{}</span><span class="s1"> is not present in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seq_id</span><span class="p">,</span> <span class="n">all_prot_path</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">prot_file_path</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.gembase_sniffer"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.gembase_sniffer">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">gembase_sniffer</span><span class="p">(</span><span class="n">lst_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect the type of gembase</span>
+<span class="sd">        :param str lst_path: the path to the LSTINFO file corresponding to the nucleic sequence</span>
+<span class="sd">        :returns: either &#39;Complet&#39; or &#39;Draft&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lst_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">lst_file</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lst_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Valid&#39;</span><span class="p">,</span> <span class="s1">&#39;Invalid_Size&#39;</span><span class="p">,</span> <span class="s1">&#39;Pseudo&#39;</span><span class="p">,</span> <span class="s1">&#39;Partial&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s1">&#39;Complet&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span> <span class="ow">and</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;the genome </span><span class="si">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> seems empty: see </span><span class="si">{</span><span class="n">lst_path</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;Draft&#39;</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.gembase_complete_parser"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.gembase_complete_parser">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">gembase_complete_parser</span><span class="p">(</span><span class="n">lst_path</span><span class="p">,</span> <span class="n">sequence_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str lst_path: the path of of the LSTINFO file Gembase Complet</span>
+<span class="sd">        :param str sequence_id: the id of the genomic sequence to analyse</span>
+<span class="sd">        :return: the information related to the &#39;valid&#39; CDS corresponding to the sequence_id</span>
+<span class="sd">        :rtype: `class`:pandas.DataFrame` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;strand&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;seq_id&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;valid&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;gene_name&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lst_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">lst_file</span><span class="p">:</span>
+            <span class="n">lst_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lst_file</span><span class="p">:</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">gene_type</span><span class="p">,</span> <span class="n">seq_id</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">gene_name</span><span class="p">,</span> <span class="o">*</span><span class="n">description</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">gene_type</span><span class="p">,</span> <span class="n">seq_id</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">gene_name</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">description</span><span class="p">)]</span>
+                <span class="n">lst_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="n">lst</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lst_data</span><span class="p">,</span>
+                               <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;seq_id&#39;</span><span class="p">,</span> <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]</span>
+                               <span class="p">)</span>
+            <span class="n">lst</span> <span class="o">=</span> <span class="n">lst</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">specie</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="n">contig</span> <span class="o">=</span> <span class="n">sequence_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">\.</span><span class="si">{}</span><span class="s1">\.</span><span class="si">{}</span><span class="s1">\.\w?</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="n">contig</span><span class="p">)</span>
+            <span class="n">genome_info</span> <span class="o">=</span> <span class="n">lst</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="s1">&#39;seq_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+            <span class="n">prots_info</span> <span class="o">=</span> <span class="n">genome_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">genome_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CDS&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">genome_info</span><span class="p">[</span><span class="s1">&#39;valid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Valid&#39;</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">prots_info</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.gembase_draft_parser"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.gembase_draft_parser">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">gembase_draft_parser</span><span class="p">(</span><span class="n">lst_path</span><span class="p">,</span> <span class="n">replicon_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str lst_path: the path of of the LSTINFO file from a Gembase Draft</span>
+<span class="sd">        :param str sequence_id: the id of the genomic sequence to analyse</span>
+<span class="sd">        :return: the information related to the &#39;valid&#39; CDS corresponding to the sequence_id</span>
+<span class="sd">        :rtype: `class`:pandas.DataFrame` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lst</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">lst_path</span><span class="p">,</span>
+                              <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">,</span> <span class="s1">&#39;strand&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;seq_id&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                              <span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;strand&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;seq_id&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;gene_name&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">},</span>
+                              <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while parsing </span><span class="si">{</span><span class="n">lst_path</span><span class="si">}</span><span class="s2"> file&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span>
+        <span class="n">specie</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="n">contig_gene</span> <span class="o">=</span> <span class="n">replicon_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">specie</span><span class="si">}</span><span class="s1">\.</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s1">\.</span><span class="si">{</span><span class="n">strain</span><span class="si">}</span><span class="s1">\.\w?</span><span class="si">{</span><span class="n">contig_gene</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">genome_info</span> <span class="o">=</span> <span class="n">lst</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="s1">&#39;seq_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">prots_info</span> <span class="o">=</span> <span class="n">genome_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">genome_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CDS&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">prots_info</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB._parse_lst"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB._parse_lst">[docs]</a>    <span class="k">def</span> <span class="nf">_parse_lst</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the LSTINFO file and extract information specific to the replicon</span>
+<span class="sd">        :return: `class`:pandas.DataFrame` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lst_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span><span class="p">,</span> <span class="s1">&#39;LSTINFO&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_file_basename</span> <span class="o">+</span> <span class="s1">&#39;.lst&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_path</span><span class="p">):</span>
+            <span class="n">lst_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gembase_path</span><span class="p">,</span> <span class="s1">&#39;LSTINF&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gembase_file_basename</span> <span class="o">+</span> <span class="s1">&#39;.lst&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">lst_path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lst_path</span><span class="si">}</span><span class="s2">O directory not found.&quot;</span><span class="p">)</span>
+        <span class="n">gembase_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gembase_sniffer</span><span class="p">(</span><span class="n">lst_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gembase_type</span> <span class="o">==</span> <span class="s1">&#39;Draft&#39;</span><span class="p">:</span>
+            <span class="n">prots_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gembase_draft_parser</span><span class="p">(</span><span class="n">lst_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prots_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gembase_complete_parser</span><span class="p">(</span><span class="n">lst_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">prots_info</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.__getitem__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot_seq_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str prot_seq_id: the id of a protein sequence</span>
+<span class="sd">        :return: The Sequence corresponding to the prot_seq_id.</span>
+<span class="sd">        :rtype: :class:`Bio.SeqRecord` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span><span class="p">[</span><span class="n">prot_seq_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.__iter__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a generator which iterate on the protein seq_id which constitute the contig.</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seq_id</span> <span class="k">for</span> <span class="n">seq_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;seq_id&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GembaseDB.get_description"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.GembaseDB.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str gene_id: a protein/gene identifier</span>
+<span class="sd">        :return: The description of the protein corresponding to the gene_id</span>
+<span class="sd">        :rtype: :class:`SeqDesc` namedtuple object</span>
+<span class="sd">        :raise IntegronError: when gene_id is not a valid Gembase gene identifier</span>
+<span class="sd">        :raise KeyError: if gene_id is not found in GembaseDB instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">specie</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">strain</span><span class="p">,</span> <span class="n">contig_gene</span> <span class="o">=</span> <span class="n">gene_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">contig_gene</span> <span class="o">=</span> <span class="n">contig_gene</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># remove the first letter b/i</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">gene_id</span><span class="si">}</span><span class="s2">&#39; is not a valid Gembase protein identifier.&quot;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">specie</span><span class="si">}</span><span class="s1">\.</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s1">\.</span><span class="si">{</span><span class="n">strain</span><span class="si">}</span><span class="s1">\.\w?</span><span class="si">{</span><span class="n">contig_gene</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">seq_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">[</span><span class="s1">&#39;seq_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">seq_info</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SeqDesc</span><span class="p">(</span><span class="n">seq_info</span><span class="o">.</span><span class="n">seq_id</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="mi">1</span> <span class="k">if</span> <span class="n">seq_info</span><span class="o">.</span><span class="n">strand</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">seq_info</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="n">seq_info</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                           <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">gene_id</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ProdigalDB"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProdigalDB">[docs]</a><span class="k">class</span> <span class="nc">ProdigalDB</span><span class="p">(</span><span class="n">ProteinDB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates proteins from Replicon/contig using prodigal and provide facilities to access them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ProdigalDB._make_protfile"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProdigalDB._make_protfile">[docs]</a>    <span class="k">def</span> <span class="nf">_make_protfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use `prodigal` to generate proteins corresponding to the replicon</span>
+
+<span class="sd">        :return: the path of the created protfile</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">prot_file_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">)):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="n">prot_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s2">&quot;.prt&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">prot_file_path</span><span class="p">):</span>
+                <span class="n">prodigal_cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{prodigal}</span><span class="s2"> </span><span class="si">{meta}</span><span class="s2"> -i </span><span class="si">{replicon}</span><span class="s2"> -a </span><span class="si">{prot}</span><span class="s2"> -o </span><span class="si">{out}</span><span class="s2"> -q &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">prodigal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prodigal</span><span class="p">,</span>
+                    <span class="n">meta</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">200000</span> <span class="k">else</span> <span class="s1">&#39;-p meta&#39;</span><span class="p">,</span>
+                    <span class="n">replicon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">replicon</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="n">prot</span><span class="o">=</span><span class="n">prot_file_path</span><span class="p">,</span>
+                    <span class="n">out</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;run prodigal: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prodigal_cmd</span><span class="p">))</span>
+                    <span class="n">returncode</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="n">prodigal_cmd</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prodigal_cmd</span><span class="si">}</span><span class="s2"> : failed : </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prodigal_cmd</span><span class="si">}</span><span class="s2"> : failed : prodigal returncode = </span><span class="si">{</span><span class="n">returncode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">prot_file_path</span></div>
+
+
+<div class="viewcode-block" id="ProdigalDB.__getitem__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProdigalDB.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot_seq_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str prot_seq_id: the id of a protein sequence</span>
+<span class="sd">        :return: The Sequence corresponding to the prot_seq_id.</span>
+<span class="sd">        :rtype: :class:`Bio.SeqRecord` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span><span class="p">[</span><span class="n">prot_seq_id</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;protein file does not contains &#39;</span><span class="si">{</span><span class="n">prot_seq_id</span><span class="si">}</span><span class="s2">&#39; id. &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;Try again with removing previous results dir </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">result_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProdigalDB.__iter__"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProdigalDB.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a generator which iterate on the protein seq_id which constitute the contig.</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seq_id</span> <span class="k">for</span> <span class="n">seq_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProdigalDB.get_description"><a class="viewcode-back" href="../../developer_guide/api/prot_db.html#integron_finder.prot_db.ProdigalDB.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str gene_id: a protein/gene identifier</span>
+<span class="sd">        :returns: The description of the protein corresponding to the gene_id</span>
+<span class="sd">        :rtype: :class:`SeqDesc` namedtuple object</span>
+<span class="sd">        :raise IntegronError: when gene_id is not a valid Gembase gene identifier</span>
+<span class="sd">        :raise KeyError: if gene_id is not found in ProdigalDB instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">gene_id</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">id_</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; # &quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">gene_id</span><span class="si">}</span><span class="s2">&#39; is not a valid Prodigal protein identifier.&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">strand</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">strand</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SeqDesc</span><span class="p">(</span><span class="n">id_</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">CustomDB</span><span class="p">(</span><span class="n">ProteinDB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates proteins from Replicon/contig using prodigal and provide facilities to access them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replicon</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">prot_file</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">prot_file</span><span class="o">=</span><span class="n">prot_file</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parser_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">annot_parser</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">spec_from_file_location</span><span class="p">(</span><span class="s1">&#39;custom_module&#39;</span><span class="p">,</span> <span class="n">parser_path</span><span class="p">)</span>
+            <span class="n">custom_module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">module_from_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="o">.</span><span class="n">loader</span><span class="o">.</span><span class="n">exec_module</span><span class="p">(</span><span class="n">custom_module</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span> <span class="o">=</span> <span class="n">custom_module</span><span class="o">.</span><span class="n">description_parser</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot import custom --annot-parser &#39;</span><span class="si">{</span><span class="n">parser_path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_protfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="s2">&quot;If use CustomDB prot_file must be specified&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
+
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prot_seq_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str prot_seq_id: the id of a protein sequence</span>
+<span class="sd">        :return: The Sequence corresponding to the prot_seq_id.</span>
+<span class="sd">        :rtype: :class:`Bio.SeqRecord` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span><span class="p">[</span><span class="n">prot_seq_id</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;protein file does not contains &#39;</span><span class="si">{</span><span class="n">prot_seq_id</span><span class="si">}</span><span class="s2">&#39; id. &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;Check if it&#39;s the right proteins file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;or remove previous results dir </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">result_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a generator which iterate on the protein seq_id which constitute the contig.</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">seq_id</span> <span class="k">for</span> <span class="n">seq_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prot_db</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param str gene_id: a protein/gene identifier</span>
+<span class="sd">        :returns: The description of the protein corresponding to the gene_id</span>
+<span class="sd">        :rtype: :class:`SeqDesc` namedtuple object</span>
+<span class="sd">        :raise IntegronError: when gene_id is not a valid Gembase gene identifier</span>
+<span class="sd">        :raise KeyError: if gene_id is not found in ProdigalDB instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">check_id</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">check_strand</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">def</span> <span class="nf">check_start</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+
+        <span class="n">check_stop</span> <span class="o">=</span> <span class="n">check_start</span>
+
+        <span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">gene_id</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">id_</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">strand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parser</span><span class="p">(</span><span class="n">seq</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">gene_id</span><span class="si">}</span><span class="s2">&#39; protein is not compliant with custom --annot-parser &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">annot_parser</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot parse protein file &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_prot_file</span><span class="si">}</span><span class="s2">&#39; with annot-parser &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">annot_parser</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="n">check_id</span><span class="p">(</span><span class="n">id_</span><span class="p">),</span> <span class="n">check_start</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="n">check_stop</span><span class="p">(</span><span class="n">stop</span><span class="p">),</span> <span class="n">check_strand</span><span class="p">(</span><span class="n">strand</span><span class="p">))):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Error during protein file parsing: expected seq_id: str, start: positive int, stop: positive int, &quot;</span> \
+                  <span class="sa">f</span><span class="s2">&quot;strand 1/-1. got: </span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">stop</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">strand</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">IntegronError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SeqDesc</span><span class="p">(</span><span class="n">id_</span><span class="p">,</span> <span class="n">strand</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>

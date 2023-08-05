@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>integron_finder.infernal &mdash; IntegronFinder 2.dev20220221 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/_css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> IntegronFinder
+          </a>
+              <div class="version">
+                2.dev20220221
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/installation.html">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#integronfinder-dependencies">IntegronFinder dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#installation-procedure">Installation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-2-0">From Version 2.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-5-1-and-after">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#for-version-1-5-and-before">For Version 1.5 and before</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#uninstallation-procedure">Uninstallation procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#id2">From Version 1.5.1 and after</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/installation.html#from-version-1-0-to-version-1-5">From Version 1.0 to Version 1.5</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/installation.html#how-to-install-python">How to install Python</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/changes.html">What’s new ?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/changes.html#in-version-2-0">In Version 2.0</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/tutorial.html">Quick start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-impatient">For impatient</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#input-and-outputs">Input and Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#custom-protein-file">Custom protein file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#outputs">Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-everyone">For everyone</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#thorough-local-detection">Thorough local detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#calin-detection">CALIN detection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#functional-annotation">Functional annotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#search-for-promoter-and-atti-sites">Search for promoter and <em>attI</em> sites</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#keep-intermediate-results">Keep intermediate results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#topology">Topology</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-big-data-people">For big data people</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#parallelization">Parallelization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/tutorial.html#for-integron-diggers">For integron diggers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#clustering-of-elements">Clustering of elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#integrase">Integrase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-evalue"><em>attC</em> evalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-size"><em>attC</em> size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#palindromes">Palindromes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/tutorial.html#attc-alignements"><em>attC</em> alignements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/webserver.html">web server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/webserver.html#galaxy">Galaxy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#how-to-use-it">How to use it</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/webserver.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/references.html">References</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide/index.html">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html">Developer installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#build-a-new-release">Build a new release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#send-changes-to-upstream-repository">Send changes to upstream repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#tests">Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#running-tests">Running tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/dev_guide.html#adding-tests">Adding tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/dev_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/overview.html">Architecture Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#project-files-and-directories">Project files and directories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#files">Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer_guide/overview.html#directories">Directories</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/overview.html#technical-overview">Technical overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer_guide/api/index.html">Integron_finder API Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/annotation.html">annotation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/attc.html">attc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/config.html">config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/hmm.html">hmm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/infernal.html">infernal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integrase.html">integrase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/integron.html">integron</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/prot_db.html">prot_db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/results.html">results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/topology.html">topology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer_guide/api/utils.html">utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">IntegronFinder</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>integron_finder.infernal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for integron_finder.infernal</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">####################################################################################</span>
+<span class="c1"># Integron_Finder - Integron Finder aims at detecting integrons in DNA sequences   #</span>
+<span class="c1"># by finding particular features of the integron:                                  #</span>
+<span class="c1">#   - the attC sites                                                               #</span>
+<span class="c1">#   - the integrase                                                                #</span>
+<span class="c1">#   - and when possible attI site and promoters.                                   #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># Authors: Jean Cury, Bertrand Neron, Eduardo PC Rocha                             #</span>
+<span class="c1"># Copyright (c) 2015 - 2021  Institut Pasteur, Paris and CNRS.                     #</span>
+<span class="c1"># See the COPYRIGHT file for details                                               #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is free software: you can redistribute it and/or modify          #</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by             #</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or                #</span>
+<span class="c1"># (at your option) any later version.                                              #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># integron_finder is distributed in the hope that it will be useful,               #</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of                   #</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                    #</span>
+<span class="c1"># GNU General Public License for more details.                                     #</span>
+<span class="c1">#                                                                                  #</span>
+<span class="c1"># You should have received a copy of the GNU General Public License                #</span>
+<span class="c1"># along with this program (COPYING file).                                          #</span>
+<span class="c1"># If not, see &lt;http://www.gnu.org/licenses/&gt;.                                      #</span>
+<span class="c1">####################################################################################</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span>
+<span class="kn">import</span> <span class="nn">colorlog</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">model_len</span>
+
+<span class="n">_log</span> <span class="o">=</span> <span class="n">colorlog</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_infernal"><a class="viewcode-back" href="../../developer_guide/api/infernal.html#integron_finder.infernal.read_infernal">[docs]</a><span class="k">def</span> <span class="nf">read_infernal</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">replicon_id</span><span class="p">,</span> <span class="n">len_model_attc</span><span class="p">,</span>
+                  <span class="n">evalue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size_max_attc</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">size_min_attc</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that parse cmsearch --tblout output and returns a pandas DataFrame</span>
+
+<span class="sd">    :param str infile: the path to the output of cmsearch in tabulated format (--tblout)</span>
+<span class="sd">    :param str replicon_id: the id of the replicon are the integrons were found.</span>
+<span class="sd">    :param int len_model_attc: the length of the attc model</span>
+<span class="sd">    :param float evalue: evalue threshold to filter out hits above it</span>
+<span class="sd">    :param int size_max_attc: The maximum value fot the attC size</span>
+<span class="sd">    :param int size_min_attc: The minimum value fot the attC size</span>
+<span class="sd">    :return: table with columns:</span>
+
+<span class="sd">            | &quot;Accession_number&quot;, &quot;cm_attC&quot;, &quot;cm_debut&quot;, &quot;cm_fin&quot;, &quot;pos_beg&quot;, &quot;pos_end&quot;, &quot;sens&quot;, &quot;evalue&quot;</span>
+<span class="sd">            | and each row is a hit that match the attc covariance model.</span>
+<span class="sd">    :rtype: :class:`pandas.DataFrame` object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;read_infernal </span><span class="si">{</span><span class="n">infile</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">replicon_id</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">len_model_attc</span><span class="si">}</span><span class="s2">, &quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;evalue=</span><span class="si">{</span><span class="n">evalue</span><span class="si">}</span><span class="s2">, size_max_attc=</span><span class="si">{</span><span class="n">size_max_attc</span><span class="si">}</span><span class="s2">, size_min_attc=</span><span class="si">{</span><span class="n">size_min_attc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;cm_attC&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;cm_debut&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;cm_fin&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;pos_beg&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;pos_end&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;evalue&quot;</span><span class="p">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+             <span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_attC&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span>
+                                   <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;sens&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;python&quot;</span><span class="p">,</span>  <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">,</span>
+                     <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+    <span class="c1"># some line can have different number of columns due to difference in description</span>
+    <span class="c1"># we do not use this columns so we must parse only cols we need</span>
+    <span class="c1"># Keep only columns: query_name(2), mdl from(5), mdl to(6), seq from(7),</span>
+    <span class="c1"># seq to(8), strand(9), E-value(15)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cm_attC&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg_tmp&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end_tmp&quot;</span><span class="p">,</span> <span class="s2">&quot;sens&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">replicon_id</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before filtering on evalue </span><span class="si">{</span><span class="n">evalue</span><span class="si">}</span><span class="s2">, there were </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> attC sites&quot;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">evalue</span> <span class="o">&lt;</span> <span class="n">evalue</span><span class="p">]</span>  <span class="c1"># filter on evalue</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After filtering on evalue </span><span class="si">{</span><span class="n">evalue</span><span class="si">}</span><span class="s2">, there are now </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> attC sites&quot;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">pos_end_tmp</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">pos_beg_tmp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">size_max_attc</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">size_min_attc</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">pos_end_tmp</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">pos_beg_tmp</span><span class="p">))]</span>
+    <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After filtering on size max: </span><span class="si">{</span><span class="n">size_max_attc</span><span class="si">}</span><span class="s2"> and size min: </span><span class="si">{</span><span class="n">size_min_attc</span><span class="si">}</span><span class="s2">, &quot;</span>
+               <span class="sa">f</span><span class="s2">&quot;there are now </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2"> attC sites&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;pos_end_tmp&#39;</span><span class="p">,</span> <span class="s1">&#39;evalue&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">pos_beg_tmp</span> <span class="o">&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">pos_end_tmp</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;pos_end_tmp&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">len_model_attc</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;cm_fin&quot;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;pos_beg_tmp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;cm_debut&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;pos_end_tmp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">len_model_attc</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;cm_fin&quot;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;pos_beg_tmp&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;cm_debut&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_attC&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;sens&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">]]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;cm_attC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;cm_attC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Accession_number&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_attC&quot;</span><span class="p">,</span> <span class="s2">&quot;cm_debut&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;cm_fin&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_beg&quot;</span><span class="p">,</span> <span class="s2">&quot;pos_end&quot;</span><span class="p">,</span> <span class="s2">&quot;sens&quot;</span><span class="p">,</span> <span class="s2">&quot;evalue&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_attc"><a class="viewcode-back" href="../../developer_guide/api/infernal.html#integron_finder.infernal.find_attc">[docs]</a><span class="k">def</span> <span class="nf">find_attc</span><span class="p">(</span><span class="n">replicon_path</span><span class="p">,</span> <span class="n">replicon_id</span><span class="p">,</span> <span class="n">cmsearch_path</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">model_attc</span><span class="p">,</span> <span class="n">incE</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Call cmsearch to find attC sites in a single replicon.</span>
+
+<span class="sd">    :param str replicon_path: the path of the fasta file representing the replicon to analyse.</span>
+<span class="sd">    :param str replicon_id: the id of the replicon to analyse.</span>
+<span class="sd">    :param str cmsearch_path: the path to the cmsearch executable.</span>
+<span class="sd">    :param str out_dir: the path to the directory where cmsearch outputs will be stored.</span>
+<span class="sd">    :param str model_attc: path to the attc model (Covariance Matrix).</span>
+<span class="sd">    :param float incE: consider sequences &lt;= this E-value threshold as significant (to get the alignment with -A)</span>
+<span class="sd">    :param int cpu: the number of cpu used by cmsearch.</span>
+<span class="sd">    :returns: None, the results are written on the disk.</span>
+<span class="sd">    :raises RuntimeError: when cmsearch run failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cmsearch_cmd</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{cmsearch}</span><span class="s2"> --cpu </span><span class="si">{cpu}</span><span class="s2"> -A </span><span class="si">{out}</span><span class="s2"> --tblout </span><span class="si">{tblout_path}</span><span class="s2"> &quot;</span> \
+                   <span class="s2">&quot;-E 10 --incE </span><span class="si">{incE}</span><span class="s2"> </span><span class="si">{mod_attc}</span><span class="s2"> </span><span class="si">{infile}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch</span><span class="o">=</span><span class="n">cmsearch_path</span><span class="p">,</span>
+                                                                    <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
+                                                                    <span class="n">out</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span>
+                                                                                     <span class="n">replicon_id</span> <span class="o">+</span> <span class="s2">&quot;_attc.res&quot;</span><span class="p">),</span>
+                                                                    <span class="n">tblout_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span>
+                                                                                             <span class="n">replicon_id</span> <span class="o">+</span>
+                                                                                             <span class="s2">&quot;_attc_table.res&quot;</span><span class="p">),</span>
+                                                                    <span class="n">incE</span><span class="o">=</span><span class="n">incE</span><span class="p">,</span>
+                                                                    <span class="n">mod_attc</span><span class="o">=</span><span class="n">model_attc</span><span class="p">,</span>
+                                                                    <span class="n">infile</span><span class="o">=</span><span class="n">replicon_path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;run cmsearch: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dev_null</span><span class="p">:</span>
+            <span class="n">returncode</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">stdout</span><span class="o">=</span><span class="n">dev_null</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> failed : </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> failed returncode = </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="local_max"><a class="viewcode-back" href="../../developer_guide/api/infernal.html#integron_finder.infernal.local_max">[docs]</a><span class="k">def</span> <span class="nf">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+              <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span>
+              <span class="n">model_attc_path</span><span class="p">,</span>
+              <span class="n">strand_search</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+              <span class="n">evalue_attc</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">max_attc_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">min_attc_size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+              <span class="n">cmsearch_bin</span><span class="o">=</span><span class="s1">&#39;cmsearch&#39;</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param replicon: The replicon to analyse</span>
+<span class="sd">    :type replicon: :class:`Bio.Seq.SeqRecord` object.</span>
+<span class="sd">    :param int window_beg: Start of window to search for attc (position of protein).</span>
+<span class="sd">    :param int window_end: End of window to search for attc (position of protein).</span>
+<span class="sd">    :param str model_attc_path: The path to the covariance model for attc (eg: attc_4.cm)</span>
+<span class="sd">                                used by cmsearch to find attC sites</span>
+<span class="sd">    :param str strand_search: The strand on which to looking for attc.</span>
+<span class="sd">                              Available values:</span>
+
+<span class="sd">                                * &#39;top&#39;: Only search the top (Watson) strand of target sequences.</span>
+<span class="sd">                                * &#39;bottom&#39;: Only search the bottom (Crick) strand of target sequences</span>
+<span class="sd">                                * &#39;both&#39;: search on both strands</span>
+
+<span class="sd">    :param float evalue_attc: evalue threshold to filter out hits above it</span>
+<span class="sd">    :param int max_attc_size: The maximum value fot the attC size</span>
+<span class="sd">    :param int min_attc_size: The minimum value fot the attC size</span>
+<span class="sd">    :param str cmsearch_bin: The path to cmsearch</span>
+<span class="sd">    :param str out_dir: The path to directory where to write results</span>
+<span class="sd">    :param int cpu: The number of cpu used by cmsearch</span>
+<span class="sd">    :return: DataFrame with same structure as the DataFrame returns by :func:`read_infernal`</span>
+<span class="sd">             where position are converted on position on replicon and attc are filtered</span>
+<span class="sd">             by evalue, min_attc_size, max_attc_size</span>
+<span class="sd">             also write a file with intermediate results &lt;replicon_id&gt;_subseq_attc_table_end.res</span>
+<span class="sd">             this file store the local_max results before filtering by max_attc_size and min_attc_size</span>
+<span class="sd">    :rtype: :class:`pandas.DataFrame` object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">replicon_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">replicon</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">window_beg</span> <span class="o">&lt;</span> <span class="n">window_end</span><span class="p">:</span>
+        <span class="n">subseq</span> <span class="o">=</span> <span class="n">replicon</span><span class="p">[</span><span class="n">window_beg</span><span class="p">:</span><span class="n">window_end</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># the window overlap the replicon origin</span>
+        <span class="n">subseq1</span> <span class="o">=</span> <span class="n">replicon</span><span class="p">[</span><span class="n">window_beg</span><span class="p">:]</span>
+        <span class="n">subseq2</span> <span class="o">=</span> <span class="n">replicon</span><span class="p">[:</span><span class="n">window_end</span><span class="p">]</span>
+        <span class="n">subseq</span> <span class="o">=</span> <span class="n">subseq1</span> <span class="o">+</span> <span class="n">subseq2</span>
+
+    <span class="n">infile_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">replicon</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s2">&quot;_subseq.fst&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">subseq</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">_</span><span class="si">{win_beg}</span><span class="s2">_</span><span class="si">{win_end}</span><span class="s2">_subseq_attc.res&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                                                            <span class="n">win_beg</span><span class="o">=</span><span class="n">window_beg</span><span class="p">,</span>
+                                                                                            <span class="n">win_end</span><span class="o">=</span><span class="n">window_end</span><span class="p">))</span>
+    <span class="n">tblout_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{name}</span><span class="s2">_</span><span class="si">{win_beg}</span><span class="s2">_</span><span class="si">{win_end}</span><span class="s2">_subseq_attc_table.res&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                                                                  <span class="n">win_beg</span><span class="o">=</span><span class="n">window_beg</span><span class="p">,</span>
+                                                                                                  <span class="n">win_end</span><span class="o">=</span><span class="n">window_end</span><span class="p">))</span>
+
+    <span class="n">cmsearch_cmd</span> <span class="o">=</span> \
+        <span class="s2">&quot;</span><span class="si">{bin}</span><span class="s2"> -Z </span><span class="si">{size}</span><span class="s2"> </span><span class="si">{strand}</span><span class="s2"> --max --cpu </span><span class="si">{cpu}</span><span class="s2"> -A </span><span class="si">{out}</span><span class="s2"> --tblout </span><span class="si">{tblout}</span><span class="s2"> -E 10 &quot;</span> \
+        <span class="s2">&quot;--incE </span><span class="si">{incE}</span><span class="s2"> </span><span class="si">{mod_attc_path}</span><span class="s2"> </span><span class="si">{infile}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">,</span>
+                                                        <span class="n">size</span><span class="o">=</span><span class="n">replicon_size</span> <span class="o">/</span> <span class="mf">1000000.</span><span class="p">,</span>
+                                                        <span class="n">strand</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;both&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                                                                <span class="s2">&quot;top&quot;</span><span class="p">:</span> <span class="s2">&quot;--toponly&quot;</span><span class="p">,</span>
+                                                                <span class="s2">&quot;bottom&quot;</span><span class="p">:</span> <span class="s2">&quot;--bottomonly&quot;</span><span class="p">}[</span><span class="n">strand_search</span><span class="p">],</span>
+                                                        <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
+                                                        <span class="n">out</span><span class="o">=</span><span class="n">output_path</span><span class="p">,</span>
+                                                        <span class="n">tblout</span><span class="o">=</span><span class="n">tblout_path</span><span class="p">,</span>
+                                                        <span class="n">incE</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                                                        <span class="n">mod_attc_path</span><span class="o">=</span><span class="n">model_attc_path</span><span class="p">,</span>
+                                                        <span class="n">infile</span><span class="o">=</span><span class="n">infile_path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;run cmsearch: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dev_null</span><span class="p">:</span>
+            <span class="n">returncode</span> <span class="o">=</span> <span class="n">call</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">stdout</span><span class="o">=</span><span class="n">dev_null</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> failed : </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">returncode</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> failed returncode = </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmsearch_cmd</span><span class="p">,</span> <span class="n">returncode</span><span class="p">))</span>
+    <span class="n">df_max</span> <span class="o">=</span> <span class="n">read_infernal</span><span class="p">(</span><span class="n">tblout_path</span><span class="p">,</span>
+                           <span class="n">replicon</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">model_len</span><span class="p">(</span><span class="n">model_attc_path</span><span class="p">),</span>
+                           <span class="n">evalue</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                           <span class="n">size_max_attc</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                           <span class="n">size_min_attc</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">)</span>
+    <span class="c1"># if replicon is linear</span>
+    <span class="c1"># df_max.pos_beg + window_beg is always &lt; replicon_size</span>
+    <span class="c1"># (df_max.pos_beg + window_beg) % replicon_size = (df_max.pos_beg + window_beg)</span>
+    <span class="c1">#</span>
+    <span class="c1"># if replicon is circular and attc site overlap origin</span>
+    <span class="c1"># df_max.pos_beg + window_beg  &gt; replicon_size</span>
+    <span class="c1"># (df_max.pos_beg + window_beg) % replicon_size is position on replicon</span>
+    <span class="c1"># for instance with pos = 100 and replicon size = 90</span>
+    <span class="c1"># 100 % 90 = 10</span>
+    <span class="k">if</span> <span class="n">replicon</span><span class="o">.</span><span class="n">topology</span> <span class="o">==</span> <span class="s1">&#39;circ&#39;</span><span class="p">:</span>
+        <span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span> <span class="o">+</span> <span class="n">window_beg</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+        <span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">+</span> <span class="n">window_beg</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span> <span class="o">+</span> <span class="n">window_beg</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">replicon_size</span><span class="p">)</span>
+        <span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">+</span> <span class="n">window_beg</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">replicon_size</span><span class="p">)</span>
+    <span class="n">df_max</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">replicon</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s2">&quot;_subseq_attc_table_end.res&quot;</span><span class="p">),</span>
+                  <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># filter on size</span>
+    <span class="n">df_max</span> <span class="o">=</span> <span class="n">df_max</span><span class="p">[(</span><span class="nb">abs</span><span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">-</span> <span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">min_attc_size</span><span class="p">)</span> <span class="o">&amp;</span>
+                    <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">df_max</span><span class="o">.</span><span class="n">pos_end</span> <span class="o">-</span> <span class="n">df_max</span><span class="o">.</span><span class="n">pos_beg</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_attc_size</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">df_max</span></div>
+
+
+<div class="viewcode-block" id="expand"><a class="viewcode-back" href="../../developer_guide/api/infernal.html#integron_finder.infernal.expand">[docs]</a><span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+           <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span> <span class="n">max_elt</span><span class="p">,</span>
+           <span class="n">circular</span><span class="p">,</span> <span class="n">dist_threshold</span><span class="p">,</span> <span class="n">model_attc_path</span><span class="p">,</span>
+           <span class="n">max_attc_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">min_attc_size</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">evalue_attc</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+           <span class="n">search_left</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">search_right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+           <span class="n">out_dir</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">cpu</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmsearch_bin</span><span class="o">=</span><span class="s1">&#39;cmsearch&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    for a given element, we can search on the left hand side (if integrase is on the right for instance)</span>
+<span class="sd">    or right hand side (opposite situation) or both side (only integrase or only attC sites)</span>
+
+<span class="sd">    :param replicon: The Replicon to annotate</span>
+<span class="sd">    :type replicon: a :class:`Bio.Seq.SeqRecord` object.</span>
+<span class="sd">    :param int window_beg: start of window to search for attc (position of protein)</span>
+<span class="sd">    :param int window_end: end of window to search for attc (position of protein)</span>
+<span class="sd">    :param max_elt: DataFrame with columns:</span>
+<span class="sd">        ::</span>
+
+<span class="sd">            Accession_number cm_attC  cm_debut  cm_fin   pos_beg   pos_end sens   evalue</span>
+
+<span class="sd">        and each row is an occurrence of attc site</span>
+
+<span class="sd">    :type max_elt: :class:`pandas.DataFrame` object</span>
+<span class="sd">    :param df_max: DataFrame with columns</span>
+<span class="sd">        ::</span>
+
+<span class="sd">            Accession_number cm_attC  cm_debut  cm_fin   pos_beg   pos_end sens   evalue</span>
+
+<span class="sd">        and each row is an occurrence of attc site</span>
+
+<span class="sd">    :type df_max: :class:`pandas.DataFrame` object</span>
+<span class="sd">    :param bool circular: True if replicon topology is circular otherwise False.</span>
+<span class="sd">    :param int dist_threshold: Two elements are aggregated if they are distant of dist_threshold [4kb] or less</span>
+<span class="sd">    :param int max_attc_size: The maximum value for the attC size</span>
+<span class="sd">    :param int min_attc_size: The minimum value for the attC size</span>
+<span class="sd">    :param str model_attc_path: the path to the attc model file</span>
+<span class="sd">    :param float evalue_attc: evalue threshold to filter out hits above it</span>
+<span class="sd">    :param bool search_left: trigger the local_max search on the left of the already detected element</span>
+<span class="sd">    :param bool search_right: trigger the local_max search on the right of the already detected element</span>
+<span class="sd">    :param str out_dir: The path to directory where to write results</span>
+<span class="sd">    :param int cpu: the number of cpu use by expand</span>
+<span class="sd">    :param str cmsearch_bin: the path to the `cmsearch` binary to use</span>
+<span class="sd">    :return: a copy of max_elt with attC hits</span>
+<span class="sd">    :rtype: :class:`pandas.DataFrame` object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">replicon_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">replicon</span><span class="p">)</span>
+    <span class="c1"># for a given element, we can search on the left hand side of it</span>
+    <span class="c1"># (if the integrase is on the right and attC sites on the left for instance),</span>
+    <span class="c1"># on the right hand side of it (opposite situation), or on both sides (only integrase or only attC sites)</span>
+    <span class="n">wb</span> <span class="o">=</span> <span class="n">window_beg</span>
+    <span class="n">we</span> <span class="o">=</span> <span class="n">window_end</span>
+
+    <span class="k">if</span> <span class="n">search_right</span><span class="p">:</span>
+        <span class="c1"># max_attc_size (200bo by default) to allow the detection of sites that would overlap 2 consecutive windows</span>
+        <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+            <span class="c1"># to allow the detection of sites that overlap last window and the first one (given as argument)</span>
+            <span class="n">end_of_turn</span> <span class="o">=</span> <span class="n">wb</span> <span class="o">+</span> <span class="n">max_attc_size</span>
+            <span class="n">pass_through_ori</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">-</span> <span class="n">max_attc_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+            <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">-</span> <span class="n">max_attc_size</span><span class="p">)</span>
+            <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">replicon_size</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">+</span> <span class="n">dist_threshold</span><span class="p">)</span>
+
+        <span class="n">searched_strand</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span> <span class="k">if</span> <span class="n">search_left</span> <span class="k">else</span> <span class="s2">&quot;top&quot;</span>  <span class="c1"># search on both strands if search in both directions</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">df_max</span> <span class="o">=</span> <span class="n">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                               <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span>
+                               <span class="n">model_attc_path</span><span class="p">,</span>
+                               <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                               <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                               <span class="n">strand_search</span><span class="o">=</span><span class="n">searched_strand</span><span class="p">,</span>
+                               <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                               <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
+                               <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                               <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span>
+                               <span class="p">)</span>
+            <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_elt</span><span class="p">,</span> <span class="n">df_max</span><span class="p">])</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">searched </span><span class="si">{</span><span class="n">window_beg</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">window_end</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">searched_strand</span><span class="si">}</span><span class="s2"> strand(s) found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_max</span><span class="p">)</span><span class="si">}</span><span class="s2"> attc sites&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">window_end</span> <span class="o">==</span> <span class="n">end_of_turn</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">searched_strand</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+                        <span class="c1"># we loop all over the replicon and search in both strand</span>
+                        <span class="c1"># searching left is useless</span>
+                        <span class="n">search_left</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">df_max</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">pass_through_ori</span> <span class="o">=</span> <span class="n">pass_through_ori</span> <span class="ow">or</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">replicon_size</span>
+
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">-</span> <span class="n">max_attc_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">+</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+                <span class="k">if</span> <span class="n">we</span> <span class="o">&gt;</span> <span class="n">wb</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pass_through_ori</span><span class="p">:</span>
+                        <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_of_turn</span><span class="p">,</span> <span class="n">window_end</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">end_of_turn</span><span class="p">,</span> <span class="n">window_end</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">df_max</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="n">window_end</span> <span class="o">==</span> <span class="n">replicon_size</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">-</span> <span class="n">max_attc_size</span><span class="p">)</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">replicon_size</span><span class="p">,</span> <span class="n">window_end</span> <span class="o">+</span> <span class="n">dist_threshold</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">search_left</span><span class="p">:</span>
+        <span class="n">window_beg</span> <span class="o">=</span> <span class="n">wb</span>
+        <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+            <span class="c1">#  to allow the detection of sites that overlap last window and the first one (given as argument)</span>
+            <span class="n">end_of_turn</span> <span class="o">=</span> <span class="n">we</span> <span class="o">-</span> <span class="n">max_attc_size</span>
+            <span class="n">pass_through_ori</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">+</span> <span class="n">max_attc_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+            <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">-</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">replicon_size</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">+</span> <span class="n">max_attc_size</span><span class="p">)</span>
+            <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">-</span> <span class="n">dist_threshold</span><span class="p">)</span>
+
+        <span class="n">searched_strand</span> <span class="o">=</span> <span class="s2">&quot;both&quot;</span> <span class="k">if</span> <span class="n">search_right</span> <span class="k">else</span> <span class="s2">&quot;bottom&quot;</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">df_max</span> <span class="o">=</span> <span class="n">local_max</span><span class="p">(</span><span class="n">replicon</span><span class="p">,</span>
+                               <span class="n">window_beg</span><span class="p">,</span> <span class="n">window_end</span><span class="p">,</span>
+                               <span class="n">model_attc_path</span><span class="p">,</span>
+                               <span class="n">max_attc_size</span><span class="o">=</span><span class="n">max_attc_size</span><span class="p">,</span>
+                               <span class="n">min_attc_size</span><span class="o">=</span><span class="n">min_attc_size</span><span class="p">,</span>
+                               <span class="n">strand_search</span><span class="o">=</span><span class="n">searched_strand</span><span class="p">,</span>
+                               <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span>
+                               <span class="n">cpu</span><span class="o">=</span><span class="n">cpu</span><span class="p">,</span>
+                               <span class="n">evalue_attc</span><span class="o">=</span><span class="n">evalue_attc</span><span class="p">,</span>
+                               <span class="n">cmsearch_bin</span><span class="o">=</span><span class="n">cmsearch_bin</span><span class="p">)</span>
+            <span class="n">max_elt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">max_elt</span><span class="p">,</span> <span class="n">df_max</span><span class="p">])</span>  <span class="c1"># update of attC list of hits.</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">searched </span><span class="si">{</span><span class="n">window_beg</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">window_end</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">searched_strand</span><span class="si">}</span><span class="s2"> strand(s) found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_max</span><span class="p">)</span><span class="si">}</span><span class="s2"> attc sites&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">df_max</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="n">window_beg</span> <span class="o">==</span> <span class="n">end_of_turn</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+                <span class="n">pass_through_ori</span> <span class="o">=</span> <span class="n">pass_through_ori</span> <span class="ow">or</span> <span class="p">(</span><span class="n">window_end</span> <span class="o">-</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+
+                <span class="n">window_end</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">+</span> <span class="n">max_attc_size</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="p">(</span><span class="n">window_beg</span> <span class="o">-</span> <span class="n">dist_threshold</span><span class="p">)</span> <span class="o">%</span> <span class="n">replicon_size</span>
+
+                <span class="k">if</span> <span class="n">we</span> <span class="o">&gt;</span> <span class="n">wb</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pass_through_ori</span><span class="p">:</span>
+                        <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">window_beg</span><span class="p">,</span> <span class="n">end_of_turn</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">window_beg</span><span class="p">,</span> <span class="n">end_of_turn</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">df_max</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="n">window_beg</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">window_end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">replicon_size</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">+</span> <span class="n">max_attc_size</span><span class="p">)</span>
+                <span class="n">window_beg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_beg</span> <span class="o">-</span> <span class="n">dist_threshold</span><span class="p">)</span>
+    <span class="n">max_elt</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">max_elt</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">max_elt</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">max_elt</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022 Institut Pasteur, Paris, CNRS..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+
+<div class="licensing">
+  <p>
+    This documentation is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+      <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png">.
+    </a>
+  </p>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+<a href="https://github.com/gem-pasteur/Integron_Finder">
+    <img style="position: absolute; top: 0; right: 0; border: 0;"
+         src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+         alt="Fork me on GitHub"
+         data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
+
+
+
+</body>
+</html>
