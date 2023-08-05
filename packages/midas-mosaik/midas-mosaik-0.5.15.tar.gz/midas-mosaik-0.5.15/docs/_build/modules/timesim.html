@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>MIDAS Timesim Module &#8212; MIDAS  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MIDAS Powergrid Module" href="powergrid.html" />
+    <link rel="prev" title="MIDAS Store Module" href="store.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="midas-timesim-module">
+<h1>MIDAS Timesim Module<a class="headerlink" href="#midas-timesim-module" title="Permalink to this headline">¶</a></h1>
+<p>The <em>timesim</em> module, provided by the <cite>midas-timesim</cite> package, contains a simulator that tracks time and is able to manipulate it within the simulation.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>This package will usually installed automatically together with <cite>midas-mosaik</cite>. It is available on pypi, so you can install it manually with</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install midas-timesim
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The intended use-case for the time simulator is to be used inside of MIDAS.
+However, it only depends on the <cite>midas-util</cite> package and be used in any mosaik simulation scenario.</p>
+<section id="inside-of-midas">
+<h3>Inside of MIDAS<a class="headerlink" href="#inside-of-midas" title="Permalink to this headline">¶</a></h3>
+<p>To use the store inside of MIDAS, simply add <cite>timesim</cite> to your modules:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">my_scenario</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">modules</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">timesim</span><span class="w"></span>
+<span class="w">    </span><span class="c1"># - ...</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This is sufficient for the timesim to run.
+However, additional configuration is possible with:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">my_scenario</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1"># ...</span><span class="w"></span>
+<span class="w">  </span><span class="nt">timesim_params</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2020-01-01 01:00:00+0100</span><span class="w"></span>
+</pre></div>
+</div>
+<p>All of the core simulators that have support time inputs will then automatically connect to the <em>timesim</em> simulator.
+The scope <em>timesim</em> will be created automatically but no other scopes are supported.</p>
+</section>
+<section id="any-mosaik-scenario">
+<h3>Any Mosaik Scenario<a class="headerlink" href="#any-mosaik-scenario" title="Permalink to this headline">¶</a></h3>
+<p>If you don’t use MIDAS, you can add the <cite>timesim</cite> manually to your mosaik scenario file. First, the entry in the <cite>sim_config</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;TimeSimulator&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;python&quot;</span><span class="p">:</span> <span class="s2">&quot;midas.modules.timesim:TimeSimulator&quot;</span><span class="p">},</span>
+    <span class="c1"># ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Next, you need to start the simulator (assuming a <cite>step_size</cite> of 900):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timesim_sim</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;TimeSimulator&quot;</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, the model needs to be started:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timesim</span> <span class="o">=</span> <span class="n">timesim_sim</span><span class="o">.</span><span class="n">Timegenerator</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Afterwards, you can define <cite>world.connect(timesim, other_entity, attrs)</cite> as you like.</p>
+</section>
+</section>
+<section id="the-keys-of-the-time-simulator">
+<h2>The Keys of the Time Simulator<a class="headerlink" href="#the-keys-of-the-time-simulator" title="Permalink to this headline">¶</a></h2>
+<p>This section gives a short description for all of the keys of the <em>timesim</em> module.
+Keys that are part of every upgrade module will only be mentioned if the actual behavior might be unexpected.</p>
+<dl class="simple">
+<dt>start_date</dt><dd><p>This key allows to set the start date for the time tracking of the simulator.
+Usually, this defaults to the <em>start_date</em> from the scenario configuration.
+However, different values can be set, so that the time simulator is, e.g., one hour or one day off to the simulators using the default scenario time.
+This affects all outputs of the time simulator.
+The value is of type string and the value should be an UTC ISO 8601 time string.</p>
+</dd>
+<dt>time_schedule</dt><dd><p>This key allows to define complete different time values.
+It is of type list, which each entry being of type string (like <em>start_date</em>).
+If <em>time_schedule</em> contains at least one value, <em>start_date</em> is completely ignored.
+Instead, the time simulator will iterate over this list and setting the internal time to the value of the current list element.
+Once the the simulator reaches the end of the list, it will start again from the beginning.</p>
+</dd>
+</dl>
+</section>
+<section id="outputs-of-the-time-simulator">
+<h2>Outputs of the Time Simulator<a class="headerlink" href="#outputs-of-the-time-simulator" title="Permalink to this headline">¶</a></h2>
+<p>The time simulator has a number of outputs but, usually, only <em>local_time</em> is used.</p>
+<dl class="simple">
+<dt>local_time</dt><dd><p>The current local time calculated by the time simulator as UTC ISO 8601 time string.
+That time is either the <em>start_date</em> plus the time that has passed since or the current value from the <em>time_schedule</em> if used.
+The <em>local_time</em> is timezone-aware.</p>
+</dd>
+<dt>utc_time</dt><dd><p>The time simulator always calculates the UTC time from the local time.
+It has the same format and follows the same rules like <em>local_time</em>.</p>
+</dd>
+<dt>sin_time_day</dt><dd><p>This value represents the current hour of the day as value on a sinus curve.
+The value is of type float.</p>
+</dd>
+<dt>sin_time_week</dt><dd><p>This value represents the current day of the week as value on a sinus curve.
+The value is of type float.</p>
+</dd>
+<dt>sin_time_year</dt><dd><p>This value represents the current day of the year as value on a sinus curve.
+The value is of type float.</p>
+</dd>
+<dt>cos_time_day</dt><dd><p>This value represents the current hour of the day as value on a cosinus curve.
+The value is of type float.</p>
+</dd>
+<dt>cos_time_week</dt><dd><p>This value represents the current day of the week as value on a cosinus curve.
+The value is of type float.</p>
+</dd>
+<dt>cos_time_year</dt><dd><p>This value represents the current day of the year as value on a cosinus curve.
+The value is of type float.</p>
+</dd>
+</dl>
+</section>
+<section id="palaestrai-sensors-of-the-time-simulator">
+<h2>PalaestrAI Sensors of the Time Simulator<a class="headerlink" href="#palaestrai-sensors-of-the-time-simulator" title="Permalink to this headline">¶</a></h2>
+<p>If the <em>with_arl</em> key is set either on the scenario level or on the module level, sensor objects for following outputs (including space definitions) will be created:</p>
+<ul class="simple">
+<li><p>sin_time_day = Box(0, 1, (1,), np.float32)</p></li>
+<li><p>sin_time_week = Box(0, 1, (1,), np.float32)</p></li>
+<li><p>sin_time_year = Box(0, 1, (1,), np.float32)</p></li>
+<li><p>cos_time_day = Box(0, 1, (1,), np.float32)</p></li>
+<li><p>cos_time_week = Box(0, 1, (1,), np.float32)</p></li>
+<li><p>cos_time_year = Box(0, 1, (1,), np.float32)</p></li>
+</ul>
+</section>
+<section id="example-scenario-configuration">
+<h2>Example Scenario Configuration<a class="headerlink" href="#example-scenario-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The following example scenario demonstrates the application of the <em>time_schedule</em>
+It runs the time simulator together with the store and two simulators of the weather modules:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">time_weather</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">modules</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">store</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">timesim</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">weather</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">  </span><span class="nt">start_date</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2020-01-01 00:00:00+0100</span><span class="w"></span>
+<span class="w">  </span><span class="nt">end</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4*60*60</span><span class="w"></span>
+<span class="w">  </span><span class="nt">step_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60*60</span><span class="w"></span>
+<span class="w">  </span><span class="nt">store_params</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">filename</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">time_weather.hdf5</span><span class="w"></span>
+<span class="w">  </span><span class="nt">timesim_params</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">time_schedule</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021-06-08 16:00:00+0200</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2014-12-06 23:00:00+0100</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2019-08-11 04:00:00+0200</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2013-02-05 09:00:00+0100</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2015-11-11 11:00:00+0100</span><span class="w"></span>
+<span class="w">  </span><span class="nt">weather_params</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bremen1</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">weather_mapping</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WeatherCurrent</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{}]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">bremen2</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with_timesim</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">weather_mapping</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">WeatherCurrent</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[{}]</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Since this is part of the default scenarios, it can be run with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>midasctl run time_weather
+</pre></div>
+</div>
+<p>The resulting air temperatures of both weather simulators are shown in the following figure.</p>
+<a class="reference internal image-reference" href="../_images/time_weather.png"><img alt="../_images/time_weather.png" src="../_images/time_weather.png" style="width: 800px;" /></a>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">MIDAS</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../next_steps.html">Next Steps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Scenario Configuration</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Overview of MIDAS’ Default Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="store.html">MIDAS Store Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MIDAS Timesim Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powergrid.html">MIDAS Powergrid Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sndata.html">MIDAS Smart Nord Data Module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Overview of MIDAS’ Default Modules</a><ul>
+      <li>Previous: <a href="store.html" title="previous chapter">MIDAS Store Module</a></li>
+      <li>Next: <a href="powergrid.html" title="next chapter">MIDAS Powergrid Module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Stephan Balduin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/timesim.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

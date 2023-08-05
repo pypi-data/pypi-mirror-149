@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Scenario Configuration &#8212; MIDAS  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview of MIDAS’ Default Modules" href="modules/index.html" />
+    <link rel="prev" title="Next Steps" href="next_steps.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="scenario-configuration">
+<h1>Scenario Configuration<a class="headerlink" href="#scenario-configuration" title="Permalink to this headline">¶</a></h1>
+<p>This part aims to provide a comprehensive overview of all the functions the configurator and the scenario yaml file can provide.
+The individual modules will be excluded for now and will receive a separate part.</p>
+<section id="lifecycle">
+<h2>Lifecycle<a class="headerlink" href="#lifecycle" title="Permalink to this headline">¶</a></h2>
+<p>What happens after calling <em>midasctl run</em>?
+Well, the functions <em>configure</em> and <em>download</em> will be called to make sure that everything is configured and downloaded.
+After that, the <em>Configurator</em> of midas will be executed.
+The Configurator will perform a number of checks, e.g., can all default configs and custom configs be loaded and is the provided <em>scenario_name</em> contained in one of them?
+The Configurator will then create a list of all the configurations required for <em>scenario_name</em>.
+Those will be determined by evaluating the <em>parent</em> key of a scenario configuration.
+Once all configurations are collected, the final configuration will be created by updating the configurations in reverse order.
+TODO: Add a figure for visualization!</p>
+<p>Given that everything went well, a new <em>Scenario</em> object will be created and the final params will be passed to it.
+The Scenario will provide default values for all the keys that are not part of any module.
+After that, the <cite>modules</cite> key will be evaluated.
+The Configurator will apply modules in a fixed order, defined in the <em>midas-runtime-conf.yml</em> file (you should not change them unless you know what you’re doing).
+Once all the module upgrades were applied, the same is done for custom modules.
+Finally, if the scenario configuration was successful, the simulation is started.
+At this point, everything else is handled by mosaik and not by <em>midas</em> anymore.</p>
+</section>
+<section id="the-keys-to-the-scenario">
+<h2>The Keys to the Scenario<a class="headerlink" href="#the-keys-to-the-scenario" title="Permalink to this headline">¶</a></h2>
+<p>This section will give a short explanation for every key possible that is not part of one of the modules.
+On the toplevel of a scenario file, the <em>scenario_name</em> needs to be provided as key.
+It is important that the <em>scenario_name</em> is unique over all of your scenario files, including the default scenarios as well as those defined in your <em>midas_scenarios</em> folder.
+Midas uses dictionaries to store the configurations with the <em>scenario_name</em> being the key.
+Once a duplicate is detected, midas will stop with an error.</p>
+<p>The following keys can be provided on the next lower hierarchical level to the scenario name.</p>
+<dl class="simple">
+<dt>parent</dt><dd><p>This key defines a scenario by its’ <em>scenario_name</em> that should provide default configuration for the current scenario.
+The current scenario file can overwrite any of the keys in the parent scenario, but note that some values will be extended instead of being replaced.
+The value is of type string.</p>
+</dd>
+<dt>modules</dt><dd><p>This key is used to define the modules to be loaded.
+The value is of type list. Each element of the list is of type string and represents a module.
+The order of the module names does not matter, the Configurator will get the correct order from a different place.
+If only the parameters of a module are provided but not the entry in <em>modules</em>, the module will not be loaded.</p>
+</dd>
+<dt>custom_modules</dt><dd><p>This key works similar to the <em>modules</em> key.
+However, this one is used to define modules that are not part of the midas ecosystem.
+Therefore, the order matters in this case.
+The value itself is of type list but the list entries are lists as well.
+Those sub-lists contain the name of the module as first entry and the full python import path to the module.
+An upgrade module should be a subclass of <cite>midas.util.upgrade_module:UpgradeModule</cite>.</p>
+</dd>
+<dt>data_path</dt><dd><p>This key defines the absolute path to the <em>midas_data</em> folder and will usually be derived from the runtime config and set automatically.
+However, it can be set manually to use a different configuration for a specific scenario.</p>
+</dd>
+<dt>start_date</dt><dd><p>An UTC ISO 8601 time string to indicate the starting point of the simulation.
+Modules don’t have to use and track the current time but if they do, they should use this value to start.
+The default value is <cite>2020-01-01 00:00:00+0100</cite>.</p>
+</dd>
+<dt>end</dt><dd><p>The number of simulation steps mosaik should orchestrate.
+Per convention, one step equals one second.
+However, steps where nothing happens will simply be skipped.
+Although the value is of type integer, it is recommended to define <em>end</em> as multiplication string for more readability.
+The Configurator will then calculate the correct value.
+The default value is <cite>1*24*60*60</cite>, which equals 86,400 seconds or one day of simulated time.</p>
+</dd>
+<dt>step_size</dt><dd><p>This key provides the step size in seconds as default value.
+Modules can use this value to synchronize their steps but they don’t have to.
+Like <em>end</em>, the value is of type integer, but can be provided as multiplication string.
+The default value is <cite>15*60</cite> = 900 = 15 minutes.</p>
+</dd>
+<dt>no_db</dt><dd><p>This key can be used to globally disable connections to the database module.
+However, globally only means that modules will get their default value from this flag.
+They can individually decide to use or to not use the database.
+The value is of type bool and the default value is <cite>false</cite>.</p>
+</dd>
+<dt>no_rng</dt><dd><p>This key can be used to disable the use of random numbers.
+Modules supporting this flag should disable all possible functions that make use of random numbers.
+Modules can indicidually decice to overwrite this value.
+The value is of type bool and the default value is <cite>false</cite>.</p>
+</dd>
+<dt>seed</dt><dd><p>This key can be used to provide a master seed.
+If it is not set, a random seed will be created.
+Random seeds for all modules will be created based on this seed unless a module locally overwrites the seed.
+The <em>seed</em> key will be ignored when the <em>random_state</em> key is present.
+The value if of type integer and the default value is <cite>None</cite> (which uses a randomly chosen random seed).</p>
+</dd>
+<dt>random_state</dt><dd><p>This key can be used to pass a numpy random state object that was pickled to the file system.
+The value must contain the full path to the random state object.
+The value is of type string and is usually not used except in the auto-generated yaml configs if a seed was used in the original scenario.</p>
+</dd>
+<dt>cmd</dt><dd><p>Mosaik knows three different ways to interact with simulators: start them in-process via python, as external process via command line, or connect to them with sockets.
+Midas currently only supports to start simulators in-process, but command line supported will be added in the future.
+Like before, this value is used as default for modules, which can use a different definition locally.
+The value is of type string and the default value is <cite>python</cite>.</p>
+</dd>
+<dt>with_arl</dt><dd><p>This key controls compatibility to <cite>palaestrAI</cite>, the reference implementation of <em>Adversarial Resilience Learning</em>.
+The value is of type bool and defaults to <cite>false</cite>.
+If enabled, the <cite>create_sensors</cite> and <cite>create_actuators</cite> methods of the upgrade modules will be called.</p>
+</dd>
+<dt>with_ict</dt><dd><p>This key controls compatibility to ICT-based modules.
+Modules can query this flag and decide to skip some of their connections to other modules in favor of letting the ICT-based module handle this connection.
+More details will follow in the future.
+The value is of type bool and defaults to <cite>false</cite>.</p>
+</dd>
+<dt>with_timesim</dt><dd><p>This key is similar to the <em>no_db</em> key.
+If enabled and a time simulator is used, modules can get the local time from the time simulator instead of using their own time tracking.
+Depending on the time simulator in use, this allows weird and unrealistic time jumps.
+The value is of type bool and defaults to <cite>false</cite>.</p>
+</dd>
+<dt>cos_phi</dt><dd><p>This key provides a default value for the cosinus of the phase angle for all modules.
+The value is of type float and the default value is <cite>0.9</cite>.</p>
+</dd>
+<dt>forecast_horizon_hours</dt><dd><p>This key allows to define the time frame for forecasts.
+Modules that support forecasts can use this value to decide how large the forecast should be.
+The value is of type float and the default value is <cite>0.25</cite>, which equals 15 minutes.</p>
+</dd>
+<dt>flexibility_horizon_hours</dt><dd><p>This key is similar to <em>forecast_horizon_hours</em> but is intended to be used by flexibility-based modules.
+Flexibilities are defined as a set of schedules for a certain time frame in the future, e.g., different power generation values of a controllable generator.
+The value is of type float and defaults to the value set in <em>forecast_horizon_hours</em> (i.e., <cite>0.25</cite> without any changes).</p>
+</dd>
+<dt>flexibility_horizon_start_hours</dt><dd><p>In contrast to forecasts, flexibilities can be calculated beginning at a point of time somewhere in the future (e.g., 3 hours ahead of time).
+With this key, a default value of hours can be defined so that modules can synchronize themselves.
+The value is of type float and defaults to <cite>0</cite> indicating that the future is now!</p>
+</dd>
+<dt>mosaik_params</dt><dd><p>This key can be used to pass information to mosaik.
+The value is of type dictionary and is not set by default.
+To set, e.g., the port mosaik should use, define the value like <cite>mosaik_params: {“attr: [127.0.0.1, 5556]}</cite>.</p>
+</dd>
+</dl>
+</section>
+<section id="keys-of-the-upgrade-module">
+<h2>Keys of the Upgrade Module<a class="headerlink" href="#keys-of-the-upgrade-module" title="Permalink to this headline">¶</a></h2>
+<p>Some of the keys above will be directly passed to the modules, i.e., if they are not defined on the module level, they will have the value from the scenario level.
+This includes following attributes:</p>
+<ul class="simple">
+<li><p>cmd</p></li>
+<li><p>step_size</p></li>
+<li><p>no_db</p></li>
+<li><p>no_rng</p></li>
+<li><p>with_timesim</p></li>
+<li><p>with_arl</p></li>
+</ul>
+<p>There are also a few keys that every module has, which are not part of the base scenario configuration.
+The will be briefly described in the following.</p>
+<dl class="simple">
+<dt>sim_name</dt><dd><p>This key can be used to set a different simulator name.
+The simulator name is used to create the entry in mosaik’s <em>sim_config</em> and mosaik will start the simulator with that name, e.g., if a simulator is called <cite>MyCoolSim</cite>, then mosaik will start it as <cite>MyCoolSim-0</cite>.
+Each module has an individual default value for the <em>sim_name</em> and, normally, there should be no reason to change it.
+The value is of type string.</p>
+</dd>
+<dt>import_str</dt><dd><p>This key defines where to import the simulator from in case that the simulator is started in-process (<cite>cmd=python</cite>).
+The value of <em>import_str</em> will be placed in mosaik’s <em>sim_config</em> as well.
+Each module has an individual default value for <em>import_str</em> and the value is of type string.
+Unlike <em>sim_name</em>, there are various reasons to change the value of <em>import_str</em>, e.g., if you have a custom implementation of a certain simulator, you can simply place the import string here and the custom implementation will be loaded instead.
+However, this requires that the custom implementation supports all functionality of the base simulators’ mosaik interface.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">MIDAS</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="next_steps.html">Next Steps</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Scenario Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lifecycle">Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-keys-to-the-scenario">The Keys to the Scenario</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keys-of-the-upgrade-module">Keys of the Upgrade Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules/index.html">Overview of MIDAS’ Default Modules</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="next_steps.html" title="previous chapter">Next Steps</a></li>
+      <li>Next: <a href="modules/index.html" title="next chapter">Overview of MIDAS’ Default Modules</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Stephan Balduin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/configuration.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
