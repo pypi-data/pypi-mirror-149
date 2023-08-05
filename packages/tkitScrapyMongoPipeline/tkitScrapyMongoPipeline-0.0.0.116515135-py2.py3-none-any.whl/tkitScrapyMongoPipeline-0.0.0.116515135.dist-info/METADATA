@@ -1,0 +1,71 @@
+Metadata-Version: 2.1
+Name: tkitScrapyMongoPipeline
+Version: 0.0.0.116515135
+Summary: tkitScrapyMongoPipeline,
+Home-page: http://docs.terrychan.org/tkit-lr-pytorch/
+Author: Terry Chan
+Author-email: napoler2008@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pymongo (==4.1.1)
+Requires-Dist: Scrapy (>=2.6.1)
+
+# tkitScrapyMongoPipeline
+# MongoPipeline
+
+https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
+
+数据存储到mongodb
+
+
+
+
+```commandline
+
+
+
+# settings
+# 1、设置MongoDB 的数据库地址
+MONGO_URI = "mongodb://192.168.123.117:27017/"
+MONGO_DATABASE="test"
+# # 2、启用中间件MongoPipeline
+ITEM_PIPELINES = {
+   # 'base.pipelines.DuplicatesPipeline': 100,
+   'base.pipelines.MongoPipeline': 100,
+}
+
+
+
+
+
+
+
+
+# item 字段示例
+ item={
+#设置强制去重复字段
+"dup_id":url,
+"title": title, "url": url, "content": text, "site": "playbarkrun.com", "content_type": "content",
+# 设置表名
+"collection_name":"test11"
+}
+
+
+
+```
+
+
+
+
+
+
+详细参考
+
+> dev.md
+
+
+
+
