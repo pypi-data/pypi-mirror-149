@@ -1,0 +1,32 @@
+from enum import IntEnum
+
+
+class ServiceNumber(IntEnum):
+    READ_VALUES = 0x64
+    WRITE_VALUES = 0x65
+    SEARCH_ARCHIVE_POINTERS_OLD = 0x67
+    SEARCH_ARCHIVE_POINTERS = 0x7B
+    READ_ARCHIVES_OLD = 0x68
+    READ_ARCHIVES = 0x7C
+    READ_DEVICE_TIME = 0x6C
+    READ_SCADA_PARAMETERS = 0x70
+    WRITE_DEVICE_TIME = 0x71
+    GROUP_WRITE_VALUES = 0x77
+    GROUP_READ_VALUES = 0x79
+    CALL = 0x87
+    READ_ARCHIVES_BY_DATE_OLD = 0x91
+    READ_ARCHIVES_BY_DATE = 0x7D
+
+
+class Archive(IntEnum):
+    EXTREME = 0
+    DATA = 1
+    BINARY = 2
+    DAILY = 3
+    MONTHLY = 4
+    SETTING = 5
+    FAST_1 = 6
+    FAST_2 = 7
+    STATUS = 8
+    BILLING = 9
+    GAS_COMPOSITION = 10
