@@ -1,0 +1,29 @@
+{% extends 'gallery/_common.html' %}
+{% load static %}
+
+{% block gallery %}
+<!-- ======= Gallery Section ======= -->
+<section id="gallery" class="gallery">
+  <div class="container">
+    <div class="section-title">
+      <h2>Gallery</h2>
+      <p>Photos from Our Clinic</p>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row no-gutters">
+      {% for filename in gallery_files %}
+        <div class="col-lg-3 col-md-4">
+          <div class="gallery-item">
+            <a href="{% static 'img/gallery/'|add:filename %}" class="galelry-lightbox">
+              <img src="{% static 'img/gallery/'|add:filename %}" alt="" class="img-fluid">
+            </a>
+          </div>
+        </div>
+      {% endfor%}
+    </div>
+  </div>
+</section>
+<!-- End Gallery Section -->
+{% endblock %}
