@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "pngme-api"
+version = "0.9.0"
+description = "API client used to access Pngme's financial data APIs."
+license = "MIT"
+authors = ["Ben Fasoli <ben@pngme.com>"]
+readme = "README.md"
+homepage = "https://developers.api.pngme.com/reference/"
+repository = "https://github.com/pngme/pngme-api"
+packages = [{ include = "pngme/api" }]
+
+[tool.poetry.dependencies]
+httpx = "^0.22.0"
+nest-asyncio = "^1.5.4"
+python = "^3.8"
+pydantic = "^1.9.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+mypy = "^0.931"
+pylint = "^2.12.2"
+pytest = "^6.1.0"
+pytest-asyncio = "^0.18.1"
+pytest-cov = "^3.0.0"
+python-dotenv = "^0.10.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+check_untyped_defs = true
+explicit_package_bases = true
+implicit_reexport = true
+namespace_packages = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = "nest_asyncio"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
