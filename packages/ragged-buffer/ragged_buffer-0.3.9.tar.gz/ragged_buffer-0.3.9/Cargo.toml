@@ -1,0 +1,23 @@
+[package]
+name = "ragged-buffer"
+version = "0.3.9"
+edition = "2021"
+authors = ["Clemens Winter <clemenswinter1@gmail.com>"]
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+description = "Efficient RaggedBuffer datatype that implements 3D arrays with variable-length 2nd dimension."
+
+[lib]
+name = "ragged_buffer"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+numpy = { version = "0.15", optional = true }
+pyo3 = { version = "0.15", features = ["extension-module"], optional = true }
+ndarray = "0.15.4"
+
+[profile.release]
+debug = true
+
+[features]
+python = ["pyo3", "numpy"]
