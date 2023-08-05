@@ -1,0 +1,19 @@
+<nav class="relative text-sm leading-6 mt-4">
+  <ul>
+    {% for section in get_navigation(maxdepth=2, collapse=false, includehidden=true, titles_only=true) %}
+    <li class="mb-8">
+      {%- if section.title %}
+      <h5 class="mb-3 font-semibold text-slate-900">{{ section.title }}</h5>
+      {%- endif %}
+      <ul class="space-y-2 border-l border-slate-100">
+        {% for item in section.children %}
+        <li>
+          <a class="block border-l pl-4 -ml-px {% if item.is_active %} border-pink-600 text-pink-600 {% else %} border-transparent hover:border-slate-400 text-slate-700 hover:text-slate-900 {% endif %}"
+             href="{{ item.url }}"> {{ item.title }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>

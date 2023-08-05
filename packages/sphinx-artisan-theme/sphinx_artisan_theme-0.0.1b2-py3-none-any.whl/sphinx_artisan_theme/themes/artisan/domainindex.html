@@ -1,0 +1,42 @@
+{%- extends "layout.html" %}
+
+{% set title = indextitle %}
+
+{% block page_navigation %}
+  {% call macros.menu() %}
+    {% call macros.menu_item(_("Items"), "#items") %}
+       {% for key, _ in content %}
+        {{ macros.menu_subitem(key|upper, "#" + key|upper) }}
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+  <div class="prose prose-slate prose-docutils prose-pre:bg-slate-700">
+    {{ macros.h1(indextitle, "index") }}
+    {{ macros.h2(_("Items"), "items") }}
+    {%- for key, entries in content %}
+    {{ macros.h3(key|upper, key|upper) }}
+    <ul class="list-disc pl-6">
+      {%- for (name, grouptype, page, anchor, extra, qualifier, description) in entries %}
+        <li>
+          <code class="font-mono font-semibold slate-700 hover:text-slate-900">
+            {%- if page -%}
+            <a href="{{ pathto(page)|e }}#{{ anchor }}">{{ name }}</a>
+            {%- else -%}
+            {{ name }}
+            {%- endif -%}
+          </code>
+          {% if qualifier or description %} &mdash;
+          {% if qualifier %}
+          <strong>{{ qualifier|e }}:</strong>
+          {% endif %}
+          {{ description|e }}
+          {% endif %}
+        </li>
+      {%- endfor %}
+    </ul>
+    {%- endfor %}
+  </div>
+{% endblock %}

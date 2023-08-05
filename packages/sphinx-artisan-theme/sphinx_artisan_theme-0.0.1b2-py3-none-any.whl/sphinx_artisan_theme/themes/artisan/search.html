@@ -1,0 +1,87 @@
+{#
+    basic/search.html
+    ~~~~~~~~~~~~~~~~~
+
+    Template for the search page.
+
+    :copyright: Copyright 2007-2022 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- extends "layout.html" %}
+
+{% set title = _('Search') %}
+
+{%- block scripts %}
+    {{ super() }}
+    <script src="{{ pathto('_static/searchtools.js', 1) }}"></script>
+    <script src="{{ pathto('_static/language_data.js', 1) }}"></script>
+{%- endblock %}
+
+{% block extra_head %}
+  <script src="{{ pathto('searchindex.js', 1) }}" defer></script>
+  {{ super() }}
+{% endblock %}
+
+{% block body %}
+  <main class="max-w-2xl mx-auto pt-10 lg:max-w-none lg:ml-0 prose prose-slate">
+
+    {{ macros.h1(_('Search'), "search-documentation") }}
+
+    {% block scriptwarning %}
+    <noscript>
+      <div class="admonition warning">
+        <p>{% trans %}Please activate JavaScript to enable the search functionality.{% endtrans %}</p>
+      </div>
+    </noscript>
+    {% endblock %}
+
+      {% if "search-field.html" not in sidebars %}
+    {% block searchtext %}
+    <p>{% trans %}Searching for multiple words only shows matches that contain all words.{% endtrans %}</p>
+    {% endblock %}
+
+    {% block searchbox %}
+      <form action="" method="get">
+
+        <div class="pt-2 relative mx-auto text-gray-600">
+          <input class="ring-0 border-2 border-slate-300 bg-white w-full h-10 px-5 pr-10 rounded-lg text-sm focus:outline-none focus:border-slate-300 focus:ring-0"
+            type="search" name="q" placeholder="Search">
+          <button class="absolute right-0 top-0 mt-2 border-0 bg-transparent" type="search" name="q"  value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"  placeholder="Search" aria-label="Search" type="submit">
+            <svg class="text-slate-300 hover:text-slate-600 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+
+        
+        <span id="search-progress" style="padding-left: 10px"></span>
+      </form>
+    {% endblock %}
+      {% endif %}
+
+    {% block searchresults %}
+      <div id="search-results">
+        {% if search_performed %}
+          <h2>{{ _('Search Results') }}</h2>
+
+          {% if not search_results %}
+            <p>{{ _('Your search did not match any documents. Please make sure that all words are spelled correctly and that you\'ve selected enough categories.') }}</p>
+          {% endif %}
+        {% endif %}
+
+        {% if search_results %}
+          <ul>
+          {% for href, caption, context in search_results %}
+            <li>
+              <a href="{{ pathto(item.href) }}">{{ caption }}</a>
+              <div class="context">{{ context|e }}</div>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endblock %}
+
+    {% include "footer.html" %}
+  </main>
+{% endblock %}
