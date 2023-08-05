@@ -1,0 +1,77 @@
+- hosts: controller
+  tasks:
+    - name: Set python path fact
+      set_fact:
+        # This value is used by Ansible to find the zuul.ansible code
+        # that Zuul's ansible plugins consume. It must be updated when
+        # the python version of the platform is changed.
+        python_path: "/usr/local/lib/python3.8/dist-packages"
+
+    - name: Run ansible that should succeed
+      command: >
+        /usr/lib/zuul/ansible/{{ zuul_ansible_version }}/bin/ansible-playbook
+        src/opendev.org/zuul/zuul/playbooks/zuul-stream/fixtures/test-stream.yaml
+      environment:
+        ZUUL_JOB_LOG_CONFIG: "{{ ansible_user_dir}}/logging.json"
+        ZUUL_JOBDIR: "{{ ansible_user_dir}}"
+        PYTHONPATH: "{{ python_path }}"
+
+    - name: Run ansible playbook that should fail
+      command: >
+        /usr/lib/zuul/ansible/{{ zuul_ansible_version }}/bin/ansible-playbook
+        src/opendev.org/zuul/zuul/playbooks/zuul-stream/fixtures/test-stream-failure.yaml
+      register: failed_results
+      failed_when: "failed_results.rc != 2"
+      environment:
+        ZUUL_JOB_LOG_CONFIG: "{{ ansible_user_dir}}/logging.json"
+        ZUUL_JOBDIR: "{{ ansible_user_dir}}"
+        PYTHONPATH: "{{ python_path }}"
+
+    - name: Validate output - setupvar
+      shell: |
+        egrep "^.*\| node1 \|\s+\"setupvar\": {" job-output.txt
+        egrep "^.*\| node2 \|\s+\"setupvar\": {" job-output.txt
+
+    - name: Validate output - shell task
+      shell: |
+        egrep "^.*\| node1 \| 1: lo:" job-output.txt
+        egrep "^.*\| node2 \| 1: lo:" job-output.txt
+
+    - name: Validate output - loop with items
+      shell: |
+        egrep "^.+\| node1 \| ok: Item: item1" job-output.txt
+        egrep "^.+\| node1 \| ok: Item: item2" job-output.txt
+        egrep "^.+\| node1 \| ok: Item: item3" job-output.txt
+        egrep "^.+\| node2 \| ok: Item: item1" job-output.txt
+        egrep "^.+\| node2 \| ok: Item: item2" job-output.txt
+        egrep "^.+\| node2 \| ok: Item: item3" job-output.txt
+
+    - name: Validate output - loop with complex items
+      shell: |
+        egrep "^.+\| node1 \| ok: Item: Runtime" job-output.txt
+        egrep "^.+\| node2 \| ok: Item: Runtime" job-output.txt
+
+    - name: Validate output - failed shell task
+      shell: |
+        egrep "^.+\| node1 \| Exception: Test module failure exception task" job-output.txt
+        egrep "^.+\| node2 \| Exception: Test module failure exception task" job-output.txt
+
+    - name: Validate output - item loop with exception
+      shell: |
+        egrep "^.+\| node1 \| Exception: Test module failure exception loop" job-output.txt
+        egrep "^.+\| node2 \| Exception: Test module failure exception loop" job-output.txt
+
+    - name: Validate output - failure shell task with exception
+      shell: |
+        egrep "^.+\| node1 \| Exception: Test module failure exception fail-task" job-output.txt
+        egrep "^.+\| node2 \| Exception: Test module failure exception fail-task" job-output.txt
+
+    - name: Validate output - failure item loop with exception
+      shell: |
+        egrep "^.+\| node1 \| Exception: Test module failure exception fail-loop" job-output.txt
+        egrep "^.+\| node2 \| Exception: Test module failure exception fail-loop" job-output.txt
+
+    - name: Validate output - binary data
+      shell: |
+        egrep "^.*\| node1 \| \\\\x80abc" job-output.txt
+        egrep "^.*\| node2 \| \\\\x80abc" job-output.txt
