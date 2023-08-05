@@ -1,0 +1,2 @@
+class CodecException(Exception):
+    pass
