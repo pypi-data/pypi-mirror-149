@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: textualog
+Version: 0.0.6
+Summary: Display, filter and search logging messages in the terminal.
+Home-page: https://github.com/rhuygen/textualog
+Author: Rik Huygen
+Author-email: rik.huygen@kuleuven.be
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Environment :: Console
+Classifier: Topic :: Utilities
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.8.0
+Description-Content-Type: text/markdown
+Requires-Dist: rich
+Requires-Dist: textual
+
+# Textualog
+
+Display, filter and search logging messages in the terminal.
+
+This project is powered by [rich](https://github.com/Textualize/rich) and [textual](https://github.com/Textualize/textual).
+
+Some of the ideas and code in this project are based on:
+
+* [kaskade](https://github.com/sauljabin/kaskade)
+* textual example code, e.g. code_viewer
+* [cutelog](https://github.com/busimus/cutelog/)
+
+## Log file formats
+
+The current support is for a key-value type of log file. The log line shall have a fixed format, which is what I 
+currently use in my main other projects. The following key=value pairs shall be there in the following order:
+
+* `level=<logging level>`
+* `ts=<'%Y-%m-%dT%H:%M:%S,%f'>`
+* `process=<process name>`
+* `process_id=<PID>`
+* `caller=<calling function:lineno>`
+* `msg=<logging message>`
+
+In the future other formats can be supported by implementing a plugin class. Planned formats are the JSON format, ...
+
+
