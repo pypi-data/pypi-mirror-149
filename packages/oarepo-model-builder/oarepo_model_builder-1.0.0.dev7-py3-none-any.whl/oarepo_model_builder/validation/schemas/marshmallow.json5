@@ -1,0 +1,118 @@
+{
+  "model": {
+    "allOf": [
+      {
+        "$ref": "#/$defs/marshmallow"
+      }
+    ]
+  },
+  "jsonschema-property": {
+    "properties": {
+      "oarepo:marshmallow": {
+        "type": "object",
+        "properties": {
+          "nested": {
+            "type": "boolean"
+          },
+          "list-nested": {
+            "type": "boolean"
+          },
+          "generate": {
+            "type": "boolean"
+          },
+          "base-schema": {
+            "type": "string"
+          },
+          "imports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "import": {
+                  "type": "string"
+                },
+                "alias": {
+                  "type": "string"
+                }
+              },
+              "unevaluatedProperties": false
+            }
+          },
+          "imported-classes": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {
+                "type": "string"
+              }
+            }
+          },
+          "class": {
+            "type": "string"
+          },
+          "field-name": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "field-args": {
+            "type": "string"
+          },
+          "base-classes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+          },
+          "validators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+          }
+        }
+      }
+    }
+  },
+  "root": {
+    "properties": {
+      "oarepo:marshmallow": {
+        "type": "object",
+        "properties": {
+          "base-schema": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "marshmallow": {
+    "type": "object",
+    "properties": {
+      "oarepo:marshmallow": {
+        "type": "object",
+        "properties": {
+          "base-classes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "class": {
+            "type": "string"
+          },
+          "generate": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+  }
+}
