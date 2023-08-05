@@ -1,0 +1,95 @@
+Metadata-Version: 2.1
+Name: sphinx-examples
+Version: 0.0.5
+Summary: A lightweight example directive to make it easy to demonstrate code / results.
+Keywords: documentation,sphinx
+Author-email: Executable Book Project <executablebooks@gmail.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Markup
+Requires-Dist: sphinx>4
+Requires-Dist: sphinx-design
+Requires-Dist: sphinx-book-theme ; extra == "sphinx"
+Requires-Dist: sphinx-copybutton ; extra == "sphinx"
+Requires-Dist: myst-parser ; extra == "sphinx"
+Requires-Dist: sphinx-rtd-theme ; extra == "sphinx"
+Requires-Dist: furo ; extra == "sphinx"
+Project-URL: Documentation, https://executablebooks.org/
+Project-URL: Funding, https://executablebooks.org
+Project-URL: Homepage, https://executablebooks.org/
+Project-URL: Source, https://github.com/executablebooks/sphinx-examples/
+Project-URL: Tracker, https://github.com/executablebooks/sphinx-examples/issues
+Provides-Extra: sphinx
+
+# sphinx-examples
+
+A small Sphinx extension to create examples of source markup and the result of rendering it in your documentation.
+This is useful if you wish to demonstrate the functionality of a new directive or role in Sphinx.
+
+🚨**This is very alpha software**🚨: It is packaged primarily for convience and not heavily tested. Use at your own risk!
+
+## Installation
+
+You can install `sphinx-examples` with `pip`:
+
+```bash
+pip install sphinx-examples
+```
+
+## Usage
+
+See [the `sphinx-examples` documentation](https://ebp-sphinx-examples.readthedocs.io/en/latest/) for more information.
+
+## Develop
+
+To develop this extension, follow these steps:
+
+1. **Clone the repository locally**
+
+   ```console
+   $ git clone https://github.com/executablebooks/sphinx-examples
+   $ cd sphinx-examples
+   ```
+2. **Install pre-commit hooks**
+
+   ```console
+   $ pre-commit install
+   ```
+3. **Install development and documentation dependencies**
+
+   ```console
+   $ pip install -e .[sphinx]
+   ```
+
+The codebase for this package is in `src/sphinx_examples`.
+Documentation is in `docs/`.
+
+This package has no testing infrastructure, so be careful when using it!
+If it becomes more complex or with more features, we may add more testing around it in the future.
+For not it is packaged for convenience and re-use across EBP repositories.
+
+## Build the documentation
+
+The documentation is currently not hosted anywhere, so if you'd like to preview the documentation "live", run the following command:
+
+```console
+pip install -e .[sphinx]
+sphinx-build docs docs/_build/html
+```
+
+Then browse the HTML files in `docs/_build/html` to see the rendered documentation.
+
+## Inspiration
+
+This project takes heavy inspiration from the [Bootstrap v5 documenation](https://getbootstrap.com/docs/5.0/utilities/borders/#border).
+
