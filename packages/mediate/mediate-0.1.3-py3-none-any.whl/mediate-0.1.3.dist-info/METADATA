@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: mediate
+Version: 0.1.3
+Summary: Middleware for every occasion
+Home-page: https://github.com/tombulled/middleware
+License: MIT
+Keywords: python,middleware,mediate
+Author: Tom Bulled
+Author-email: 26026015+tombulled@users.noreply.github.com
+Requires-Python: >=3.8,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: registrate (>=0.1.6,<0.2.0)
+Project-URL: Documentation, https://github.com/tombulled/middleware
+Project-URL: Repository, https://github.com/tombulled/middleware
+Description-Content-Type: text/markdown
+
+# mediate
+Middleware for every occasion
+
+## Installation
+```console
+pip install mediate
+```
+
+## Usage
+```python
+import mediate
+
+middleware = mediate.Middleware()
+
+@middleware
+def shout(call_next, name):
+    return call_next(name.upper())
+
+@middleware
+def exclaim(call_next, name):
+    return call_next(name + '!')
+
+@middleware.bind
+def hello(name):
+    print(f'Hello, {name}')
+```
+
+```python
+>>> hello('sam')
+Hello, SAM!
+>>>
+>>> middleware.remove(shout)
+>>> hello('sam')
+Hello, sam!
+```
+
