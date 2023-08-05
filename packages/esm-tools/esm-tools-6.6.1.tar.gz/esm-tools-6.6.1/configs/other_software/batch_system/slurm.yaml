@@ -1,0 +1,124 @@
+# SLURM YAML CONFIGURATION FILE
+#
+#
+
+header_start: "#SBATCH"
+submit: sbatch
+launcher: srun
+debugger: None
+mail_type: NONE
+account: None
+
+
+
+# intermediate vars
+
+mail1: ""
+mail2: ""
+
+exclusive_flag: "--exclusive"
+
+choose_accounting:
+        True:
+                accounting_flag: "--account=${general.account}"
+
+choose_mail_type:
+        "*":
+                mail1:  "--mail-type=${mail_type}"
+choose_general.mail_type:
+        "*":
+                mail1:  "--mail-type=${general.mail_type}"
+choose_mail_user:
+        "*":
+                mail2:  "--mail-user=${mail_user}"
+choose_general.mail_user:
+        "*":
+                mail2:  "--mail-user=${general.mail_user}"
+
+notification_flag: "${mail1} ${mail2}"
+single_proc_submit_flag: "--ntasks-per-node=1"
+tasks_flag: "--ntasks=@tasks@"
+partition_flag: "--partition=@partition@"
+nodes_flag: "--nodes=@nodes@"
+time_flag: "--time=${compute_time}"
+additional_flags: []
+output_path: "${experiment_dir}/log/"
+thisrun_logfile: "${output_path}${expid}_${general.setup_name}_@jobtype@_${general.current_date!syear!smonth!sday}-${general.end_date!syear!smonth!sday}_%j.log"
+output_flags: "--output=${thisrun_logfile} --error=${thisrun_logfile}"
+name_flag: "--job-name=${expid}"
+
+add_choose_heterogeneous_parallelization:
+        true:
+                cpu_bind: "none"
+        false:
+                cpu_bind: "cores"
+
+choose_launcher:
+        srun:
+                launcher_flags: "-l --kill-on-bad-exit=1 --cpu_bind=${cpu_bind}"
+                execution_command: "${debugger_flags_prelauncher} ${launcher} ${launcher_flags} --multi-prog ${config_files.hostfile}"
+        mpiexec.hydra:
+                launcher_flags: "-bootstrap slurm"
+                execution_command: "echo mpiexec.hydra as launcher not yet available"
+        mpirun:
+                launcher_flags: ""
+                execution_command: "${debugger_flags_prelauncher} ${launcher} ${launcher_flags} $(cat ${config_files.hostfile})"
+
+choose_debugger:
+        None:
+            debugger_flags_prelauncher: ""
+        ddt:
+            debugger_flags_prelauncher: "ddt --connect"
+            runtime_environment_changes:
+                add_module_actions:
+                  - "load arm-forge"
+
+submitted: false
+script_name: "<--methods.scriptname--"
+actual_script_dir: "<--methods.script_dir--"
+hostname_list: "DUMMY_HOST1 DUMMY_HOST2"
+
+choose_SLURM_NNODES:
+        "*":
+                submitted: true
+                script_name: "<--scriptname--"
+                actual_script_dir: "<--script_dir--"
+                total_nnodes: ${SLURM_NNODES}
+                hostname_list: "<--show_hostnames--"
+
+                #"<--scriptname--":
+                #method: "squeue --job ${JOB_ID} -o '%o' | cut -f1 -d' ' | basename | cut -f1 -d' '"
+                #"<--scriptdir--":
+                #method: "squeue --job ${JOB_ID} --format '%Z' squeue --job ${JOB_ID} --format '%Z'"
+                #"<--show_hostnames--":
+                #method: "scontrol show hostnames"
+
+config_files:
+        # don't change the name at the moment, it's currently hardcoded in esm_runscripts/slurm.py
+        hostfile: hostfile_srun
+
+check_error:
+        "srun: error:" :
+                frequency: 30
+                method: "kill"
+                message: "SLURM ERROR: slurm ended with an error, exiting."
+                file: "stdout"
+
+        "slurmstepd: error: execve():" :
+                frequency: 600
+                method: "kill"
+                message: "SLURM ERROR: slurm probably didn't find executable"
+                file: "stdout"
+
+# possibility to use less cores than processes. Useful for test runs / debugging
+# can be specified in user runscript
+overcommit_nodes: None
+overcommit_rule: ""
+
+choose_overcommit_nodes:
+    None:
+        overcommit_rule: ""
+    "*":
+        overcommit_rule:  "--overcommit --nodes=${overcommit_nodes}"
+
+overcommit_flag: "${overcommit_rule}"
