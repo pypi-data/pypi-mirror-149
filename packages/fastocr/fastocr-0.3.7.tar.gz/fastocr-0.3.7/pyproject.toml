@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "fastocr"
+version = "0.3.7"
+description = "FastOCR is a desktop application for OCR API."
+license = "LGPL-3.0-only"
+authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
+homepage = "https://github.com/BruceZhang1993/FastOCR"
+repository = "https://github.com/BruceZhang1993/FastOCR"
+documentation = "https://github.com/BruceZhang1993/FastOCR"
+keywords = ["ocr"]
+readme = "README.md"
+include = ["fastocr/qml/*.qml", "fastocr/qml/component/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/config.example.ini",
+    "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg", "fastocr/resource/icon/*/*.png"]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4.0"
+qasync = "*"
+click = "*"
+aiohttp = "*"
+dbus-next = { version = "*", platform = "linux" }
+PyQt5 = "*"
+
+[tool.poetry.dev-dependencies]
+poetry2setup = "*"
+pytest = "*"
+pytest-asyncio = "*"
+pyinstaller = "*"
+appimage-builder = { version = "*", platform = "linux" }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+fastocr = 'fastocr.__main__:main'
