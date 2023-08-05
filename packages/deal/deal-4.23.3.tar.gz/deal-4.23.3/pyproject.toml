@@ -1,0 +1,133 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "deal"
+license = "MIT"
+author = "Gram"
+author-email = "gram@orsinium.dev"
+home-page = "https://github.com/life4/deal"
+description-file = "README.md"
+requires-python = ">=3.7"
+keywords = "deal,contracts,pre,post,invariant,decorators,validation,pythonic,functional"
+
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Plugins",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+requires = [
+    "astroid>=2.11.0",
+]
+
+[tool.flit.metadata.requires-extra]
+all = [
+    "deal-solver",
+    "hypothesis",
+    "pygments",
+    "typeguard",
+    "vaa>=0.2.1",
+]
+test = [
+    "coverage[toml]",
+    "docstring-parser",
+    "isort",
+    "marshmallow",
+    "pytest-cov",
+    "pytest",
+    "sphinx",
+    "urllib3",
+
+    # copy-pasted "all" extra
+    "deal-solver",
+    "hypothesis",
+    "pygments",
+    "typeguard",
+    "vaa>=0.2.1",
+]
+lint = [
+    "flake8",
+    "flake8-commas",
+    "flake8-quotes",
+    "mypy>=0.900",
+    "mypy_test>=0.1.1",
+    "isort",
+    "unify",
+
+    # copy-pasted "all" extra
+    "deal-solver",
+    "hypothesis",
+    "pygments",
+    "typeguard",
+]
+docs = [
+    "m2r2",
+    "myst-parser",
+    "sphinx==3.5.*",
+    "sphinx-rtd-theme==0.5.*",
+]
+
+[tool.flit.entrypoints."flake8.extension"]
+DEAL = "deal.linter:Checker"
+
+[tool.pytest.ini_options]
+python_classes = ""
+addopts = [
+    "--cov=deal",
+    "--cov-report=html",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-fail-under=100",
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "deal/linter/_template.py",
+    "deal/mypy.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "except ImportError:",
+    "raise NotImplementedError",
+    "  pass",
+    "if TYPE_CHECKING:",
+    "raise RuntimeError.+unreachable.+",
+]
+
+[tool.mypy]
+files = ["deal"]
+python_version = 3.7
+plugins = ["deal.mypy"]
+ignore_missing_imports = true
+show_error_codes = true
+
+allow_redefinition = true
+check_untyped_defs = true
+# no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+# warn_unreachable = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = 'deal._imports'
+ignore_errors = true
+
+[tool.isort]
+line_length = 90
+combine_as_imports = true
+balanced_wrapping = true
+lines_after_imports = 2
+skip = ".venvs/"
+multi_line_output = 5
+include_trailing_comma = true
+
