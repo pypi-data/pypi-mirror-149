@@ -1,0 +1,18 @@
+{% load static %}
+{% load get_attribute %}
+
+<style>
+    .dropdown-menu.tools-menu.filter-dropdown-menu {
+        padding: 5px;
+    }
+</style>
+
+<div class="float-right">
+    <a href="{% url data.back_to_query_redirect data.template_id data.query_id %}"
+       class="btn btn-secondary" role="button"><i class="fas fa-arrow-left"></i> Back to Query</a>
+</div>
+
+{% include "core_explore_common_app/user/results/results.html" %}
+
+<div id="template_id" class="hidden">{{data.template_id}}</div>
+<input id="id_order_by_field" type="hidden" value="{{ data_sorting_fields }}">
