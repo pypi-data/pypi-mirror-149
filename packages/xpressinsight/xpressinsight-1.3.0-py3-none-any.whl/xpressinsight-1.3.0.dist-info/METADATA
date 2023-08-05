@@ -1,0 +1,126 @@
+Metadata-Version: 2.1
+Name: xpressinsight
+Version: 1.3.0
+Summary: FICO Xpress - Insight Python package
+Home-page: https://www.fico.com/en/products/fico-xpress-optimization-suite
+Author: FICO Xpress dev. team
+Author-email: support@fico.com
+License: Xpress Shrinkwrap License Agreement
+Keywords: optimization xpress insight
+Platform: any
+Classifier: License :: Other/Proprietary License
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development
+Classifier: Topic :: Scientific/Engineering
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: pyarrow (>=3.0.0)
+Requires-Dist: pandas (>=1.0.0)
+Requires-Dist: numpy (>=1.17.0)
+Requires-Dist: urllib3
+Requires-Dist: certifi
+
+FICO<sup>&reg;</sup> Xpress Insight Python Package
+==================================================
+
+The 'xpressinsight' Python package can be used to develop Python<sup>&reg;</sup> based web applications for Xpress Insight.
+
+Documentation
+-------------
+
+- [FICO Xpress Insight 4 Python Package Reference Manual](https://www.fico.com/fico-xpress-optimization/docs/latest/insight-python-doc)
+- [FICO Xpress Insight 4 Developers Guide For Python](https://www.fico.com/fico-xpress-optimization/docs/latest/insight_dev_guide_py)
+- [FICO Xpress Insight 5 Python Package Reference Manual](https://www.fico.com/fico-xpress-optimization/docs/latest/insight5-python-doc)
+- [FICO Xpress Insight 5 Developers Guide For Python](https://www.fico.com/fico-xpress-optimization/docs/latest/insight5_dev_guide_py)
+
+Release Notes
+-------------
+
+__v 1.3.0__
+
+- Support for Insight 5 custom progress notifications:
+  - Added functions `send_progress_update`, `get_messages` and `put_messages` to Insight application interface
+    (`AppInterface`).
+  - Added the `send_progress` attribute the `ExecMode`, `ExecModeLoad`, and `ExecModeRun` decorators.
+  - Added the `update_progress` attribute to the entity type annotations.
+- RHEL 8 support.
+- Python 3.10 support
+  - At time of writing the ‘default’ Anaconda channel does not have all the dependencies required by the 
+    `xpressinsight` package for this Python version.  We recommend conda users to stick with Python 3.9, or use a 
+    different distribution of Python 3.10 until this is resolved.
+- Fixed an issue that caused a failure if the path to the temporary directory contained a space.
+
+__v 1.2.3__
+
+- Added the `threads` attribute to the `ExecMode`, `ExecModeLoad`, and `ExecModeRun` decorators.
+
+__v 1.2.2__
+
+- Fixed an issue that could cause a type check exception when the user created
+  empty (null) fields in a DataFrame column in the Insight UI.
+
+__v 1.2.1__
+
+- Added test mode functions `add_item_info` and `clear_item_infos` to Insight application interface.
+- Added function `scenario_parent_path` to Insight application interface.
+- Added `RepositoryPath` class for building and parsing of repository paths.
+
+__v 1.2.0__
+
+- Added scenario types property (`scen_types`) to application configuration (`AppConfig`).
+- Added repository functions `get_item_info` and `get_item_infos` to Insight application interface (`AppInterface`).
+
+__v 1.1.3__
+
+- Performance improvements.
+- Python 3.9 support.
+
+__v 1.1.2__
+
+- Fixed an exception that could occur when an empty MultiIndex DataFrame has been assigned to an Insight entity.
+- Updated documentation describing how to set up Anaconda.
+
+__v 1.1.1__
+
+- Improve error message when Insight cannot start Python because of security restrictions.
+- Update documentation and update VDL version number in examples.
+
+__v 1.1.0__
+
+ - Additional factory function `create_app` initializes and configures standard test environment.
+ - Some performance issues with executing a Python based scenario have been addressed.
+ - Maximum length of a string in an Index, Series, or DataFrame has been changed from 1,000,000 bytes to 250,000 characters.
+ - Default name of the temporary Insight working directory has been changed from "insight" to "work_dir/insight".
+
+__v 1.0.2__
+
+ - The functions `update` and `reset_progress` have been added to the Insight Python interface.
+ - Changed Python standard output to unbuffered mode to improve responsiveness of output messages.
+ 
+Licensing
+---------
+
+The Xpress software is governed by the
+[Xpress Shrinkwrap License Agreement](https://community.fico.com/s/contentdocument/06980000002h0i5AAA).
+When downloading or using the package, you accept the license terms. After installation, a copy of the Xpress Shrinkwrap 
+License will be stored in the `LICENSE.txt` file in the `site-packages/xpressinsight-*.dist-info` directory.
+In Anaconda, a copy of the license file will be stored in the `pkgs/xpressinsight-*/info/licenses` directory.
+
+"Python" is a registered trademark of the Python Software Foundation.
+"FICO" is a registered trademark of Fair Isaac Corporation in the United States 
+and may be a registered trademark of Fair Isaac Corporation in other countries. 
+Other product and company names herein may be trademarks of their respective owners.
+
+&copy; Copyright 2012-2022 Fair Isaac Corporation. All rights reserved.
+
