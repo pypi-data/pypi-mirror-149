@@ -1,0 +1,10 @@
+__title__ = 'TerPy'
+__description__ = 'Computational chemistry utilities.'
+__url__ = ''
+__version__ = '0.0.1'
+__build__ = 0x022200
+__author__ = 'Sebastian Wellig'
+__author_email__ = 'sebastian.wellig@gmail.com'
+__license__ = 'MIT license'
+__copyright__ = 'Copyright (c) 2019 Sebastian Wellig'
+__cake__ = u'\u2728 \U0001f370 \u2728'
