@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "flumes"
+version = "0.1.20"
+description = ""
+authors = ["Jorge Zapata <jorgeluis.zapata@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+PyGObject = "^3.42.0"
+python-dateutil = "^2.8.2"
+SQLAlchemy = "^1.4.26"
+alembic = "^1.7.5"
+packaging = "^21.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pre-commit = "^2.15.0"
+black = "^21.9b0"
+isort = "^5.9.3"
+tox = "^3.24.4"
+yamllint = "^1.26.3"
+
+[tool.poetry.scripts]
+flumes-discovery = "flumes.discoverer:run"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88 
+
+[tool.isort]
+profile = "black"
+line_length = 88
