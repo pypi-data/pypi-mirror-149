@@ -1,0 +1,134 @@
+# -----------------------------------------------------------------------------
+# Project Basic Information
+# -----------------------------------------------------------------------------
+# project name
+name:
+
+# target chip
+target:
+
+# -----------------------------------------------------------------------------
+# Options
+# -----------------------------------------------------------------------------
+options:
+  # C Version
+  # - can be one of: [c90, gnu90, c99, gnu99, c11, gnu11]
+  c_version: c90
+
+  # C++ Version
+  # - can be one of: [gnu++98, c++11, gnu++11, c++03, c++14, gnu++14, c++17, gnu++17]
+  cpp_version: c++11
+
+  # Optimize Level
+  # - while using Keil:
+  #   1. keil_use_optimize_hint = false, optimize can be:
+  #      [
+  #        none: -O0,
+  #        low: -O1,
+  #        medium: -O2,
+  #        high: -O3,
+  #      ]
+  #      and optimize_hint takes no effect.
+  #   2. keil_use_optimize_hint = true, optimize can ONLY
+  #      be 'high', and optimize_hint can be:
+  #      [
+  #        speed: -Ofast,
+  #        balanced: -Os,
+  #        size: -Oz,
+  #      ]
+  # - while using IAR:
+  #   1. optimize can be one of: [none, low, medium, high] and
+  #      optimize_hint can be one of: [speed, balanced, size].
+  #   2. optimize_hint take effect only when optimize is 'high'.
+  #   3. keil_use_optimize_hint is useless.
+  #
+  optimize: none
+  optimize_hint: size
+  keil_use_optimize_hint: false
+
+  # Keil: Options->Target->Use MicroLIB
+  # - true/false
+  keil_micro_lib: false
+
+  # Keil: Options->C/C++->Warnings
+  # - [no warnings, all warnings, ac5-like warnings, misra compatible]
+  keil_warning: all_warning
+
+  # IAR: Options->General Options->Library Configuration->Library
+  # - [normal, full]
+  iar_lib: full
+
+# -----------------------------------------------------------------------------
+# Advanced Options
+# -----------------------------------------------------------------------------
+advanced_options:
+  # override default KEIL linker script file(*.sct):
+  # - null: use default
+  # - file path: linker script file path
+  keil_linker_cfg:
+
+  # override default IAR linker script file(*.icf):
+  # - null: use default
+  # - file path: linker script file path
+  iar_linker_cfg:
+
+  # additional KEIL flasher algorithms:
+  # - null: use default
+  # - list of flasher algorithms: flasher algorithms need to be added. a flasher algorithm should be described as following:
+  #   '''
+  #   name: MY_FLASH_ALGORITHM.FLM  # flasher algorithm name
+  #   path: Flash\MY_FLASH_ALGORITHM.FLM # algorithm should be placed into "Flash" dir under keil installation path first
+  #   base: 0       # in Hex
+  #   size: 80000   # in Hex
+  #   '''
+  keil_flasher_cfg:
+
+  # override default IAR flasher config file(*.board):
+  # - null: use default
+  # - file path: flasher config file path
+  iar_flasher_cfg:
+
+# -----------------------------------------------------------------------------
+#  Debug Options(tool, interface, reset options, etc.)
+#
+# - while using JLink:
+#   '''
+#     tool: jlink
+#     interface: [SWD, JTAG]
+#     speed: [interface speed]
+#     connect: [normal, with pre-reset, under reset]
+#     reset: [normal, core, reset pin, connect under reset, core and peripheral]
+#   '''
+# -----------------------------------------------------------------------------
+debug:
+  tool: jlink
+  interface: SWD
+  speed: 10000
+  connect: with pre-reset
+  reset: reset pin
+
+# -----------------------------------------------------------------------------
+# Defines
+# -----------------------------------------------------------------------------
+defines:
+
+# -----------------------------------------------------------------------------
+# Include Paths
+# -----------------------------------------------------------------------------
+includePaths:
+
+# -----------------------------------------------------------------------------
+# Project File Groups
+# a group should be described as following:
+#   '''
+#   name: MyGroup
+#   files:
+#     - name: File Name
+#       type: [C, ASM, OBJ, LIB, TEXT, CUSTOM, CPP, IMAGE]
+#       path: File Path
+#     ...
+#   groups:
+#     - [Nested Groups]
+#   '''
+# -----------------------------------------------------------------------------
+groups:
