@@ -1,0 +1,265 @@
+/*******************************
+         Theme Overrides
+*******************************/
+
+@import "@less/invenio_app_rdm/theme/collections/menu.overrides";
+
+.ui.dropdown {
+  font-size: 14px;
+}
+
+header {
+  height: 50px;
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+}
+
+#signet {
+  width: 60px;
+  height: 60px;
+  margin: 5px;
+}
+
+.right.menu > a.item {
+  display: none !important;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.right.menu > div.dropdown.item {
+  display: none !important;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.login {
+  width: 190px;
+  height: 100%;
+
+  background-color: @primaryColor !important;
+  color: lightgrey !important;
+  text-transform: none !important;
+
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+
+  display: none !important;
+}
+
+.login:hover {
+  color: @white !important;
+}
+
+.login.mobile {
+  width: 100%;
+  height: 50px;
+
+  padding: 10px !important;
+
+  background-color: @primaryColor !important;
+  color: lightgrey !important;
+  text-transform: none !important;
+
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+
+  display: flex !important;
+}
+
+.login.mobile:hover {
+  color: @white !important;
+}
+
+#nav-icon {
+  background-color: #373737;
+  width: 50px;
+  height: 50px;
+  position: relative;
+  cursor: pointer;
+}
+
+#nav-icon span {
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 26px;
+  background: lightgrey;
+  opacity: 1;
+  left: 12px;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
+
+#nav-icon span:nth-child(1) {
+  top: 16px;
+}
+
+#nav-icon span:nth-child(2) {
+  top: 23px;
+  width: 20px;
+}
+
+#nav-icon span:nth-child(3) {
+  top: 30px;
+}
+
+#nav-icon.open span:nth-child(1) {
+  top: 22px;
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+
+#nav-icon.open span:nth-child(2) {
+  opacity: 0;
+}
+
+#nav-icon.open span:nth-child(3) {
+  top: 22px;
+  -webkit-transform: rotate(-135deg);
+  -moz-transform: rotate(-135deg);
+  -o-transform: rotate(-135deg);
+  transform: rotate(-135deg);
+}
+
+footer {
+  flex-shrink: 0;
+  margin-top: 100px;
+
+  background-color: #006699;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav.footer {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav.footer a {
+  width: 100%;
+  color: @white;
+  text-align: center;
+  font-size: 1em;
+  font-family: @headerFont;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 10px;
+}
+
+nav.footer a:hover {
+  color: white;
+}
+
+#logos {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.supportlogo {
+  margin: 10px 50px 10px 50px;
+}
+
+.supportlogo p {
+  font-size: 1em;
+  display: block;
+  color: white;
+}
+
+.supportlogo img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 150px;
+}
+
+@media only screen and (min-width: @computerBreakpoint) {
+  header {
+    height: 70px;
+  }
+  #nav-icon {
+    display: none;
+  }
+
+  .login {
+    display: flex !important;
+  }
+
+  /*, .right.menu > div.dropdown.item */
+  .right.menu > a.item {
+    display: flex !important;
+    transition: color 0.3s;
+  }
+
+  .right.menu > div.dropdown.item {
+    display: flex !important;
+    transition: color 0.3s;
+  }
+
+  #signet {
+    margin-top: 15px;
+    margin-right: 15px;
+    margin-left: 50px;
+    width: 95px;
+    height: 95px;
+  }
+
+  nav.footer {
+    width: auto;
+    margin-right: 50px;
+  }
+  nav.footer a {
+    width: auto;
+  }
+  #logos {
+    width: auto;
+    margin-left: 50px;
+  }
+  .supportlogo {
+    margin: 10px 30px 10px 30px;
+  }
+}
+
+.ui.menu .item.active {
+  font-weight: bold;
+}
+
+/* for the additional infos box on the landing page */
+
+.ui.attached {
+  border-radius: 10px;
+
+  &.top {
+    border-radius: 10px 10px 0 0;
+
+    .item:first-child {
+      border-radius: 10px 0 0 0;
+    }
+    .item:last-child {
+      border-radius: 0 10px 0 0;
+    }
+  }
+
+  &.bottom {
+    border-radius: 0 0 10px 10px;
+  }
+}

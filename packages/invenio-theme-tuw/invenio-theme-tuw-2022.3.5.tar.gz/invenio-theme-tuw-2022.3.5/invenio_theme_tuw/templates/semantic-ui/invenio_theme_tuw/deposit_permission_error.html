@@ -1,0 +1,32 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends "invenio_theme_tuw/page_error.html" %}
+
+{%- set mail_subject   = "Permissions Request" %}
+{%- set theme_sitename = config.THEME_SITENAME %}
+{%- set nl             = "%0A" %}
+{%- set mail_body      = "Hey," + nl + nl + "could you please give me permissions to create records and upload data at '" + theme_sitename + "'?" + nl + "My username is: '" + user.profile.username + "'." + nl + nl + "Thanks!" %}
+
+{%- block message %}
+  <h1>
+    <i class="bolt icon"></i>
+      {{ _("Permission denied") }}
+  </h1>
+  <p>
+    Sorry, we are currently operating on a friendly-user basis and give out permissions manually - please contact our team at
+    <a href="mailto:{{ config.THEME_TUW_CONTACT_EMAIL }}?subject={{ mail_subject }}&body={{ mail_body }}">{{ config.THEME_TUW_CONTACT_EMAIL }}</a>.
+  </p>
+
+  {%- if config.THEME_TUW_DEPOSIT_PERMISSION_ERROR_PARAGRAPH %}
+    <p>
+      {{ config.THEME_TUW_DEPOSIT_PERMISSION_ERROR_PARAGRAPH|safe }}
+    </p>
+  {%- endif %}
+
+{%- endblock message %}

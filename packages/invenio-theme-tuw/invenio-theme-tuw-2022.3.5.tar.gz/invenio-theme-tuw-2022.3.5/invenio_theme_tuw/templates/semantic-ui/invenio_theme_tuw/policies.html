@@ -1,0 +1,33 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2021-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block page_hero %}
+  <section id="hero" class="policies" style="flex-shrink: 0;"></section>
+{%- endblock page_hero %}
+
+{%- block page_body %}
+
+  {%- set rdm_policy_link = "https://www.tuwien.at/index.php?eID=dms&s=4&path=Directives%20and%20Regulations%20of%20the%20Rectorate/Policy%20for%20Research%20Data%20Management.pdf" %}
+
+  <section class="ui container">
+    <h1>{{ _("Policies") }}</h1>
+    <div class="filelist">
+      <a class="filelist-item" target="_blank" href="{{ rdm_policy_link }}">
+        <img src="{{ url_for('static', filename='images/pdf.webp') }}" />
+        <span>{{ _("TU Wien Policy for Research Data Management") }}</span>
+      </a>
+      <a class="filelist-item disabled" href="#">
+        <img src="{{ url_for('static', filename='images/pdf.webp') }}" />
+        <span>{{ _("Policy for Repository '%(sitename)s' (coming soon)", sitename=config.THEME_SITENAME) }}</span>
+      </a>
+    </div>
+  </section>
+
+{%- endblock page_body %}

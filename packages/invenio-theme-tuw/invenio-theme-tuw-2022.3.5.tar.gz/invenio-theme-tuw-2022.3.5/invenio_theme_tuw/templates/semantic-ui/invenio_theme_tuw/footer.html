@@ -1,0 +1,38 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2015-2018 CERN.
+  Copyright (C) 2020-2022 TU Wien.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- set terms_of_use_file      = _("TU_Data_Terms_of_Use_20210909_en.pdf") %}
+{%- set terms_of_use_url       = url_for("static", filename=("documents/" + terms_of_use_file)) %}
+{%- set privacy_statement_file = _("Datenschutzinfo_Repository_TU_Data_en_20210909.pdf") %}
+{%- set privacy_statement_url  = url_for("static", filename=("documents/" + privacy_statement_file)) %}
+{%- set policies_url           = url_for("invenio_theme_tuw.tuw_policies") %}
+{%- set contact                = url_for("invenio_theme_tuw.tuw_contact") %}
+
+<footer>
+  <div id="logos">
+    <div class="supportlogo">
+      <a href="https://inveniosoftware.org/products/rdm/">
+        <p>powered by</p>
+        <img src="/static/images/footer-logos/rdmlogo.webp" alt="{{ _("Logo of Invenio RDM") }}" />
+      </a>
+    </div>
+    <div class="supportlogo">
+      <a href="https://forschungsdaten.at/fda/">
+        <p>enabled by</p>
+        <img src="/static/images/footer-logos/fair-data-austria.webp" alt="{{ _("Logo of the 'FAIR Data Austria' project") }}" />
+      </a>
+    </div>
+  </div>
+  <nav class="footer">
+    <a href="{{policies_url}}">{{ _("Policies") }}</a>
+    <a href="{{terms_of_use_url}}" target="_blank">{{ _("Terms of Use") }}</a>
+    <a href="{{privacy_statement_url}}" target="_blank">{{ _("Data Protection Declaration") }}</a>
+    <a href="{{contact}}">{{ _("Contact") }}</a>
+  </nav>
+</footer>
