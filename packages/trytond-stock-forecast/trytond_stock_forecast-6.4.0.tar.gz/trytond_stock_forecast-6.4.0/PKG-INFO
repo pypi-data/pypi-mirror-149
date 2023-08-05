@@ -1,0 +1,108 @@
+Metadata-Version: 2.1
+Name: trytond_stock_forecast
+Version: 6.4.0
+Summary: Tryton module with stock forecasts
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/stock_forecast
+Keywords: tryton stock forecast
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: Intended Audience :: Manufacturing
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Bulgarian
+Classifier: Natural Language :: Catalan
+Classifier: Natural Language :: Chinese (Simplified)
+Classifier: Natural Language :: Czech
+Classifier: Natural Language :: Dutch
+Classifier: Natural Language :: English
+Classifier: Natural Language :: Finnish
+Classifier: Natural Language :: French
+Classifier: Natural Language :: German
+Classifier: Natural Language :: Hungarian
+Classifier: Natural Language :: Indonesian
+Classifier: Natural Language :: Italian
+Classifier: Natural Language :: Persian
+Classifier: Natural Language :: Polish
+Classifier: Natural Language :: Portuguese (Brazilian)
+Classifier: Natural Language :: Romanian
+Classifier: Natural Language :: Russian
+Classifier: Natural Language :: Slovenian
+Classifier: Natural Language :: Spanish
+Classifier: Natural Language :: Turkish
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Requires-Python: >=3.7
+License-File: LICENSE
+
+Stock Forecast Module
+#####################
+
+The stock forecast module provide a simple way to create stock moves
+toward customers with a date in the future. This allow other stock
+mecanism to anticipate customer demand.
+
+
+Forecast
+********
+
+The forecast form contains:
+
+  - A location from which the products will leave.
+  - A destination (which is a customer location).
+  - Two dates defining a period in the future.
+  - A company
+  - A list of forcast lines with:
+
+    - A product
+    - A quantity which represent the total demand for the period
+    - A minimal quantity for each move.
+    - A unit of measure.
+
+The "Complete Forecast" button allow to auto-complete forecast lines
+based on previous stock output for dates in the past.
+
+The forecasts are deactivated automatically when their period has passed.
+
+
+Forecast States
+^^^^^^^^^^^^^^^
+
+Draft
+
+  It is the initial state and the state used for edition. No moves are
+  linked to the forecast lines
+
+Done
+
+  Once in state done, moves are created for each forecast line:
+
+    - They are spread homogeneously between the two dates of the
+      forecast.
+
+    - Move quantities are bigger or equal to the minimal quantity set
+      on the forecast line.
+
+Cancelled
+
+ On a cancelled forecast all existing moves are cancelled and the form
+ is readonly.
+
+
