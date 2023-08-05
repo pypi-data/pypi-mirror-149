@@ -1,0 +1,731 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keywordspec name="RPA.FileSystem" type="LIBRARY" format="REST" scope="GLOBAL" generated="2022-05-02T14:49:57Z" specversion="4" source="./src/RPA/FileSystem.py" lineno="70">
+<version/>
+<doc>The `FileSystem` library can be used to interact with files and directories
+on the local computer. It can inspect and list files, remove and create them,
+read contents from files, and write data out.
+
+It shadows the built-in `OperatingSystem` library but contains keywords
+which are more RPA-oriented.
+
+**Examples**
+
+**Robot Framework**
+
+The library allows, for instance, iterating over files and inspecting them.
+
+.. code-block:: robotframework
+
+    *** Settings ***
+    Library    RPA.FileSystem
+
+    *** Keywords ***
+    Delete large files
+        ${files}=    List files in directory    archive/orders/
+        FOR    ${file}  IN  @{FILES}
+            Run keyword if    ${file.size} &gt; 10**8    Remove file    ${file}
+        END
+
+    Read process output
+        Start external program
+        Wait until modified    process.log
+        ${output}=  Read file  process.log
+        [Return]    ${output}
+
+**Python**
+
+The library can also be used inside Python.
+
+.. code-block:: python
+
+    from RPA.FileSystem import FileSystem
+
+    def move_to_archive():
+        lib = FileSystem()
+
+        matches = lib.find_files("**/*.xlsx")
+        if matches:
+            lib.create_directory("archive")
+            lib.move_files(matches, "archive")</doc>
+<tags>
+</tags>
+<inits>
+</inits>
+<keywords>
+<kw name="Absolute Path" lineno="527">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns the absolute path to a file, and resolves symlinks.
+
+:param path:    path that will be resolved
+:return:        absolute path to file as a string</doc>
+<shortdoc>Returns the absolute path to a file, and resolves symlinks.</shortdoc>
+</kw>
+<kw name="Append To Binary File" lineno="344">
+<arguments repr="path, content">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="content">
+<name>content</name>
+</arg>
+</arguments>
+<doc>Appends binary content to the given file.
+
+:param path:        path to file to append to
+:param content:     content to append</doc>
+<shortdoc>Appends binary content to the given file.</shortdoc>
+</kw>
+<kw name="Append To File" lineno="331">
+<arguments repr="path, content, encoding=utf-8">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="content">
+<name>content</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="encoding=utf-8">
+<name>encoding</name>
+<default>utf-8</default>
+</arg>
+</arguments>
+<doc>Appends text to the given file.
+
+:param path:        path to file to append to
+:param content:     content to append
+:param encoding:    character encoding of appended content</doc>
+<shortdoc>Appends text to the given file.</shortdoc>
+</kw>
+<kw name="Change File Extension" lineno="509">
+<arguments repr="path, extension">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="extension">
+<name>extension</name>
+</arg>
+</arguments>
+<doc>Replaces file extension for file at given path.
+
+:param path:        path to file to rename
+:param extension:   new extension, e.g. .xlsx</doc>
+<shortdoc>Replaces file extension for file at given path.</shortdoc>
+</kw>
+<kw name="Copy Directory" lineno="441">
+<arguments repr="source, destination">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="source">
+<name>source</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+</arguments>
+<doc>Copy directory from source path to destination path.
+
+:param source:      path to source directory
+:param destination: path to copy destination</doc>
+<shortdoc>Copy directory from source path to destination path.</shortdoc>
+</kw>
+<kw name="Copy File" lineno="409">
+<arguments repr="source, destination">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="source">
+<name>source</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+</arguments>
+<doc>Copy a file from source path to destination path.
+
+:param source:      path to source file
+:param destination: path to copy destination</doc>
+<shortdoc>Copy a file from source path to destination path.</shortdoc>
+</kw>
+<kw name="Copy Files" lineno="424">
+<arguments repr="sources, destination">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sources">
+<name>sources</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+</arguments>
+<doc>Copy multiple files to destination folder.
+
+:param sources:     list of source files
+:param destination: path to destination folder</doc>
+<shortdoc>Copy multiple files to destination folder.</shortdoc>
+</kw>
+<kw name="Create Binary File" lineno="317">
+<arguments repr="path, content=None, overwrite=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="content=None">
+<name>content</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite=False">
+<name>overwrite</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Creates a new binary file, and writes content if any is given.
+
+:param path:        path to file to write
+:param content:     content to write to file (optional)
+:param overwrite:   replace destination file if it already exists</doc>
+<shortdoc>Creates a new binary file, and writes content if any is given.</shortdoc>
+</kw>
+<kw name="Create Directory" lineno="356">
+<arguments repr="path, parents=False, exist_ok=True">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="parents=False">
+<name>parents</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="exist_ok=True">
+<name>exist_ok</name>
+<default>True</default>
+</arg>
+</arguments>
+<doc>Creates a directory and (optionally) non-existing parent directories.
+
+:param path:        path to new directory
+:param parents:     create missing parent directories
+:param exist_ok:    continue without errors if directory already exists</doc>
+<shortdoc>Creates a directory and (optionally) non-existing parent directories.</shortdoc>
+</kw>
+<kw name="Create File" lineno="300">
+<arguments repr="path, content=None, encoding=utf-8, overwrite=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="content=None">
+<name>content</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="encoding=utf-8">
+<name>encoding</name>
+<default>utf-8</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite=False">
+<name>overwrite</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Creates a new text file, and writes content if any is given.
+
+:param path:        path to file to write
+:param content:     content to write to file (optional)
+:param encoding:    character encoding of written content
+:param overwrite:   replace destination file if it already exists</doc>
+<shortdoc>Creates a new text file, and writes content if any is given.</shortdoc>
+</kw>
+<kw name="Does Directory Exist" lineno="217">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the given directory exists, False if not.
+
+:param path:    path to inspected directory
+:return: true or false if the directory exists</doc>
+<shortdoc>Returns True if the given directory exists, False if not.</shortdoc>
+</kw>
+<kw name="Does Directory Not Exist" lineno="225">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the directory does not exist, False if it does.
+
+:param path:    path to inspected directory
+:return: true or false if the directory does not exists</doc>
+<shortdoc>Returns True if the directory does not exist, False if it does.</shortdoc>
+</kw>
+<kw name="Does File Exist" lineno="201">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the given file exists, False if not.
+
+:param path:    path to inspected file
+:return: true or false if file exists</doc>
+<shortdoc>Returns True if the given file exists, False if not.</shortdoc>
+</kw>
+<kw name="Does File Not Exist" lineno="209">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the file does not exist, False if it does.
+
+:param path:    path to inspected file
+:return: true or false if the files does not exist</doc>
+<shortdoc>Returns True if the file does not exist, False if it does.</shortdoc>
+</kw>
+<kw name="Empty Directory" lineno="398">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Removes all the files in the given directory.
+
+:param path:    directory to remove files from</doc>
+<shortdoc>Removes all the files in the given directory.</shortdoc>
+</kw>
+<kw name="Find Files" lineno="125">
+<arguments repr="pattern, include_dirs=True, include_files=True">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="pattern">
+<name>pattern</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="include_dirs=True">
+<name>include_dirs</name>
+<default>True</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="include_files=True">
+<name>include_files</name>
+<default>True</default>
+</arg>
+</arguments>
+<doc>Find files recursively according to a pattern.
+
+:param pattern:         search path in glob format pattern,
+                        e.g. *.xls or **/orders.txt
+:param include_dirs:    include directories in results
+:param include_files:   include files in results
+:return:                list of paths that match the pattern</doc>
+<shortdoc>Find files recursively according to a pattern.</shortdoc>
+</kw>
+<kw name="Get File Creation Date" lineno="568">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns the creation time in seconds.
+Note: Linux sets this whenever file metadata changes
+
+:param path:    path to file to inspect
+:return: creation time in seconds as a float</doc>
+<shortdoc>Returns the creation time in seconds. Note: Linux sets this whenever file metadata changes</shortdoc>
+</kw>
+<kw name="Get File Extension" lineno="551">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns the suffix for the file.
+
+:param path:    path to file
+:return: file suffix as a string</doc>
+<shortdoc>Returns the suffix for the file.</shortdoc>
+</kw>
+<kw name="Get File Modified Date" lineno="559">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns the modified time in seconds.
+
+:param path:    path to file to inspect
+:return: modified time in seconds as a float</doc>
+<shortdoc>Returns the modified time in seconds.</shortdoc>
+</kw>
+<kw name="Get File Name" lineno="543">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns only the filename portion of a path.
+
+:param path:    path to file
+:return: filename portion of a path as a string</doc>
+<shortdoc>Returns only the filename portion of a path.</shortdoc>
+</kw>
+<kw name="Get File Owner" lineno="587">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Return the name of the user who owns the file.
+
+:param path:    path to file to inspect
+:return: file owner as a string</doc>
+<shortdoc>Return the name of the user who owns the file.</shortdoc>
+</kw>
+<kw name="Get File Size" lineno="578">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns the file size in bytes.
+
+:param path:    path to file to inspect
+:return: file size in bytes as an int</doc>
+<shortdoc>Returns the file size in bytes.</shortdoc>
+</kw>
+<kw name="Is Directory Empty" lineno="233">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Returns True if the given directory has no files or subdirectories.
+
+:param path:    path to inspected directory
+:return: true or false if the directory is empty</doc>
+<shortdoc>Returns True if the given directory has no files or subdirectories.</shortdoc>
+</kw>
+<kw name="Is Directory Not Empty" lineno="245">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Returns True if the given directory has any files or subdirectories.
+
+:param path:    path to inspected directory
+:return: true or false if the directory is not empty</doc>
+<shortdoc>Returns True if the given directory has any files or subdirectories.</shortdoc>
+</kw>
+<kw name="Is File Empty" lineno="253">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the given file has no content, i.e. has zero size.
+
+:param path:    path to inspected file
+:return: true or false if the file is empty</doc>
+<shortdoc>Returns True if the given file has no content, i.e. has zero size.</shortdoc>
+</kw>
+<kw name="Is File Not Empty" lineno="264">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Returns True if the given file has content, i.e. larger than zero size.
+
+:param path:    path to inspected file
+:return: true or false if the file is not empty</doc>
+<shortdoc>Returns True if the given file has content, i.e. larger than zero size.</shortdoc>
+</kw>
+<kw name="Join Path" lineno="518">
+<arguments repr="*parts">
+<arg kind="VAR_POSITIONAL" required="false" repr="*parts">
+<name>parts</name>
+</arg>
+</arguments>
+<doc>Joins multiple parts of a path together.
+
+:param parts:  Components of the path, e.g. dir, subdir, filename.ext
+:return: complete file path as a single string</doc>
+<shortdoc>Joins multiple parts of a path together.</shortdoc>
+</kw>
+<kw name="List Directories In Directory" lineno="165">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Lists all the directories in the given directory, relative to it.
+
+:param path:    base directory for search, defaults to current working dir
+:return: list of directories in slected directory</doc>
+<shortdoc>Lists all the directories in the given directory, relative to it.</shortdoc>
+</kw>
+<kw name="List Files In Directory" lineno="156">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Lists all the files in the given directory, relative to it.
+
+:param path:    base directory for search, defaults to current working dir
+:return: list of files in directory</doc>
+<shortdoc>Lists all the files in the given directory, relative to it.</shortdoc>
+</kw>
+<kw name="Log Directory Tree" lineno="174">
+<arguments repr="path=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="path=None">
+<name>path</name>
+<default>None</default>
+</arg>
+</arguments>
+<doc>Logs all the files in the directory recursively.
+
+:param path:    base directory to start from, defaults to current working dir</doc>
+<shortdoc>Logs all the files in the directory recursively.</shortdoc>
+</kw>
+<kw name="Move Directory" lineno="492">
+<arguments repr="source, destination, overwrite=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="source">
+<name>source</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite=False">
+<name>overwrite</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Move a directory from source path to destination path.
+
+:param source:      source directory path for moving
+:param destination: path to move to
+:param overwrite:   replace destination directory if it already exists</doc>
+<shortdoc>Move a directory from source path to destination path.</shortdoc>
+</kw>
+<kw name="Move File" lineno="457">
+<arguments repr="source, destination, overwrite=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="source">
+<name>source</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite=False">
+<name>overwrite</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Move a file from source path to destination path,
+optionally overwriting the destination.
+
+:param source:      source file path for moving
+:param destination: path to move to
+:param overwrite:   replace destination file if it already exists</doc>
+<shortdoc>Move a file from source path to destination path, optionally overwriting the destination.</shortdoc>
+</kw>
+<kw name="Move Files" lineno="476">
+<arguments repr="sources, destination, overwrite=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="sources">
+<name>sources</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="destination">
+<name>destination</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="overwrite=False">
+<name>overwrite</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Move multiple files to the destination folder.
+
+:param sources:     list of files to move
+:param destination: path to move destination
+:param overwrite:   replace destination files if they already exist</doc>
+<shortdoc>Move multiple files to the destination folder.</shortdoc>
+</kw>
+<kw name="Normalize Path" lineno="535">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Removes redundant separators or up-level references from path.
+
+:param path:    path that will be normalized
+:return:        path to file as a string</doc>
+<shortdoc>Removes redundant separators or up-level references from path.</shortdoc>
+</kw>
+<kw name="Read Binary File" lineno="282">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Reads a file in binary mode and returns the content.
+Does not attempt to decode the content in any way.
+
+:param path:        path to file to read
+:return: the file content as bytes</doc>
+<shortdoc>Reads a file in binary mode and returns the content. Does not attempt to decode the content in any way.</shortdoc>
+</kw>
+<kw name="Read File" lineno="272">
+<arguments repr="path, encoding=utf-8">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="encoding=utf-8">
+<name>encoding</name>
+<default>utf-8</default>
+</arg>
+</arguments>
+<doc>Reads a file as text, with given `encoding`, and returns the content."
+
+:param path:        path to file to read
+:param encoding:    character encoding of file
+:return: file content as string</doc>
+<shortdoc>Reads a file as text, with given `encoding`, and returns the content."</shortdoc>
+</kw>
+<kw name="Remove Directory" lineno="387">
+<arguments repr="path, recursive=False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="recursive=False">
+<name>recursive</name>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Removes the given directory, and optionally everything it contains.
+
+:param path:        path to directory
+:param recursive:   remove all subdirectories and files</doc>
+<shortdoc>Removes the given directory, and optionally everything it contains.</shortdoc>
+</kw>
+<kw name="Remove File" lineno="365">
+<arguments repr="path, missing_ok=True">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="missing_ok=True">
+<name>missing_ok</name>
+<default>True</default>
+</arg>
+</arguments>
+<doc>Removes the given file.
+
+:param path:        path to the file to remove
+:param missing_ok:  ignore non-existent file</doc>
+<shortdoc>Removes the given file.</shortdoc>
+</kw>
+<kw name="Remove Files" lineno="377">
+<arguments repr="*paths, missing_ok=True">
+<arg kind="VAR_POSITIONAL" required="false" repr="*paths">
+<name>paths</name>
+</arg>
+<arg kind="NAMED_ONLY" required="false" repr="missing_ok=True">
+<name>missing_ok</name>
+<default>True</default>
+</arg>
+</arguments>
+<doc>Removes multiple files.
+
+:param paths:       paths to files to be removed
+:param missing_ok:  ignore non-existent files</doc>
+<shortdoc>Removes multiple files.</shortdoc>
+</kw>
+<kw name="Run Keyword If File Exists" lineno="656">
+<arguments repr="path, keyword, *args">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="keyword">
+<name>keyword</name>
+</arg>
+<arg kind="VAR_POSITIONAL" required="false" repr="*args">
+<name>args</name>
+</arg>
+</arguments>
+<doc>If file exists at `path`, execute given keyword with arguments.
+
+:param path:    path to file to inspect
+:param keyword: Robot Framework keyword to execute
+:param args:    arguments to keyword
+
+Example:
+
+.. code:: robotframework
+
+    Run keyword if file exists    orders.xlsx    Process orders</doc>
+<shortdoc>If file exists at `path`, execute given keyword with arguments.</shortdoc>
+</kw>
+<kw name="Touch File" lineno="292">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+</arguments>
+<doc>Creates a file with no content, or if file already exists,
+updates the modification and access times.
+
+:param path:        path to file which is touched</doc>
+<shortdoc>Creates a file with no content, or if file already exists, updates the modification and access times.</shortdoc>
+</kw>
+<kw name="Wait Until Created" lineno="619">
+<arguments repr="path, timeout=5.0">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=5.0">
+<name>timeout</name>
+<default>5.0</default>
+</arg>
+</arguments>
+<doc>Poll path until it exists, or raise exception if timeout
+is reached.
+
+:param path:    path to poll
+:param timeout: time in seconds until keyword fails
+:return: path to the created file as a string</doc>
+<shortdoc>Poll path until it exists, or raise exception if timeout is reached.</shortdoc>
+</kw>
+<kw name="Wait Until Modified" lineno="632">
+<arguments repr="path, timeout=5.0">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=5.0">
+<name>timeout</name>
+<default>5.0</default>
+</arg>
+</arguments>
+<doc>Poll path until it has been modified after the keyword was called,
+or raise exception if timeout is reached.
+
+:param path:    path to poll
+:param timeout: time in seconds until keyword fails
+:return: path to the modified file as a string</doc>
+<shortdoc>Poll path until it has been modified after the keyword was called, or raise exception if timeout is reached.</shortdoc>
+</kw>
+<kw name="Wait Until Removed" lineno="646">
+<arguments repr="path, timeout=5.0">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=5.0">
+<name>timeout</name>
+<default>5.0</default>
+</arg>
+</arguments>
+<doc>Poll path until it doesn't exist, or raise exception if timeout
+is reached.
+
+:param path:    path to poll
+:param timeout: time in seconds until keyword fails</doc>
+<shortdoc>Poll path until it doesn't exist, or raise exception if timeout is reached.</shortdoc>
+</kw>
+</keywords>
+<datatypes>
+</datatypes>
+<typedocs>
+</typedocs>
+</keywordspec>
