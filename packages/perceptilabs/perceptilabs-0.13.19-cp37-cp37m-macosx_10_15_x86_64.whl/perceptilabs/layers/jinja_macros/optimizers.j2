@@ -1,0 +1,26 @@
+{% macro optimizer_sgd(declared_name, learning_rate) %}
+    {{declared_name}} = tf.keras.optimizers.SGD(learning_rate={{learning_rate}})
+{% endmacro %}
+
+
+{% macro optimizer_adam(declared_name, learning_rate, beta_1, beta_2) %}
+    {{declared_name}} = tf.keras.optimizers.Adam(learning_rate={{learning_rate}}, beta_1={{beta_1}}, beta_2={{beta_2}})
+{% endmacro %}
+
+
+{% macro optimizer_adagrad(declared_name, learning_rate) %}
+    {{declared_name}} = tf.keras.optimizers.Adagrad(learning_rate={{learning_rate}})
+{% endmacro %}
+
+
+{% macro optimizer_rmsprop(declared_name, learning_rate) %}
+    {{declared_name}} = tf.keras.optimizers.RMSprop(learning_rate={{learning_rate}})
+{% endmacro %}
+
+
+{% macro optimizer_momentum(declared_name, initial_learning_rate, decay_steps, decay_rate, momentum) %}
+    learning_rate = tf.keras.optimizers.schedules.ExponentialDecay(
+        {{initial_learning_rate}}, decay_steps={{decay_steps}}, decay_rate={{decay_rate}}, staircase=True
+    )
+    {{declared_name}} = tf.keras.optimizers.SGD(learning_rate=learning_rate, momentum={{momentum}})
+{% endmacro %}

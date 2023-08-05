@@ -1,0 +1,146 @@
+{% macro load_npy(path, tag) %}
+    {% filter remove_lspaces(8) %}
+        global matrix_{{tag}}
+        matrix_{{tag}} = np.load("{{path}}", mmap_mode='r').astype(np.float32)
+        size_{{tag}} = len(matrix_{{tag}})
+        
+        def generator_{{tag}}(idx_lo, idx_hi):
+            global matrix_{{tag}}
+            yield from matrix_{{tag}}[idx_lo:idx_hi]
+    {% endfilter %}
+{% endmacro %}
+
+{% macro load_npy_directory(path, tag, lazy=True) -%}
+{% filter remove_lspaces(8) %}
+    {% if lazy %}
+        npy_read = dask.delayed(np.load)
+        matrix_{{tag}} = []
+        file_paths = sorted([os.path.join("{{path}}", n) for n in os.listdir("{{path}}")])
+
+        # Load all files in the path with .npy/.npz extension into a list
+        for file_path in file_paths:
+            file_load = npy_read(file_path)
+            file_shape = np.load(file_path, mmap_mode='r').shape
+            matrix_{{tag}}.append(da.from_delayed(file_load, shape=file_shape, dtype=float))
+        
+        size_{{tag}} = file_shape[0] * len(matrix_{{tag}})
+        matrix = da.concatenate(matrix_{{tag}})
+
+        matrix_rechunked = matrix.rechunk('128MB')
+            
+        {{generator_lazy_array(matrix_rechunked, tag, idx_lo, idx_hi) | indent(width=8)}}                                                                                                                                                                           #}
+    {% else %}
+        raise NotImplementedError("Non-lazy loading of numpy file directories not implemented yet!")
+    {% endif %}
+{% endfilter %}
+{% endmacro %}
+
+{% macro load_csv(path, tag, lazy=False, selected_columns=none, blocksize='64MB') -%}
+{% filter remove_lspaces(8) %}
+    {% if lazy %}
+        df = dd.read_csv("{{path}}", blocksize="{{blocksize}}")
+
+        # Manually compute divisions.
+        n_rows_per_partition = df.map_partitions(lambda df: df.shape[0]).compute(
+            scheduler='processes',
+            num_workers=multiprocessing.cpu_count(),
+        ).values.tolist()
+
+        divisions = [0] + np.cumsum(n_rows_per_partition).tolist()
+        divisions[-1] -= 1
+        df.divisions = tuple(divisions)
+
+        columns_{{tag}} = df.columns.tolist()
+        size_{{tag}} = df.divisions[-1] + 1
+        
+        global df_{{tag}}        
+        df_{{tag}} = df
+
+        {% filter remove_lspaces(8) %}
+            {% if selected_columns is not none %}
+                df_{{tag}} = df_{{tag}}.iloc[:, list({{selected_columns}})]
+            {% endif %}
+        {% endfilter %}        
+        df = df_{{tag}}
+        {{generator_lazy_df(df, tag, idx_lo, idx_hi) | indent(width=8)}} 
+    {% else %}
+        global df_{{tag}}
+        df_{{tag}} = pd.read_csv("{{path}}")  
+        columns_{{tag}} = df_{{tag}}.columns.tolist()              
+        size_{{tag}} = len(df_{{tag}})       
+        
+        
+        {% filter remove_lspaces(8) %}
+            {% if selected_columns is not none and selected_columns is iterable and selected_columns|length > 0 %}
+                df_{{tag}} = df_{{tag}}.iloc[:, list({{selected_columns}})]
+            {% endif %}
+
+        {% endfilter %}
+        def generator_{{tag}}(idx_lo, idx_hi):
+            global df_{{tag}}
+            yield from df_{{tag}}.astype(np.float32).iloc[idx_lo:idx_hi].values
+    {% endif %}
+{% endfilter %}
+{%- endmacro %}
+
+{% macro load_img_dir(path, tag, extension, lazy=False) -%}
+{% filter remove_lspaces(8) %}
+    {% if lazy %}
+        regex = "*" + "{{extension}}"
+        file_path = os.path.join("{{path}}", regex)
+        global matrices_{{tag}}
+
+        import dask_image.imread
+        import ntpath
+        matrices_{{tag}} = dask_image.imread.imread(file_path)
+        size_{{tag}} = len(matrices_{{tag}})
+        matrix = matrices_{{tag}}.rechunk('64MB')
+        {{generator_lazy_array(matrix, tag, idx_lo, idx_hi) | indent(width=8)}} 
+    {% else %}
+        file_paths = sorted([os.path.join("{{path}}", n) for n in os.listdir("{{path}}")])
+        size_{{tag}} = len(file_paths)
+        
+        global matrices_{{tag}}
+        matrices_{{tag}} = []
+        for file_path in file_paths:
+            import skimage.io
+            matrix = skimage.io.imread(file_path).astype(np.float32)
+            matrices_{{tag}}.append(matrix)
+
+        def generator_{{tag}}(idx_lo, idx_hi):
+            yield from np.array(matrices_{{tag}})[idx_lo:idx_hi]
+    {% endif %}
+{% endfilter %}
+{%- endmacro %}
+
+{% macro generator_lazy_array(matrix, tag, idx_lo, idx_hi) -%}
+    def generator_{{tag}}(idx_lo, idx_hi):                                                                                                                                                                                                                                                                                                                        
+        # Calculate which partitions to use and which indices within them                                                                                                                           
+        divs = [0] + np.cumsum(matrix.chunks[0]).tolist()                                                                                                                                     
+        sub_divs = []                                                                                                                                                                                   
+        for p in range(len(divs)-1):                                                                                                                                                                    
+            div_idx_lo = max(divs[p], idx_lo)                                                                                                                                                           
+            div_idx_hi = min(divs[p+1]+1, idx_hi)                                                                                                                                                       
+            if div_idx_lo < div_idx_hi:                                                                                                                                                                 
+                sub_divs.append((p, div_idx_lo, div_idx_hi))                                                                                                                                                                                                                                                                                                           
+        # Bring only the values we need into memory and yield them                                                                                                                                      
+        for p, div_lo, div_hi in sub_divs:                                                                                                                                                          
+            matrix_computed = matrix.blocks[p][div_lo-divs[p]:div_hi-divs[p]].astype(np.float32).compute()                                                                                      
+            yield from matrix_computed
+{%- endmacro %}
+
+{% macro generator_lazy_df(df, tag, idx_lo, idx_hi) -%}
+    def generator_{{tag}}(idx_lo, idx_hi):
+        # Calculate which partitions to use and which indices within them
+        divs = df.divisions
+        sub_divs = []
+        for p in range(len(divs)-1):
+            div_idx_lo = max(divs[p], idx_lo)
+            div_idx_hi = min(divs[p+1]+1, idx_hi)
+            if div_idx_lo < div_idx_hi:
+                sub_divs.append((p, div_idx_lo, div_idx_hi))
+        # Bring only the values we need into memory and yield them
+        for p, div_lo, div_hi in sub_divs:
+            df_computed = df.get_partition(p).compute()
+            yield from df_computed.astype(np.float32).iloc[div_lo-divs[p]:div_hi-divs[p]].values
+{%- endmacro %}
