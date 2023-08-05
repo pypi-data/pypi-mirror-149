@@ -1,0 +1,95 @@
+auth-stores:  # per user config only 1 source per type
+  # list in order of precedence ??
+  secrets:
+    path: secrets-test-1.yaml # relative paths start from the location of the
+                              # defining configuration file (e.g. in this case the folder
+                              # containing this user-1.yaml file)
+    # path: '{:user-config-path}/orthauth/secrets.yaml'  # default ...
+  authinfo:
+    path: ~/.authinfo
+  mypass:
+    path: ~/.mypass
+  ssh-config:
+    path: ~/.ssh/config
+  other:
+    key-relevant-for-some-non-file-based-store
+path-sources:  # on failure to match only the secrets store is searched
+  mysql: mypass
+  magithub: authinfo
+  magithub other: secrets
+  hrm does this: secrets
+auth-variables:
+  test-config-vars: [
+    '{:prefix}/share/orthauth/.does-not-exist']
+  test-alt-config-single:
+    config: user-6.yaml
+  test-alt-config-single-rename:
+    config: user-6.yaml
+    rename: under-a-different-name
+  test-top-level-alt-config: alt config top value
+  test-top-level-alt-config-rename: alt config top rename value
+  env-example:
+    environment-variables: I_PREFER_MY_OWN_ENV_VARS_THANK_YOU_VERY_MUCH
+  paths-example:  # path must be defined in the user config otherwise failure will ensue
+    path: user defined path to key
+  full-complexity-example:
+    environment-variables: MYENV
+    paths:  # alternate syntax ? maybe ?
+    - look here first
+    - look here second
+    paths-nested:  # insecure nested paths to secret
+      secret:
+        path:
+          1:
+          2:
+      failover-secret:
+        path:
+      path:
+        with:
+          hrm:
+            in-the:
+              path:
+      api:
+        some-user:
+        some-other-user:
+  
+  # use case, there are a bunch of names that will be defined in a user config
+  # and the user will pass one of them to look up a secret
+  # e.g. I have 100 google sheet names that are going to be defined directly
+  # in the code and the config doesn't know anything about them ...
+  # maybe that is a mistake ? maybe we can do `name = auth.register('SheetName')`
+  # and the user can add their own entries ? I don't entirely like that ...
+  heading-example:  # this one is going to take a little more thinking
+    user-variables: sheet-name
+
+  paths-as-list-example:
+    paths:
+      - ['k1', 'k2']
+      - ['k3', 'k4']
+  test-as-property:
+    path: api as-property
+  test-at-init:
+    path: api at-init
+  test-after-init: after-init
+  test-tang-init: tiapi  # don't do this irl please
+  test-value-2: a user value
+  test-multi-path-2: [
+    'also/does/not/exist.path',
+    'user-1.yaml']
+  test-multi-path-3: [
+    'path/does/not/exist/file.ext',
+    'user-1.yaml']
+  oh-nose-her-api-keys:
+    path: api runtime
+  test-get-list:
+    - this
+    - is
+    - a
+    - list
+    - from
+    - user
+    - config
+  test-get-list-empty:
+  test-get-list-default-and-user: ['user']
+  test-key-only-in-user-config: null
+  test-key-only-in-user-config-not-null: hello
