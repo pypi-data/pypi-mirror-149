@@ -1,0 +1,39 @@
+Metadata-Version: 2.1
+Name: NiftiResampler
+Version: 0.1.0
+Summary: Tools for reading dicom files, RT structures, and dose files, as well as tools for converting numpy prediction masks back to an RT structure
+Home-page: https://github.com/brianmanderson/Resample_Class
+Author: Brian Mark Anderson
+Author-email: bmanderson@mdanderson.org
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: numpy
+Requires-Dist: SimpleITK
+
+# Resample_Class
+
+For resampling nifti images (likely for medical purposes)
+
+## Installation
+
+```
+    pip install NiftiResampler
+```
+
+### Usage
+
+```python
+from NiftiResampler.ResampleTools import ImageResampler, sitk
+
+Resampler = ImageResampler()
+base_image = sitk.ReadImage(image_path)
+desired_dimensions = (0.975, 0.975, 5.0)
+resampled = Resampler.resample_image(input_image_handle=base_image, ref_resampling_handle=None,
+                                     output_spacing=(0.975, 0.975, 5), interpolator='Linear', empty_value=-1024)
+```
+
+
