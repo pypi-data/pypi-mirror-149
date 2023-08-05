@@ -1,0 +1,180 @@
+Metadata-Version: 2.1
+Name: acryl-datahub-actions
+Version: 0.0.1rc4
+Summary: An action framework to work with DataHub real time changes.
+Home-page: https://datahubproject.io/
+License: Apache License 2.0
+Project-URL: Documentation, https://datahubproject.io/docs/actions
+Project-URL: Source, https://github.com/acryldata/datahub-actions
+Project-URL: Changelog, https://github.com/acryldata/datahub-actions/releases
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Environment :: Console
+Classifier: Environment :: MacOS X
+Classifier: Topic :: Software Development
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: mypy-extensions (>=0.4.3)
+Requires-Dist: pydantic (>=1.5.1)
+Requires-Dist: fastavro (>=1.2.0)
+Requires-Dist: toml (>=0.10.0)
+Requires-Dist: stackprinter
+Requires-Dist: progressbar2
+Requires-Dist: click (>=6.0.0)
+Requires-Dist: avro-gen3 (==0.7.2)
+Requires-Dist: PyYAML
+Requires-Dist: dictdiffer
+Requires-Dist: confluent-kafka (>=1.5.0)
+Requires-Dist: avro (>=1.10.2)
+Requires-Dist: expandvars (>=0.6.5)
+Requires-Dist: tabulate
+Requires-Dist: entrypoints
+Requires-Dist: typing-inspect
+Requires-Dist: click-default-group
+Requires-Dist: acryl-datahub (>=0.8.33.2rc2)
+Requires-Dist: python-dateutil (>=2.8.0)
+Requires-Dist: docker
+Requires-Dist: dataclasses (>=0.6) ; python_version < "3.7"
+Requires-Dist: typing-extensions (>=3.7.4) ; python_version < "3.8"
+Provides-Extra: all
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'all'
+Requires-Dist: acryl-executor (==0.0.3rc2) ; extra == 'all'
+Requires-Dist: toml (>=0.10.0) ; extra == 'all'
+Requires-Dist: stackprinter ; extra == 'all'
+Requires-Dist: progressbar2 ; extra == 'all'
+Requires-Dist: click (>=6.0.0) ; extra == 'all'
+Requires-Dist: avro-gen3 (==0.7.2) ; extra == 'all'
+Requires-Dist: PyYAML ; extra == 'all'
+Requires-Dist: expandvars (>=0.6.5) ; extra == 'all'
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'all'
+Requires-Dist: tabulate ; extra == 'all'
+Requires-Dist: avro (>=1.10.2) ; extra == 'all'
+Requires-Dist: python-dateutil (>=2.8.0) ; extra == 'all'
+Requires-Dist: click-default-group ; extra == 'all'
+Requires-Dist: entrypoints ; extra == 'all'
+Requires-Dist: docker ; extra == 'all'
+Provides-Extra: base
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'base'
+Requires-Dist: toml (>=0.10.0) ; extra == 'base'
+Requires-Dist: stackprinter ; extra == 'base'
+Requires-Dist: progressbar2 ; extra == 'base'
+Requires-Dist: click (>=6.0.0) ; extra == 'base'
+Requires-Dist: avro-gen3 (==0.7.2) ; extra == 'base'
+Requires-Dist: PyYAML ; extra == 'base'
+Requires-Dist: expandvars (>=0.6.5) ; extra == 'base'
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'base'
+Requires-Dist: tabulate ; extra == 'base'
+Requires-Dist: avro (>=1.10.2) ; extra == 'base'
+Requires-Dist: python-dateutil (>=2.8.0) ; extra == 'base'
+Requires-Dist: click-default-group ; extra == 'base'
+Requires-Dist: entrypoints ; extra == 'base'
+Requires-Dist: docker ; extra == 'base'
+Provides-Extra: dev
+Requires-Dist: mypy-extensions (>=0.4.3) ; extra == 'dev'
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'dev'
+Requires-Dist: stackprinter ; extra == 'dev'
+Requires-Dist: progressbar2 ; extra == 'dev'
+Requires-Dist: types-python-dateutil ; extra == 'dev'
+Requires-Dist: types-requests ; extra == 'dev'
+Requires-Dist: PyYAML ; extra == 'dev'
+Requires-Dist: dictdiffer ; extra == 'dev'
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'dev'
+Requires-Dist: pytest (>=6.2.2) ; extra == 'dev'
+Requires-Dist: expandvars (>=0.6.5) ; extra == 'dev'
+Requires-Dist: pytest-cov (>=2.8.1) ; extra == 'dev'
+Requires-Dist: requests-mock ; extra == 'dev'
+Requires-Dist: typing-inspect ; extra == 'dev'
+Requires-Dist: deepdiff ; extra == 'dev'
+Requires-Dist: boto3-stubs[glue,s3,sagemaker] ; extra == 'dev'
+Requires-Dist: black (>=22.1.0) ; extra == 'dev'
+Requires-Dist: flake8-tidy-imports (>=4.3.0) ; extra == 'dev'
+Requires-Dist: isort (>=5.7.0) ; extra == 'dev'
+Requires-Dist: types-freezegun ; extra == 'dev'
+Requires-Dist: build ; extra == 'dev'
+Requires-Dist: jsonpickle ; extra == 'dev'
+Requires-Dist: python-dateutil (>=2.8.0) ; extra == 'dev'
+Requires-Dist: freezegun ; extra == 'dev'
+Requires-Dist: sqlalchemy-stubs ; extra == 'dev'
+Requires-Dist: docker ; extra == 'dev'
+Requires-Dist: flake8 (>=3.8.3) ; extra == 'dev'
+Requires-Dist: coverage (>=5.1) ; extra == 'dev'
+Requires-Dist: pydantic (>=1.5.1) ; extra == 'dev'
+Requires-Dist: acryl-executor (==0.0.3rc2) ; extra == 'dev'
+Requires-Dist: toml (>=0.10.0) ; extra == 'dev'
+Requires-Dist: types-PyYAML ; extra == 'dev'
+Requires-Dist: click (>=6.0.0) ; extra == 'dev'
+Requires-Dist: types-cachetools ; extra == 'dev'
+Requires-Dist: avro-gen3 (==0.7.2) ; extra == 'dev'
+Requires-Dist: types-six ; extra == 'dev'
+Requires-Dist: avro (>=1.10.2) ; extra == 'dev'
+Requires-Dist: types-PyMySQL ; extra == 'dev'
+Requires-Dist: types-tabulate ; extra == 'dev'
+Requires-Dist: tabulate ; extra == 'dev'
+Requires-Dist: entrypoints ; extra == 'dev'
+Requires-Dist: types-toml ; extra == 'dev'
+Requires-Dist: types-pytz ; extra == 'dev'
+Requires-Dist: twine ; extra == 'dev'
+Requires-Dist: types-dataclasses ; extra == 'dev'
+Requires-Dist: mypy (<0.920,>=0.901) ; extra == 'dev'
+Requires-Dist: click-default-group ; extra == 'dev'
+Requires-Dist: acryl-datahub (>=0.8.33.2rc2) ; extra == 'dev'
+Requires-Dist: pytest-docker (>=0.10.3) ; extra == 'dev'
+Requires-Dist: tox ; extra == 'dev'
+Requires-Dist: types-click (==0.1.12) ; extra == 'dev'
+Requires-Dist: types-pkg-resources ; extra == 'dev'
+Requires-Dist: dataclasses (>=0.6) ; (python_version < "3.7") and extra == 'dev'
+Requires-Dist: typing-extensions (>=3.7.4) ; (python_version < "3.8") and extra == 'dev'
+Provides-Extra: executor
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'executor'
+Requires-Dist: acryl-executor (==0.0.3rc2) ; extra == 'executor'
+Requires-Dist: toml (>=0.10.0) ; extra == 'executor'
+Requires-Dist: stackprinter ; extra == 'executor'
+Requires-Dist: progressbar2 ; extra == 'executor'
+Requires-Dist: click (>=6.0.0) ; extra == 'executor'
+Requires-Dist: avro-gen3 (==0.7.2) ; extra == 'executor'
+Requires-Dist: PyYAML ; extra == 'executor'
+Requires-Dist: expandvars (>=0.6.5) ; extra == 'executor'
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'executor'
+Requires-Dist: tabulate ; extra == 'executor'
+Requires-Dist: avro (>=1.10.2) ; extra == 'executor'
+Requires-Dist: python-dateutil (>=2.8.0) ; extra == 'executor'
+Requires-Dist: click-default-group ; extra == 'executor'
+Requires-Dist: entrypoints ; extra == 'executor'
+Requires-Dist: docker ; extra == 'executor'
+Provides-Extra: integration-tests
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'integration-tests'
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'integration-tests'
+Requires-Dist: acryl-executor (==0.0.3rc2) ; extra == 'integration-tests'
+Provides-Extra: kafka
+Requires-Dist: fastavro (>=1.2.0) ; extra == 'kafka'
+Requires-Dist: toml (>=0.10.0) ; extra == 'kafka'
+Requires-Dist: stackprinter ; extra == 'kafka'
+Requires-Dist: progressbar2 ; extra == 'kafka'
+Requires-Dist: click (>=6.0.0) ; extra == 'kafka'
+Requires-Dist: avro-gen3 (==0.7.2) ; extra == 'kafka'
+Requires-Dist: PyYAML ; extra == 'kafka'
+Requires-Dist: expandvars (>=0.6.5) ; extra == 'kafka'
+Requires-Dist: confluent-kafka (>=1.5.0) ; extra == 'kafka'
+Requires-Dist: tabulate ; extra == 'kafka'
+Requires-Dist: avro (>=1.10.2) ; extra == 'kafka'
+Requires-Dist: python-dateutil (>=2.8.0) ; extra == 'kafka'
+Requires-Dist: click-default-group ; extra == 'kafka'
+Requires-Dist: entrypoints ; extra == 'kafka'
+Requires-Dist: docker ; extra == 'kafka'
+
+UNKNOWN
+
