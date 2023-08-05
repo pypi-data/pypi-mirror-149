@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Adapters for patterns settings -->
+  <adapter
+      factory=".pattern_settings.SmartwebPatternSettingsAdapter"
+      for="* * *"
+      name="pattern_settings"
+      provides="Products.CMFPlone.interfaces.IPatternsSettings"
+  />
+  <adapter
+      factory=".pattern_settings.SmartwebPatternSettingsAdapter"
+      for="* * *"
+      name="plone_settings"
+      provides="Products.CMFPlone.interfaces.IPatternsSettings"
+  />
+
+  <!-- Adapters for caching operations -->
+  <adapter
+      factory=".caching.PatchedModerateCaching"
+      name="plone.app.caching.moderateCaching"
+  />
+  <adapter
+      factory=".caching.PatchedStrongCaching"
+      name="plone.app.caching.strongCaching"
+  />
+  <adapter
+      factory=".caching.PatchedTerseCaching"
+      name="plone.app.caching.terseCaching"
+  />
+  <adapter
+      factory=".caching.PatchedWeakCaching"
+      name="plone.app.caching.weakCaching"
+  />
+
+</configure>
