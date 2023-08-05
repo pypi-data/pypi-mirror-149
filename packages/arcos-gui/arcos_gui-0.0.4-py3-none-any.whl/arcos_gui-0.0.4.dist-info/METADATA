@@ -1,0 +1,118 @@
+Metadata-Version: 2.1
+Name: arcos-gui
+Version: 0.0.4
+Summary: A napari plugin to detect and visualize collective signaling events
+Home-page: https://github.com/bgraedel/arcos-gui
+Author: Benjamin Grädel
+Author-email: benjamin.graedel@unibe.ch
+License: BSD-3-Clause
+Project-URL: Bug Tracker, https://github.com/bgraedel/arcos-gui/issues
+Project-URL: Documentation, https://github.com/bgraedel/arcos-gui#README.md
+Project-URL: Source Code, https://github.com/bgraedel/arcos-gui
+Project-URL: User Support, https://github.com/bgraedel/arcos-gui/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Framework :: napari
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: arcos4py (>=0.1.2)
+Requires-Dist: magicgui (>=0.3.0)
+Requires-Dist: matplotlib (>=3.3.4)
+Requires-Dist: napari (>=0.4.14)
+Requires-Dist: numpy (>=1.21.5)
+Requires-Dist: pandas (>=1.3.5)
+Requires-Dist: scikit-image (>=0.18.1)
+Requires-Dist: scipy (>=1.7.3)
+Provides-Extra: doc
+Requires-Dist: mkdocs ; extra == 'doc'
+Requires-Dist: mkdocs-include-markdown-plugin ; extra == 'doc'
+Requires-Dist: mkdocs-material ; extra == 'doc'
+Requires-Dist: mkdocs-material-extensions ; extra == 'doc'
+Provides-Extra: testing
+Requires-Dist: pyqt5 ; extra == 'testing'
+Requires-Dist: pytest ; extra == 'testing'
+Requires-Dist: pytest-qt ; extra == 'testing'
+
+# arcos-gui
+
+[![License](https://img.shields.io/pypi/l/arcos-gui.svg?color=green)](https://github.com/bgraedel/arcos-gui/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/arcos-gui.svg?color=green)](https://pypi.org/project/arcos-gui)
+[![Python Version](https://img.shields.io/pypi/pyversions/arcos-gui.svg?color=green)](https://python.org)
+[![tests](https://github.com/bgraedel/arcos-gui/workflows/tests/badge.svg)](https://github.com/bgraedel/arcos-gui/actions)
+[![codecov](https://codecov.io/gh/bgraedel/arcos-gui/branch/main/graph/badge.svg)](https://codecov.io/gh/bgraedel/arcos-gui)
+[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/arcos-gui)](https://napari-hub.org/plugins/arcos-gui)
+
+A napari plugin to detect and visualize collective signaling events
+
+----------------------------------
+- Documentation: <https://bgraedel.github.io/arcos-gui>
+
+**A**utomated **R**ecognition of **C**ollective **S**ignalling (ARCOS) is an algorithm to identify collective spatial events in time series data,
+that was written by Maciej Dobrzynski (https://github.com/dmattek). It is available as an R (ARCOS) and python (arcos4py) package.
+ARCOS can identify and visualize collective protein activation in 2- and 3D cell cultures over time.
+
+This plugin integrates ARCOS into napari. Users can import tracked time-series data in CSV format. The plugin
+provides GUI elements to process this data with ARCOS. Layers containing the detected collective events are subsequently added to the viewer.
+
+Following analysis, the user can export the output as a CSV file with the detected collective events or as a sequence of images to generate a movie.
+
+![export_data](docs/screenshots/arcos_gui_preview.png)
+
+# Installation
+
+You can install `arcos-gui` via [pip]:
+
+    pip install arcos-gui
+
+## System Requirements
+
+Since version "0.0.2" this plugin is python native with the arcos4py package available.
+
+## Contributing
+
+Contributions are very welcome. Tests can be run with [tox], please ensure
+the coverage at least stays the same before you submit a pull request.
+
+## License
+
+Distributed under the terms of the [BSD-3] license,
+"arcos-gui" is free and open-source software
+
+## Issues
+
+If you encounter any problems, please [file an issue] along with a detailed description.
+
+[napari]: https://github.com/napari/napari
+[Cookiecutter]: https://github.com/audreyr/cookiecutter
+[@napari]: https://github.com/napari
+[MIT]: http://opensource.org/licenses/MIT
+[BSD-3]: http://opensource.org/licenses/BSD-3-Clause
+[GNU GPL v3.0]: http://www.gnu.org/licenses/gpl-3.0.txt
+[GNU LGPL v3.0]: http://www.gnu.org/licenses/lgpl-3.0.txt
+[Apache Software License 2.0]: http://www.apache.org/licenses/LICENSE-2.0
+[Mozilla Public License 2.0]: https://www.mozilla.org/media/MPL/2.0/index.txt
+[cookiecutter-napari-plugin]: https://github.com/napari/cookiecutter-napari-plugin
+
+[file an issue]: https://github.com/bgraedel/arcos-gui/issues
+
+[napari]: https://github.com/napari/napari
+[tox]: https://tox.readthedocs.io/en/latest/
+[pip]: https://pypi.org/project/arcos-gui/
+[PyPI]: https://pypi.org/
+
+# Credits
+
+This [napari] plugin was generated with [Cookiecutter] using [@napari]'s [cookiecutter-napari-plugin] template.
+
+
