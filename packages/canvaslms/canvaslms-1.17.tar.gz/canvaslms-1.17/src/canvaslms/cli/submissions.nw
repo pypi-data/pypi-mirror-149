@@ -1,0 +1,474 @@
+\chapter{The submissions related commands}
+
+This chapter provides the subcommands [[submissions]], which lists the 
+submissions of a given assignment, and the [[submission]] command, which 
+handles an individual submission.
+
+We outline the module:
+<<submissions.py>>=
+import canvasapi.submission
+
+import canvaslms.cli.assignments as assignments
+import canvaslms.cli.users as users
+import canvaslms.hacks.canvasapi
+
+import argparse
+import csv
+import json
+import pydoc
+import pypandoc
+import re
+import sys
+import urllib.request
+
+<<functions>>
+
+def add_command(subp):
+  """Adds the submissions and submission commands to argparse parser subp"""
+  add_submissions_command(subp)
+  add_submission_command(subp)
+
+def add_submissions_command(subp):
+  """Adds submissions command to argparse parser subp"""
+  <<add submissions command to subp>>
+
+def add_submission_command(subp):
+  """Adds submission command to argparse parser subp"""
+  <<add submission command to subp>>
+@
+
+\section{The [[submissions]] subcommand and its options}
+
+We add the subparser for [[submissions]].
+<<add submissions command to subp>>=
+submissions_parser = subp.add_parser("submissions",
+    help="Lists submissions of an assignment",
+    description="Lists submissions of assignment(s). Output format: "
+      "<course code> <assignment name> <user> <grade> "
+      "<submission date> <grade date>")
+submissions_parser.set_defaults(func=submissions_command)
+assignments.add_assignment_option(submissions_parser)
+add_submission_options(submissions_parser)
+<<add options for printing>>
+@ Now, that [[submissions_command]] function must take three arguments: 
+[[config]], [[canvas]] and [[args]].
+It must also do the processing for the assignment options using 
+[[process_assignment_option]].
+<<functions>>=
+def submissions_command(config, canvas, args):
+  assignment_list = assignments.process_assignment_option(canvas, args)
+  <<get submissions and print them>>
+@
+
+\subsection{Get and print the list of submissions}
+
+We then simply call the appropriate list-submissions function with the 
+[[assignments_list]] object as a parameter.
+If any of the group options are set, we filter out the submissions to only 
+include submissions by the users in the groups.
+Then we will print the most useful attributes of a submission, which the 
+[[format_submission_short]] will return preformatted for us.
+<<get submissions and print them>>=
+if args.ungraded:
+  submissions = list_ungraded_submissions(assignment_list)
+else:
+  submissions = list_submissions(assignment_list)
+
+if args.user or args.category or args.group:
+  user_list = users.process_user_or_group_option(canvas, args)
+  submissions = filter_submissions(submissions, user_list)
+
+output = csv.writer(sys.stdout, delimiter=args.delimiter)
+
+for submission in submissions:
+  if args.login_id:
+    output.writerow(format_submission_short_unique(submission))
+  else:
+    output.writerow(format_submission_short(submission))
+@
+
+Now, we must add that option [[args.login_id]].
+<<add options for printing>>=
+submissions_parser.add_argument("-l", "--login-id",
+  help="Print login ID instead of name.",
+  default=False, action="store_true")
+@
+
+
+\section{Computing the SpeedGrader URL}
+
+Sometimes we want to compute the URL for SpeedGrader for a submission.
+The [[Submission]] objects come with an attribute [[preview_url]].
+We want to turn that one into the SpeedGrader URL.
+The [[preview_url]] looks like this:
+\begin{minted}{text}
+https://canvas.kth.se/courses/26930/assignments/173825/submissions/108849?
+  preview=1&version=5
+\end{minted}
+It should be turned into this:
+\begin{minted}{text}
+https://canvas.kth.se/courses/26930/gradebook/speed_grader?
+  assignment_id=173825&student_id=108849
+\end{minted}
+We use Python's regex abilities to rewrite the URL.
+<<functions>>=
+def speedgrader(submission):
+  """Returns the SpeedGrader URL of the submission"""
+  speedgrader_url = submission.preview_url
+
+  speedgrader_url = re.sub("assignments/",
+    "gradebook/speed_grader?assignment_id=",
+    speedgrader_url)
+
+  speedgrader_url = re.sub("/submissions/",
+    "&student_id=",
+    speedgrader_url)
+
+  speedgrader_url = re.sub(r"\?preview.*$", "", speedgrader_url)
+
+  return speedgrader_url
+@
+
+
+\section{The [[submission]] subcommand and its options}
+
+Here we provide a subcommand [[submission]] which deals with an individual 
+submission.
+<<add submission command to subp>>=
+submission_parser = subp.add_parser("submission",
+  help="Prints information about a submission",
+  description="Prints data about matching submissions, "
+    "including submission and grading time, any text-based attachments.")
+submission_parser.set_defaults(func=submission_command)
+add_submission_options(submission_parser)
+@ We also need the corresponding function.
+For now, we only print the most relevant data of a submission.
+<<functions>>=
+def submission_command(config, canvas, args):
+  submission_list = process_submission_options(canvas, args)
+  <<get and print the submission data>>
+@
+
+Then we can fetch the submission.
+<<get and print the submission data>>=
+for submission in submission_list:
+  pydoc.pager(format_submission(submission))
+@
+
+
+\section{Selecting a submission on the command line}%
+\label{submission-options}
+
+We now provide a function to set up the command-line options to select a 
+particular submission along with a function to process those options.
+For this we need
+\begin{itemize}
+\item an assignment,
+\item a user or group,
+\item to know if we aim for all or just ungraded submissions.
+\end{itemize}
+<<functions>>=
+def add_submission_options(parser):
+  try:
+    assignments.add_assignment_option(parser)
+  except argparse.ArgumentError:
+    pass
+
+  try:
+    users.add_user_or_group_option(parser)
+  except argparse.ArgumentError:
+    pass
+
+  submissions_parser = parser.add_argument_group("filter submissions")
+  try: # to protect from this option already existing in add_assignment_option
+    submissions_parser.add_argument("-U", "--ungraded", action="store_true",
+      help="Only ungraded submissions.")
+  except argparse.ArgumentError:
+    pass
+
+def process_submission_options(canvas, args):
+  assignment_list = assignments.process_assignment_option(canvas, args)
+  user_list = users.process_user_or_group_option(canvas, args)
+
+  if args.ungraded:
+    submissions = list_ungraded_submissions(assignment_list,
+      include=["submission_history", "submission_comments", 
+      "rubric_assessment"])
+  else:
+    submissions = list_submissions(assignment_list,
+      include=["submission_history", "submission_comments", 
+      "rubric_assessment"])
+
+  return list(filter_submissions(submissions, user_list))
+@
+
+
+\section{Producing a list of submissions}%
+\label{list-submissions-function}
+
+We provide the following functions:
+\begin{itemize}
+  \item [[list_submissions]], which returns all submissions;
+  \item [[list_ungraded_submissions]], which returns all ungraded submissions.
+\end{itemize}
+We return the submissions for a list of assignments, since we can match several 
+assignments with a regular expression (using [[filter_assignments]]).
+<<functions>>=
+def list_submissions(assignments, include=["submission_comments"]):
+  for assignment in assignments:
+    submissions = assignment.get_submissions(include=include)
+    for submission in submissions:
+      submission.assignment = assignment
+      yield submission
+
+def list_ungraded_submissions(assignments, include=["submisson_comments"]):
+  for assignment in assignments:
+    submissions = assignment.get_submissions(bucket="ungraded",
+      include=include)
+    for submission in submissions:
+      if submission.submitted_at and (submission.graded_at is None or
+          not submission.grade_matches_current_submission):
+        submission.assignment = assignment
+        yield submission
+@
+
+
+\section{Filtering a list of submissions}
+
+We provide the function [[filter_submissions]] which filters out a subset of 
+submissions from a list.
+
+For each submission we check if it's user is in the desired user set.
+(Note that since the list~[[user_list]], might contain duplicates, so we turn 
+it into a set first.)
+Once we've found the user, we don't need to search further, so we can break 
+after the yield.
+<<functions>>=
+def filter_submissions(submission_list, user_list):
+  user_list = set(user_list)
+
+  for submission in submission_list:
+    for user in user_list:
+      if submission.user_id == user.id:
+        submission.user = user
+        yield submission
+        break
+@
+
+
+\section{Printing a submission}
+
+We provide two functions to print a submission.
+One to print a short identifier and one to print the submission data.
+
+We'll format the submission in short format.
+The most useful data is the identifier, the grade and the date of grading.
+<<functions>>=
+def format_submission_short(submission):
+  return [submission.assignment.course.course_code, submission.assignment.name,
+    submission.user.name, submission.grade,
+    submission.submitted_at, submission.graded_at]
+
+def format_submission_short_unique(submission):
+  return [submission.assignment.course.course_code, submission.assignment.name,
+    submission.user.login_id, submission.grade,
+    submission.submitted_at, submission.graded_at]
+@
+
+We provide the function [[format_submission]] to nicely format a submission.
+It prints metadata, downloads any text attachments to include in the output.
+We also output all the submission history at the end.
+We no longer need the [[canvas]] object to resolve course, assignment and user 
+IDs, instead, we add these as attributes when fetching the objects.
+So [[submission.assignment]] is the assignment it came from, we don't need to 
+resolve the assignment from the assignmend ID.
+<<functions>>=
+def format_submission(submission):
+  """Formats submission for printing to stdout"""
+  student = submission.assignment.course.get_user(submission.user_id)
+
+  formatted_submission = ""
+
+  <<add metadata to output>>
+  <<add rubric assessment to output>>
+  <<add comments to output>>
+  <<add body to output>>
+  <<add quiz answers to output>>
+  <<add attachments to output>>
+  <<add submission history to output>>
+
+  return formatted_submission
+@
+
+\subsection{Some helper functions}
+
+We want to format some sections.
+<<functions>>=
+def format_section(title, body):
+  return f"\n# {title}\n\n{body}\n\n"
+@
+
+\subsection{Metadata}
+
+<<add metadata to output>>=
+formatted_submission += format_section(
+  "Metadata",
+  f"{submission.assignment.course.course_code} > {submission.assignment.name}"
+  f"\n\n"
+  f" - Student: {student.name} "
+    f"({student.login_id or None}, {submission.user_id})\n"
+  f" - Submission ID: {submission.id}\n"
+  f" - Submitted (graded): {submission.submitted_at} "
+    f"({submission.graded_at})\n"
+  f" - Grade: {submission.grade} ({submission.score})\n"
+  f" - SpeedGrader: {speedgrader(submission)}")
+@
+
+\subsection{Rubric data}
+
+<<add rubric assessment to output>>=
+try:
+  if submission.rubric_assessment:
+    formatted_submission += format_section(
+      "Rubric assessment",
+      format_rubric(submission))
+except AttributeError:
+  pass
+@
+
+\subsection{General comments}
+
+<<add comments to output>>=
+try:
+  if submission.submission_comments:
+    body = ""
+    for comment in submission.submission_comments:
+      body += f"{comment['author_name']} ({comment['created_at']}):\n\n"
+      body += comment["comment"]
+    formatted_submission += format_section("Comments", body)
+except AttributeError:
+  pass
+@
+
+\subsection{Body}
+
+<<add body to output>>=
+try:
+  if submission.body:
+    formatted_submission += format_section("Body", submission.body)
+except AttributeError:
+  pass
+@
+
+\subsection{Quiz answers}
+
+<<add quiz answers to output>>=
+try:
+  if submission.submission_data:
+    formatted_submission += format_section(
+      "Quiz answers",
+      json.dumps(submission.submission_data, indent=2))
+except AttributeError:
+  pass
+@
+
+\subsection{Attachments}
+
+<<add attachments to output>>=
+try:
+  for attachment in submission.attachments:
+    if "text/" not in attachment["content-type"]:
+      continue
+
+    contents = urllib.request.urlopen(attachment["url"]).read().decode("utf-8")
+    formatted_submission += format_section(
+      attachment["filename"],
+      f"```\n{contents}\n```")
+except AttributeError:
+  pass
+@
+
+\subsection{Submission history}
+
+<<add submission history to output>>=
+try:
+  if submission.submission_history:
+    for prev_submission in submission.submission_history:
+      prev_submission = canvasapi.submission.Submission(
+        submission._requester, prev_submission)
+      prev_submission.assignment = submission.assignment
+
+      formatted_submission += "\n\n" + format_submission(prev_submission)
+except AttributeError:
+  pass
+@
+
+
+\section{Formatting rubrics}
+
+For assignments that use rubrics, we want to format those rubrics so that we 
+can read the results instead of just the cumulated grade.
+<<functions>>=
+def format_rubric(submission):
+  """Format the rubric assessment of the `submission` in readable form."""
+
+  result = ""
+
+  for crit_id, rating_data in submission.rubric_assessment.items():
+    criterion = get_criterion(crit_id, submission.assignment.rubric)
+    rating = get_rating(rating_data["rating_id"], criterion)
+
+    result += f"{criterion['description']}: {rating['description']} " \
+      f"({rating['points']})\n"
+
+    if rating_data["comments"]:
+      result += f"Comments: {rating_data['comments']}\n"
+
+    result += "\n"
+
+  return result.strip()
+@
+
+We can get the rating of a rubric from the rubric assessment.
+We can get this data from [[submission.rubric_assessment]] and it looks like 
+this:
+\begin{minted}{python}
+{'_7957': {'rating_id': '_6397', 'comments': '', 'points': 1.0},
+ '_1100': {'rating_id': '_8950', 'comments': '', 'points': 1.0}}
+\end{minted}
+
+We get the rubric with the assignment.
+So we can get it through [[submission.assignment.rubric]] and it looks like 
+this:
+\begin{minted}{python}
+[{'id': '_7957', 'points': 1.0, 'description': 'Uppfyller kraven i lydelsen', 
+'long_description': '', 'criterion_use_range': False, 'ratings': [{'id': 
+'_6397', 'points': 1.0, 'description': 'OK', 'long_description': ''}, {'id': 
+'_7836', 'points': 0.0, 'description': 'Påpekande', 'long_description': ''}]},
+{'id': '_1100', 'points': 1.0, 'description': 'Kan redogöra för alla detaljer', 
+'long_description': '', 'criterion_use_range': False, 'ratings': [{'id': 
+'_8950', 'points': 1.0, 'description': 'OK', 'long_description': ''}, {'id': 
+'_4428', 'points': 0.0, 'description': 'Påpekande', 'long_description': ''}]}]
+\end{minted}
+It's essentially a list of criterions.
+We want to extract a criterion by ID from the rubric.
+<<functions>>=
+def get_criterion(criterion_id, rubric):
+  """Returns criterion with ID `criterion_id` from rubric `rubric`"""
+  for criterion in rubric:
+    if criterion["id"] == criterion_id:
+      return criterion
+
+  return None
+@ And in exactly the same fashion we want to extract a rating from the 
+criterion.
+<<functions>>=
+def get_rating(rating_id, criterion):
+  """Returns rating with ID `rating_id` from rubric criterion `criterion`"""
+  for rating in criterion["ratings"]:
+    if rating["id"] == rating_id:
+      return rating
+
+  return None
+@
+
