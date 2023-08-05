@@ -1,0 +1,152 @@
+Metadata-Version: 2.1
+Name: greynirseq
+Version: 0.4
+Summary: Natural language processing for Icelandic
+Home-page: https://github.com/mideind/GreynirSeq
+License: AGPLv3+
+Keywords: nlp,pos,ner,icelandic
+Author: Miðeind ehf
+Author-email: tauganet@mideind.is
+Requires-Python: >=3.7.2,<4.0.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 10.1
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 10.2
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 11.0
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 11.1
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)
+Classifier: License :: Other/Proprietary License
+Classifier: Natural Language :: Icelandic
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Cython
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Topic :: Utilities
+Requires-Dist: editdistance (>=0.6.0,<0.7.0)
+Requires-Dist: fairseq (>=0.10.0,<0.11.0)
+Requires-Dist: langid (>=1.1.6,<2.0.0)
+Requires-Dist: nltk (>=3.5,<4.0)
+Requires-Dist: pyjarowinkler (>=1.8,<2.0)
+Requires-Dist: reynir (>=3.5.0,<4.0.0)
+Requires-Dist: scipy (>=1.5,<2.0)
+Requires-Dist: sentencepiece (>=0.1.96,<0.2.0)
+Requires-Dist: spacy (>=2,<3)
+Requires-Dist: transformers (>=4.3.2,<5.0.0)
+Project-URL: Repository, https://github.com/mideind/GreynirSeq
+Description-Content-Type: text/markdown
+
+[![superlinter](https://github.com/mideind/greynirseq/actions/workflows/superlinter.yml/badge.svg)]() [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+---
+
+<img src="assets/greynir-logo-large.png" alt="Greynir" width="200" height="200" align="right" style="margin-left:20px; margin-bottom: 20px;">
+
+# GreynirSeq
+
+GreynirSeq is a natural language parsing toolkit for Icelandic focused on sequence modeling with neural networks. It is under active development and is in its early stages.
+
+The modeling part (nicenlp) of GreynirSeq is built on top of the excellent [fairseq](https://github.com/pytorch/fairseq) from Facebook (which is built on top of pytorch).
+
+GreynirSeq is licensed under the GNU AFFERO GPLv3 license unless otherwise stated at the top of a file.
+
+**What's new?**
+* An Icelandic RoBERTa model, **IceBERT** finetuned for NER and POS tagging.
+* Icelandic - English translation.
+
+**What's on the horizon?**
+* More fine tuning tasks for Icelandic, constituency parsing and grammatical error detection
+
+---
+
+Be aware that usage of the CLI or otherwise downloading model files will result in downloading of **gigabytes** of data.
+Simply installing `greynirseq` will not download any models, they are automatically downloaded on-demand.
+
+## Installation
+In a suitable virtual environment
+``` bash
+# From PyPI
+$ pip install greynirseq
+# or from git main branch
+$ pip install git+https://github.com/mideind/greynirseq@main
+```
+
+## Features
+
+### TL;DR give me the CLI
+
+The `greynirseq` CLI interface can be used to run pretrained models for various tasks. Run `pip install greynirseq && greynirseq -h` to see what options are available.
+
+#### POS
+Input is accepted from file containing a single [tokenized](https://github.com/mideind/Tokenizer) sentence per line, or from stdin.
+
+``` bash
+$ echo "Systurnar Guðrún og Monique átu einar um jólin á McDonalds ." | greynirseq pos --input -
+
+nvfng nven-s c n---s sfg3fþ lvfnsf af nhfog af n----s pl
+```
+
+#### NER
+Input is accepted from file containing a single [tokenized](https://github.com/mideind/Tokenizer) sentence per line, or from stdin.
+
+``` bash
+$ echo "Systurnar Guðrún og Monique átu einar um jólin á McDonalds ." | greynirseq ner --input -
+
+O B-Person O B-Person O O O O O B-Organization O
+```
+
+#### Translation
+Input is accepted from file containing a single **untokenized** sentence per line, or from stdin.
+
+``` bash
+# For en->is translation
+$ echo "This is an awesome test that shows how to use a pretrained translation model." | greynirseq translate --source-lang en --target-lang is
+
+Þetta er æðislegt próf sem sýnir hvernig nota má forprófað þýðingarlíkan.
+
+# For is->en translation
+$ echo "Þetta er æðislegt próf sem sýnir hvernig nota má forprófað þýðingarlíkan." | greynirseq translate --source-lang is --target-lang en
+
+This is an awesome test that shows how a pre-tested translation model can be used.
+```
+
+### Neural Icelandic Language Processing - NIceNLP
+
+IceBERT is an Icelandic BERT-based (RoBERTa) language model that is suitable for fine tuning on downstream tasks.
+
+The following fine tuning tasks are available both through the `greynirseq` CLI and for loading programmatically.
+
+1. [POS tagging](https://github.com/mideind/GreynirSeq/blob/main/src/greynirseq/nicenlp/examples/pos/README.md)
+1. [NER tagging](https://github.com/mideind/GreynirSeq/blob/main/src/greynirseq/nicenlp/examples/ner/README.md)
+
+There are also a some translation models available. They are Transformer models trained from scratch or finetuned based on mBART25.
+
+1. [Translation](https://github.com/mideind/GreynirSeq/blob/main/src/greynirseq/nicenlp/examples/translation/README.md)
+
+## Development
+To install GreynirSeq in development mode we recommend using poetry as shown below
+
+```bash
+pip install poetry && poetry install
+```
+
+### Linting
+
+All code is checked with [Super-Linter](https://github.com/github/super-linter) in a *GitHub Action*, we recommend running it locally before pushing
+
+```bash
+./run_linter.sh
+```
+
+### Type annotation
+
+Type annotation will soon be checked with mypy and should be included.
+
+
