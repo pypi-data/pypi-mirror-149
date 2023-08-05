@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+"""Cli for comicbox."""
+from argparse import ArgumentParser
+from argparse import Namespace
+from pathlib import Path
+
+from comicbox.config import get_config
+from comicbox.run import Runner
+
+
+def get_args(params=None) -> Namespace:
+    """Get arguments and options."""
+    description = "Comic book archive read/write tool."
+    parser = ArgumentParser(description=description)
+    # OPTIONS
+    parser.add_argument(
+        "-R",
+        "--ignore-cix",
+        action="store_false",
+        dest="comicinfo",
+        help="Ignore ComicRack ComicInfo.xml metadata if present.",
+    )
+    parser.add_argument(
+        "-L",
+        "--ignore-cbi",
+        action="store_false",
+        dest="comicbookinfo",
+        help="Ignore ComicLover ComicBookInfo metadata if present.",
+    )
+    parser.add_argument(
+        "-C",
+        "--ignore-comet",
+        action="store_false",
+        dest="comet",
+        help="Ignore CoMet metadata if present.",
+    )
+    parser.add_argument(
+        "-F",
+        "--ignore-filename",
+        action="store_false",
+        dest="filename",
+        help="Ignore filename metadata.",
+    )
+    parser.add_argument(
+        "-M",
+        "--no-metadata",
+        action="store_false",
+        help="Do not read any comic metadata.",
+    )
+    parser.add_argument(
+        "-d",
+        "--dest_path",
+        type=Path,
+        help="destination path for extracting pages and metadata.",
+    )
+    parser.add_argument(
+        "--delete-rar",
+        action="store_true",
+        help="Delete the original rar file if the zip is exported successfully.",
+    )
+    parser.add_argument(
+        "--recurse",
+        action="store_true",
+        help="Perform seletced actions recursively on a directory.",
+    )
+    parser.add_argument(
+        "-g",
+        "--config",
+        action="store",
+        type=str,
+        help="Path to an alternate config file.",
+    )
+    parser.add_argument(
+        "-y",
+        "--dry_run",
+        action="store_true",
+        help="Do not write anything to the filesystem. Report on what would be done.",
+    )
+
+    ###########
+    # ACTIONS #
+    ###########
+    parser.add_argument("-v", "--version", action="store_true", help="Display version.")
+    parser.add_argument("-p", "--print", action="store_true", help="Print metadata")
+    parser.add_argument(
+        "-f",
+        "--from",
+        dest="index_from",
+        type=int,
+        help="Extract pages from the specified index forward.",
+    )
+    parser.add_argument(
+        "-c", "--covers", action="store_true", help="Extract cover pages."
+    )
+    parser.add_argument(
+        "-r", "--raw", action="store_true", help="Print raw metadata without parsing"
+    )
+    parser.add_argument(
+        "-z", "--cbz", action="store_true", help="Export the archive to CBZ format."
+    )
+    parser.add_argument(
+        "-i",
+        "--import",
+        action="store",
+        dest="import_fn",
+        help="Import metadata from an external file.",
+    )
+    parser.add_argument(
+        "-e",
+        "--export",
+        action="store_true",
+        help="Export metadata as external files in several formats.",
+    )
+    parser.add_argument(
+        "--rename",
+        action="store_true",
+        help="Rename the file with our preferred schema.",
+    )
+    parser.add_argument(
+        "--delete_tags", action="store_true", help="Delete all tags from archive."
+    )
+
+    ###########
+    # TARGETS #
+    ###########
+    parser.add_argument(
+        "paths",
+        metavar="path",
+        type=str,
+        help="Paths to comic archives or directories",
+        nargs="*",
+    )
+
+    if params is not None:
+        params = params[1:]
+    cns = parser.parse_args(params)
+    return Namespace(comicbox=cns)
+
+
+def main(params=None):
+    """Get CLI arguments and perform the operation on the archive."""
+    args = get_args(params)
+    config = get_config(args)
+
+    runner = Runner(config)
+    runner.run()
+
+
+if __name__ == "__main__":
+    main()
