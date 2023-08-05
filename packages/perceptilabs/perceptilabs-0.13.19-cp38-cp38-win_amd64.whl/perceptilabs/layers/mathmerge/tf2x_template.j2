@@ -1,0 +1,45 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+
+
+{% macro layer_tf2x_merge(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer):
+    def call(self, inputs, training=True):
+        """ Takes two tensors as input and merges them accordingly. """
+        {% filter remove_lspaces(8) %}
+            {% if layer_spec.merge_type == 'Concat' %}
+                y = tf.concat([inputs[f'input{i+1}'] for i in range({{layer_spec.input_count}})], {{layer_spec.merge_dim}})
+            {% elif layer_spec.merge_type == 'Add' %}
+                y = inputs['input1'] + inputs['input2']
+            {% elif layer_spec.merge_type == 'Sub' %}
+                y = inputs['input1'] - inputs['input2']
+            {% elif layer_spec.merge_type == 'Multi' %}
+                y = inputs['input1'] * inputs['input2']
+            {% elif layer_spec.merge_type == 'Div' %}
+                y = inputs['input1'] / inputs['input2']
+            {% endif %}
+        {% endfilter %}
+
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'y', 'preview': 'y'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+	
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+        
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+

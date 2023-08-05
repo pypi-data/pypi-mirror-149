@@ -1,0 +1,60 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+
+{% macro layer_tf1x_softmax(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}(Tf1xLayer):
+    def __call__(self, inputs: Dict[str, tf.Tensor] , is_training: tf.Tensor = None) -> Dict[str, tf.Tensor]:
+        """ Takes the outputs of all the incoming layers as input and returns the output of that layer."""
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}        
+        x = inputs['input']
+        y = tf.nn.softmax(x)
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'y'},
+            [])|indent(width=8)
+        }}
+        return self._outputs
+    
+    def get_sample(self) -> Dict[str, tf.Tensor]:
+        """ Returns a dictionary of sample tensors
+
+        Returns:
+            A dictionary of sample tensors
+        """
+        return self._outputs
+
+    @property
+    def variables(self) -> Dict[str, Picklable]:
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+
+    @property
+    def trainable_variables(self) -> Dict[str, tf.Tensor]:
+        """Any trainable variables belonging to this layer that should be updated during backpropagation. Their gradients will also be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and tensors for values.
+        """
+        return {}
+    
+    @property
+    def weights(self) -> Dict[str, tf.Tensor]:
+        """Any weight tensors belonging to this layer that should be rendered in the frontend.
+
+        Return:
+            A dictionary with tensor names for keys and tensors for values.
+        """        
+        return {}
+
+    @property    
+    def biases(self) -> Dict[str, tf.Tensor]:
+        """Any weight tensors belonging to this layer that should be rendered in the frontend.
+
+        Return:
+            A dictionary with tensor names for keys and tensors for values.
+        """        
+        return {}    
+{% endmacro %}

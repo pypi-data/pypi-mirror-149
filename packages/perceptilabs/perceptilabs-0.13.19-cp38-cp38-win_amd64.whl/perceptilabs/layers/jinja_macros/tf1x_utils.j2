@@ -1,0 +1,119 @@
+{% macro check_input_vars(layer_spec, required_variables) -%}
+{% filter remove_lspaces(12) %}            
+    {% for var_name in required_variables %}
+        {% if not layer_spec.has_input_variable(var_name) %}
+            raise TypeError("Missing input connection '{{var_name}}'")
+        {% endif %}
+    {% endfor %}                                
+{% endfilter %}
+{%- endmacro %}
+
+
+{% macro build_output_dict(target_var, var_map, untouched_vars) -%}
+{# Builds the output dictionary. Adds a batch dimension when necessary #}
+{% if var_map|length == 1 %}
+    {% filter remove_lspaces(8) %}    
+        {{target_var}} = {'output': {{var_map['output']}}}
+    {% endfilter %}        
+{% else %}
+    {% filter remove_lspaces(8) %}    
+        {{target_var}} = {
+    {%- endfilter %}            
+    {% filter remove_lspaces(12) %}
+        {% for out_name, var_name in var_map.items() %}
+            {% if out_name == 'output' or out_name in untouched_vars %}
+                '{{out_name}}': {{var_name}},
+            {% else %}
+                '{{out_name}}': tf.expand_dims({{var_name}}, axis=0),            
+            {% endif %}
+        {% endfor %}
+    {%- endfilter %}
+    {% filter remove_lspaces(8) -%}                
+        }
+    {% endfilter %}                    
+    {% endif %}
+{%- endmacro %}
+
+{% macro activation_name(name, var_name) %}
+{% filter remove_lspaces(8) %}
+    {% if name == 'Sigmoid' %}
+        tf.compat.v1.sigmoid
+    {% elif name == 'ReLU' %}
+        tf.compat.v1.nn.relu
+    {% elif name == 'Tanh' %}
+        tf.compat.v1.tanh
+    {% elif name == 'LeakyReLU' %}
+        tf.compat.v1.nn.leaky_relu
+    {% elif name == 'Softmax' %}
+        tf.compat.v1.nn.softmax
+    {% elif name == 'None' %}
+        None
+    {% endif %}
+{% endfilter %}
+{% endmacro %}
+
+{% macro activation_function(name, var_name) %}
+{% filter remove_lspaces(8) %}
+    {% if name == 'Sigmoid' %}
+        {{var_name}} = tf.nn.sigmoid({{var_name}})
+    {% elif name == 'ReLU' %}
+        {{var_name}} = tf.nn.relu({{var_name}})
+    {% elif name == 'Tanh' %}
+        {{var_name}} = tf.nn.tanh({{var_name}})
+    {% elif name == 'LeakyReLU' %}
+        {{var_name}} = tf.nn.leaky_relu({{var_name}})
+    {% elif name == 'Softmax' %}
+        {{var_name}} = tf.nn.softmax({{var_name}})
+    {% endif %}
+{% endfilter %}
+{% endmacro %}
+
+{% macro batch_normal(batch_norm) %}
+{% filter remove_lspaces(8) %}
+    {% if batch_norm %}
+        y = tf.compat.v1.layers.batch_normalization(y, training=is_training)
+    {% endif %}
+{% endfilter %}
+{% endmacro %}
+
+{% macro dropout(dropout_) %}
+{% filter remove_lspaces(8) %}
+    {% if dropout_ %}
+        y = tf.nn.dropout(y, rate=(1 - self._keep_prob)*tf.cast(is_training, tf.float32))
+        y_before = tf.nn.dropout(y_before, rate=(1 - self._keep_prob)*tf.cast(is_training, tf.float32))
+    {% endif %}
+{% endfilter %}
+{% endmacro %}
+
+{% macro session(sess, use_gpu=True) %}
+{% filter remove_lspaces(8) %} 
+    {% if use_gpu %}
+        config = tf.ConfigProto(gpu_options={"allow_growth": True})
+    {% else %}
+        config = tf.ConfigProto(device_count={"GPU": 0})
+    {% endif %}
+{% endfilter %}
+sess = tf.Session(config=config)
+{% endmacro %}
+
+{% macro session_distributed(sess, n_devices, use_gpu=True) %}
+{% filter remove_lspaces(4) %} 
+    {% if use_gpu %}
+        n_devices = len(GPUtil.getGPUs())
+        config = tf.ConfigProto(gpu_options={"allow_growth": True}, log_device_placement=True, allow_soft_placement=True)
+    {% else %}
+        n_devices = 2
+        config = tf.ConfigProto(device_count={"CPU": n_devices, "GPU": 0}, gpu_options={"allow_growth": True}, inter_op_parallelism_threads=n_devices, intra_op_parallelism_threads=1)
+    {% endif %}
+{% endfilter %}
+    sess = tf.Session(config=config)# since we use keras metrics
+    tf.keras.backend.set_session(sess) # since we use keras metrics
+{% endmacro %}
+
+{% macro representative_dataset_gen(generator) %}
+def representative_dataset_gen():
+    for i in range(10):
+        data = list(next({{generator}}).values())
+        image = np.expand_dims(data[-1], axis=0)
+        yield [image]
+{% endmacro %}

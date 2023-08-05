@@ -1,0 +1,200 @@
+{% from 'tf1x_utils.j2' import batch_normal, build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+{% from 'activations.j2' import activation_function %}
+
+
+{% macro get_conv_class(conv_type, conv_dim) %}
+    {% filter remove_spaces(20) -%}                
+        {% if conv_type == 'Conv' %}
+            {% if  conv_dim == '1D' %}
+                {{ caller('tf.keras.layers.Conv1D') }}
+            {% elif conv_dim == '2D' %}
+                {{ caller('tf.keras.layers.Conv2D') }}
+            {% elif conv_dim == '3D' %}
+                {{ caller('tf.keras.layers.Conv3D') }}
+            {% endif %}
+        {% elif conv_type == 'Transpose' %}
+            {% if conv_dim == '2D' %}
+                {{ caller('tf.keras.layers.Conv2DTranspose') }}
+            {% elif conv_dim == '3D' %}
+                {{ caller('tf.keras.layers.Conv3DTranspose') }}    
+            {% endif %}
+        {% elif conv_type == 'Separable' %}
+            {% if conv_dim == '1D' %}
+                {{ caller('tf.keras.layers.SeparableConv1D') }}
+            {% elif conv_dim == '2D' %}
+                {{ caller('tf.keras.layers.SeparableConv2D') }}
+            {% endif %}
+        {% elif conv_type == 'Depthwise'%}
+            {% if conv_dim == '2D' %}
+                {{ caller('tf.keras.layers.DepthwiseConv2D') }}
+            {% endif %}
+        {% endif %}
+    {% endfilter %}
+{% endmacro %}
+
+
+{% macro repeat_per_dimension(conv_dim, stride) %}
+    {% filter remove_spaces(12) -%}                
+        {% if conv_dim == '1D' %}
+            {{ caller(stride) }}        
+        {% elif conv_dim == '2D' %}
+            {{ caller( (stride, stride) )}}
+        {% elif conv_dim == '3D' %}
+            {{ caller( (stride, stride, stride) )}}
+        {% endif %}
+    {% endfilter %}
+{% endmacro %}
+
+
+{% macro get_pooling_class(conv_dim, pool_type) %}
+    {% filter remove_spaces(20) -%}                
+        {% if conv_dim == '1D' %}
+            {% if pool_type == 'Max' %}
+                {{ caller('tf.keras.layers.MaxPooling1D') }}
+            {% elif pool_type == 'Mean' %}
+                {{ caller('tf.keras.layers.AveragePooling1D') }}            
+            {% endif %}
+        {% elif conv_dim == '2D' %}
+            {% if pool_type == 'Max' %}
+                {{ caller('tf.keras.layers.MaxPooling2D') }}
+            {% elif pool_type == 'Mean' %}
+                {{ caller('tf.keras.layers.AveragePooling2D') }}            
+            {% endif %}
+        {% elif conv_dim == '3D' %}
+            {% if pool_type == 'Max' %}
+                {{ caller('tf.keras.layers.MaxPooling3D') }}
+            {% elif pool_type == 'Mean' %}
+                {{ caller('tf.keras.layers.AveragePooling3D') }}            
+            {% endif %}
+        {% endif %}
+    {% endfilter %}
+{% endmacro %}
+
+
+{% macro layer_tf2x_conv(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def __init__(self):
+        super().__init__()
+        self._variables = {}
+
+    def call(self, inputs, training=True):
+        """ Takes a tensor as input and feeds it forward through a layer of neurons, returning a newtensor. Invoked by the Keras framework. """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}                
+        input_ = inputs['input']
+
+        {% call indented_if(layer_spec.conv_dim == '1D')%}
+            input_ = self.flatten(input_)
+            input_ = tf.expand_dims(input_, axis=-1)
+        {% endcall %}
+        linear_output = self.conv(input_)
+        
+        {% call indented_if(layer_spec.batch_norm) %}
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='preview') | indent(8) }}             
+            linear_output = self.batch_norm(linear_output, training=training)
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='output') | indent(8) }}            
+        {% endcall %}
+        {% call indented_if(not layer_spec.batch_norm) %}
+            {{ activation_function(layer_spec.activation, input_var='linear_output', assigned_var='output') | indent(8) }}
+            preview = output
+        {% endcall %}
+        {% call indented_if(layer_spec.dropout) %}
+            output = self.dropout(output, training=training)
+            preview = output     
+        {% endcall %}
+        {% call indented_if(layer_spec.pool) %}
+            output = self.pooling(output)
+            preview = output     
+        {% endcall %}   
+        self._variables = {k: v for k, v in locals().items() if can_serialize(v)}
+
+        {% call indented_if(layer_spec.conv_type == 'Depthwise' or layer_spec.conv_type =='Separable') %}
+            weights = self.conv.weights
+            self.kernel = weights[0]
+            self.bias = weights[-1]
+        {% endcall %}
+        {% call indented_if(layer_spec.conv_type == 'Conv' or layer_spec.conv_type == 'Transpose') %}
+            self.kernel = self.conv.kernel
+            self.bias = self.conv.bias
+        {% endcall %}
+
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'W': 'self.kernel', 'b': 'self.bias', 'preview': 'preview'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+
+    def build(self, input_shape: Dict[str, tf.TensorShape]) -> None:
+        """ Called by the Keras framework upon the first invocation of the call method
+        
+        Args:
+            input_shape: A dictionary with layer id and its tensor shape        
+        """
+        flat_input_dim = np.product(input_shape['input'][1:]) # Excluding batch size
+        {% call indented_if(layer_spec.conv_dim == 'Automatic') %}
+            raise ValueError("Automatic dimension not implemented for tf2x")
+        {% endcall %}
+        {% call indented_if(layer_spec.conv_dim != 'Automatic') %}
+            {% call(class_name) get_conv_class(conv_type=layer_spec.conv_type, conv_dim=layer_spec.conv_dim) %}
+                self.conv = {{class_name}}(
+            {%- endcall %}
+            {% call indented_if(layer_spec.conv_type != 'Depthwise') %}
+                filters={{layer_spec.feature_maps}},
+            {%- endcall %}
+                kernel_size={{layer_spec.patch_size}},
+            {% call(strides) repeat_per_dimension(layer_spec.conv_dim, layer_spec.stride) %}
+                strides={{strides}},
+            {%- endcall %}
+                padding='{{layer_spec.padding}}',
+                use_bias=True,
+                kernel_initializer='glorot_uniform',
+                bias_initializer='zeros'
+            )
+        {% endcall %}
+        {% call indented_if(layer_spec.pool) %}
+            {% call(class_name) get_pooling_class(conv_dim=layer_spec.conv_dim, pool_type=layer_spec.pooling) %}
+                self.pooling = {{class_name}}(
+            {%- endcall %}
+            {% call(pool_size) repeat_per_dimension(conv_dim=layer_spec.conv_dim, stride=layer_spec.pool_area) %}
+                pool_size={{pool_size}},
+            {%- endcall %}
+            {% call(strides) repeat_per_dimension(conv_dim=layer_spec.conv_dim, stride=layer_spec.pool_stride) %}
+                strides={{strides}},
+            {%- endcall %}
+                padding='{{layer_spec.pool_padding}}'
+            )
+        {% endcall %}
+        {% call indented_if(layer_spec.batch_norm) %}   
+            self.batch_norm = tf.keras.layers.BatchNormalization()
+        {% endcall %}
+        {% call indented_if(layer_spec.dropout) %}
+            self.dropout = tf.keras.layers.Dropout(rate={{layer_spec.dropout_rate}})
+        {% endcall %}
+        {% call indented_if(layer_spec.conv_dim == '1D')%}
+            self.flatten = tf.keras.layers.Flatten()
+        {% endcall %}
+
+    def get_config(self) -> Dict[str, Picklable]:
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return self._variables
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """
+        kernel, bias = self.conv.weights
+        return kernel, bias
+
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+
