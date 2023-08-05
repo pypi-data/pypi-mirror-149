@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+    tags:
+      - '*'
+  pull_request:
+  schedule:
+    # Weekly Monday 9AM build
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 9 * * 1'
+
+env:
+  CRDS_SERVER_URL: https://jwst-crds.stsci.edu
+  CRDS_PATH: ~/crds_cache
+  CRDS_CLIENT_RETRY_COUNT: 3
+  CRDS_CLIENT_RETRY_DELAY_SECONDS: 20
+
+jobs:
+  tox:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Python 3.10
+            runs-on: ubuntu-latest
+            python-version: '3.10'
+            toxenv: py310
+
+          - name: Python 3.9 with coverage
+            runs-on: ubuntu-latest
+            python-version: 3.9
+            toxenv: py39-cov
+
+          - name: macOS
+            runs-on: macos-latest
+            python-version: 3.9
+            toxenv: py39
+
+          - name: Code style checks
+            runs-on: ubuntu-latest
+            python-version: 3.9
+            toxenv: style
+
+          - name: Security audit
+            runs-on: ubuntu-latest
+            python-version: 3.9
+            toxenv: bandit
+
+          - name: jwst tests with coverage
+            runs-on: ubuntu-latest
+            python-version: 3.9
+            toxenv: jwst-cov
+
+          - name: romancal tests with coverage
+            runs-on: ubuntu-latest
+            python-version: 3.9
+            toxenv: romancal-cov
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install tox
+        run: |
+          pip install tox
+
+      - name: Run tox
+        run: tox -e ${{ matrix.toxenv }}
+
+      - name: Upload coverage to codecov
+        if: ${{ contains(matrix.toxenv,'-cov') }}
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
