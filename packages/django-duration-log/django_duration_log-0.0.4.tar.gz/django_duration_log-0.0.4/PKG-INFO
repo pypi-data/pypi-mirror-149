@@ -1,0 +1,43 @@
+Metadata-Version: 2.1
+Name: django_duration_log
+Version: 0.0.4
+Summary: A Duration Log Tool for Django
+Home-page: https://www.oren.ink/
+Author: Oren Zhang
+Author-email: oren_zhang@outlook.com
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+## Django Duration Log
+
+### 注册到 `installed_apps` 中
+
+```python
+INSTALLED_APPS = [
+    "corsheaders",
+    "django_duration_log",
+    ···
+]
+```
+
+### 添加 `middleware`
+
+```python
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django_duration_log.middlewares.DjangoDurationLogMiddleware",
+    ···
+]
+```
+
+### 配置环境变量
+
+```python
+INFLUXDB_ACCESS_TOKEN = os.getenv("INFLUXDB_ACCESS_TOKEN")
+INFLUXDB_ORG = os.getenv("INFLUXDB_ORG")
+INFLUXDB_BUCKET = os.getenv("INFLUXDB_BUCKET")
+INFLUXDB_URL = os.getenv("INFLUXDB_URL")
+```
+
+
