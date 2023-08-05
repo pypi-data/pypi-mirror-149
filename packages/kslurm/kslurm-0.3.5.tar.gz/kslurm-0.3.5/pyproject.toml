@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+add_imports = ["from __future__ import absolute_import"]
+# We ignore __init__ file so that mkinit and isort don't undo each other
+extend_skip = ["__init__.py"]
+
+[tool.pyright]
+strict = ["kslurm/**"]
+venv = ".venv"
+
+[tool.black]
+extend-exclude = ["typings/.*$"]
+
+[tool.poe.executor]
+type = "simple"
+
+[tool.poe.tasks]
+setup = "pre-commit install"
+mkinit = "mkinit --recursive --nomods --black -i kslurm"
+check_mkinit = "mkinit --recursive --nomods --black --diff kslurm"
+test = "tox"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py39, py310
+isolated_build = True
+
+[gh-actions]
+python =
+    3.9: py39
+    3.10: py310
+
+[testenv]
+deps=.[test]
+commands =
+    pytest
+"""
