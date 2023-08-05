@@ -1,0 +1,104 @@
+name: Deploy on Google Cloud Run
+
+on: push
+
+jobs:
+  deploy-to-gcr:
+    name: Deploy on Google Cloud Run
+    runs-on: ubuntu-18.04
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      # First, check out the repository itself, because we build from source
+      - id: "checkout-repo"
+        name: Checkout the Repo
+        uses: actions/checkout@v3
+
+      # Next, notify Armadillo that the deployment has begun building.
+      - id: "update-armadillo-building"
+        name: Update Armadillo the First Time
+        uses: "armadillo-ai/deploy-model-action@v0.9"
+        with:
+          cloud-run-url: "${{ steps.deploy.outputs.url }}"
+          model-id: "${{ github.repository }}"
+          commit-hash: "${{ github.sha }}"
+          secret: "${{ secrets.ARMADILLO_GITHUB_SECRET }}"
+          status: "BUILDING"
+
+      # Next, log into Google Cloud
+      - id: "auth"
+        name: Authenticate
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+          service_account: "github-actions@armadillo-21120.iam.gserviceaccount.com"
+
+      # Build the Docker Image on Google Cloud Build
+      - id: "build"
+        name: Build & Publish
+        run: |
+          gcloud builds submit \
+          --region=us-west2 \
+          --tag us-west2-docker.pkg.dev/armadillo-21120/armadillo-ml/model-${{ github.sha }} \
+          --timeout="2h15m5s"
+
+      # Deploy the Docker Image on Google Cloud Run
+
+      # We have retired the official action because it is hard to configure (requires more YAML)
+      # Instead, we run the commands directly and save the output to the GitHub env
+      # This allows us to specify arguments like min-instances and memory
+
+      - id: "deploy"
+        name: Deploy to GCR
+        run: |
+          gcloud run deploy model-${{ github.sha }} \
+            --image us-west2-docker.pkg.dev/armadillo-21120/armadillo-ml/model-${{ github.sha }} \
+            --region us-west2 \
+            --min-instances=1 \
+            --max-instances=1 \
+            --memory '1024Mi' \
+            |& tee deployInfo.txt
+          DEPLOY_URL=$(cat deployInfo.txt |grep  -E -o  https:\/\/\(\w\|-\|\.\)+ )
+          echo "Here is the Deploy URL: ${DEPLOY_URL}"
+          echo "DEPLOY_URL=${DEPLOY_URL}" >> $GITHUB_ENV
+        continue-on-error: true
+
+      # Official Github Action Code (Retired)
+
+      # - id: "deploy"
+      #   # Returning back to the official action.
+      #   name: Deploy to GCR
+      #   uses: "google-github-actions/deploy-cloudrun@v0"
+      #   with:
+      #     service: "model-${{ github.sha }}"
+      #     image: us-west2-docker.pkg.dev/armadillo-21120/armadillo-ml/model-${{ github.sha }}
+      #     region: us-west2
+      #     metadata: fjdksalfjdksal
+      #     # TODO: Specificy minimum 1 instance.
+      #   continue-on-error: true
+
+      # Finally, tell Armadillo that the build has succeeded OR failed...
+      - id: "update-armadillo-error"
+        name: Update Armadillo with Error
+        if: steps.deploy.outcome != 'success'
+        uses: "armadillo-ai/deploy-model-action@v0.9"
+        with:
+          # cloud-run-url: "${{ steps.deploy.outputs.url }}"
+          # Swapping this out
+          cloud-run_url: "${{ env.DEPLOY_URL }} "
+          model-id: "${{ github.repository }}"
+          commit-hash: "${{ github.sha }}"
+          secret: "${{ secrets.ARMADILLO_GITHUB_SECRET }}"
+          status: "ERROR"
+
+      - id: "update-armadillo-success"
+        name: Update Armadillo with Success
+        if: steps.deploy.outcome == 'success'
+        uses: "armadillo-ai/deploy-model-action@v0.9"
+        with:
+          cloud-run-url: "${{ env.DEPLOY_URL }} "
+          model-id: "${{ github.repository }}"
+          commit-hash: "${{ github.sha }}"
+          secret: "${{ secrets.ARMADILLO_GITHUB_SECRET }}"
+          status: "SUCCESS"
