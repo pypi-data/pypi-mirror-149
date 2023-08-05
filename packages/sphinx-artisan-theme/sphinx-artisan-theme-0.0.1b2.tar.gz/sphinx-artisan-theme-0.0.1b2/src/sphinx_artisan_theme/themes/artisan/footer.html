@@ -1,0 +1,16 @@
+<footer class="max-w-prose mt-12">
+  {% block prev_next %}
+    {{ macros.prev_next(prev, next) }}
+  {% endblock %}
+
+  <div class="pt-12 pb-12 border-t border-slate-200 text-slate-500"">
+    <p class="text-center text-sm">
+      crafted by 
+      {% if author_url %}
+      <a class="hover:text-pink-600" href="{{ author_url }}">{{ author|lower }}</a>
+      {% else %}
+      {{ author|lower }}
+      {% endif %}
+    </p>
+  </div>
+</footer>

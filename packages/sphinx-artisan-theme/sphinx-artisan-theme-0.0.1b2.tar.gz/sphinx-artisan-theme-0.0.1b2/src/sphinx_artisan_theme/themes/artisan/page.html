@@ -1,0 +1,22 @@
+{%- extends "layout.html" %}
+
+{% block page_navigation %}
+  {% set table_of_contents = get_table_of_contents() %}
+  {% if table_of_contents %}
+    {% call macros.menu() %}
+        {% for item in table_of_contents %}
+          {% call macros.menu_item(item.title, item.url) %}
+            {% for subitem in item.children %}
+              {{ macros.menu_subitem(subitem.title, subitem.url) }}
+            {% endfor %}
+          {% endcall %}
+        {% endfor %}
+    {% endcall %}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="prose prose-slate prose-pre:bg-slate-700">
+  {{ body }}
+</div>
+{% endblock %}

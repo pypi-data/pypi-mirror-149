@@ -1,0 +1,329 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.admonition,
+.topic {
+  @apply text-sm my-5 p-4 text-sky-600 border-sky-400 bg-sky-50 border-l-8 rounded-sm shadow overflow-hidden;
+}
+
+.admonition p:not(.admonition-title),
+.topic p:not(.topic-title) {
+  @apply text-slate-900;
+}
+
+.admonition> :last-child,
+.topic> :last-child {
+  @apply mb-0;
+}
+
+.admonition .admonition-title,
+.topic .topic-title {
+  @apply font-semibold tracking-wide mt-0;
+}
+
+.admonition.important,
+.admonition.tip {
+  @apply text-emerald-600 border-emerald-400 bg-emerald-50;
+}
+
+.admonition.attention,
+.admonition.caution,
+.admonition.warning {
+  @apply text-amber-600 border-amber-400 bg-amber-50;
+}
+
+.admonition.danger,
+.admonition.error {
+  @apply text-rose-600 border-rose-400 bg-rose-50;
+}
+
+.admonition .admonition-title,
+.topic .topic-title {
+  @apply font-semibold tracking-wide;
+}
+
+div.versionadded,
+div.versionchanged,
+div.deprecated {
+  @apply text-sm my-5 p-4 text-slate-900 border-l-8 rounded-sm shadow overflow-hidden;
+}
+
+div.versionadded {
+  @apply border-sky-400 bg-sky-50;
+}
+
+div.versionchanged {
+  @apply border-amber-400 bg-amber-50;
+}
+
+div.deprecated {
+  @apply border-rose-400 bg-rose-50;
+}
+
+.versionmodified {
+  @apply font-semibold;
+}
+
+.versionadded> :last-child,
+.versionchanged> :last-child,
+.deprecated> :last-child {
+  @apply mb-0;
+}
+
+.versionadded> :first-child,
+.versionchanged> :first-child,
+.deprecated> :first-child {
+  @apply mt-0;
+}
+
+.align-right {
+  @apply float-right ml-8 mb-0;
+}
+
+.align-left {
+  @apply float-left mr-8 mb-0;
+}
+
+ul.contains-task-list {
+  @apply pl-0 list-none;
+}
+
+html {
+  font-feature-settings: "ss01", "ss03", "zero", "case", "dlig";
+}
+
+[id] {
+  scroll-margin-top: var(--scroll-mt);
+}
+
+.sig {
+  @apply font-mono;
+}
+
+.sig-name {
+  @apply font-semibold;
+}
+
+.headerlink {
+  @apply text-inherit font-light ml-2 opacity-0 no-underline transition;
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover .headerlink,
+[id]:hover>.headerlink,
+.headerlink:hover {
+  @apply opacity-50;
+}
+
+.footnote .label {
+  @apply float-left m-0 p-0;
+}
+
+.footnote .label::after {
+  content: ".";
+}
+
+.footnote-reference {
+  @apply text-xs leading-none align-super inline-block;
+}
+
+.footnote-reference::before {
+  content: "[";
+}
+
+.footnote-reference::after {
+  content: "]";
+}
+
+.highlight .ge {
+  font-style: italic
+}
+
+/* Generic.Emph */
+.highlight .gs {
+  font-weight: bold
+}
+
+/* Generic.Strong */
+.highlight .gi {
+  @apply text-green-300;
+}
+
+/* Generic.Inserted */
+.highlight .gd {
+  @apply text-pink-500;
+}
+
+/* Generic.Deleted */
+
+.highlight .err {
+  @apply text-pink-500;
+}
+
+/* Error */
+
+.highlight .nc,
+/* Name.Class */
+.highlight .nf,
+/* Name.Function */
+.highlight .ld,
+/* Literal.Date */
+.highlight .sr
+
+/* Literal.String.Regex */
+  {
+  @apply text-lime-300;
+}
+
+.highlight .kt,
+/* Keyword.Type */
+.highlight .ni,
+/* Name.Entity */
+.highlight .s,
+/* Literal.String */
+.highlight .sb,
+/* Literal.String.Backtick */
+.highlight .s2,
+/* Literal.String.Double */
+.highlight .sx,
+/* Literal.String.Other */
+.highlight .s1,
+/* Literal.String.Single */
+.highlight .ss,
+/* Literal.String.Symbol */
+.highlight .sc
+
+/* Literal.String.Char */
+  {
+  @apply text-yellow-300;
+}
+
+.highlight .l,
+/* Literal */
+.highlight .nv
+
+/* Name.Variable */
+  {
+  @apply text-orange-300;
+}
+
+.highlight .k,
+/* Keyword */
+.highlight .o,
+/* Operator */
+.highlight .ow,
+/* Operator.Word */
+.highlight .nb,
+/* Name.Builtin */
+.highlight .no,
+/* Name.Constant */
+.highlight .ne,
+/* Name.Exception */
+.highlight .nt,
+/* Name.Tag */
+.highlight .vc,
+/* Name.Variable.Class */
+.highlight .vg,
+/* Name.Variable.Global */
+.highlight .vi
+/* Name.Variable.Instance */
+
+  {
+  @apply text-pink-400;
+}
+
+.highlight .kc,
+/* Keyword.Constant */
+.highlight .kp,
+/* Keyword.Pseudo */
+.highlight .kr,
+/* Keyword.Reserved */
+.highlight .m,
+/* Literal.Number */
+.highlight .mf,
+/* Literal.Number.Float */
+.highlight .mi,
+/* Literal.Number.Integer */
+.highlight .mo,
+/* Literal.Number.Oct */
+.highlight .il,
+/* Literal.Number.Integer.Long */
+.highlight .se
+
+/* Literal.String.Escape */
+  {
+  @apply text-purple-300;
+}
+
+.highlight .kd,
+/* Keyword.Declaration */
+.highlight .kn,
+/* Keyword.Namespace */
+.highlight .na,
+/* Name.Attribute */
+.highlight .nd
+
+/* Name.Decorator */
+  {
+  @apply text-sky-300;
+}
+
+.highlight .n,
+/* Name */
+.highlight .nn,
+/* Name.Namespace */
+.highlight .nl,
+/* Name.Label */
+.highlight .nx,
+/* Name.Other */
+.highlight .py,
+/* Name.Property */
+.highlight .bp,
+/* Name.Builtin.Pseudo */
+.highlight .mh
+
+/* Literal.Number.Hex */
+  {
+  @apply text-slate-50;
+}
+
+.highlight .p,
+/* Punctuation */
+.highlight .w,
+/* Text.Whitespace */
+.highlight .sd,
+/* Literal.String.Doc */
+.highlight .sh,
+/* Literal.String.Heredoc */
+.highlight .si,
+/* Literal.String.Interpol */
+.highlight .c,
+/* Comment */
+.highlight .cm,
+/* Comment.Multiline */
+.highlight .cp,
+/* Comment.Preproc */
+.highlight .c1,
+/* Comment.Single */
+.highlight .cs
+
+/* Comment.Special */
+  {
+  @apply text-slate-400;
+}
+
+.highlight .linenos {
+  @apply select-none;
+}
+
+.highlight .hll {
+  @apply bg-slate-600 -mx-4 px-4 relative block;
+}
+
+.highlight pre {
+  @apply relative;
+}
+
+#search-results h2 {
+  @apply text-2xl font-light mt-12 mb-6 leading-8 text-slate-500;
+}

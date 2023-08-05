@@ -1,0 +1,30 @@
+<div class="sticky top-0 w-full bg-slate-700 border-b-4 border-pink-600 drop-shadow-lg z-40">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex px-4 sm:px-6 md:px-8 py-3 text-white">
+      <button class="lg:hidden mr-2" id="sidebar-toggle">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <a href="{{ pathto(master_doc) }}"> {{ project }}</a>
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener("load", () => {
+  const toggle = document.querySelector("#sidebar-toggle");
+  const sidebar = document.querySelector("#sidebar");
+
+  toggle.addEventListener("click", (e) => {
+    Array.from(toggle.children).forEach((child) => {
+      child.classList.toggle("hidden");
+    })
+
+    sidebar.classList.toggle("hidden");
+  })
+})
+</script>

@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "sphinx-artisan-theme"
+version = "0.0.1-b2"
+description = ""
+authors = ["Daniel Knell <contact@danielknell.co.uk>"]
+readme = "README.md"
+packages = [{include = "sphinx_artisan_theme", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Sphinx = "^4.4.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.1.1"
+sphinx-autobuild = "^2021.3.14"
+shed = "^0.9.4"
+sphinx-lint = "^0.2"
+restructuredtext-lint = "^1.4.0"
+myst-parser = "^0.17.0"
+autodocsumm = "^0.2.7"
+pylint = "^2.13.5"
+mypy = "^0.942"
+
+[tool.poetry.plugins."sphinx.html_themes"]
+"sphinx_artisan_theme" = "sphinx_artisan_theme"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

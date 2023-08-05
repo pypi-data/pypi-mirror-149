@@ -1,0 +1,57 @@
+{%- extends "layout.html" %}
+
+{% set title = _('Index') %}
+
+{% block page_navigation %}
+  {% call macros.menu() %}
+    {% call macros.menu_item(_("Items"), "#items") %}
+       {% for key, _ in genindexentries %}
+        {{ macros.menu_subitem(key, "#" + key) }}
+      {% endfor %}
+    {% endcall %}
+  {% endcall %}
+{% endblock %}
+
+{% macro indexentries(name, links) %}
+{% if links %}
+<a href="{{ links[0][1] }}"
+   class="hover:text-slate-900">{{ name }}</a>
+{% if links[1:] %}
+<span>
+  (
+  {%- for is_main, link in links -%}
+  <a href="{{ link }}"
+     class="{% if is_main %} font-semibold {% endif %} slate-700 hover:text-slate-900">{{ loop.index }}</a>
+  {%- if not loop.last%}, {% endif %}
+  {%- endfor -%}
+  )
+</span>
+{% endif %}
+{% else %}
+{{ name }}
+{% endif %}
+{% endmacro %}
+
+{% block content %}
+<div class="prose prose-slate prose-docutils prose-pre:bg-slate-700">
+{{ macros.h1(_("Index"), "index") }}
+{{ macros.h2(_("Items"), "items") }}
+{% for key, entries in genindexentries %}
+{{ macros.h3(key, key ) }}
+<ul class="list-disc pl-6 slate-700 ">
+  {%- for name, (links, subitems, _) in entries %}
+  <li>
+    {{ indexentries(name, links) }}
+    {%- if subitems %}
+    <ul class="list-disc pl-6">
+      {%- for subentryname, subentrylinks in subitems %}
+      <li>{{ indexentries(subentryname, subentrylinks) }}</li>
+      {%- endfor %}
+    </ul>
+    {%- endif -%}
+  </li>
+  {%- endfor %}
+</ul>
+{% endfor %}
+</div>
+{% endblock %}
