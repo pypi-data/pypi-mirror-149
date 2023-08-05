@@ -1,0 +1,96 @@
+Metadata-Version: 2.1
+Name: trytond-stock-package-shipping-ups
+Version: 6.4.0
+Summary: UPS connector for the Tryton application platform
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/stock_package_shipping_ups
+Keywords: tryton stock package shipping ups
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Bulgarian
+Classifier: Natural Language :: Catalan
+Classifier: Natural Language :: Czech
+Classifier: Natural Language :: Dutch
+Classifier: Natural Language :: English
+Classifier: Natural Language :: Finnish
+Classifier: Natural Language :: French
+Classifier: Natural Language :: German
+Classifier: Natural Language :: Hungarian
+Classifier: Natural Language :: Indonesian
+Classifier: Natural Language :: Italian
+Classifier: Natural Language :: Persian
+Classifier: Natural Language :: Polish
+Classifier: Natural Language :: Portuguese (Brazilian)
+Classifier: Natural Language :: Romanian
+Classifier: Natural Language :: Russian
+Classifier: Natural Language :: Slovenian
+Classifier: Natural Language :: Spanish
+Classifier: Natural Language :: Turkish
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Requires-Python: >=3.7
+Provides-Extra: test
+License-File: LICENSE
+
+Stock Package Shipping UPS Module
+#################################
+
+The Stock Package Shipping UPS module allows you to generate the UPS labels per
+package using the UPS webservices.
+
+The credential for the webservice is specified by the following fields:
+
+UPS Carrier Credential
+**********************
+
+This model allows to define the credential used to connect the UPS API.
+The credentials used to connect to the UPS API will be automatically retrieved
+based on the company of the Shipment.
+
+- *Company*: The company for which those credentials are valid
+- *User ID*: The User ID provided by UPS.
+- *Password*: The Password used to access the MyUPS Portal.
+- *Account Number*: The account number UPS assigned to you when you requested the
+  API credentials (also known as the Shipper Number).
+- *License*: The License number UPS assigned to you when you requested the API
+  credentials
+- *Server*: Are those credentials used for accessing the Testing or the
+  Production server of UPS.
+- *Use Metric*: Use Metric units when communicating with the UPS webservice.
+
+Carrier
+*******
+
+The Carrier model is extended with the following fields:
+
+- *Service Type*: The UPS service type requested
+- *Label Image Format*: The Image Format used for the label sent by UPS
+- *Label Image Height*: The Height of the label sent by UPS.
+
+Package Type
+************
+
+The Package Type model is extended with the following field:
+
+- *UPS Code*: The UPS Code of the package.
+
+
