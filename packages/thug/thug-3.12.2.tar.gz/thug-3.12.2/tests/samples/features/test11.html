@@ -1,0 +1,22 @@
+<html>
+<body>
+<script language="javascript">
+function testAppendChild(){
+	var refElem = document.createElement("div");
+	refElem.innerHTML = "I'm your reference!";
+
+	var bodyElem = document.body;
+	bodyElem.appendChild(refElem);
+     
+    var newElem = document.createElement("div");
+    newElem.innerHTML = "Just a sample";
+    bodyElem.insertBefore(newElem, refElem);
+
+	bodyElem.insertBefore(newElem, refElem);
+}
+
+testAppendChild();
+</script>
+<body id="foobar">
+</body>
+</html>

@@ -1,0 +1,39 @@
+<html>
+<body>
+
+<div id="top" />
+
+<script>
+	var t = document.createAttribute("test");
+	t.nodeValue = "foo";
+
+	alert("Object: " + t);
+	alert("nodeName: " + t.nodeName);
+	alert("nodeType: " + t.nodeType);
+	alert("nodeValue: " + t.nodeValue);
+	alert("Length: " + t.length);
+
+	t.nodeValue = "test2"
+	alert("New nodeValue: " + t.nodeValue);
+	alert("Parent: " + t.parentNode);
+	alert("Owner: " + t.ownerElement);
+	alert("Name: " + t.name);
+	alert("Specified: " + t.specified);
+	alert("childNodes length: " + t.childNodes.length);
+
+	alert(t != t);
+
+	alert(t.ownerElement);
+	alert(t.ownerDocument);
+
+	var d = document.getElementById("top");
+	var p = d.getAttributeNode("id");
+	alert(p.ownerElement);
+	alert(p.value);
+
+	p.setValue("foo");
+	alert(p.value);
+	alert(p.specified);
+</script>
+</body>
+</html>

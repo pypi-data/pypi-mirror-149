@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script type="text/javascript">
+    alert("window: " + window);
+	alert("self: " + window.self);
+	alert("top: " + window.top);
+	alert("this: " + window.this);
+	alert("length: " + window.length);
+	alert("history: " + window.history);
+	alert("pageXOffset: " + window.pageXOffset);
+	alert("pageYOffset: " + window.pageYOffset);
+	alert("screen: " + window.screen);
+	alert("screenLeft: " + window.screenLeft);
+	alert("screenTop: " + window.screenTop);
+	alert("screenX: " + window.screenX);
+	alert("screenY: " + window.screenY);
+	alert("confirm: " + window.confirm("Test"));
+	window.blur();
+	window.focus();
+	window.moveBy(10, 10);
+	window.moveTo(0, 0);
+	window.resizeBy(10, 10);
+	window.resizeTo(10, 10);
+	window.scroll(2, 4);
+	window.scrollBy(8, 10);
+
+	try {
+		window.scrollByLines(3);
+	} catch(e) {}
+
+	try {
+		window.scrollByPages(1);
+	} catch(e) {}
+
+	try {
+		window.scrollTo(8, 10);
+	} catch(e) {}
+
+	alert("constructor: " + window.constructor);
+	alert("prototype: " + window.prototype);
+
+	try {
+		alert(window.__members__);
+	} catch(e) {}
+
+	window.close()
+	alert("closed: " + window.closed);
+
+	window.top = window;
+	alert("top: " + window.top);
+	alert("opener: " + window.opener);
+
+	window.dump("Test");
+	window.GetAttention();
+	window.back()
+	window.home();
+
+	if (window.navigate) {
+		window.navigate('about:blank');
+	}
+
+	if (window.execScript) {
+		window.execScript("On error resume next:\n a = IsObject(CreateObject('ShockwaveFlash.ShockwaveFlash.10'))", "VBScript");
+	}
+
+	window.getSelection();
+	window.unescape("%u41");
+
+	window.top = window.top;
+
+	window.captureEvents("onmouseover");
+	window.releaseEvents("onmouseover");
+
+	window.prompt("Please enter your name: ", "John");
+	window.stop();
+
+	window.url = "https://antifork.org";
+	window.open("https://buffer.antifork.org", "Test", "width=200,height=100");
+	
+	alert(document.referrer);
+
+	window.open('http://this.url.does.not.exist');
+	</script>
+	<script></script>
+</body>
+</html
