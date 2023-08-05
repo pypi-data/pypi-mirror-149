@@ -1,0 +1,1022 @@
+Metadata-Version: 2.1
+Name: naomiutils
+Version: 0.4.4
+Summary: Code libraries for working with Naomi ROMs and EEPROMs.
+Home-page: https://github.com/DragonMinded/netboot
+Author: DragonMinded
+Author-email: dragonminded@dragonminded.com
+License: Public Domain
+Platform: UNKNOWN
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# naomi
+
+Collection of routines written in Python for manipulating Naomi ROM and EEPROM
+files. This is geared towards enthusiasts building their own netboot servers or
+RPI setups and provides libraries for examining ROM and manipulating ROM headers
+as well as attaching EEPROM settings to ROM files and manipulating their contents.
+It is fully typed and requires a minimum of Python 3.6 to operate.
+
+## NaomiEEPRom
+
+The NaomiEEPRom class provides high-level accessors to a 128-byte Naomi EEPROM
+dump as obtained through a ROM dumper or from an emulator's saved state. It handles
+correcting various CRCs as well as allowing high-level access to the duplicated
+game and system settings sections. Use this to create or manipulate a raw EEPROM
+data file.
+
+### Default Constructor
+
+Takes a single byte argument "data" and verifies that it is a valid 128-byte EEPROM
+before returning an instance of the `NaomiEEPRom` class used to manipulate that
+data. If any of the CRCs do not match this will raise a `NaomiEEPRomException`.
+
+### NaomiEEPRom.default
+
+An alternate constructor that takes a single byte argument "serial" and an optional
+byte argument "game_defaults" and creates a valid EEPROM based on this data, returning
+an instance of the `NaomiEEPRom` class that can be used to manipulate this newly
+created EEPROM. The serial argument should be exactly bytes and begin with a "B",
+followed by two characters and finally a digit, as represented by a bytestring. This
+is a Naomi system restriction. Optionally, a string of bytes can be given in the
+"game_defaults" section which will be used to determine the length and default
+values of the game section of the EEPROM.
+
+### NaomiEEPRom.validate
+
+A static method that takes a byte argument "data" and checks it for validity. This
+includes making sure the length is 128 bytes and that all CRCs are correct. Optionally
+you can pass in the boolean keyword argument "only_system" set to True to only check
+that the system section is valid. This is useful for validating EEPROMs where the BIOS
+has written system settings but the game has not yet booted and created its own
+defaults yet. You can use this function to ensure that passing data to the default
+constructor will not result in an exception.
+
+### data property
+
+An instance of NaomiEEPRom has the "data" property, which returns a bytes object
+representing the current 128-byte EEPROM. This will have all CRC sections fixed.
+Use the "data" property to retrieve the EEPROM for writing to a file or sending to
+a Naomi system after manipulating data using the NaomiEEPRom class. Note that this
+is read-only, you should not attempt to manipulate the raw data using this property.
+
+## serial property
+
+Returns the 4 byte serial that is found in the system section of the EEPROM. This
+will match a serial given in the `NaomiEEPRom.default` constructor when it is used.
+Use this to help determine what game an EEPROM goes with. Note that this is read-only.
+To modify the serial, create a new EEPROM with that serial. Game settings and system
+settings are not compatible across games on the Naomi platform.
+
+## length property
+
+The length in bytes as an integer of the game section of the EEPROM. If the game section
+is not valid this return 0 bytes. Otherwise it returns the length of the game section
+itself. This property is writeable. If you provide it a new value, the game section
+will be resized to that length. Use this to determine the bounds of the `game` section
+as documented below, as well as to resize the `game` section.
+
+## system property
+
+Returns a bytes-like wrapper object representing the system section of the EEPROM.
+This operates like a bytearray object in Python. That means you can access or mutate
+any byte or section in the system area using this property. Note that this wrapper
+object takes care of reading from and writing to both mirrors of the system section in
+the EEPROM file as well as ensuring that the CRC is correct. Note also that the system
+section is hard-coded to 16 bytes in length which cannot be modified. This is a system
+restriction on the Naomi platform. Much like bytes objects in python, accessing a single
+byte returns an integer in the range of 0-255, but accessing a range returns a bytes
+object.
+
+A simple example of reading bytes 6-8 of the system section:
+
+```
+eeprom = NaomiEEPRom(somedata)
+print(eeprom.system[6:8])  # Will print a bytes object of length 2.
+```
+
+A simple example of writing bytes 10-12 of the system section:
+
+```
+eeprom = NaomiEEPRom(somedata)
+eeprom.system[10:12] = b"\x12\x34"
+```
+
+## game property
+
+Returns a bytes-like wrapper object representing the game section of the EEPROM. This
+operates identically to the `system` property as documented above, only it accesses the
+game section of the EEPROM. Note that for this to work properly, the game section needs
+to be initialized by setting the `length` property on the instance of `NaomiEEPRom`. If
+you are manipulating an existing EEPROM file, this property will already be set for you.
+
+Note that this wrapper object includes a `valid` property which returns if the current
+section is valid in the EEPROM you are manipulating. This will always be `True` for
+the system section. However, if you access the game section on a newly-created EEPROM
+without setting defaults or a length, the game property's `valid` property will return
+`False`.
+
+An example of verifying that the game section is valid:
+
+```
+eeprom = NaomiEEPRom.default(serial=b"BBG0")
+print(eeprom.game.valid)  # Will print "False" as the EEPROM was created without a game section default.
+eeprom.length = 20
+print(eeprom.game.valid)  # Will print "True" as the EEPROM game section was initialized to be 20 bytes long.
+```
+
+## NaomiRom
+
+The NaomiRom class provides high-level accessors to a Naomi ROM header as found
+at the beginning of a ROM file suitable for netbooting. It handles decoding all
+sections of the ROM header as well as allowing modification and even creation of
+new ROM header sections given valid data. Use this if you wish to manipulate or
+create your own Naomi ROM files form scratch.
+
+### Default Constructor
+
+Takes a single byte argument "data" and uses it as the ROM image where the header
+will be extracted. Note that there is no CRC over the ROM header so any data that
+is 1280 bytes or longer will appear valid.
+
+### NaomiRom.default
+
+An alternate constructor that creates an entirely blank Naomi ROM containing no
+loaded executable or test sections and no ROM name. Use this when you want to
+programatically construct a ROM image, such as when you are building a final ROM
+in a homebrew program you are building for the Naomi platform.
+
+### valid property
+
+An instance of NaomiRom has the "valid" property which will be "True" when the ROM
+passed into the constructor is a valid Naomi ROM and "False" otherwise. This is a
+read-only property as the vailidity of a ROM is entirely dictated by the data
+passed into the constructor.
+
+### data property
+
+The ROM data, as passed into the constructor for the instance of NaomiRom, or as
+created when using `NaomiRom.default` alternate constructor. Note that when any
+of the following properties are written, the `data` property will be changed to
+reflect those settings. Use this to retrieve the updated ROM after you've made
+adjustments to the values you wish to change.
+
+### publisher property
+
+The publisher of this ROM, as a string. When read, grabs the current publisher
+of the ROM image. When written, updates the publisher to the new string provided.
+
+### names property
+
+A dictionary of names indexed by region. Given the current system region, the names
+that show up here will also be the names that show up in the test menu for a given
+game. Note that there are the following constants that can be used to index into the
+names list: `NaomiRomRegionEnum.REGION_JAPAN`, `NaomiRomRegionEnum.REGION_USA`,
+`NaomiRomRegionEnum.REGION_EXPORT`, `NaomiRomRegionEnum.REGION_KOREA`, and finally
+`NaomiRomRegionEnum.REGION_AUSTRALIA`. Note that the last region, Australia, exists
+in many ROM files but is not accessible as there is no Australia BIOS for the Naomi
+platform. When read, grabs a dictionary of names of the ROM given the region. When
+written, updates the ROM names by region using the dictionary provided.
+
+### sequencetexts property
+
+A list of 8 sequence texts that are used by the game for coin insertion messages.
+Many ROMs only have the first sequence set. When read, grabs all 8 sequence texts
+and returns a list of them. When written, updates the sequence texts to the new
+list of strings provided.
+
+### defaults property
+
+A dictionary of NaomiEEPROMDefaults instance representing what defaults the BIOS will
+set in the system EEPROM section when initializing the EEPROM on first boot. Note
+that this is indexed by the same enumeration as the "names" property. When read, grabs
+the defaults and returns them. When written, extracts values from the provided
+NaomiEEPROMDefaults instances and updates the per-region defaults in the ROM accordingly.
+
+### date property
+
+A `datetime.date` instance representing what date the ROM was build and released.
+When read, returns the current date in the ROM header. When written, updates the
+date of the ROM with the new `datetime.date` provided.
+
+### serial property
+
+A 4-byte bytestring representing the serial number of the ROM. This is used to tie
+EEPROM data to the ROM itself and lets the Naomi know when to reset certain defaults.
+When read, returns the current serial from the ROM header. When written, updates the
+serial in the ROM header.
+
+### regions property
+
+A list of NaomiRomRegionEnum values representing valid regions this ROM will run under.
+Uses the same region constants as the `names` property. When read, returns a list of
+the valid regions this ROM executes under. When written, updates the list of regions
+the ROM is allowed to execute under. When booting, the Naomi BIOS will check the
+current region against this list and show an error if the current region is not
+included in the list.
+
+### players property
+
+A list of integers representing the valid number of player configurations that this
+ROM will boot under. Valid player numbers include 1, 2, 3 and 4. When read, returns
+a list of all valid number of player configurations that this game will boot with.
+When written, updates the list of player configurations. When booting, the Naomi
+BIOS will check the "Number of Players" setting in the system assignments and see
+if that setting appears in this list.
+
+### frequencies property
+
+A list of frequencies that the monitor is allowed to run at for this ROM. This
+includes the values 15 and 31. On read, returns the list of allowed frequencies.
+On write, updates the list of allowed frequencies. On boot, the Naomi BIOS will
+check the current horizontal refresh rate of the system as controlled by a DIP
+switch and show an error if it isn't in the list of allowed frequencies.
+
+### orientations property
+
+A list of strings representing the allowed orientations for the monitor for this
+ROM. The includes the values "horizontal" and "vertical". On read, returns the
+list of all acceptable orientations. On write, updates that list based on the
+provided list of strings. On boot, the Naomi BIOS will check the current "Monitor
+Orientation" setting in the system assignments and see if that orientation is
+on this list.
+
+### servicetype property
+
+A string value of either "individual" or "common" for the expected service button
+type for the ROM. On read, returns either "individual" or "common" to represent
+the current service type selected. On write, updates the service type to match
+the string provided.
+
+### main_executable property
+
+An instance of a NaomiExecutable including sections of the ROM that the Naomi
+BIOS will copy before executing the ROM, as well as the entrypoint in main RAM
+that the BIOS will jump to after copying sections. On read, returns the current
+list of sections to copy as well as the main entrypoint, as encapsulated as an
+instance of NaomiExecutable. On write, it updates the ROM to the new executable
+configuration by unpacking the NaomiExecutable instance given.
+
+### test_executable property
+
+This property is identical to the `main_executable` property, except for it
+represents the code and entrypoint that the Naomi BIOS will use when executing
+the "Game Test Mode" section of the test menu. It can be similarly read and written.
+
+## NaomiSettingsPatcher
+
+The NaomiSettingsPatcher class provides logic for attaching an EEPROM or SRAM configuration
+file to a Naomi ROM so that it can be written to the EEPROM/SRAM when netbooting that
+ROM. Note that this is not a supported feature of the Naomi platform, so it uses
+an executable stub that it attaches to the ROM in order to make this work. If you
+do not care what executable stub is attached and only want to patch settings into
+a ROM file, use the `get_default_trojan` function which will return a bytes
+object suitable for passing into a `NaomiSettingsPatcher` constructor.
+
+### Default Constructor
+
+Takes a bytes "rom" argument and a bytes "trojan" argument creates an instance of
+NaomiSettingsPatcher which can attach or retrieve previously-attached EEPROM or SRAM settings
+in a Naomi ROM file suitable for netbooting. An example of how to initialize this
+is as follows:
+
+```
+from naomi import NaomiSettingsPatcher, get_default_trojan
+
+patcher = NaomiSettingsPatcher(somedata, get_default_trojan())
+```
+
+### data property
+
+The same bytes as passed to the `NaomiSettingsPatcher` constructor. After calling
+`put_settings()` as documented below, this will be updated to the new ROM contents
+with the settings applied. A recommended workflow is to patch ROMs on-the-fly when
+netbooting by creating an instance of `NaomiSettingsPatcher` with the ROM data you
+were about to send, calling `put_settings()` with the settings you wish to attach,
+and then getting the data using this property and sending it down the wire to the
+Naomi system. Note that you can attach either an EEPROM file (128 bytes) or an SRAM
+file (32kb) but not both.
+
+### serial property
+
+An instance of NaomiSettingsPatcher has the `serial` property. When read, this
+will examine the serial of the Naomi ROM passed into the constructor and return the
+4 byte serial number, suitable for matching against an EEPROM's system serial. Note
+that this property is read-only.
+
+### rom property
+
+Returns a `NaomiRom` instance that encapsulates the ROM passed into the patcher. This
+instance should not be edited, as it will not be read again when performing the patches.
+Note that this property is read-only.
+
+### has_eeprom property
+
+Returns `True` if the ROM passed into the patcher has an attached EEPROM file. Returns
+`False` otherwise.
+
+### eeprom_info property
+
+Returns an optional instance of NaomiSettingsInfo if the ROM has a configured EEPROM
+section. If the ROM does not have a configured EEPROM section, this returns `None`.
+The NaomiSettingsInfo instance represents the configuration passed to `put_eeprom()`
+on a previous invocation. Note that this property is read-only.
+
+### get_eeprom() method
+
+Returns a 128-byte EEPROM bytestring that was previously attached to the Naomi ROM,
+or `None` if this ROM does not include any EEPROM settings.
+
+### put_eeprom() method
+
+given a bytes "eeprom" argument which is a valid 128-byte EEPROM, ensures that it
+is attached to the Naomi ROM such that the settings are written when netbooting the
+ROM image. If there are already EEPROM settings attached to the ROM, this overwrites
+those with new settings. If there are not already settings attached, this does the
+work necessary to attach the settings file as well as the writing trojan supplied to
+the `NaomiSettingsPatcher` constructor.
+
+Valid EEPROM files can be obtained form a number of places. If you use an emulator
+to set up system and game settings, then the EEPROM file that emulator writes can
+usually be supplied here to make your game boot to the same settings. If you use
+the `NaomiEEPRom` class to manipulate an EEPROM, the data it produces can also be
+supplied here to force the Naomi to use the same settings.
+
+Optionally, pass in the boolean keyword argument "enable_sentinel" set to True and
+the Naomi ROM will re-initialize the settings when netbooting even if the last game
+netbooted was this game. Use this when iterating over settings that you want to choose
+so that you can ensure the settings are written. If you do not provide this argument,
+the default behavior is that settings will not be overwritten when we netboot a game
+that is already running on the system.
+
+Optionally, pass in the boolean keyword argument "enable_debugging" set to True
+which forces the Naomi to display debugging information on the screen before booting
+the game. Use this to see what is actually going on under the hood when using the
+settings patching feature.
+
+Optionally, pass in the boolean keyword argument "verbose" set to True which forces
+the `put_eeprom()` function to output progress text to stdout. Use this if you are
+making a command-line tool and wish to display information about the patch process
+to the user.
+
+### has_sram property
+
+Returns `True` if the ROM passed into the patcher has an attached SRAM file. Returns
+`False` otherwise.
+
+### get_sram() method
+
+Returns a 32k-byte SRAM bytestring that was previously attached to the Naomi ROM, or
+`None` if this ROM does not include any SRAM settings.
+
+### put_sram() method
+
+given a bytes "settings" argument which is a valid 32k-byte SRAM, ensures that it is
+attached to the Naomi ROM such that the settings are written when netbooting the ROM
+image. If there are already SRAM settings attached to the ROM, this overwrites those
+with new settings. If there are not already settings attached, this does the work
+necessary to attach the settings file.
+
+Valid SRAM files can be obtained from an emulator that is capable of writing an SRAM
+file. This only makes sense to use in the context of atomiswave conversions and in
+a select few Naomi games that store their settings in SRAM such as Ikaruga.
+
+Optionally, pass in the boolean keyword argument "verbose" set to True which forces
+the `put_settings()` function to output progress text to stdout. Use this if you are
+making a command-line tool and wish to display information about the patch process
+to the user.
+
+# naomi.settings
+
+Collection of routines written in Python for safe manipulation of 128-byte
+Naomi EEPROM files using supplied system definition files. Essentially, given
+a valid 128-byte EEPROM or a valid 4-byte Naomi ROM serial and a set of system
+and game definition files, `naomi.settings` will provide you a high-level
+representation of valid settings including their defaults, valid values and
+relationships to each other. Settings editors can be built using this module
+which work together with `naomi.NaomiEEPRom` and `naomi.NaomiSettingsPatcher`
+to make the settings available when netbooting a game on a Naomi system.
+
+## Setting
+
+A single setting, with its name, default, current value, possible allowed values,
+and any possible relationship to other settings. Note that any relationship,
+if it exists, will only be to other Setting objects inside a `Settings` class.
+Note that you should not attempt to construct an instance of this yourself.
+You should only work with previously-constructed instances of it as found inside
+an instance of `Settings`.
+
+### name property
+
+The name of this setting, as a string. This is what you should display to a user
+if you are developing a settings editor.
+
+### order property
+
+The order that this setting showed up in the definition file that created it.
+Note that if you are implementing an editor, you can safely ignore this as the
+settings will already be placed in the correct display order.
+
+### size property
+
+The size of this setting, as an instance of SettingSizeEnum. The valid values
+for this are `SettingSizeEnum.NIBBLE` and `SettingSizeEnum.BYTE`. Note that if
+you are developing an editor, you can safely ignore this as the `values` property
+will include all valid values that this setting can be set to. You do not have to
+understand or manipulate this in any way and it is only present so that other
+parts of the `naomi.settings` module can do their job properly.
+
+### length property
+
+The length in bytes this setting takes up, if the `size` property is `SettingSizeEnum.BYTE`.
+If the `size` property is instead `SettingSizeEnum.NIBBLE` then this will always
+be set to 1. Note that much like the `size` property if you are implementing an
+editor you can safely ignore this property for the same rationale as above.
+
+### read_only property
+
+Whether this property is read-only or not. Some settings are not modifiable, such
+as the system serial number. Other settings are only modifiable if other settings
+are set to some value, such as the "Continue" setting on Marvel vs. Capcom 2 which
+is dependent on "Event" mode being off. If this property is "False" then this setting
+is user-editable under all circumstances. If this property is "True" then this setting
+is never user-editable. If this property is an instance of `ReadOnlyCondition` then
+it depends on some other settings for whether it is read-only. You can call the
+`evaluate()` method on the instance of `ReadOnlyCondition` which takes a list of
+`Setting` objects (this setting's siblings as found in a `Settings` object) and returns
+a boolean. If that boolean is "True", then this setting is currently read-only because
+of some other setting's value. If the boolean is "False", then the setting is currently
+editable because of some other setting's value.
+
+In the Naomi Test Mode, settings that are always read-only are hidden completely from
+the user. Settings which are never read-only are displayed to the user. And settings
+which are conditionally read-only will be conditionally hidden based on whether they
+are read-only. It is recommended that your editor perform a similar thing when you
+display settings. Settings whose `read_only` property is "False" should always be
+displayed. Settings whose `read_only` property is "True" should be completely hidden
+from the user. Settings whose `read_only` property is a `ReadOnlyCondition` should be
+evaluated and then the setting either grayed out when it is "True" or conditionally
+hidden from the user.
+
+### values property
+
+A dictionary whose keys are integers which the `current` property could be set
+to, and whose values are the strings which should be displayed to the user for
+those value selections. Note that if a setting is always read-only this may instead
+be None. It is guaranteed to be a dictionary with at least one value whenever a
+setting is user-editable.
+
+### current property
+
+The current integer value that the setting is set to. In order to display the correct
+thing to a user, you should use this as a key into the `values` property to look up
+the correct string to display.
+
+### default property
+
+The default value for this setting. Note that under some circumstances, this may
+not be available and will return None. You can safely ignore this property if you are
+developing an editor. If you wish to provide a "defaults" button in your editor, it
+is recommended to instead use the `from_serial()` or `from_rom()` method on an instance of
+`SettingsManager` which will return you a new `SettingsWrapper` with default values.
+This will correctly handle system and game defaults as well as dependendent default
+settings.
+
+## Settings
+
+A class which represents a collection of settings that can be used to manipulate
+a section of an EEPROM file. Note that you should not attempt to construct
+this yourself. You should only work with previously-constructed instances of
+it as found inside an instance of `SettingsWrapper`.
+
+### filename property
+
+The name of the settings definition file that was used to create this collection.
+Note that this is not a fully qualified path, but instead just the name of
+the file, like "system.settings" or "BBG0.settings". If you wish to look up
+the actual file location given this property, use the `files` property on an
+instance of `SettingsManager`.
+
+### type property
+
+An instance of SettingType which specifies whether this collection of settings
+is a system settings section or a game settings section in an EEPROM. Valid
+values are `SettingType.SYSTEM` and `SettingType.GAME`.
+
+### settings property
+
+A python list of `Setting` objects, representing the list of settings that
+can be mofidied or displayed. You should not assign to this property directly
+when modifying settings in a settings editor you are implementing. However,
+you are welcome to modify the properties of each setting in this list directly.
+
+### length property
+
+An integer representing how many bytes long the section of EEPROM represented
+by this collection is. For system settings, this will always be 16 since the
+system section is hardcoded at 16 bytes. For game settings, this will be
+determined by the settings definition file that was looked up for the game
+in question.
+
+## SettingsWrapper
+
+A class whose sole purpose is to encapsulate a group of system settings,
+game settings and the serial number of the game that the system and game
+settings go with. This is returned by many methods in `SettingsManager`
+and taken as a parameter of several more methods in `SettingsManager.
+
+Note that you should not attempt to construct this yourself. You should
+only work with previously-constructed instances of it as returned by
+methods in `SettingsManager`.
+
+### serial property
+
+The 4-byte serial of the game this `SettingsWrapper` instance has been
+created for.
+
+### system
+
+A collection of settings that manipulate the system section of the EEPROM
+for the game this instance has been created for. This is inside of a
+`Settings` wrapper object.
+
+### game
+
+A collection of settings that manipulate the game section of the EEPROM
+for the game this instance has been created for. This is inside of a
+`Settings` wrapper object.
+
+### to_json() method
+
+Converts the current instance of `SettingsWrapper` to a dictionary suitable
+for passing to `json.dumps`. This is provided as a convenience wrapper so
+that if you are implementing a web interface you don't have to serialize
+anything yourself. To unserialize a dictionary that you get from this method,
+call the `from_json` method on an instance of `SettingsManager`.
+
+## SettingsManager
+
+The `SettingsManager` class manages the ability to parse a 128-byte EEPROM
+file given a directory of settings definitions. It is responsible for
+identifying the correct files for patching given an EEPROM or ROM serial.
+It is also responsible for taking a modified list of settings and writing
+a new EEPROM file.
+
+Note that default definitions are included with this module. To grab the
+default definitions directory, use the `get_default_settings_directory` function
+which will return a fully qualified path to the settings directory of this
+module.
+
+Note that since this is parsing user-supplied settings definitions files,
+there can be errors in processing those files. In any function that returns
+a `SettingsWrapper` instance, a `SettingsParseException` can be thrown.
+This is a subclass of `Exception` so you can get the error message to
+display to a user by calling `str()` on the exception instance. The instance
+will also have a `filename` property which is the filename of the settings
+definition file that caused the problem.
+
+There can also be problems in saving EEPROM settings given the same definitions
+files. In this case, a `SettingsSaveException` can be thrown. This is identical
+to `SettingsParseException` save for the source, so all of the above documentation
+applies.
+
+There can also be problems in deserializing JSON data when calling the
+`from_json()` method. In this case, a `JSONParseException` can be thrown. Similar
+to the above two exceptions, calling `str()` on the instance will give you back
+an error message that can be displayed to a user. The instance will also have
+a `context` property which is the exact location in the JSON where the failure
+occured as represented by a list of attributes that were dereferenced in the
+JSON to get to the section that had an error.
+
+### Default Constructor
+
+Takes a single string argument "directory" which points at the directory
+which contains settings definition files and returns an instance of the
+`SettingsManager` class. In this repository, that directory is
+`naomi/settings/definitions/`. Note that the settings definitions in this
+repository can be found by using the `get_default_settings_directory` function.
+An example of how to initialize this is as follows:
+
+```
+from naomi.settings import get_default_settings_directory, SettingsManager
+
+dir = get_default_settings_directory()
+man =  SettingsManager(dir)
+```
+
+### files property
+
+An instance of `SettingsManager` has the "files" property, which returns
+a dictionary of recognized settings definitions in the directory supplied to
+the default constructor. The returned dictionary has keys representing the
+settings definition file, such as "system.settings" or "BBG0.settings". The
+values of the dictionary are fully qualified system paths to the file in
+question.
+
+### from_serial() method
+
+Takes a single bytes argument "serial" as retrieved from Naomi ROM header
+and uses that to construct a `SettingsWrapper` class representing the
+available settings for a game that has the serial number provided. This
+can be used when you want to edit settings for a game but do not have an
+EEPROM already created. This will read the definitions files and create
+a `SettingsWrapper` with default settings. This can be then passed to the
+`to_eeprom()` function to return a valid 128-byte EEPROM representing the
+default settings.
+
+### from_rom() method
+
+Takes a NaomiRom instance argument "rom" and a NaomiRomReginEnum argument
+"region" and retrieves any requested system defaults from the Naomi ROM
+header. It uses that as well as the game's settings definition file to create
+a default EEPROM that is then used to construct a `SettingsWrapper` class
+repressenting the default settings as a Naomi would create them on first
+boot. This can then be edited or passed to the `to_eeprom()` function to
+return a valid 128-byte EEPROM representing the edited settings.
+
+### from_eeprom() method
+
+Takes a single bytes argument "data" as loaded from a valid 128-byte
+EEPROM file or as grabbed from the `data` property of an instance of
+`NaomiEEPRom` and constructs a `SettingsWrapper` class representing the
+available settings for a game that matches the serial number provided in
+the EEPROM file. This can be used when you want to edit the settings for
+a game and you already have the EEPROM file created. This will read the
+definitions file and parse out the current settings in the EEPROM and
+return a `SettingsWrapper` with those settings. This can then be modified
+and passed to the `to_eeprom()` function to return a valid 128-byte EEPROM
+representing the current settings.
+
+### from_json() method
+
+Takes a single dictionary argument "jsondict" and deserializes it to
+a `SettingsWrapper` instance. The dictionary argument can be retrieved
+by calling the `to_json()` method on an existing `SettingsWrapper` instance.
+This is provided specifically as a convenience method for code wishing to
+provide web editor interfaces. A recommended workflow is to create an
+instance of `SettingsManager`, request a `SettingsWrapper` by calling
+either `from_eeprom()` or `from_serial()` as appropriate, calling `to_json()`
+on the resulting `SettingsWrapper` class and then passing that to
+`json.dumps` to get valid JSON that can be sent to a JS frontend app. After
+the frontend app has manipulated the settings by modifying the current
+value of each setting, you can use `json.loads` to get back a dictionary
+that can be passed to this function to get a deserialized `SettingsWrapper`
+class. The deserialized `SettingsWrapper` instance can then be passed to
+the `to_eeprom()` function to return a valid 128-byte EEPROM representing
+the settings chosen by the JS frontend.
+
+### to_eeprom() method
+
+Given an instance of `SettingsWrapper` returned by either `from_serial()`,
+`from_eeprom()` or `from_json()`, calculates and returns a valid 128-byte
+EEPROM file that represents the settings. Use this when you are finished
+modifying system and game settings using code and wish to generate a valid
+EEPROM file that can be modified with `NaomiEEPRom`, placed in an emulator's
+data directory to load those settings or attached to a Naomi ROM using the
+`naomi.NaomiSettingsPatcher` class so that the settings are written when
+netbooting the rom on a Naomi system.
+
+# Settings Definitions Format
+
+Settings definition files are meant to be simple, human readable documentation
+for a game's EEPROM settings. They are written in such a way that on top of
+being human-readable documentation, they can also be parsed by
+`naomi.settings.SettingsManager` to help with making settings editors for any
+game on the Naomi platform. Each setting in a settings definition file represents
+how to parse some number of bytes in a game's EEPROM. You'll notice that while
+there is a size specifier for each setting there is no location specifier. That's
+because each setting is assumed to come directly after the previous setting in
+the section.
+
+All settings sections in an game's EEPROM are assumed to be little-endian, much
+like the Naomi system itself. Defaults and valid values are specified as hex
+digits as copied directly out of a hex editor. When specifying half-byte settings,
+the first setting is assumed to be the top half of the byte (the first hex digit
+that appears when reading the EEPROM in a hex editor) and the second setting is
+assumed to be the bottom half of the byte. All half-byte settings are expected
+to come in pairs.
+
+Aside from the "system.settings" file, all settings files are named after the
+serial number of the game they are associated with. The serial number for the
+game can be found by looking at the ROM header using a tool such as `rominfo`,
+or by looking at bytes 3-7 of an EEPROM that you got out of an emulator and
+loaded into a hex editor.
+
+The only necessary parts of a setting are the name and the size. If the setting
+is user-editable, there should be at least one valid value that the setting is
+allowed to be. Optionally, you can specify the default value for any setting
+and whether the setting is read-only. Additionally, read-only and default values
+can depend on the value of another setting.
+
+Settings are defined by writing any valid string name followed by a colon. Setting
+parts come after the colon and are either comma-separated or are placed one per
+line after the setting name. You can mix and match any number of comma-separated
+parts and parts on their own lines. Whatever makes the most sense and is the most
+readable is allowed.  Settings parts can show up in any order after the setting
+name. You can define size, read-only, defaults and valid options in any order you
+wish. The only restriction is that the size part MUST appear before any default parts.
+
+Any line in a settings definition file that starts with a hashtag (`#`) is treated
+as a comment. You can write anything you want in comments so feel free to write
+down any useful information about settings you think somebody else might care to
+know.
+
+## A Simple Setting
+
+The most basic setting is one that has a name, a size and some allowed values.
+An example of such a setting is like so:
+
+```
+Sample Setting: byte, values are 1 to 10
+```
+
+This defines a setting named "Sample Setting" which is a single byte and can
+have the hex values 01, 02, 03, 04, 05, 06, 07, 08, 09 and 0a. Editors that
+display this setting will display a drop-down or selection box that includes
+the decimal values "1", "2", "3", "4", "5", "6", "7", "8", "9", and "10".
+The decimal values for each valid setting is automatically inferred based on
+the range given in the setting.
+
+If you want to specify some alternate text for each valid setting, you may
+do so like so:
+
+```
+Sample Setting: byte, 1 - On, 0 - Off
+```
+
+This defines a setting named "Sample Setting" which is a single byte and can
+have the hex values 01 and 00 applied to it. Editors that display this setting
+will display a drop-down or selection box that includes the value "On" and
+"Off" and will select the correct one based on the value in the EEPROM when it
+is parsed.
+
+You can mix and match how you define settings values if it is most convenient.
+For example, the following setting mixes the two ways of specifying valid
+values:
+
+```
+Sample Setting: byte, 0 - Off, 1 to 9, 10 - MAX
+```
+
+This defines a setting named "Sample Setting" which is a single byte and
+can have the hex values 00, 01, 02, 03, 04, 05, 06, 07, 08, 09 and 0a. Editors
+that display this setting will display a drop-down or selection box that includes
+the options "Off", "1", "2", "3", "4", "5", "6", "7", "8", "9", "MAX". The
+correct one will be selected based on the value in the EEPROM when it is parsed.
+
+## Changing the Setting Display
+
+Normally, if you have some number of values that a setting can be and you
+want to control what an editor displays when selecting each value, you would
+list each value out individually along with the text it should be displayed as.
+However, if you have a large range of values and you want to display them in
+hex instead of decimal, you can instead do the following:
+
+```
+Sample Setting: byte, values are 1 to 10 in hex
+```
+
+This defines a setting named "Sample Setting" which is a single byte and can
+have the hex values 01, 02, 03, 04, 05, 06, 07, 08, 09 and 0a. This is identical
+to the simple setting in the previous section. However, editors that display this
+setting will display a drop-down or selection box that includes the options
+"01", "02", "03", "04", "05", "06", "07", "08", "09" and "0a". You could have
+written the settings out individually, but for large ranges that you want to
+display in hex this is faster.
+
+## Changing the Setting Size
+
+If your setting spans more than 1 byte, or it is only the top half or bottom
+half of a byte, you can specify that in the size part. For settings that occupy
+more than 1 byte, you can simply write the number of bytes in the part section.
+If a setting only occupies the top or bottom half of a byte, you can specify
+a half-byte for the size.
+
+An example of a setting that takes up 4 bytes is as follows:
+
+```
+Big Setting: 2 bytes, 12 34 - On, 56 78 - Off
+```
+
+This defines a setting named "Big Setting" that takes up two bytes and has
+the two hex values 12 34 and 56 78 as read in a hex editor as its options.
+Editors will display either "On" or "Off" as they would for 1 byte settings.
+
+An example of a pair of settings that take up half a byte each is as follows:
+
+```
+Small Setting 1: half-byte, values are 1 to 2
+Small Setting 2: half-byte, values are 3 to 4
+```
+
+This defines two settings named "Small Setting 1" and "Small Setting 2". Each
+setting takes up half a byte. The first setting, "Small Setting 1", will take
+the top half of the byte, and the second, "Small Setting 2", will take the
+bottom half of the byte. The hex values for each are the same as they would
+be for all other documented settings. Note that the settings came in a pair
+because you have to specify both halves of the byte!
+
+## Specifying Read-Only Settings
+
+Sometimes there is a setting that you can't figure out, or there's a setting
+that the game writes when it initializes the EEPROM but never changes. In this
+case you can mark the setting read-only and editors will not let people see
+or change the setting. However, the setting will still be created when somebody
+needs to make a default EEPROM based on the settings definition file.
+
+An example of how to mark a setting as read-only:
+
+```
+Hidden Setting: byte, read-only
+```
+
+In this case, there is a setting named "Hidden Setting" which is a single
+byte. We specified that it was read-only, so editors will not display the
+setting to the user. Also, since it was read-only, we didn't need to specify
+any allowed values. You can use this when there are parts of the EEPROM you
+don't want people to mess with, or that you don't understand so you just need
+to skip it.
+
+Sometimes there are settings that only display in some scenarios, such as when
+another setting is set to a certain value. If you run into a setting such as
+this, you can specify that relationship like so:
+
+```
+Sometimes Hidden Setting: byte, read-only if Other Setting is 1, values are 0 to 2
+```
+
+This defines a setting called "Sometimes Hidden Setting" which is a single byte
+and can have the hex values 00, 01 and 02. When another setting named "Other
+Setting" is set to 1, this setting becomes read-only and cannot be modified
+by the user. When that other setting named "Other Setting" is set to any other
+value, this setting becomes user-changeable.
+
+If you want to specify that a setting is read-only unless another setting is
+a certain value, you can do so like the following:
+
+```
+Sometimes Hidden Setting: byte, read-only unless Other Setting is 1, values are 0 to 2
+```
+
+This defines the same setting as the first example, but the read-only logic
+is reversed. This setting will be read-only when "Other Setting" is any value
+but 1, and will be user-changeable when "Other Setting" is 1.
+
+If you need to specify multiple values for the other setting, you can do so
+like so:
+
+```
+Sometimes Hidden Setting: byte, read-only if Other Setting is 1 or 2, values are 0 to 2
+```
+
+This defines the same setting as the first example, but the read-only logic
+is changed. The setting will be read only when "Other Setting" is 1 or 2, and
+will be user-changeable when "Other Setting" is any other value.
+
+## Specifying Defaults
+
+Its nice to specify what the default for each setting is. This way, editors
+can make a new EEPROM from scratch for the game you are defining without needing
+an EEPROM to exist first. If you don't specify a default, the default for the
+setting is assumed to be 0. If that isn't a valid value for a setting, you'll
+run into problems so it is best to define defaults for settings when you can.
+
+To specify a default, you can do the following:
+
+```
+Default Setting: byte, default is 1, values are 1, 2
+```
+
+This defines a setting named "Defaut Setting" which is a single byte and whose
+valid values are 01 and 02. The default value when creating an EEPROM from
+scratch is 01.
+
+If a setting is read-only, then when we an EEPROM is edited and saved, the
+default value will take precidence over the current value. If a setting is
+user-editable, then the current value will take precidence over the default
+value. This is so that you can have settings which are optionally read-only
+based on other settings and specify what value the setting should be when
+it is read-only. This isn't often necessary but it can come in handy in some
+specific scenarios.
+
+For example, in Marvel Vs. Capcom 2, the "Continue" setting is defaulted to
+"On". However, if event mode is turned on, then the "Continue" setting is
+forced to "Off" and becomes no longer user-editable. To represent such
+a case as this, you can do something like the following:
+
+```
+Event: byte, default is 0
+  0 - Off
+  1 - On
+Continue: byte, read-only if Event is 1, default is 1 if Event is 0, default is 0 if Event is 1
+  0 - Off
+  1 - On
+```
+
+This can be a bit daunting to read at first, so let's break it down. First,
+it defines a setting named "Event" which is a byte and can have values 00 and 01.
+Those values are labelled "Off" and "On" respectively. Event mode is off by default.
+Then, it defines a setting named "Continue" which is a byte as well. It has values
+00 and 01 labelled "Off" and "On" respectively. It is user-editable when event mode
+is off, and it is read-only when event mode is on. When event mode is off, the default
+is 01, which corresponds to "On". When event mode is on, the default is "00" which
+corresponds to "Off". Remember how settings that are read-only try to save the
+default first, and settings that are user-changeable try to save the current value
+first? That's where the magic happens. When the "Event" setting is set to "On"
+then the "Continue" setting is read-only, so we will save the default hex value of 00!
+When the "Event" setting is set to "Off", the "Continue" setting is user-changeable so
+we will save whatever value the user selected! When we create a new EEPROM from scratch,
+we set "Event" to 00 which tells the "Continue" setting to default to 01. It all works
+perfectly!
+
+### Specifying Entirely-Dependent Defaults
+
+Sometimes you might run into a setting that seems to be identical to another setting,
+or a setting that seems to be the same as another setting plus or minus some adjustment
+value. If you encounter such a relationship, you can represent it by doing something
+like the following:
+
+```
+Setting: byte, default is 0, values are 1 to 10
+Dependent Setting: byte, read-only, default is value of Setting
+```
+
+This defines a setting named "Setting" which is a single byte that can have hex values
+01, 02, 03, 04, 05, 06, 07, 08, 09 and 0a. It defines a second setting named "Dependent
+Setting" which defaults to whatever "Setting" is set to. Since it is read-only, the
+default will take precidence over the current value, so when somebody edits "Setting"
+in an editor, both "Setting" and "Dependent Setting" will be saved with the same value!
+
+In some cases, a setting will be dependent on another setting, but won't have the
+exact same value. If you wanted to, you could list out a whole bunch of default conditionals
+to represent all of the possibilities, like so:
+
+```
+Setting: byte, default is 0, values are 1 to 3
+Dependent Setting: byte, read-only
+  default is 0 if Setting is 1
+  default is 1 if Setting is 2
+  default is 2 if Setting is 3
+```
+
+This would work, and sets up "Dependent Setting" to be 00 when Setting is 01, 01 when
+Setting is 02, and 02 when Setting is 03. However, if there are a lot of possible values
+for "Setting", this can get tedious. Instead, you can represent the relationship like so:
+
+```
+Setting: byte, default is 0, values are 1 to 3
+Dependent Setting: byte, read-only, default is value of Setting - 1
+```
+
+This defines the exact same pair of settings, with the exact same defaults!
+
+## Specifying an Alternate Display Order
+
+Normally settings are displayed in exactly the order the show up in the
+file. Sometimes settings show up in a different order in a game's test
+menu than they appear in the EEPROM file itself. You can't just rearrange
+the order that the settings appear in the definition file since that
+dictates the order that the settings themselves are processed. So, instead
+you can specify that a setting should be displayed before or after another
+setting. Here is an example:
+
+```
+Simple Setting: byte, values are 1 to 10
+Other Setting: byte, values are 2 to 5, display before Simple Setting
+```
+
+This defines two settings named "Simple Setting" and "Other Setting". While
+"Simple Setting" comes first when parsing the EEPROM itself, when it comes
+time to display the settings in an editor, "Other Setting" will be displayed
+first and then "Simple Setting".
+
+Similarly, you can specify that a setting come after another setting like so:
+
+```
+Simple Setting: byte, values are 1 to 10, display after Other Setting
+Other Setting: byte, values are 2 to 5
+```
+
+Both the above examples produce the exact same list of settings in an editor.
+
+## Using ":" or "," in Setting Names or Values
+
+Since these are special characters used to figure out where a setting name ends
+as well as separate sections, using one of these characters in a setting name or
+value description will result in an error. In order to have a setting that
+includes one of these symbols, you can escale it like so:
+
+```
+Setting With A Colon\: The Revengence: byte, 1 - Good\, Very Good, 2 - Bad\, Very Bad
+```
+
+This defines a setting named "Setting With a Colon: The Revengence" that has two
+labelled values consisting of "Good, Very Good" and "Bad, Very Bad". Whenever you
+need to use a character that is special, prefix it with a "\\". This includes the
+"\\" character as it denotes that the next character should be escaped. So if you
+want a "\\" character in your setting name or value, you should use two "\\" characters
+in a row.
+
+
