@@ -1,0 +1,211 @@
+Metadata-Version: 2.1
+Name: gocept.bbissues
+Version: 0.10
+Summary: Collect issues from multiple repositories and generate a nice html page.
+Home-page: https://github.com/gocept/gocept.bbissues
+Author: gocept <mail@gocept.com>
+Author-email: mail@gocept.com
+License: ZPL 2.1
+Platform: UNKNOWN
+Classifier: Development Status :: 7 - Inactive
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Provides-Extra: test
+License-File: LICENSE.txt
+
+================================
+The gocept.bbissues distribution
+================================
+
+.. caution::
+
+    This package is no longer maintained. In case of any interest on it, please
+    contact gocept.
+
+Collect open issues from multiple bitbucket or github repositories and generate
+a nice html page or a file with json information about your projects.
+
+This package is compatible with Python version 3.6, 3.7 and 3.8.
+
+Installation
+============
+
+Install the package using PIP::
+
+    $ pip install gocept.bbissues
+
+
+Configuration
+=============
+
+You have to provide a config file with the following content::
+
+    [config]
+    log = issues.log
+    html_export_path = export.html
+    json_export_path = export.json
+    # The next line is optional it defaults to index.jj2 in the package
+    template_path = template.jj2
+
+
+    [bitbucket]
+    # The owner always has to be provided. All projects by this owner
+    # will be collected.
+    owner = owner
+    # Specific projects may be provided in the following way
+    projects = owner:project1
+               owner:project2
+
+    [github]
+    # The owner always has to be provided. All projects by this owner
+    # will be collected.
+    owner = owner
+    # Specific projects may be provided in the following way
+    projects = owner:project1
+               owner:project2
+
+
+The template will be rendered using jinja2, and could have the following content::
+
+    {% for project in projects %}
+        <h2>{{project.name}}</h2>
+        {% for issue in project.issues %}
+            <h3>{{issue.title}}</h3>
+             <pre>
+             {{issue.title}}
+             {{issue.content}}
+             {{issue.status}}
+             {{issue.created}}
+             {{issue.priority}}
+             {{issue.url}}
+             {{issue.author}}
+             </pre>
+        {% endfor %}
+    {% endfor %}
+
+
+Usage
+=====
+
+Call it using::
+
+    $ <path to bin directory>/bbissues --config <path to config file>
+
+It saves the generated HTML to the file specified in config.
+
+
+==========================
+Developing gocept.bbissues
+==========================
+
+:Author:
+    `gocept <http://gocept.com/>`_ <mail@gocept.com>
+
+:PyPI page:
+    https://pypi.org/project/gocept.bbissues/
+
+:Issues:
+    https://github.com/gocept/gocept.bbissues/issues
+
+:Source code:
+    https://github.com/gocept/gocept.bbissues
+
+:Current change log:
+    https://raw.githubusercontent.com/gocept/gocept.bbissues/master/CHANGES.rst
+
+
+==============================
+Change log for gocept.bbissues
+==============================
+
+0.10 (2022-05-02)
+=================
+
+- Remove support for Python 2.7.
+
+
+0.9 (2021-09-17)
+================
+
+- Add support for Python 3.6, 3.7 and 3.8.
+
+- Migrate to GitHub and GitHub Actions.
+
+
+0.8.1 (2017-06-30)
+==================
+
+- Be more robust if the PRs or Issues are not available.
+
+- Add logging in case of an API error.
+
+
+0.8 (2016-07-07)
+================
+
+- Don't crash on generating html if unicode is in the comments.
+
+- Handle PullRequests from GitHub correctly.
+
+- Add assignee as a property to an item and use it in the standard template.
+
+
+0.7 (2016-02-03)
+================
+
+- Add time_rendered as a variable passed to the jinja2 template.
+
+- Add the count of comments to the issue/pullrequest and pass to template.
+
+- Read the owner from the config file and collect all projects from this owner.
+
+- Add new template that renders a table with filter options.
+
+- Export type (Issue, PullRequest) to JSON file.
+
+
+0.6 (2016-01-27)
+================
+
+- Save HTML to a file which is specified in config. Made path to JSON file
+  configurable.
+
+
+0.5 (2016-01-26)
+================
+
+- Add JSON export for issues and pullrequest not older that `json_export_days`
+  specified in config.
+
+
+0.4 (2016-01-14)
+================
+
+- Improve error handling.
+
+
+0.3 (2016-01-13)
+================
+
+- Don't pull closed tickets from Bitbucket. (#4)
+
+- Enhanced documentation.
+
+
+0.2 (2016-01-13)
+================
+
+- Add GitHub as issue source. (#3)
+
+
+0.1 (2015-04-08)
+================
+
+initial release
+
+
