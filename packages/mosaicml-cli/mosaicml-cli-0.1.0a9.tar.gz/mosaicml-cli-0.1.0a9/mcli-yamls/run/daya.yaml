@@ -1,0 +1,18 @@
+run_name: daya-run
+instance_type: r1z1-g0
+platform: r1z1
+image: mosaicml/pytorch_vision:latest
+integrations:
+  - integration_type: "git_repo"
+    git_repo: mosaicml/composer
+    pip_install: .[all]
+  - integration_type: "git_repo"
+    git_repo: mosaicml/performance
+  - integration_type: "apt_packages"
+    packages:
+        - git
+command: |
+    echo Running...
+    cd composer
+    python scripts/ffcv/create_ffcv_datasets.py --dataset imagenet --split val --datadir /localdisk/ImageNet
+    sleep 60

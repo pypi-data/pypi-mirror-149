@@ -1,0 +1,35 @@
+run_name: bert_r1
+instance_type: r1z1-g8-a100
+platform: r1z1
+image: mosaicml/pytorch_internal
+integrations:
+  - integration_type: "pip_packages"
+    packages:
+      - wheel
+      - xformers
+  - integration_type: "git_repo"
+    git_repo: moinnadeem/apex
+    path: apex
+    pip_install: --user -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
+  - integration_type: "git_repo"
+    git_repo: moinnadeem/composer
+    git_branch: moin/cleaned_gated
+    path: composer
+    pip_install: .[all]
+command: >-
+  # composer -n {{ parameters['_n_gpus'] }} examples/run_composer_trainer.py
+  # -f /mnt/config/parameters.yaml --run_name $(WANDB_NAME)
+  sleep 400
+parameters:
+  algorithms:
+  - act_fn_search:
+      act_fn_name: squared_relu
+      use_fln: false
+      use_gated: true
+      use_rmsnorm: false
+      use_triton: false
+  callbacks:
+  - speed_monitor:
+      window_size: 100
+  - lr_monitor: {}
+  grad_accum: 1
