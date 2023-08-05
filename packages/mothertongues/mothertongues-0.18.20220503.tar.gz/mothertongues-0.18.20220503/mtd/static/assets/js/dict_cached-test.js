@@ -1,0 +1,1 @@
+var dataDict = [{"source": "test_words", "word": "test", "definition": "test", "sorting_form": [45, 30, 44, 45], "entryID": "0"}]
