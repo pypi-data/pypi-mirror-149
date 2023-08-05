@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "hurocon"
+version = "0.2.0"
+description = "Command line interface tool for interacting with Huawei LTE routers"
+authors = ["maximilionus <maximilionuss@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/maximilionus/hurocon.git"
+documentation = "https://github.com/maximilionus/hurocon/blob/master/README.md"
+keywords = ['cli', 'huawei', 'router', 'control']
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Telecommunications Industry",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License"
+]
+
+[tool.poetry.scripts]
+hurocon = "hurocon.cli:cli"
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+serialix = "^2.3.1"
+huawei-lte-api = "^1.6.0"
+click = "^8.1.2"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
