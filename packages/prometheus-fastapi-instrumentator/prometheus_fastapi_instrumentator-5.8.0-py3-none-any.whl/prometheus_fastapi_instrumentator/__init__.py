@@ -1,0 +1,3 @@
+from .instrumentation import PrometheusFastApiInstrumentator
+
+Instrumentator = PrometheusFastApiInstrumentator
