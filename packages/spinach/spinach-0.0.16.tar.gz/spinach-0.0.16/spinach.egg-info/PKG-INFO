@@ -1,0 +1,119 @@
+Metadata-Version: 2.1
+Name: spinach
+Version: 0.0.16
+Summary: Modern Redis task queue for Python 3
+Home-page: https://github.com/NicolasLM/spinach
+Author: Nicolas Le Manchet
+Author-email: nicolas@lemanchet.fr
+License: BSD 2-clause
+Keywords: task queue jobs redis
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: System :: Distributed Computing
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Provides-Extra: tests
+License-File: LICENSE
+
+Spinach
+=======
+
+.. image:: https://github.com/NicolasLM/spinach/workflows/Run%20tests/badge.svg?branch=master
+    :target: https://github.com/NicolasLM/spinach/actions
+.. image:: https://coveralls.io/repos/github/NicolasLM/spinach/badge.svg?branch=master
+    :target: https://coveralls.io/github/NicolasLM/spinach?branch=master
+.. image:: https://readthedocs.org/projects/spinach/badge/?version=latest
+    :target: http://spinach.readthedocs.io/en/latest/?badge=latest
+.. image:: https://img.shields.io/badge/IRC-irc.libera.chat-1e72ff.svg?style=flat
+    :target: https://kiwiirc.com/nextclient/irc.libera.chat:+6697/#spinach
+
+Redis task queue for Python 3 heavily inspired by Celery and RQ.
+
+Distinctive features:
+
+- Threaded and asyncio workers
+- At-least-once or at-most-once delivery per task
+- Periodic tasks without an additional process
+- Concurrency limits on queued jobs
+- Scheduling of tasks in batch
+- Integrations with `Flask, Django, Logging, Sentry and Datadog
+  <https://spinach.readthedocs.io/en/stable/user/integrations.html>`_
+- Embeddable workers for easier testing
+- See `design choices
+  <https://spinach.readthedocs.io/en/stable/user/design.html>`_ for more
+  details
+
+Quickstart
+----------
+
+Install Spinach with pip::
+
+   pip install spinach
+
+Create a task and schedule a job to be executed now:
+
+.. code:: python
+
+    from spinach import Engine, MemoryBroker
+
+    spin = Engine(MemoryBroker())
+
+
+    @spin.task(name='compute')
+    def compute(a, b):
+        print('Computed {} + {} = {}'.format(a, b, a + b))
+
+
+    # Schedule a job to be executed ASAP
+    spin.schedule(compute, 5, 3)
+
+    print('Starting workers, ^C to quit')
+    spin.start_workers()
+
+Documentation
+-------------
+
+The documentation is at `https://spinach.readthedocs.io
+<https://spinach.readthedocs.io/en/stable/index.html>`_.
+
+IRC channel for online discussions **#spinach** on `irc.libera.chat
+<https://kiwiirc.com/nextclient/irc.libera.chat:+6697/#spinach>`_.
+
+License
+-------
+
+BSD 2-clause
+
+Copyright (c) 2017-2021, Nicolas Le Manchet
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this 
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, 
+   this list of conditions and the following disclaimer in the documentation 
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
