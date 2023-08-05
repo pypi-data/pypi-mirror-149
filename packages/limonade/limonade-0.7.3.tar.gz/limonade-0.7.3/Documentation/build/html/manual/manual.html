@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Introduction &#8212; listmode 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Configuration files" href="configuration.html" />
+    <link rel="prev" title="Welcome to listmode’s documentation!" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<section id="what-is-listmode">
+<h2>What is Listmode<a class="headerlink" href="#what-is-listmode" title="Permalink to this headline">¶</a></h2>
+<p>Listmode is a library built around a single Data class and a lot of helper functions and classes.
+The objective of Listmode is to simplify handling of listmode data from different sources. Ideally
+all interaction with the library is either via the data class or the plotter function. Data can be
+created by the streamer class. All details of the data are be defined by configuration of the
+detector and the plot using configuration files written in json.</p>
+<p>The data can be retrieved and histogrammed using powerful selection tools in the plot module.
+These include selecting events by time interval, energy gates in (anti)coincident channels or
+even gates in some extra data, such as coordinate information. Gates can also be defined as
+polygonal 2d gates between any two pieces of data.</p>
+<p>Listmode data tends to grow big. A single dataset is easily several million events long. Storing
+all that data in memory is not efficient and in some cases not even possible. All data
+operations in Listmode are processed in chunks. The data itself is stored in hard drive as
+binary format files and only small chunk is read at a time. All data is immutable, in the sense
+that the datafiles are never modified. Any change in data needs to be streamed into a new set of
+datafiles.</p>
+</section>
+<section id="how-to-use-listmode">
+<h2>How to use Listmode<a class="headerlink" href="#how-to-use-listmode" title="Permalink to this headline">¶</a></h2>
+<p>The most important thing for user is to understand the structure and use of the configuration
+files and the logic of the flow of data in the storage and plotting pipelines.</p>
+</section>
+<section id="what-is-data">
+<h2>What is data?<a class="headerlink" href="#what-is-data" title="Permalink to this headline">¶</a></h2>
+<p>Data is timestamps. Timestamps are handled in a special way throughout the library. Every single
+event has a timestamp. Timestamps are used to index the events and are the basis of the hashing
+system used to speed up searches from long (multi-million event) datasets. Time interval of any
+data operation needs to be defined before anything else. The start and stop indices in the time
+slice are retrieved and the data loaded in chunks and set forward in the pipeline.</p>
+<p>The data associated with the timestamp includes energy information for the channels that belong
+to the event. At the moment the energy information is always present for every channel of the detector. Event can hold
+other data in addition to energy information. For example coordinate information, signal rise time
+value or a pile-up bit can be recorded by the detector and can be included as part of an event. This
+extra data is always associated with a channel of the detector.</p>
+</section>
+<section id="the-flow-of-data">
+<h2>The flow of data<a class="headerlink" href="#the-flow-of-data" title="Permalink to this headline">¶</a></h2>
+<p>The most typical data operation is a plot. A plot is defined by plot configuration, a dictionary
+or a file, which defines what plot class is instanced by the plotter function. Plot class loads
+data in chunks, using the get_data_block method of the data class. It then makes the gate
+selection defined in configuration using coincidence_mask function and feeds the selected data to
+the filter which calculates a histogram of the data block. Plot class combines all the chunk
+histograms into a master histogram which is then returned.</p>
+<p>Normally all this is done automatically by the plotter function but can as well be done manually
+using the data (and plot) class and selection function.</p>
+</section>
+<section id="how-to-start">
+<h2>How to start<a class="headerlink" href="#how-to-start" title="Permalink to this headline">¶</a></h2>
+<p>An overview of the different configuration files can be found in the section <a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">Configuration files</span></a>.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">listmode</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-listmode">What is Listmode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-use-listmode">How to use Listmode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-data">What is data?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-flow-of-data">The flow of data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-start">How to start</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../autodocs/reference.html">Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to listmode’s documentation!</a></li>
+      <li>Next: <a href="configuration.html" title="next chapter">Configuration files</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Timo Hilden.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/manual/manual.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

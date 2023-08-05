@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Loaders</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/epub.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-listmode.loaders">
+<span id="loaders"></span><h1>Loaders</h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.loaders.caen_loader">
+<span class="sig-prename descclassname"><span class="pre">listmode.loaders.</span></span><span class="sig-name descname"><span class="pre">caen_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Reads data saved by Caen MCA. Caen data format does not record time and date of data taking, so these are calculated
+from the datafile modification timestamp.</p>
+<p>In case there are several runs on single data (appended to same file) the results may be unpredictable. In the
+future all appends should be recognized and extracted as channel files, but only first one is loaded as data.</p>
+<p>The loaded channel list is compared to one in cfg and if not matching an error is generated.</p>
+<p>Caen loader supports two kinds of bitmask extra data: Pileup and flags. Flags is set whenever there the ‘extras’
+data is nonzero. Pileup flag is set whenever the energy for the channel is zero, signaling a pileup event (unless
+set to return energy value).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – Calling Data instance. This is set when the loader is set as class method.</p></li>
+<li><p><strong>data_path</strong> – path to a file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.loaders.dspec_loader">
+<span class="sig-prename descclassname"><span class="pre">listmode.loaders.</span></span><span class="sig-name descname"><span class="pre">dspec_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.loaders.g4_loader">
+<span class="sig-prename descclassname"><span class="pre">listmode.loaders.</span></span><span class="sig-name descname"><span class="pre">g4_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.loaders.panda_loader">
+<span class="sig-prename descclassname"><span class="pre">listmode.loaders.</span></span><span class="sig-name descname"><span class="pre">panda_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Reads PANDA data. Even though PANDA data is already reconstructed in event mode, it will still be broken down
+to channel files for the pipeline. PANDA clock is used for dead time and timing. DSSSD will be handled as two
+detectors with associated coordinate extra. Due to this and the capability of the multi-hit processor to combine
+data from several channels the DSSSD data will be strip calibrated when read from the raw file. If strip calibration
+needs to be redone later one has to make a dummy calibration to access the uncalibrated strip values.</p>
+<p>If PANDA data is divided into several files, only one is converted and loaded. In this case either start_time,
+stop_time or both are undefined and will be calculated from data length and, in worst case, file modification
+time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – Calling Data instance. This is set when the loader is set as class method.</p></li>
+<li><p><strong>data_path</strong> – path to a file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.loaders.pixie4_loader">
+<span class="sig-prename descclassname"><span class="pre">listmode.loaders.</span></span><span class="sig-name descname"><span class="pre">pixie4_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

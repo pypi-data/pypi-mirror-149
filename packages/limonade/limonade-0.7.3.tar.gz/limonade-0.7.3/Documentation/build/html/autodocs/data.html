@@ -1,0 +1,901 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Data &#8212; listmode 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plot" href="plot.html" />
+    <link rel="prev" title="Reference" href="reference.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-listmode.data">
+<span id="data"></span><h1>Data<a class="headerlink" href="#module-listmode.data" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.BitProcessor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">BitProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#BitProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.BitProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listmode.data.ColProcessor" title="listmode.data.ColProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">listmode.data.ColProcessor</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.BitProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_front</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#BitProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.BitProcessor.process" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – list of data_dicts, one per channel</p></li>
+<li><p><strong>out</strong> – list of initialized output data arrays</p></li>
+<li><p><strong>t_front</strong> – current position in data</p></li>
+<li><p><strong>ev_count</strong> – number of hits per channel in the event</p></li>
+<li><p><strong>ev_num</strong> – number of hits per channel in the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.ColProcessor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">ColProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#ColProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.ColProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple class for aggregating data in event building.
+It is initialized with the data info (like in extras definition) including
+what happens when multiple events are found within the same time window.</p>
+<p>The process method is given input events, channel mask and output data structure.
+Output data is modified in-place. Each instance of a class is only updating its own
+part of the data (energy, timing, coord, etc.) and is supposed to be run in a pipeline
+for every event.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.ColProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_front</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#ColProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.ColProcessor.process" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – list of data_dicts, one per channel</p></li>
+<li><p><strong>out</strong> – list of initialized output data arrays</p></li>
+<li><p><strong>t_front</strong> – current position in data</p></li>
+<li><p><strong>ev_count</strong> – number of hits per channel in the event</p></li>
+<li><p><strong>ev_num</strong> – number of hits per channel in the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.Data">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Sort of generic data class, with plug-in dataloader for vendor specific raw data
+and extra data items configurable via configuration file.</p>
+<p>Timestamp is always present in all kinds of data. It stores the event time in nanoseconds since the start
+of the data. It is always 64-bit unsigned integer and is handled in a special way by listmode. All other
+data is defined by info-dictionaries that are of the form:
+info_dict = {“name”: “some_data”,</p>
+<blockquote>
+<div><p>“type”: “u1”,
+“num_col”: 2,
+“aggregate”: “col”,
+“ch_mask”: [1, 1, 0, 0],
+“multi”: “mean”}</p>
+</div></blockquote>
+<p>Data is held in a data dictionary, with data name as key and memmap of the data as the value. (Currently
+the data is also held as members with same name as the data for backward compatibility using _update method).</p>
+<p>All data is stored in numpy arrays in the data dict. The data dict always contains time_vec and data_mat: time
+and energy information of events. data_mat is defined by ‘events’ info dict in the configuration file.</p>
+<p>Data dict can also contain extra data, defined by ‘extras’ list of info dicts in the configuration file.
+Few types of extras are hardcoded into Listmode and are handled in a special way if they are present:
+coord:  coordinate information. Correspondence of channels to coordinate columns is given by</p>
+<blockquote>
+<div><p>config.det[‘coordinates’]. This is used for data selection and plots.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>latency:timing information. Each column is the time difference between ‘main’ channel and other channels in the</dt><dd><p>event. Used to tune the latency and coincidence window.</p>
+</dd>
+<dt>multihit: A flag that is raised if a channel has several hits per event. A type of nondestuctive pileup. The</dt><dd><p>energy value of a multihit event is calculated using a function defined by the ‘multi’ keyword.</p>
+</dd>
+</dl>
+<p>All other extras are just carried along with the data and can be plotted (not quite yet) or used for event
+selection (not there either).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Data.get_data_block">
+<span class="sig-name descname"><span class="pre">get_data_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Data.get_data_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Data.get_data_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data and time vectors, but processed in chunks of 1M events to save memory. Optionally, define a slice in
+time. The method should be called in a loop to read everything. All data including extras is returned.</p>
+<p>Last return value isdata indicates if there is more data to come. On a False the loop should be stopped, but
+the last data is still valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – A tuple of start and stp times in nanoseconds. Full data is set to be read if this is None. The
+time slice should never be changed while reading the data in a loop.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tuple of (data_dict, isdata) for current chunk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Data.get_dead_time">
+<span class="sig-name descname"><span class="pre">get_dead_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Data.get_dead_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Data.get_dead_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get dead time for the data or a time_slice of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – a tuple of start and stop times in nanoseconds. Full dead time is retrieved if this is set to
+None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The dead times in [s] for all channels as a vector of floats.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Data.get_end_time">
+<span class="sig-name descname"><span class="pre">get_end_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Data.get_end_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Data.get_end_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Data.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Data.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Data.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data preferably from event mode .dat files. If this fails, then channel data is searched for. (Channel
+data may be saved as intermediary step when doing slow conversion from other data formats.) Otherwise
+_read_raw_data method is called. Native format has no raw data and will fail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path_str</strong> – Path to data directory. It has to be either a string or a pathlib Path object.</p></li>
+<li><p><strong>name</strong> – Optional name, if data file does not share the same base_name as the directory.</p></li>
+<li><p><strong>reset</strong> (<em>Bool</em>) – The raw data parsing can be forced with reset=True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.EventBuilder">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">EventBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coinc_win</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extras</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_datasize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#EventBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.EventBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Painful way of walking through the data and trying to build events
+by seeking coincidences between channel times.</p>
+<p>Ideally works on shortish arrays of data returned by the digitizer, but should manage big savefiles in chunks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.EventBuilder.run_batch">
+<span class="sig-name descname"><span class="pre">run_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timing_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#EventBuilder.run_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.EventBuilder.run_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>The time front is a list of the lowest unbuilt indices for each channel.
+(The t0 is the times, E0 the energies)
+The channel which has lowest time in the front is put to an event
+and if other channels in the front have time within the window, then
+they are included. The front is incremented for all the channels that
+were included and the iteration is started again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> – list of data_dicts for each channel</p></li>
+<li><p><strong>timing_list</strong> – list holding timing information for each channel</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data_dict, timing_data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.LatencyProcessor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">LatencyProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#LatencyProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.LatencyProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listmode.data.ColProcessor" title="listmode.data.ColProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">listmode.data.ColProcessor</span></code></a></p>
+<p>LatencyProcessor is a specialized processor used to visualize the timing properties of the input data. Each
+output column is equal to time difference between event in main channel and event in each other channel
+(so output of main channel is always zeros) calculated from latency corrected time data. Smallest possible value is
+returned if there was no coincidence between the channels. All channels should show zero-centered distributions
+in a properly tuned detector. Width of the distributions will show how big coincidence window is needed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.LatencyProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_front</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#LatencyProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.LatencyProcessor.process" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – list of data_dicts, one per channel</p></li>
+<li><p><strong>out</strong> – list of initialized output data arrays</p></li>
+<li><p><strong>t_front</strong> – current position in data</p></li>
+<li><p><strong>ev_count</strong> – number of hits per channel in the event</p></li>
+<li><p><strong>ev_num</strong> – number of hits per channel in the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.Metadata">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">Metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Metadata is responsible for the saving, loading and generation of metadata within data.</p>
+<p>Under normal circumstances the metadata is present in a json file, and is loaded by the metadata class. If,
+however, metadata is missing or needs to be changed the metadata class provides methods for updating, validating
+and saving the changes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Metadata.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata.calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates metadata from parent data and members. Calculate should not touch values that are set by the loader.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.counts">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">counts</span></span><a class="headerlink" href="#listmode.data.Metadata.counts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.events">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">events</span></span><a class="headerlink" href="#listmode.data.Metadata.events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Metadata.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a metadata item that is not one of the properties. This is simply wrapping the dict indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – keyword to get</p></li>
+<li><p><strong>channel</strong> – channel</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.input_counts">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">input_counts</span></span><a class="headerlink" href="#listmode.data.Metadata.input_counts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Metadata.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads metadata from json files. If incomplete metadata is loaded it is updated from the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.name">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#listmode.data.Metadata.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.notes">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">notes</span></span><a class="headerlink" href="#listmode.data.Metadata.notes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.run_id">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">run_id</span></span><a class="headerlink" href="#listmode.data.Metadata.run_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Metadata.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save metadata back to json.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.Metadata.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#Metadata.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.Metadata.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a metadata item for one or all channels. For example some sample related information can be retrieved from
+database and added to metadata after the data is created. This method exists to give easy access to
+metadata for the loader functions of vendor specific data. This method should not be used to set the
+minimal metadata handled by the properties of Metadata class. ListModeMetadataSetError is raised if even tried.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Key to _run_data dict</p></li>
+<li><p><strong>value</strong> – A value to set.</p></li>
+<li><p><strong>channel</strong> – Channel to modify. If ch is less than 0, then all channels are updated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.start">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#listmode.data.Metadata.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.stop">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">stop</span></span><a class="headerlink" href="#listmode.data.Metadata.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listmode.data.Metadata.total_time">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">total_time</span></span><a class="headerlink" href="#listmode.data.Metadata.total_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.MultiHitProcessor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">MultiHitProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#MultiHitProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.MultiHitProcessor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listmode.data.BitProcessor" title="listmode.data.BitProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">listmode.data.BitProcessor</span></code></a></p>
+<p>MultiHitProcessor calculates a bitmask where channels with multiple hits per event are
+set to 1.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.MultiHitProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_front</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#MultiHitProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.MultiHitProcessor.process" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – list of data_dicts, one per channel</p></li>
+<li><p><strong>out</strong> – list of initialized output data arrays</p></li>
+<li><p><strong>t_front</strong> – current position in data</p></li>
+<li><p><strong>ev_count</strong> – number of hits per channel in the event</p></li>
+<li><p><strong>ev_num</strong> – number of hits per channel in the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.StreamData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">StreamData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#StreamData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.StreamData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stream_data is a manager that pushes list mode data into disk as it comes available. Every kind
+of data (time + energy for channel, time + energy matrix for events, timing data and extra data) needs to have its
+own streamer.</p>
+<p>Channel mode data is stored as raw binary files, with one file holding time (uint64), one the energy (uint16).
+Note: there is no reason to save data in channel mode after latency and coincidence window are set.</p>
+<p>Event data is stored as raw binary with timestamps (uint64), energy matrix (uint16 x num_ch)</p>
+<p>Timing data is a row of timing info (uint32 idx + 2xuint32 x num_ch).</p>
+<p>Extra data can can be given via the extras dictionary (keys: ‘name’, ‘type’, ‘num_col’). Extras can include pile-up
+flags (Type x num_ch) or coordinates (Type x N), where N is number of coordinates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.StreamData.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#StreamData.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.StreamData.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.StreamData.new_files">
+<span class="sig-name descname"><span class="pre">new_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#StreamData.new_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.StreamData.new_files" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.data.TimeCache">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">TimeCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>TimeCache controls timing data and provides dead/live time of the detector plus maintains lists of index - time
+pairs of the time information insertions times so that quick retrieval of time periods is possible. Each interval
+holds variable amount of events. Because both indices and timestamps are monotonously increasing, they can both be
+used to find intervals from the data.
+The timing datafile is saved with data and should be read only. It contains index of insertion (int64) plus
+the dead_time delta of the interval for each channel in float32 type. First row always points to first event with
+zero dead times for all channels. First real dead time value is stored to the second row.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finding indices in self.timing that contain the t_slice time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_slice</strong> – tuple of nanosecond values defining a slice in time</p></li>
+<li><p><strong>ch</strong> – If specified will return only indices in which dead time has been given for ch. This is mainly used
+by get_timing to interpolate the dead time.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>indices to self.timing containing the time slice.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.get_dead_time">
+<span class="sig-name descname"><span class="pre">get_dead_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.get_dead_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.get_dead_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dead time of the time slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>All dead times in a numpy array. Live and dead times are float values of seconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.get_indices">
+<span class="sig-name descname"><span class="pre">get_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.get_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.get_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return start and stop event indices (endpoint not inclusive) that contain the time slice fully using timing
+info as a hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – tuple of nanosecond values defining a slice in time. If None full data is returned.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>indices to event data containing the the time slice</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.get_live_time">
+<span class="sig-name descname"><span class="pre">get_live_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.get_live_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.get_live_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return live time of the slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>All live times in a numpy array. Live and dead times are float values of seconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.get_timing">
+<span class="sig-name descname"><span class="pre">get_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.get_timing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.get_timing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dead time data for a slice. The first entry is zeros and the second one is interpolated to start
+from t_slice[0]. Last one is an extra row interpolated to t_slice[1].</p>
+<p>If t_slice is not defined this method returns timing data as it is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t_slice</strong> – Time slice (in ns)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(interpolated) timing data for time slice</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.get_total_time">
+<span class="sig-name descname"><span class="pre">get_total_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.get_total_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.get_total_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return total time of the time slice or total time of measurement, if t_slice is None.
+:param t_slice:
+:return: Total time value in nanoseconds</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.data.TimeCache.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timing</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#TimeCache.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.TimeCache.set" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timing</strong> – an opened np.memmap instance containing the timing data (retrieved by read_binary_data)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.data_info">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">data_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#data_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.data_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills data_info dict with defaults for parts that are missing. Hardcoded settings for energy, multihit and latency
+data will be overwritten if defined in config. A warning is printed if setup is overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>info</strong> – info dict</p></li>
+<li><p><strong>ch_list</strong> – info dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dict with missing keys filled with defaults.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.fill_default_data">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">fill_default_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#fill_default_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.fill_default_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will generate reasonable defaults for parameters omitted for ‘events’ and ‘extras’ data_info dictionaries. It will
+overwrite incompatible parameters. Does not work yet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cfg</strong> – Configuration of the detector.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>data_info dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.generate_timing">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">generate_timing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pulse_dead_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_vec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#generate_timing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.generate_timing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to generate timing vector if it does not exist. Takes pathlib type
+filename, pulse dead time for the channel and t_vec.</p>
+<p>Returns nothing, just writes the data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.ipoly2">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">ipoly2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#ipoly2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.ipoly2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the inverse of 2nd degree polynomial above by dropping the 2nd degree term: returns ~x given y. Here the
+larger root is always returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y</strong> – An energy value or a numpy list of energy values.</p></li>
+<li><p><strong>p</strong> – Calibration coefficients, starting from 0th degree coefficient.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Channel values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.kill_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">kill_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#kill_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.kill_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event is set to zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.load_calibration">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">load_calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#load_calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.load_calibration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads calibration for the detector. Calibration gives the 2nd degree function coefficients for calibration for each
+channel and for each data type. The data is organized as a dictionary with data types as keys and each data as
+numpy arrays with channel in first axis and three coefficients (a, b and c) in second axis.</p>
+<p>Missing data is fixed with dummy calibration ([0,1,0] coefficients), but incompatible data (e.g. wrong number of
+channels) will raise an exception.</p>
+<p>Old calibration data had keys for peaks used for calibration, but they have been dropped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> – The detector config object (obviously missing the calibration info)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The calibration dictionary. read from disk. Missing data is fixed with dummy calibration, but incompatible</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.load_config">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">det_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detector configuration object is a namespace with:
+paths into configuration directories and optionally to data.
+Contents of the detector configuration file.
+Calibration for the detector. Calibration gives the 2nd degree function coefficients for calibration for each
+channel and for each data type. The data is organized as a dictionary with data types as keys and each data as
+numpy arrays with channel in first axis and three coefficients (a, b and c) in second axis. Omitted calibration
+data is replaced with [0,1,0] coefficients</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>det_name</strong> – Name of the detector configuration file without the _cfg.json</p></li>
+<li><p><strong>local_cfg</strong> – Paths needed to find configurations and data</p></li>
+<li><p><strong>data_name</strong> – Optional path to data, that will be added as “home” into config.path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>detector configuration object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.max_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">max_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#max_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.max_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hit that has highest value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_dict</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.max_e_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">max_e_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#max_e_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.max_e_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hit that has highest energy value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.mean_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">mean_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#mean_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.mean_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the mean of all hits in the event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.min_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">min_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#min_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.min_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the hit that has smallest value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.poly2">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">poly2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#poly2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.poly2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model function for 2nd degree polynomial fit for energy calibration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – A channel value or a numpy list of channel values.</p></li>
+<li><p><strong>p</strong> – Calibration coefficients, starting from 0th degree coefficient.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Calibrated x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.read_binary_data">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">read_binary_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#read_binary_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.read_binary_data" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> – Path to the data directory</p></li>
+<li><p><strong>base_name</strong> – Base name of the data</p></li>
+<li><p><strong>cfg</strong> – The detector config dictionary</p></li>
+<li><p><strong>mode</strong> – What mode of data to read: ‘event’ or ‘channel’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>The detector configuration is needed for defining the extras:</dt><dd><p>List of dicts defining extra data files, type and number of
+columns. extras = {“name”:’x’, “type”:’t’, “num_col”:’n’}, where type
+is a numpy type string of the data. Several extras can be defined in
+det_cfg (coord, ch_flags). These are handled automatically if they are
+present.</p>
+</dd>
+</dl>
+<p>Some extras, such as coord, need to have additional definitions in the
+config. For coord, it is the ‘coordinates’ list which defines the number
+of coordinates, the channels the data is found and the order of the
+coordinates in i, j notation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.strip_cal">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">strip_cal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strip_cal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord_ch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#strip_cal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.strip_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates strip calibration for coordinate data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_mat</strong> – data</p></li>
+<li><p><strong>coord</strong> – coordinates</p></li>
+<li><p><strong>strip_cal</strong> – calibration matrix</p></li>
+<li><p><strong>coord_ch</strong> – order of coordinate channels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.data.sum_combinator">
+<span class="sig-prename descclassname"><span class="pre">listmode.data.</span></span><span class="sig-name descname"><span class="pre">sum_combinator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ev_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/listmode/data.html#sum_combinator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listmode.data.sum_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sum of all hits in the event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_list</strong> – A dictionary including all datas of the channel.</p></li>
+<li><p><strong>idx</strong> – Index of the first hit in the event</p></li>
+<li><p><strong>ev_count</strong> – Number of hits in the event</p></li>
+<li><p><strong>name</strong> – Name of the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single value for the hit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">listmode</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../manual/manual.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manual/configuration.html">Configuration files</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html">Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc.html">Misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loaders.html">Loaders</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="reference.html">Reference</a><ul>
+      <li>Previous: <a href="reference.html" title="previous chapter">Reference</a></li>
+      <li>Next: <a href="plot.html" title="next chapter">Plot</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Timo Hilden.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/autodocs/data.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

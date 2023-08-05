@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Utils</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/epub.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-listmode.utils">
+<span id="utils"></span><h1>Utils</h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.utils.delete_channel_data">
+<span class="sig-prename descclassname"><span class="pre">listmode.utils.</span></span><span class="sig-name descname"><span class="pre">delete_channel_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Used to delete channel files after parsing.
+:param data_path:
+:param base_name:
+:param cfg:
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.utils.find_data_files">
+<span class="sig-prename descclassname"><span class="pre">listmode.utils.</span></span><span class="sig-name descname"><span class="pre">find_data_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Generate filenames (paths) of all the data produced by config. You can select either ‘event’ or ‘channel’
+type names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> – </p></li>
+<li><p><strong>base_name</strong> – </p></li>
+<li><p><strong>cfg</strong> – </p></li>
+<li><p><strong>mode</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>timing, energy, time and extras filenames as lists. For event data the first (and only) item in the list
+is the relevant filename. For channel data there is a single name for every channel. Extra names are given
+as a list of names, one per extra (for each channel as in other data).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.utils.load_plot_config">
+<span class="sig-prename descclassname"><span class="pre">listmode.utils.</span></span><span class="sig-name descname"><span class="pre">load_plot_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_name</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Loads a plot configuration from a json file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – Config data that has the config.path in it</p></li>
+<li><p><strong>plot_name_list</strong> – plot config name without the _plotcfg.json postfix or a list of names</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a plot config dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.utils.load_strip_cal">
+<span class="sig-prename descclassname"><span class="pre">listmode.utils.</span></span><span class="sig-name descname"><span class="pre">load_strip_cal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Load strip calibration files if they exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.utils.load_style_sheet">
+<span class="sig-prename descclassname"><span class="pre">listmode.utils.</span></span><span class="sig-name descname"><span class="pre">load_style_sheet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style_name_list</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Loads a matplotlib style sheet written as a json file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – Detector configuration object</p></li>
+<li><p><strong>style_name_list</strong> – style path or a list of paths</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of style dictionaries</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

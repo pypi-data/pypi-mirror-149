@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Configuration files</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/epub.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="configuration-files">
+<span id="configuration"></span><h1>Configuration files</h1>
+<section id="detector-configuration">
+<h2>Detector configuration</h2>
+<dl class="field-list simple">
+<dt class="field-odd">name</dt>
+<dd class="field-odd"><p>Name of the detector.</p>
+</dd>
+<dt class="field-even">data_type</dt>
+<dd class="field-even"><p>Defines the raw data loader. Built-in options are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">standard</dt>
+<dd class="field-odd"><p>The data mode native to Listmode. All other data is converted to native
+format before parsing</p>
+</dd>
+<dt class="field-even">caen</dt>
+<dd class="field-even"><p>The data file saved by Caen MC2 program with extra data set on.</p>
+</dd>
+<dt class="field-odd">panda</dt>
+<dd class="field-odd"><p>For PANDA data files.</p>
+</dd>
+<dt class="field-even">ortec</dt>
+<dd class="field-even"><p>For data files saved with Ortec Maestro program.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">extension</dt>
+<dd class="field-odd"><p>The extension of the raw data files. Extension can include wildcard characters.</p>
+</dd>
+<dt class="field-even">daq_type</dt>
+<dd class="field-even"><p>Might be redundant.</p>
+</dd>
+<dt class="field-odd">coinc_win</dt>
+<dd class="field-odd"><p>Coincidence window length in nanoseconds. This is the max time interval between two
+counts so that they will be built into a single event.</p>
+</dd>
+<dt class="field-even">sample_ns</dt>
+<dd class="field-even"><p>Size of the time tick of the detector in ns.</p>
+</dd>
+<dt class="field-odd">readout_cfg</dt>
+<dd class="field-odd"><p>Optional, will probably be moved to another config file. Defines readout electronics
+specific configuration file used for daq.</p>
+</dd>
+<dt class="field-even">cal_name</dt>
+<dd class="field-even"><p>Name of the energy calibration file for the detector. Located in config/ecal directory.</p>
+</dd>
+<dt class="field-odd">effcal</dt>
+<dd class="field-odd"><p>Name of the gamma efficiency calibration file. Located in config/effcal directory.</p>
+</dd>
+<dt class="field-even">ch_cfg</dt>
+<dd class="field-even"><p>List of ch_config dictionaries. One per channel.</p>
+</dd>
+<dt class="field-odd">events</dt>
+<dd class="field-odd"><p>Definition of energy information. A data_info dictionary.</p>
+</dd>
+<dt class="field-even">extras</dt>
+<dd class="field-even"><p>Definition of any extra data. A list of data_info dictionaries.</p>
+</dd>
+<dt class="field-odd">latency</dt>
+<dd class="field-odd"><p>Latency values in ns. A list of values, one per channel, which are added to channel
+timestamps before searching for coincidences.</p>
+</dd>
+<dt class="field-even">histo_size</dt>
+<dd class="field-even"><p>Optional, will probably be moved to another config file. Defines the number of bins in
+the histogram returned by daq.</p>
+</dd>
+<dt class="field-odd">ch_list</dt>
+<dd class="field-odd"><p>List of channels with indices to ‘ch_cfg’ list. Defines the order (and number) of
+channels in the output. Functionality of this may be changed in the future.</p>
+</dd>
+</dl>
+<section id="ch-config">
+<h3>ch_config</h3>
+<dl class="field-list simple">
+<dt class="field-odd">name</dt>
+<dd class="field-odd"><p>Name of the channel. Will appear in title and legend of plots.</p>
+</dd>
+<dt class="field-even">cfg_file</dt>
+<dd class="field-even"><p>Optional, will probably be moved to another config file. Defines readout channel
+specific configuration file used for daq.</p>
+</dd>
+<dt class="field-odd">pdeadtime</dt>
+<dd class="field-odd"><p>Dead time of a single pulse in the channel. This value will be used to calculate
+estimated dead time in data formats where hardware calculated dead time does not
+exist (Caen) or where it cannot be fully trusted (Caen). This value includes the
+rise time, flat top and any trigger holdoff values and needs to be corrected whenever
+configuration is changed.</p>
+</dd>
+</dl>
+</section>
+<section id="data-info">
+<h3>data_info</h3>
+<dl class="field-list simple">
+<dt class="field-odd">name</dt>
+<dd class="field-odd"><p>the name of the data. Energy information is always ‘energy’ and value in this field is
+ignored.</p>
+</dd>
+<dt class="field-even">type</dt>
+<dd class="field-even"><p>Numpy type string describing the data format in the binary file. For energy the default
+is ‘i2’ for signed 16-bit integer. Extras don’t have defaults and type must be defined.</p>
+</dd>
+<dt class="field-odd">ch_mask</dt>
+<dd class="field-odd"><p>Defines which energy channels have this extra associated with. Given as a list of zeros
+and ones. Energy data is always one column per channel and this key is ignored. Default
+is all channels.</p>
+</dd>
+<dt class="field-even">aggregate</dt>
+<dd class="field-even"><p>Defines how the data is combined or created in the event parser. Normally extras are just
+read from channel files and combined as events in the event construction. Some builtin
+extra data types are created while the events are built and exist only as final data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">col</dt>
+<dd class="field-odd"><p>Data is saved as columns in a matrix with number of columns defined by ‘ch_mask’.</p>
+</dd>
+<dt class="field-even">bit</dt>
+<dd class="field-even"><p>Bit mask with a single bit ber channel.</p>
+</dd>
+<dt class="field-odd">latency</dt>
+<dd class="field-odd"><p><em>Builtin extra.</em> The time difference between counts in different channels. Needs
+additional key ‘main’ to define the channel that is compared against the others.
+Output is always (number of channels - 1) columns.</p>
+</dd>
+<dt class="field-even">multihit</dt>
+<dd class="field-even"><p><em>Builtin extra.</em> A bit mask with bit set on a channel that received multiple
+hits per event.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">multi</dt>
+<dd class="field-odd"><p>Defines what happens if two or more hits are detected in a single channel within a single
+event (inside the coincidence window). Valid values are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">sum</dt>
+<dd class="field-odd"><p>Sum of the values</p>
+</dd>
+<dt class="field-even">max</dt>
+<dd class="field-even"><p>Maximum of the values</p>
+</dd>
+<dt class="field-odd">min</dt>
+<dd class="field-odd"><p>Minimum of the values</p>
+</dd>
+<dt class="field-even">mean</dt>
+<dd class="field-even"><p>Mean of the values</p>
+</dd>
+<dt class="field-odd">kill</dt>
+<dd class="field-odd"><p>The event is discarded</p>
+</dd>
+<dt class="field-even">max_e</dt>
+<dd class="field-even"><p>Value in the hit where energy is largest</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">raw unit</dt>
+<dd class="field-odd"><p>String that is used as unit for uncalibrated data. Default is ‘ch’.</p>
+</dd>
+<dt class="field-even">unit</dt>
+<dd class="field-even"><p>String that is used for calibrated data. Default for energy is ‘KeV’.</p>
+</dd>
+<dt class="field-odd">empty_val</dt>
+<dd class="field-odd"><p>Value given to channels that don’t have information. Default for energy is -1, for all
+other extras the default is 0. Latency extra has this set to smallest value of the datatype
+and ignores this parameter.</p>
+</dd>
+<dt class="field-even">num_col</dt>
+<dd class="field-even"><p>Number of columns in the parsed data matrix. It is automatically calculated. For energy it is the number
+of channels, for extras this value is calculated based on ‘ch_mask’ or defined by the type of inbuilt
+extra. It is used by the data loader.</p>
+</dd>
+<dt class="field-odd">main</dt>
+<dd class="field-odd"><p>‘main’ is used by the ‘latency’ aggregate to single out which channel time is compared against
+the others.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="plot-configuration">
+<h2>Plot configuration</h2>
+<p>Plot configuration defines the data in the plot as well as the plotting parameters, such as labels, scales etc.
+Only one plot can be defined per Plot object. However multiple plots can be stacked into the plot_cfg list of the plot
+configuration. If all of the plots are 1d and have same axes they can be plotted into a single figure. Creating figures
+and handling how to stack plots into figures should be done explicitly by the user. Two Plot instances can be compared
+for equality. The result is True only if they can be shown in the same axes. The Plot class uses only the information
+in plot_cfg and the name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">name</dt>
+<dd class="field-odd"><p>Name of the canvas. Will be visible in the title of the plot.</p>
+</dd>
+<dt class="field-even">plot_cfg</dt>
+<dd class="field-even"><p>List defining all plots in the configuration file. If multi plot configuration is given the index of the
+plot has to be set by plot_idx keyword on initialization of the Plot object. First plot in this list is
+configured if index is not given. A plot is defined by its name, axes and gates:</p>
+<dl class="field-list simple">
+<dt class="field-odd">plot_name</dt>
+<dd class="field-odd"><p>Name for the individual plot that helps to understand the content of the plot. Will be
+visible in the legend of 1d plots and as the label of the colorbar in 2d plots.</p>
+</dd>
+<dt class="field-even">axes</dt>
+<dd class="field-even"><p>An axis info dictionary defining the x-axis of the plot or a list defining two
+axis_infos for a 2d plot.</p>
+</dd>
+<dt class="field-odd">gates</dt>
+<dd class="field-odd"><p>A list of gate_info dictionaries. All gates in this list are applied in AND mode.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>The rest of the plot configuration is not used by listmode library at all.</p>
+<dl class="field-list simple">
+<dt class="field-odd">xscale</dt>
+<dd class="field-odd"><p>Defines whether x axis of a plot is logarithmic (“log”) or linear (“linear”,
+default).</p>
+</dd>
+<dt class="field-even">yscale</dt>
+<dd class="field-even"><p>Defines whether x axis of a plot is logarithmic (“log”) or linear (“linear”,
+default).</p>
+</dd>
+<dt class="field-odd">zscale</dt>
+<dd class="field-odd"><p>Defines whether z axis (colorbar) of a 2d-plot is logarithmic (“log”) or linear
+(“linear”, default)</p>
+</dd>
+<dt class="field-even">reverse_x_axis</dt>
+<dd class="field-even"><p>Optional string that defines whether x-axis is reversed in a plot.</p>
+</dd>
+<dt class="field-odd">reverse_y_axis</dt>
+<dd class="field-odd"><p>Optional string that defines whether y-axis is reversed in a plot.</p>
+</dd>
+</dl>
+<section id="axis-info">
+<h3>axis_info</h3>
+<p>A dictionary defining each data axis of the plot:
+:channel:       The channel to plot. Note that some extra data have different number of channels. Note also that this</p>
+<blockquote>
+<div><p>defines the name printed to legend for 1d plots, also for time axes. It should match the gate used
+for selecting the data (if applicable) for time plots.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">data</dt>
+<dd class="field-odd"><p>A string defining the name of the data to be plotted on this axis. This can be “time”, “energy” or any of
+the extras.</p>
+</dd>
+<dt class="field-even">bin_width</dt>
+<dd class="field-even"><p>For normal data this is an integer width of bin in raw units. Note, for time axis this is in timebase
+units instead and fractional bin widths can be used.</p>
+</dd>
+<dt class="field-odd">range</dt>
+<dd class="field-odd"><p>A two item list defining lower and upper limits in calibrated units. Ignored with time axes.</p>
+</dd>
+<dt class="field-even">timebase</dt>
+<dd class="field-even"><p>Only relevant for time axes. A string defining the base unit for time axes.
+(“ns”, “us”, “ms”, “s”, “m”, “h” and “d”).</p>
+</dd>
+</dl>
+</section>
+<section id="gate-info">
+<h3>gate_info</h3>
+<p>A dictionary defining a gate
+:channel:       The channel to gate with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">data</dt>
+<dd class="field-odd"><p>A string defining the name of the data to be gated with. This can be “time”, “energy” or any of the extras.</p>
+</dd>
+<dt class="field-even">range</dt>
+<dd class="field-even"><p>A nested list defining the ranges that are used for the gate. Each range is a list of start and stop values.
+The ranges are defined in calibrated units. Bitmask type data ignores range. An event is in range if
+True and not if False.</p>
+</dd>
+<dt class="field-odd">coinc</dt>
+<dd class="field-odd"><p>An integer defining whether the gate is anticoincident (negative integer), coincident (positive
+integer) or null (zero). Coincident gate only passes events with data value in that channel contained
+within the gate range, anticoincident passes if not. A zero defines a null gate. It will not cause
+filtering of the data - it is not processed at all. Use null gates to switch off gates quickly.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

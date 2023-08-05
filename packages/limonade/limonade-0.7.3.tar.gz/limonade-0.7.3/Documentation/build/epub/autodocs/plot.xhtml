@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Plot</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/epub.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="module-listmode.plot">
+<span id="plot"></span><h1>Plot</h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.plot.Axis">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">Axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Axis info is a class handling a single data axis in a plot. Axis takes care of binning, calibration, tick spacing
+and labeling of the plot. For this to happen, Axis needs not only axis configuration but also detector configuration
+to know about the data it is showing.</p>
+<p>Axis is not meant to be used directly. It is a part of Plot.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Axis.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Histogram is updated with the filtered selected data in a list called datas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – Numpy array of data values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.plot.Filter1d">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">Filter1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Filter collects the histogram. It defines its range by the axes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Filter1d.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datas</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Histogram is updated with the filtered selected data in a list called datas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>datas</strong> – List of numpy arrays of data values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.plot.Filter2d">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">Filter2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>In 2d-filter the __init__ and _build are overridden to handle two axes.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.plot.Gate">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">Gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gate_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bitmask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Gate is a simple class defining a single filter for data streamed through it’s update method. It is defined by
+gate_info dictionary with following keys:
+“channel”:  The channel the gate is for.
+“dtype”:     The data type the gate is for.
+“range”:    A list of ranges defining where the gate is passing through (if null or coincident) or blocking (if</p>
+<blockquote>
+<div><p>anticoincident). Each range is a list of start and stop values in calibrated units.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>“coinc”:    Defines coincidence (positive integer), anticoincidence (negative integer) or null coincidence. A null</dt><dd><p>gate will still limit the plot axis and is thus implicitly handled as coincident if it is defined for
+one of the plot axes.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Gate.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Update runs the data_dict through the gate selection and modifies the input mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> – Full data dict of the chunk</p></li>
+<li><p><strong>mask</strong> – A mask defining events that pass. The mask is modified in-place.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listmode.plot.Plot">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">Plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Plot is a manager class for handling a histogram to plot. A plot itself is a combination of its axes and its filter.
+Axes objects are responsible for the calibration, limits and unit labels of the plot. A plot is filled by feeding
+it with data chunks via its update-method. Filter is the actual histogramming function collecting output of each
+chunk. Plot class can return the data and axes information as numpy array via get_data-method and title, legend and
+axis label strings via its get_plot_labels-method.</p>
+<p>Plot configuration dictionary defines the data in the plot as well as the plotting parameters, such as labels,
+scales etc. The Plot class uses only the information in plot_cfg list and the name of the config. Only one plot can
+be defined per Plot object. However multiple plots can be stacked into the plot_cfg list of the plot configuration.
+If all of the plots are 1d and have same axes they can be plotted into a single figure.</p>
+<p>Creating figures and handling how to stack plots into figures is done explicitly by the user. Two Plot instances can
+be compared for equality to help with stacking. The comparison returns True only if the two plots can be shown in
+the same axes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Plot.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibrate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Returns the histogram as numpy array along with bins for each axis and text for legend/export filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calibrate</strong> – Return calibrated bins</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Plot.get_plot_labels">
+<span class="sig-name descname"><span class="pre">get_plot_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calibrate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Returns title legend and axis labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calibrate</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listmode.plot.Plot.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Update method runs the relevant data through all the gates to produce a final mask and runs the masked data into
+axes (for axis limit updates) and filter (for histogramming).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_dict</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.plot.data_plot">
+<span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">data_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_slice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calibrate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Demo function to produce data from a plot config dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.plot.get_ticks">
+<span class="sig-prename descclassname"><span class="pre">listmode.plot.</span></span><span class="sig-name descname"><span class="pre">get_ticks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Tries to divide the numticks to the axis in a smart way. Probably not used atm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_x</strong> – </p></li>
+<li><p><strong>numticks</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The ticks in a numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Misc</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/epub.css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <section id="misc">
+<h1>Misc</h1>
+<p>Here are few random helper functions useful in some special situations.</p>
+<span class="target" id="module-listmode.misc"></span><dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.atoi">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">atoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Convert integer text to int, otherwise return the original string. Used to parse long filenames with numbering
+in the filenme.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – Input string.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If text is convertible to integer this returns the integer, otherwise the original text.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.check_monotonousness">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">check_monotonousness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Checks if values in a given vector are monotonously increasing. If they are not, the index of the first element
+that breaks the monotonousness is returned. None.
+:param vector:
+:return: Index of first out-of-place element in vector. None is returned if vector is monotonous.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.fromisoformat">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">fromisoformat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt_string</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Converts string returned by python 3.7+ datetime.toisoformat() into a proper datetime object. This was needed
+because the isoformat seems to be fairly new thing in python and not present in 3.6 or earlier.</p>
+<p>The string to be parsed is of the format: “2020-06-09T04:00:01.434322”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dt_string</strong> – isoformat string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>datetime object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.make_run_id">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">make_run_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_name</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Make sure old data is never overwritten. Adds an incremented number to base name. If a datafile with the same name
+already exists, then the number is incremented.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_path</strong> – </p></li>
+<li><p><strong>base_name</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.natural_keys">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">natural_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>alist.sort(key=natural_keys) sorts number strings in human order (‘1’ before ‘10’) and so on.
+Taken from:
+<a class="reference external" href="http://nedbatchelder.com/blog/200712/human_sorting.html">http://nedbatchelder.com/blog/200712/human_sorting.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – input string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.parse_file">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">parse_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Finds data files (matching optional file_name prefix) from directory. First event mode data files are searched for, if not
+found, then channel mode files and finally raw data files are searched for. All files in the directory (or matching
+a given base name) are returned</p>
+<p>Problem is that some raw data formats (Caen, native channel data) have multiple files per measurement. This is fixed
+by having a wildcard expression of the postfix of the filename included in the extension
+like ch???.dat for caen data. Unique names are then automatically resolved by saving the base names as keys to a
+dictionary (which is ordered in py3 unlike the set?).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dir_name</strong> – The directory containing the data</p>
+</dd>
+<dt class="field-even">Param</dt>
+<dd class="field-even"><p>file_name: optional base name for data files if they are named differently from directory.</p>
+</dd>
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>raw_ext: optional wildcard pattern for raw data files.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of base names of data files in the directory (matching file_name prefix)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.parse_time">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">parse_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Parses command line time slice with optional timebase argument. Timebase argument is one of ‘s’, ‘m’, ‘h’ or ‘d’.
+Timebase argument, if it exists, is the last value in the list or tuple of (start, [stop], [timebase]) that defines
+the slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – A list or tuple of (start, [stop], [timebase]). All input arguments are strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns parsed time slice (start, stop) in integer nanoseconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listmode.misc.parse_timebase">
+<span class="sig-prename descclassname"><span class="pre">listmode.misc.</span></span><span class="sig-name descname"><span class="pre">parse_timebase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Parses the timebase string if it exists, supplies default if it does not and returns the timebase multiplier
+with the other arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – A list or tuple of (start, [stop], [timebase]). All input arguments are strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>timebase multiplier for ns-transformation and list of the other arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

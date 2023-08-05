@@ -1,0 +1,64 @@
+
+Introduction
+============
+
+
+What is Listmode
+-------------------
+Listmode is a library built around a single Data class and a lot of helper functions and classes.
+The objective of Listmode is to simplify handling of listmode data from different sources. Ideally
+all interaction with the library is either via the data class or the plotter function. Data can be
+created by the streamer class. All details of the data are be defined by configuration of the
+detector and the plot using configuration files written in json.
+
+The data can be retrieved and histogrammed using powerful selection tools in the plot module.
+These include selecting events by time interval, energy gates in (anti)coincident channels or
+even gates in some extra data, such as coordinate information. Gates can also be defined as
+polygonal 2d gates between any two pieces of data.
+
+Listmode data tends to grow big. A single dataset is easily several million events long. Storing
+all that data in memory is not efficient and in some cases not even possible. All data
+operations in Listmode are processed in chunks. The data itself is stored in hard drive as
+binary format files and only small chunk is read at a time. All data is immutable, in the sense
+that the datafiles are never modified. Any change in data needs to be streamed into a new set of
+datafiles.
+
+
+How to use Listmode
+-------------------
+The most important thing for user is to understand the structure and use of the configuration
+files and the logic of the flow of data in the storage and plotting pipelines.
+
+
+What is data?
+-------------
+Data is timestamps. Timestamps are handled in a special way throughout the library. Every single
+event has a timestamp. Timestamps are used to index the events and are the basis of the hashing
+system used to speed up searches from long (multi-million event) datasets. Time interval of any
+data operation needs to be defined before anything else. The start and stop indices in the time
+slice are retrieved and the data loaded in chunks and set forward in the pipeline.
+
+The data associated with the timestamp includes energy information for the channels that belong
+to the event. At the moment the energy information is always present for every channel of the detector. Event can hold
+other data in addition to energy information. For example coordinate information, signal rise time
+value or a pile-up bit can be recorded by the detector and can be included as part of an event. This
+extra data is always associated with a channel of the detector.
+
+
+
+The flow of data
+----------------
+The most typical data operation is a plot. A plot is defined by plot configuration, a dictionary
+or a file, which defines what plot class is instanced by the plotter function. Plot class loads
+data in chunks, using the get_data_block method of the data class. It then makes the gate
+selection defined in configuration using coincidence_mask function and feeds the selected data to
+the filter which calculates a histogram of the data block. Plot class combines all the chunk
+histograms into a master histogram which is then returned.
+
+Normally all this is done automatically by the plotter function but can as well be done manually
+using the data (and plot) class and selection function.
+
+
+How to start
+-------------
+An overview of the different configuration files can be found in the section :ref:`configuration`.

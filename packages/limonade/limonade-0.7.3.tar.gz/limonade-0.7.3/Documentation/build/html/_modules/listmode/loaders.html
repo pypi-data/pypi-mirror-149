@@ -1,0 +1,1180 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>listmode.loaders &#8212; listmode 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for listmode.loaders</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+
+<span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">unpack</span><span class="p">,</span> <span class="n">calcsize</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">listmode.data</span>
+<span class="kn">from</span> <span class="nn">listmode</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">ut</span><span class="p">,</span> <span class="n">misc</span> <span class="k">as</span> <span class="n">misc</span>
+
+
+<div class="viewcode-block" id="pixie4_loader"><a class="viewcode-back" href="../../autodocs/loaders.html#listmode.loaders.pixie4_loader">[docs]</a><span class="k">def</span> <span class="nf">pixie4_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="g4_loader"><a class="viewcode-back" href="../../autodocs/loaders.html#listmode.loaders.g4_loader">[docs]</a><span class="k">def</span> <span class="nf">g4_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="dspec_loader"><a class="viewcode-back" href="../../autodocs/loaders.html#listmode.loaders.dspec_loader">[docs]</a><span class="k">def</span> <span class="nf">dspec_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="caen_loader"><a class="viewcode-back" href="../../autodocs/loaders.html#listmode.loaders.caen_loader">[docs]</a><span class="k">def</span> <span class="nf">caen_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads data saved by Caen MCA. Caen data format does not record time and date of data taking, so these are calculated</span>
+<span class="sd">    from the datafile modification timestamp.</span>
+
+<span class="sd">    In case there are several runs on single data (appended to same file) the results may be unpredictable. In the</span>
+<span class="sd">    future all appends should be recognized and extracted as channel files, but only first one is loaded as data.</span>
+
+<span class="sd">    The loaded channel list is compared to one in cfg and if not matching an error is generated.</span>
+
+<span class="sd">    Caen loader supports two kinds of bitmask extra data: Pileup and flags. Flags is set whenever there the &#39;extras&#39;</span>
+<span class="sd">    data is nonzero. Pileup flag is set whenever the energy for the channel is zero, signaling a pileup event (unless</span>
+<span class="sd">    set to return energy value).</span>
+
+<span class="sd">    :param self: Calling Data instance. This is set when the loader is set as class method.</span>
+<span class="sd">    :param data_path: path to a file</span>
+
+<span class="sd">    :return:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_DATA_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Trigger Time Tag&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">),</span>
+                  <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Energy&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">),</span>
+                  <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Extras&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">),</span>
+                  <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Short Energy&#39;</span><span class="p">,</span> <span class="s1">&#39;sE&#39;</span><span class="p">),</span>
+                  <span class="mi">4</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;DPP Code&#39;</span><span class="p">,</span> <span class="s1">&#39;DPP&#39;</span><span class="p">),</span>
+                  <span class="mi">255</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Fake&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">)}</span>
+    <span class="n">_TYPE_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;&lt;b&#39;</span><span class="p">,</span>
+                  <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;&lt;B&#39;</span><span class="p">,</span>
+                  <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span>
+                  <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span>
+                  <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;&lt;i&#39;</span><span class="p">,</span>
+
+                  <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;&lt;I&#39;</span><span class="p">,</span>
+                  <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;&lt;q&#39;</span><span class="p">,</span>
+                  <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;&lt;Q&#39;</span><span class="p">,</span>
+                  <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>  <span class="c1"># placeholder for the generic string</span>
+                  <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;&lt;l&#39;</span><span class="p">,</span>
+                  <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;&lt;d&#39;</span><span class="p">,</span>
+                  <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;&lt;c&#39;</span><span class="p">,</span>
+                  <span class="mi">128</span><span class="p">:</span> <span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span>  <span class="c1"># placeholder for the 3 byte string</span>
+                  <span class="mi">255</span><span class="p">:</span> <span class="s1">&#39;Fake&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_check_time_corruption</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">last_good_v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check for corrupt timestamps within a readout chunk. return begin, stop and next good indices out of vector.</span>
+<span class="sd">        :param vector:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stop_idx</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">begin_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">next_good</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+        <span class="c1">#temp[1:] = vector[1:] &gt; last_good_v + 36000000000000  # 10h gap</span>
+        <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="n">vector</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">36000000000000</span>  <span class="c1"># 10h gap</span>
+        <span class="k">if</span> <span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">last_good_v</span> <span class="o">+</span> <span class="mi">72000000000000</span><span class="p">:</span>
+            <span class="c1"># first index is corrupt has to be handled as this will be true for the second subrange automatically.</span>
+            <span class="c1"># Search for a good value to begin the iteration.</span>
+            <span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">vector</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">last_good_v</span><span class="p">)</span>
+            <span class="n">good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">last_good_v</span> <span class="o">+</span> <span class="mi">72000000000000</span> <span class="ow">and</span> <span class="n">good</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># all indices are corrupt</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All indices are corrupt&#39;</span><span class="p">)</span>
+                <span class="k">raise</span>
+            <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">good</span>
+
+        <span class="c1"># Check for garbage timestamps</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="n">begin_idx</span><span class="p">:]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Garbage timestamp event&#39;</span><span class="p">)</span>
+            <span class="n">good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="n">begin_idx</span><span class="p">:])</span>  <span class="c1"># points to first bad index or zero if all are good</span>
+            <span class="k">if</span> <span class="n">good</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">stop_idx</span> <span class="o">=</span> <span class="n">begin_idx</span> <span class="o">+</span> <span class="n">good</span>  <span class="c1"># one past the last good idx</span>
+                <span class="n">ng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="n">stop_idx</span><span class="p">:])</span>  <span class="c1"># points to next good index or zero if all bad</span>
+                <span class="k">if</span> <span class="n">ng</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">next_good</span> <span class="o">=</span> <span class="n">stop_idx</span> <span class="o">+</span> <span class="n">ng</span>
+
+        <span class="n">retval</span> <span class="o">=</span> <span class="p">(</span><span class="n">begin_idx</span><span class="p">,</span> <span class="n">stop_idx</span><span class="p">,</span> <span class="n">next_good</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retval</span>
+
+    <span class="k">def</span> <span class="nf">_read_header</span><span class="p">(</span><span class="n">fileid</span><span class="p">):</span>
+
+        <span class="n">PROTOCOL</span><span class="p">,</span> <span class="n">NWORDS</span><span class="p">,</span> <span class="n">EMPTY</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;B&#39;</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span>
+                                            <span class="n">fileid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="n">type_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">type_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NWORDS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">DATA</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">EMPTY</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;B&#39;</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span> <span class="o">+</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">fileid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">_DATA_DICT</span><span class="p">[</span><span class="n">DATA</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_DATA_DICT</span><span class="p">[</span><span class="mi">4</span><span class="p">]:</span>
+                <span class="n">type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_TYPE_DICT</span><span class="p">[</span><span class="n">TYPE</span><span class="p">])</span>
+                <span class="n">type_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_DATA_DICT</span><span class="p">[</span><span class="n">DATA</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">PROTOCOL</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">type_names</span>
+
+    <span class="k">def</span> <span class="nf">make_streams</span><span class="p">(</span><span class="n">ch_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">pileup</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">partnum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Spawn a new set of streams with file name modified by the partnum.</span>
+<span class="sd">        also return matching datavectors</span>
+
+<span class="sd">        :param ch_list:</span>
+<span class="sd">        :param data_path:</span>
+<span class="sd">        :param base_name:</span>
+<span class="sd">        :param pileup:</span>
+<span class="sd">        :param flags:</span>
+<span class="sd">        :param partnum:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">partnum</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">base_name</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_part-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partnum</span><span class="p">)</span>
+        <span class="n">streams</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_list</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">pileup</span><span class="p">:</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span>
+                                                        <span class="n">extra_name</span><span class="o">=</span><span class="s1">&#39;pileup&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_list</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">flags</span><span class="p">:</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span>
+                                                        <span class="n">extra_name</span><span class="o">=</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_list</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">streams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;timing&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_list</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">streams</span>
+
+    <span class="c1"># First find the number of channels</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">data_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_ch???.dat&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_ch???.dat&#39;</span><span class="p">)</span>
+    <span class="n">temp_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of channel indices found from data_path</span>
+
+    <span class="n">channel_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span>  <span class="c1"># list of channel indices expected from config</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>  <span class="c1"># find saved channel data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">chnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_ch&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">temp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chnum</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channel_list</span><span class="p">:</span>  <span class="c1"># check if needed channels are found from the data</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">channel_list</span><span class="p">,</span> <span class="n">temp_list</span><span class="p">)</span>
+        <span class="n">temp_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">temp_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ch</span><span class="p">))</span>
+
+    <span class="n">chunk_num</span> <span class="o">=</span> <span class="mi">100000</span>
+    <span class="n">timing_num</span> <span class="o">=</span> <span class="mi">1000</span>
+
+    <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span>
+
+    <span class="n">pileup</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">extra</span> <span class="ow">in</span> <span class="n">extras</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">extra</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;pileup&#39;</span><span class="p">:</span>
+            <span class="n">pileup</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">extra</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;flags&#39;</span><span class="p">:</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span> <span class="o">=</span> <span class="n">make_streams</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span>
+                                                                           <span class="n">pileup</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">stream_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span><span class="p">)]</span>
+    <span class="c1"># mod_date = []</span>
+
+
+    <span class="c1"># file modification date is the best estimate of run stop. Start is automatically calculated by metadata.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">channel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
+
+    <span class="c1"># The datafiles are streamed one by one.</span>
+    <span class="c1"># Caen files have no timing information: timing file will be created after parsing.</span>
+    <span class="c1"># Caen data can be corrupted by appending multiple runs into same file by accident. This is very bad</span>
+    <span class="c1"># for timing, because the timestamps are not monotonously increasing anymore. These datafiles should be broken</span>
+    <span class="c1"># into several one-run files when opened. What is done here is that new files with modified names are spawned</span>
+    <span class="c1"># when a timestamp is smaller than previous. Only the first run belongs to this data, the others are named with</span>
+    <span class="c1"># _part-N postfix.</span>
+
+    <span class="k">for</span> <span class="n">channel</span><span class="p">,</span> <span class="n">ch_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">):</span>
+        <span class="c1"># empty lists because Stream data takes the data for all channels. Only current channel is updated</span>
+        <span class="n">E_vecs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+        <span class="n">time_vecs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+        <span class="n">p_vecs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+        <span class="n">f_vecs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+        <span class="n">timeout</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">))]</span>
+
+        <span class="n">E_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_num</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int16&#39;</span><span class="p">)</span>  <span class="c1"># negative is empty so that Caen 0 really corresponds</span>
+                                                                  <span class="c1"># to an event with energy 0</span>
+        <span class="n">E_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">time_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_num</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>
+        <span class="n">p_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_num</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="n">f_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_num</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="n">timing_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">timing_num</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;u8&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;u8&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;f4&#39;</span><span class="p">)])</span>
+
+        <span class="n">pdeadtime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_cfg&#39;</span><span class="p">][</span><span class="n">ch_idx</span><span class="p">][</span><span class="s1">&#39;pdeadtime&#39;</span><span class="p">]</span>
+        <span class="n">sample_ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;sample_ns&#39;</span><span class="p">]</span>
+
+        <span class="n">ch_file</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">channel_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ch_idx</span><span class="p">)]</span>
+
+        <span class="c1">#prev_t = 0  # to check for decreasing timestamp event</span>
+
+        <span class="n">current_split</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># counts the decreasing timestamp events -&gt; numbering for split files.</span>
+        <span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span> <span class="o">=</span> <span class="n">stream_list</span><span class="p">[</span><span class="n">current_split</span><span class="p">]</span>  <span class="c1"># make sure we write to right stream</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ch_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">df</span><span class="p">:</span>
+            <span class="n">PROTOCOL</span><span class="p">,</span> <span class="n">type_list</span><span class="p">,</span> <span class="n">type_names</span> <span class="o">=</span> <span class="n">_read_header</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+            <span class="n">types</span> <span class="o">=</span> <span class="p">[(</span><span class="n">type_names</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">type_list</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">type_list</span><span class="p">))]</span>
+            <span class="n">type_string</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">type_list</span><span class="p">])</span>
+            <span class="n">evnt_sz</span> <span class="o">=</span> <span class="n">calcsize</span><span class="p">(</span><span class="n">type_string</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">chunk_num</span> <span class="o">*</span> <span class="n">evnt_sz</span>  <span class="c1"># prepare to read chunk_num events</span>
+
+            <span class="n">isdata</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># df.read(evnt_sz)</span>
+            <span class="n">chunk_idx</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">tf_idx</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># timing file starts with row of zeroes, so the first idx is 1</span>
+            <span class="n">eventcounter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">last_good_val</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># last accepted time value. If this is suddenly overshot by a large margin</span>
+                               <span class="c1"># the big timestamps are excluded as corrupt</span>
+
+            <span class="k">while</span> <span class="n">isdata</span><span class="p">:</span>
+
+                <span class="n">buffer</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+                <span class="n">buf_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">//</span> <span class="n">evnt_sz</span>  <span class="c1"># number of rows in chunk.</span>
+                <span class="c1"># isdata = buf_len == chunk_num  # Last data if less than chunk size.</span>
+                <span class="n">isdata</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">==</span> <span class="n">chunk_size</span>  <span class="c1"># Last data if less than chunk size.</span>
+                <span class="n">chunk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">count</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="c1"># the data chunk can be split into sub ranges if there is a timestamp reset or corrupt time data.</span>
+                <span class="c1"># Indices relating to these are set here</span>
+                <span class="n">cur_begin_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># where we start, usually 0</span>
+                <span class="n">cur_end_idx</span> <span class="o">=</span> <span class="n">chunk_num</span>  <span class="c1"># one past last idx of range, usually end of chunk</span>
+                <span class="n">next_begin_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># where to start next range, negative if no next range</span>
+
+
+                <span class="c1"># split_idx = 0  # the first index in the chunk that belongs to current data stream. Usually 0.</span>
+                <span class="c1"># end_idx = buf_len  # the first index in the chunk that belongs to next data stream or buf_len.</span>
+
+                <span class="c1"># we use indices for splitting, but the data is read out to arrays before the loop</span>
+                <span class="n">time_ch</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">][</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">sample_ns</span><span class="p">)</span>
+                <span class="n">E_ch</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x7FFF</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pileup</span><span class="p">:</span>
+                    <span class="c1"># All bad events are included, also those that have an associated energy value which is for</span>
+                    <span class="c1"># some reason still marked with the pileup bit (like a start of a saturation event, which</span>
+                    <span class="c1"># is flagged as a pileup event if a trigger is detected during the veto period). The first</span>
+                    <span class="c1"># part is not needed, because PU bit is on if pileup has been seen (e=0). If e = 1 and pu-bit</span>
+                    <span class="c1"># is set there is a saturation event, otherwise it is a generic bad event for unknown reason.</span>
+                    <span class="n">p_ch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
+                                         <span class="p">(</span><span class="n">chunk</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">][</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x8000</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">flags</span><span class="p">:</span>
+                    <span class="c1"># flags signify specific events found from EXTRAS. Existence of an extra does not signify much, as</span>
+                    <span class="c1"># such. It is a bitmask with a load of different data.</span>
+                    <span class="c1"># Bit 0: LOST EVENT - Events have been lost due to buffer full or preceding saturation. These</span>
+                    <span class="c1">#        should still be recorded.</span>
+                    <span class="c1"># bit 1: ROLL-OVER - The DPP-PHA algorithm creates a fake event with Time Stamp = 0, Energy = 0,</span>
+                    <span class="c1">#        PU = 1, bit[3] and bit[1] of EXTRAS = 1</span>
+                    <span class="c1"># bit 2: RESERVED</span>
+                    <span class="c1"># bit 3: FAKE_EVENT</span>
+                    <span class="c1"># bit 4: INPUT_SATURATION - An event saturated the input dynamics. The event that saturates</span>
+                    <span class="c1">#        the dynamics has Energy = 0x7FFFF, while the PU flag is set to 1 only if there is also</span>
+                    <span class="c1">#        a pile-up event in the trigger veto period of 2*rise time.</span>
+                    <span class="c1"># bit 5: LOST_TRG - Set to 1 whenever 1024 lost events have been detected</span>
+                    <span class="c1"># bit 6: TOT_TRG - set to 1 whenever 1024 total events have been detected</span>
+                    <span class="c1"># bit 7: MATCH_COINC</span>
+
+                    <span class="n">f_ch</span> <span class="o">=</span> <span class="n">chunk</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
+
+                <span class="c1"># Check for corruption and splits</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="c1"># Check against timestamp corruption events. If one is found, then the data is streamed</span>
+                    <span class="c1"># up to last good and next iteration starts from next good.</span>
+                    <span class="n">corrupt_tuple</span> <span class="o">=</span> <span class="n">_check_time_corruption</span><span class="p">(</span><span class="n">time_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">],</span>
+                                                           <span class="n">last_good_val</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">corrupt_tuple</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">cur_begin_idx</span> <span class="o">=</span> <span class="n">cur_begin_idx</span> <span class="o">+</span> <span class="n">corrupt_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">cur_end_idx</span> <span class="o">=</span> <span class="n">cur_begin_idx</span> <span class="o">+</span> <span class="n">corrupt_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">next_begin_idx</span> <span class="o">=</span> <span class="n">cur_begin_idx</span> <span class="o">+</span> <span class="n">corrupt_tuple</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1">#print(&#39;prev good&#39;, last_good_val)</span>
+                        <span class="n">last_good_val</span> <span class="o">=</span> <span class="n">time_ch</span><span class="p">[</span><span class="n">cur_end_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># end idx points to one past last good</span>
+                        <span class="c1">#print(&#39;last good&#39;, last_good_val)</span>
+                        <span class="c1">#print(&#39;tuple&#39;, corrupt_tuple)</span>
+                        <span class="c1">#print(&#39;prevs&#39;, time_ch[cur_begin_idx], time_ch[cur_end_idx - 1])</span>
+
+                    <span class="c1"># We need to check the monotonousness of time vector for every chunk. If not, then</span>
+                    <span class="c1"># good data is written, new streamers are spawned and rest of the data is iterated</span>
+                    <span class="c1"># again. The while loop only quits after all data has been streamed.</span>
+                    <span class="c1"># The possibly multiple splits complicate indexing so we use split_idx to mark the</span>
+                    <span class="c1"># start position of the current split and end_idx to mark the end of current</span>
+                    <span class="c1"># split. Normally these would be 0 and buf_len respectively.</span>
+                    <span class="n">split_idx</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">check_monotonousness</span><span class="p">(</span><span class="n">time_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">split_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">cur_end_idx</span> <span class="o">=</span> <span class="n">cur_begin_idx</span> <span class="o">+</span> <span class="n">split_idx</span>
+                        <span class="n">next_begin_idx</span> <span class="o">=</span> <span class="n">cur_end_idx</span>
+
+                    <span class="c1"># write to disk</span>
+                    <span class="n">time_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span>
+                    <span class="n">E_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">E_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span>
+                    <span class="n">streamer</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="n">time_vecs</span><span class="p">,</span> <span class="n">E_vecs</span><span class="p">))</span>  <span class="c1"># stream to .dat file to speed up</span>
+
+                    <span class="k">if</span> <span class="n">pileup</span><span class="p">:</span>
+                        <span class="n">p_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span>
+                        <span class="n">pileup_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">p_vecs</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">flags</span><span class="p">:</span>
+                        <span class="n">f_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_ch</span><span class="p">[</span><span class="n">cur_begin_idx</span><span class="p">:</span><span class="n">cur_end_idx</span><span class="p">]</span>
+                        <span class="n">flag_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f_vecs</span><span class="p">)</span>
+
+                    <span class="c1"># Dead time is just guessed using pdeadtime (rise-time + flat-top + trigger holdoff).</span>
+                    <span class="n">counts_in_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_end_idx</span> <span class="o">-</span> <span class="n">cur_begin_idx</span><span class="p">)</span>
+                    <span class="n">eventcounter</span> <span class="o">+=</span> <span class="n">counts_in_range</span>
+                    <span class="n">timing_vec</span><span class="p">[</span><span class="n">tf_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">eventcounter</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">time_vecs</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">][</span><span class="n">cur_end_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">counts_in_range</span> <span class="o">*</span> <span class="n">pdeadtime</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">)</span>
+                    <span class="n">tf_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+                    <span class="k">if</span> <span class="n">split_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># New vecs and streamers are initialized if there was a split. Eventcounter is reset too</span>
+                        <span class="n">current_split</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Timestamps not monotonous!!!&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream_list</span><span class="p">),</span> <span class="n">current_split</span><span class="p">,</span> <span class="n">split_idx</span><span class="p">)</span>
+
+                        <span class="n">timeout</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">timing_vec</span><span class="p">[:</span><span class="n">tf_idx</span><span class="p">]</span>
+                        <span class="n">time_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>  <span class="c1"># stream old timing data</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream_list</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">current_split</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Spawning new files.&#39;</span><span class="p">)</span>
+                            <span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span> <span class="o">=</span> <span class="n">make_streams</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">,</span>
+                                                                                                   <span class="n">data_path</span><span class="p">,</span>
+                                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span>
+                                                                                                   <span class="n">pileup</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span>
+                                                                                                   <span class="n">current_split</span><span class="p">)</span>
+                            <span class="n">stream_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Writing to existing files&#39;</span><span class="p">)</span>
+                            <span class="n">streamer</span><span class="p">,</span> <span class="n">pileup_streamer</span><span class="p">,</span> <span class="n">flag_streamer</span><span class="p">,</span> <span class="n">time_streamer</span> <span class="o">=</span> <span class="n">stream_list</span><span class="p">[</span><span class="n">current_split</span><span class="p">]</span>
+                        <span class="n">eventcounter</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">tf_idx</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># continue filling timing data from 1 (idx 0 is zeros)</span>
+
+                    <span class="k">if</span> <span class="n">cur_end_idx</span> <span class="o">&lt;</span> <span class="n">buf_len</span><span class="p">:</span>  <span class="c1"># still iterating</span>
+                        <span class="k">if</span> <span class="n">next_begin_idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># here we are in a middle of a chunk, but there is no good events left. Go to next</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;End of chunk corruption event!&#39;</span><span class="p">)</span>
+                            <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">cur_begin_idx</span> <span class="o">=</span> <span class="n">next_begin_idx</span>
+                            <span class="n">cur_end_idx</span> <span class="o">=</span> <span class="n">buf_len</span>
+                    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Through the chunk</span>
+                        <span class="k">if</span> <span class="n">next_begin_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># there is a next range after end of chunk!</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unhandled end of Chunk!&#39;</span><span class="p">)</span>
+                        <span class="k">break</span>
+                    <span class="c1">#else:</span>
+                    <span class="c1">#    #eventcounter += counts_in_range</span>
+                    <span class="c1">#    break</span>
+
+                <span class="c1"># eventcounter += buf_len</span>
+                <span class="n">chunk_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">tf_idx</span> <span class="o">==</span> <span class="n">timing_num</span><span class="p">:</span>  <span class="c1"># double the timing vector if it runs out</span>
+                    <span class="n">timing_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">timing_vec</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">timing_num</span><span class="p">,),</span>
+                                                                      <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;u8&#39;</span><span class="p">),</span>
+                                                                             <span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;u8&#39;</span><span class="p">),</span>
+                                                                             <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;f4&#39;</span><span class="p">)])),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">timing_num</span> <span class="o">=</span> <span class="n">timing_vec</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">isdata</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Operation is normal!&#39;</span><span class="p">)</span>
+            <span class="n">timeout</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">timing_vec</span><span class="p">[:</span><span class="n">tf_idx</span><span class="p">]</span>
+            <span class="n">time_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ch done&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="n">stream_list</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;In split close&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">astream</span> <span class="ow">in</span> <span class="n">split</span><span class="p">:</span>
+            <span class="c1"># Empty extras are None</span>
+            <span class="k">if</span> <span class="n">astream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">astream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_load_channel_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="panda_loader"><a class="viewcode-back" href="../../autodocs/loaders.html#listmode.loaders.panda_loader">[docs]</a><span class="k">def</span> <span class="nf">panda_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads PANDA data. Even though PANDA data is already reconstructed in event mode, it will still be broken down</span>
+<span class="sd">    to channel files for the pipeline. PANDA clock is used for dead time and timing. DSSSD will be handled as two</span>
+<span class="sd">    detectors with associated coordinate extra. Due to this and the capability of the multi-hit processor to combine</span>
+<span class="sd">    data from several channels the DSSSD data will be strip calibrated when read from the raw file. If strip calibration</span>
+<span class="sd">    needs to be redone later one has to make a dummy calibration to access the uncalibrated strip values.</span>
+
+<span class="sd">    If PANDA data is divided into several files, only one is converted and loaded. In this case either start_time,</span>
+<span class="sd">    stop_time or both are undefined and will be calculated from data length and, in worst case, file modification</span>
+<span class="sd">    time.</span>
+
+<span class="sd">    :param self: Calling Data instance. This is set when the loader is set as class method.</span>
+<span class="sd">    :param data_path: path to a file</span>
+
+<span class="sd">    :return:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">BUFFER_TYPES</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;DATABF&#39;</span><span class="p">,</span>
+                    <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;SCALERBF&#39;</span><span class="p">,</span>
+                    <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;SNAPSBF&#39;</span><span class="p">,</span>
+                    <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;STATEVARBF&#39;</span><span class="p">,</span>
+                    <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;RUNVARBF&#39;</span><span class="p">,</span>
+                    <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;PKTDOCBF&#39;</span><span class="p">,</span>
+                    <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;BEGRUNBF&#39;</span><span class="p">,</span>
+                    <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;ENDRUNBF&#39;</span><span class="p">,</span>
+                    <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;PAUSEBF&#39;</span><span class="p">,</span>
+                    <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;RESUMEBF&#39;</span><span class="p">,</span>
+                    <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;PARAMDESCRIP&#39;</span><span class="p">}</span>
+
+    <span class="c1"># init vars</span>
+    <span class="n">dead_time</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">total_time</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">evsum</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1">#</span>
+    <span class="n">ch_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_list&#39;</span><span class="p">])</span>
+    <span class="c1"># strip calibration</span>
+    <span class="n">strip_cal</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">load_strip_cal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
+
+
+    <span class="n">ch_file</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_ext</span><span class="p">)</span>
+
+    <span class="c1"># init</span>
+    <span class="n">f_head_sz</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># frame header size of adc buffer</span>
+
+    <span class="n">chunk_over</span> <span class="o">=</span> <span class="mi">2000</span>  <span class="c1"># single buffer should have no more events. Max I&#39;ve seen is ~1500.</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">250000</span>  <span class="c1"># Going for fewer array concatenations.</span>
+    <span class="c1"># array_size = 250000  # current size of array</span>
+    <span class="n">big_time</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># incremented when timestamp overflowsf</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stop_time</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">prevtstamp</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">min_tstamp</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># path, data_name, method = &#39;event&#39;, raw = False, channels = None, extra_name = None</span>
+    <span class="n">streamer</span> <span class="o">=</span> <span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">)</span>
+    <span class="n">time_streamer</span> <span class="o">=</span> <span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;timing&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">)</span>
+    <span class="n">timing_datas</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2000</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;idx&#39;</span><span class="p">,</span> <span class="s1">&#39;u8&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">)])</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+    <span class="c1"># defining the out arrays</span>
+
+    <span class="n">time_vecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_size</span> <span class="o">+</span> <span class="n">chunk_over</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>  <span class="c1"># for timestamp.</span>
+    <span class="n">e_mats</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_size</span> <span class="o">+</span> <span class="n">chunk_over</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint16&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>  <span class="c1"># Energy data</span>
+    <span class="p">[</span><span class="n">e_mats</span><span class="p">[</span><span class="n">_x</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+    <span class="c1"># PANDA has coord extra. Coord should be signed integer so that we can put empty as -1.</span>
+    <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">extras</span><span class="p">)):</span>
+        <span class="n">ex</span> <span class="o">=</span> <span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">data_info</span><span class="p">(</span><span class="n">extras</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">ch_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ex</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;coord&#39;</span><span class="p">:</span>
+            <span class="n">c_dtype</span> <span class="o">=</span> <span class="n">ex</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+            <span class="n">c_chmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="s1">&#39;ch_mask&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+
+    <span class="n">coord_streamer</span> <span class="o">=</span> <span class="n">listmode</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">StreamData</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span>
+                                                  <span class="n">extra_name</span><span class="o">=</span><span class="s1">&#39;coord&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_list</span><span class="p">[</span><span class="n">c_chmask</span><span class="p">])</span>
+    <span class="n">coord_datas</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">chunk_size</span> <span class="o">+</span> <span class="n">chunk_over</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">c_dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">)]</span>
+    <span class="p">[</span><span class="n">coord_datas</span><span class="p">[</span><span class="n">_x</span><span class="p">]</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">_x</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="n">total_counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>  <span class="c1"># events already written</span>
+    <span class="n">empty_counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>  <span class="c1"># zero energy events (using these?)</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># total number of recorded accepted events</span>
+    <span class="n">chunk_counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>  <span class="c1"># ch indices of event in current chunk</span>
+    <span class="n">ev_counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_ch</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint64&#39;</span><span class="p">)</span>  <span class="c1"># ch indices of event in current event</span>
+    <span class="n">timing_idx</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># scalers are the same for every channel, so single idx instead of counter</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">first_time_of_file</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># This is needed to reset the timestamps on a continuation file</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ch_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">df</span><span class="p">:</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1">#reading next buffer</span>
+            <span class="n">buf_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">buf_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Byte offset of current buffer</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">26656</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">26656</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Buffer size only </span><span class="si">{}</span><span class="s1"> / 26656&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">buffer</span><span class="p">)))</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">chunk_counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="c1"># save whatever is in the buffer</span>
+                    <span class="n">streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(([(</span><span class="n">time_vecs</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="o">-</span> <span class="n">first_time_of_file</span><span class="p">)</span> <span class="o">*</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;sample_ns&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">],</span>
+                                    <span class="p">[</span><span class="n">e_mats</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">]))</span>
+                    <span class="n">coord_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">coord_datas</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+                    <span class="n">total_counter</span> <span class="o">+=</span> <span class="n">chunk_counter</span>  <span class="c1"># total counter used to calculate metadata</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">total_counter</span><span class="p">,</span> <span class="s1">&#39;events&#39;</span><span class="p">)</span>
+                    <span class="c1"># here the timing index is zero, if a save has just happened</span>
+                    <span class="k">if</span> <span class="n">timing_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">timing_datas</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;idx&#39;</span><span class="p">][</span><span class="n">timing_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_counter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>  <span class="c1"># check if need timing data</span>
+                            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data stop without scaler buffer!&#39;</span><span class="p">)</span>
+                                <span class="n">timing_datas</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">timing_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">total_counter</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                                                                <span class="n">chunk_counter</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">*</span>
+                                                                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_cfg&#39;</span><span class="p">][</span><span class="n">ch</span><span class="p">][</span><span class="s1">&#39;pdeadtime&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">)</span>
+                            <span class="n">timing_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">time_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">timing_datas</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">timing_idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">])</span>
+
+                <span class="k">break</span>
+
+            <span class="c1">#data_sz, data_type, num_evt = self._read_header(buffer[:28])</span>
+            <span class="n">datatuple</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;h&#39;</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="s1">&#39;i&#39;</span> <span class="o">+</span> <span class="s1">&#39;h&#39;</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">+</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[:</span><span class="mi">28</span><span class="p">])</span>
+            <span class="n">buf_idx</span> <span class="o">+=</span> <span class="mi">28</span>
+            <span class="n">data_sz</span> <span class="o">=</span> <span class="n">datatuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># data size in bytes</span>
+            <span class="n">data_type</span> <span class="o">=</span> <span class="n">datatuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">num_evt</span> <span class="o">=</span> <span class="n">datatuple</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">BUFFER_TYPES</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DATABF&#39;</span><span class="p">:</span>
+                <span class="n">buf_idx</span> <span class="o">+=</span> <span class="n">f_head_sz</span>  <span class="c1"># offset the frame header</span>
+                <span class="n">eventno</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">evsum</span> <span class="o">+=</span> <span class="n">num_evt</span>  <span class="c1"># full event size is added to evsum, but rejected events are subtracted later</span>
+                <span class="k">while</span> <span class="n">eventno</span> <span class="o">&lt;</span> <span class="n">num_evt</span><span class="p">:</span>
+                    <span class="n">eventno</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">last_ev_idx</span> <span class="o">=</span> <span class="n">buf_idx</span>
+                    <span class="c1"># First content is the amount of 2-byte words for event</span>
+                    <span class="n">num_words</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;h&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">buf_idx</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="c1">#matr_idx = chunk_counter + buf_counter</span>
+                    <span class="k">if</span> <span class="n">num_words</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>  <span class="c1"># empty event, not counted</span>
+                        <span class="n">evsum</span> <span class="o">-=</span> <span class="mi">1</span>  <span class="c1"># remove empty events from total sum</span>
+                        <span class="n">buf_idx</span> <span class="o">+=</span> <span class="p">(</span><span class="n">num_words</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># go to end of event</span>
+                        <span class="k">continue</span>
+
+                    <span class="c1"># read the rest of the event</span>
+                    <span class="c1"># event = st.unpack(&#39;&lt;&#39; + &#39;H&#39; * num_words, buffer[buf_idx:buf_idx + num_words * 2])</span>
+                    <span class="n">ev_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># index in the current event data words</span>
+                    <span class="n">tstamp</span> <span class="o">=</span> <span class="mi">0</span>
+
+                    <span class="n">ev_counter</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">while</span> <span class="n">buf_idx</span> <span class="o">&lt;</span> <span class="n">last_ev_idx</span> <span class="o">+</span> <span class="p">(</span><span class="n">num_words</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">:</span>   <span class="c1"># looping through adcs in the event</span>
+                        <span class="c1"># the adc data is organized as:</span>
+                        <span class="c1"># word 0: number of hits</span>
+                        <span class="c1"># word 1: ADC number. 0 for x, 1 for y and 2 for hpge + beta</span>
+                        <span class="c1"># word 2: Energy</span>
+                        <span class="c1"># word 3: Channel number</span>
+                        <span class="c1"># [word 4: next hit energy]</span>
+                        <span class="c1"># [word 5: next hit channel]</span>
+                        <span class="c1"># next to last 2 words: adc timestamp 1 and 2</span>
+                        <span class="c1"># last 2 word: end of adc data (0xFFFF, 0xFFFF)</span>
+
+                        <span class="c1">#read number of hits and adc id</span>
+                        <span class="n">nhits</span><span class="p">,</span> <span class="n">adc</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">4</span><span class="p">])</span>
+                        <span class="n">buf_idx</span> <span class="o">+=</span> <span class="mi">4</span>
+                        <span class="k">if</span> <span class="n">nhits</span> <span class="o">==</span> <span class="mh">0xFFFF</span><span class="p">:</span>
+                            <span class="c1"># WTF? Empty ADC frame? Result of diital threshold, I presume. Skip!</span>
+                            <span class="c1"># print(&#39;empty adc frame&#39;)</span>
+                            <span class="k">continue</span>
+                        <span class="n">nhits</span> <span class="o">-=</span> <span class="mh">0x2001</span>  <span class="c1"># fourteenth bit is always 1, 1 means 0</span>
+                        <span class="n">adc</span> <span class="o">=</span> <span class="n">adc</span> <span class="o">&amp;</span> <span class="mh">0x3</span>  <span class="c1"># first two bits code detector</span>
+
+                        <span class="c1"># energy/channel pairs, timestamp and footer</span>
+                        <span class="n">event</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;H&#39;</span><span class="o">*</span><span class="n">nhits</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="s1">&#39;I&#39;</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="n">nhits</span><span class="o">*</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span><span class="p">])</span>
+                        <span class="n">buf_idx</span> <span class="o">+=</span> <span class="n">nhits</span><span class="o">*</span><span class="mi">4</span> <span class="o">+</span> <span class="mi">8</span>
+
+                        <span class="c1"># take first tstamp in the event. This structure completely screws up the timestamp</span>
+                        <span class="c1"># reset detection so it is checked first...</span>
+                        <span class="k">if</span> <span class="n">tstamp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">t_val</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x3FFFFFFF</span><span class="p">)</span>  <span class="c1"># bits 30 and 31 always on</span>
+                            <span class="k">if</span> <span class="n">t_val</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">prevtstamp</span> <span class="o">-</span> <span class="mi">1000</span><span class="p">):</span>  <span class="c1"># clock overflow when timestamp goes backwards.</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Clock overflow event!&#39;</span><span class="p">,</span> <span class="n">t_val</span><span class="p">,</span> <span class="n">prevtstamp</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_tstamp</span><span class="p">)</span>
+                                <span class="n">big_time</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">30</span>  <span class="c1"># 30 bit clock overflow</span>
+                                <span class="n">prevtstamp</span> <span class="o">=</span> <span class="mi">0</span>
+                                <span class="n">min_tstamp</span> <span class="o">=</span> <span class="mi">0</span>
+
+                            <span class="c1"># t_val can be smaller than previous tstamp. This is due to</span>
+                            <span class="c1"># differences between adc clocks. Using min_tstamp to ensure monotonous time in this case.</span>
+                            <span class="c1">#</span>
+                            <span class="n">tstamp</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_tstamp</span><span class="p">,</span> <span class="n">t_val</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">adc</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># hit to the dsssd</span>
+                            <span class="c1"># loop through hits.</span>
+                            <span class="k">for</span> <span class="n">hit_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nhits</span><span class="p">):</span>
+                                <span class="n">E</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hit_idx</span><span class="p">]</span>
+                                <span class="n">ch</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hit_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x3ff</span><span class="p">)</span>  <span class="c1"># - 0x400</span>
+                                <span class="k">try</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="n">E</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                        <span class="n">matr_idx</span> <span class="o">=</span> <span class="n">chunk_counter</span> <span class="o">+</span> <span class="n">ev_counter</span>
+                                        <span class="n">e_mats</span><span class="p">[</span><span class="n">adc</span><span class="p">][</span><span class="n">matr_idx</span><span class="p">[</span><span class="n">adc</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">strip_cal</span><span class="p">[</span><span class="n">adc</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span>
+                                                                      <span class="n">strip_cal</span><span class="p">[</span><span class="n">adc</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span> <span class="o">+</span>
+                                                                      <span class="n">strip_cal</span><span class="p">[</span><span class="n">adc</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                                        <span class="n">time_vecs</span><span class="p">[</span><span class="n">adc</span><span class="p">][</span><span class="n">matr_idx</span><span class="p">[</span><span class="n">adc</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tstamp</span> <span class="o">+</span> <span class="n">big_time</span>
+                                        <span class="n">coord_datas</span><span class="p">[</span><span class="n">adc</span><span class="p">][</span><span class="n">matr_idx</span><span class="p">[</span><span class="n">adc</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ch</span>
+                                        <span class="n">ev_counter</span><span class="p">[</span><span class="n">adc</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;empty&#39;</span><span class="p">)</span>
+                                        <span class="n">empty_counter</span><span class="p">[</span><span class="n">adc</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">except</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error in strip calibration!&#39;</span><span class="p">)</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;matr_idx&#39;</span><span class="p">,</span> <span class="n">matr_idx</span><span class="p">[</span><span class="n">adc</span><span class="p">])</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ch&#39;</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="s1">&#39;chunk&#39;</span><span class="p">,</span> <span class="n">chunk_counter</span><span class="p">,</span> <span class="s1">&#39;ev&#39;</span><span class="p">,</span> <span class="n">ev_counter</span><span class="p">)</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="n">e_mats</span><span class="p">[</span><span class="n">adc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">time_vecs</span><span class="p">[</span><span class="n">adc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">coord_datas</span><span class="p">[</span><span class="n">adc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                                    <span class="k">raise</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># hpge and beta otherwise straightforward, but the ADC channels for beta and hpge</span>
+                            <span class="c1"># are 16 channels apart. The detector is incremented for beta detector.</span>
+                            <span class="c1"># Timing can get hairy on events with no tstamp in adc1 or 2, as adc 3 has smaller ticks</span>
+                            <span class="c1"># which can sometimes overlap nastily with the next hit in adc 1 or 2.</span>
+                            <span class="k">for</span> <span class="n">hit_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nhits</span><span class="p">):</span>  <span class="c1"># loop through hits</span>
+                                <span class="n">ch</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hit_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+                                <span class="n">E</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hit_idx</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">E</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="n">matr_idx</span> <span class="o">=</span> <span class="n">chunk_counter</span> <span class="o">+</span> <span class="n">ev_counter</span>
+                                    <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                        <span class="n">detector</span> <span class="o">=</span> <span class="mi">2</span>
+                                    <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+                                        <span class="n">detector</span> <span class="o">=</span> <span class="mi">3</span>
+                                    <span class="c1">#e_mat[matr_idx, detector] = E</span>
+                                    <span class="n">e_mats</span><span class="p">[</span><span class="n">detector</span><span class="p">][</span><span class="n">matr_idx</span><span class="p">[</span><span class="n">detector</span><span class="p">]]</span> <span class="o">=</span> <span class="n">E</span>
+                                    <span class="c1"># make sure there is no time overlap with adc 1 or 2</span>
+                                    <span class="n">time_vecs</span><span class="p">[</span><span class="n">detector</span><span class="p">][</span><span class="n">matr_idx</span><span class="p">[</span><span class="n">detector</span><span class="p">]]</span> <span class="o">=</span> <span class="n">tstamp</span> <span class="o">+</span> <span class="n">big_time</span>
+                                    <span class="n">ev_counter</span><span class="p">[</span><span class="n">detector</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;empty&#39;</span><span class="p">)</span>
+                                    <span class="n">empty_counter</span><span class="p">[</span><span class="n">detector</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="n">buf_counter</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># buffer counter incremented once per event</span>
+
+                    <span class="k">if</span> <span class="n">tstamp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">()</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;zero time event!&#39;</span><span class="p">)</span>
+                        <span class="k">raise</span>
+
+                    <span class="n">min_tstamp</span> <span class="o">=</span> <span class="n">tstamp</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">prevtstamp</span> <span class="o">=</span> <span class="n">t_val</span>
+                    <span class="c1"># tstamp=0</span>
+
+                    <span class="n">chunk_counter</span> <span class="o">+=</span> <span class="n">ev_counter</span>  <span class="c1"># chunk counter incremented for every count in event</span>
+
+                    <span class="c1"># NOTE! indenting this to the buffer loop to try to fix overflow problems!!!</span>
+                    <span class="c1">#buf_counter = 0</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">chunk_counter</span> <span class="o">&gt;=</span> <span class="n">chunk_size</span><span class="p">):</span>  <span class="c1"># Write data when chunk overflows</span>
+                        <span class="c1"># save whatever is in the buffer</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;save buffer&#39;</span><span class="p">,</span> <span class="n">chunk_counter</span><span class="p">,</span> <span class="s1">&#39;timing idx&#39;</span><span class="p">,</span> <span class="n">timing_idx</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="p">:</span>
+                            <span class="n">first_time_of_file</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">time_vecs</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">])</span>
+                            <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">streamer</span><span class="o">.</span><span class="n">write</span><span class="p">(([(</span><span class="n">time_vecs</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="o">-</span> <span class="n">first_time_of_file</span><span class="p">)</span> <span class="o">*</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;sample_ns&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">],</span>
+                                        <span class="p">[</span><span class="n">e_mats</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">]))</span>
+                        <span class="n">coord_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">coord_datas</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">chunk_counter</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+
+                        <span class="n">time_streamer</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">timing_datas</span><span class="p">[</span><span class="n">x</span><span class="p">][:</span><span class="n">timing_idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">])</span>
+                        <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">time_vecs</span><span class="p">]</span>
+                        <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">e_mats</span><span class="p">]</span>
+                        <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">coord_datas</span><span class="p">]</span>
+                        <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timing_datas</span><span class="p">]</span>
+
+                        <span class="n">total_counter</span> <span class="o">+=</span> <span class="n">chunk_counter</span>
+                        <span class="n">chunk_counter</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="n">timing_idx</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">events</span> <span class="o">+=</span> <span class="n">buf_counter</span>
+
+            <span class="k">elif</span> <span class="n">BUFFER_TYPES</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SCALERBF&#39;</span><span class="p">:</span>
+                <span class="n">buf_idx</span> <span class="o">+=</span> <span class="n">f_head_sz</span>  <span class="c1"># offset the frame header</span>
+                <span class="n">sc_header</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;IIhIIh&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">20</span><span class="p">])</span>
+                <span class="n">buf_idx</span> <span class="o">+=</span> <span class="mi">20</span>
+
+                <span class="c1"># dead time and total time counts in scalers. The scalers don&#39;t signal clock overflow, but seem to</span>
+                <span class="c1"># track dead time at least</span>
+                <span class="n">sc_data</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="o">+</span><span class="s1">&#39;I&#39;</span><span class="o">*</span><span class="n">num_evt</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="n">num_evt</span><span class="o">*</span><span class="mi">4</span><span class="p">])</span>
+
+                <span class="n">dtime</span> <span class="o">=</span> <span class="n">sc_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">1.0e-6</span>  <span class="c1"># scaler data in s (has internal divisor, timeCalibration, of 1000)</span>
+                <span class="n">dead_time</span> <span class="o">+=</span> <span class="n">dtime</span>
+
+                <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_list</span><span class="p">:</span>
+                    <span class="n">timing_datas</span><span class="p">[</span><span class="n">ch</span><span class="p">][</span><span class="n">timing_idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">total_counter</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">+</span> <span class="n">chunk_counter</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtime</span><span class="p">)</span>
+                <span class="n">total_time</span> <span class="o">+=</span> <span class="n">sc_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">1.0e-6</span>
+                <span class="n">timing_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+            <span class="k">elif</span> <span class="n">BUFFER_TYPES</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;BEGRUNBF&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;BEGRUNBUF found - start datetime read!&#39;</span><span class="p">)</span>
+                <span class="c1"># Control buffers [BEG- and ENDRUNBF have 80 character title for the run and the date and time</span>
+                <span class="n">buf_idx</span> <span class="o">+=</span> <span class="n">f_head_sz</span>  <span class="c1"># offset the frame header</span>
+
+                <span class="n">title</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">80</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>  <span class="c1"># the text is handled by bytes</span>
+                <span class="n">cdata</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;I7h&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">80</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">98</span><span class="p">])</span>
+
+                <span class="c1"># There is a possibility that month begins from 0. Dates seem to be consistently off</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">1900</span><span class="p">,</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                              <span class="n">cdata</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">*</span><span class="mf">1e5</span><span class="p">))</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># used to decide whether to cut timestamps by the first time entry</span>
+
+            <span class="k">elif</span> <span class="n">BUFFER_TYPES</span><span class="p">[</span><span class="n">data_type</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ENDRUNBF&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ENDRUNBUF found - stop datetime read!&#39;</span><span class="p">)</span>
+                <span class="n">buf_idx</span> <span class="o">+=</span> <span class="n">f_head_sz</span>  <span class="c1"># offset the frame header</span>
+
+                <span class="n">title</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">80</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>  <span class="c1"># the text is handled by bytes</span>
+                <span class="n">cdata</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;I7h&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">80</span><span class="p">:</span><span class="n">buf_idx</span> <span class="o">+</span> <span class="mi">98</span><span class="p">])</span>
+                <span class="n">stop_time</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="mi">1900</span><span class="p">,</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                              <span class="n">cdata</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">cdata</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">cdata</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">*</span><span class="mf">1e5</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unhandled buffer type found!&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">BUFFER_TYPES</span><span class="p">[</span><span class="n">data_type</span><span class="p">])</span>
+
+    <span class="n">streamer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">coord_streamer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">time_streamer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Events read:&#39;</span><span class="p">,</span> <span class="n">total_counter</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Discarded&#39;</span><span class="p">,</span> <span class="n">empty_counter</span><span class="p">,</span> <span class="s1">&#39;empty events.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Starting parsing the events.&#39;</span><span class="p">,</span> <span class="n">data_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span><span class="p">)</span>
+
+    <span class="c1"># channel data is parsed and events reconstructed.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_load_channel_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+
+    <span class="c1"># metadata is created here. We set everything as fully as we can. Metadata is then saved and we are ready.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">total_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_time</span><span class="o">*</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="c1"># live and dead times are automatically got from t_cache. No need to worry.</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">run_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_name</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">=</span> <span class="s2">&quot;Converted from .evt file at </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">counts</span> <span class="o">=</span> <span class="n">total_counter</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">input_counts</span> <span class="o">=</span> <span class="n">total_counter</span> <span class="o">+</span> <span class="n">empty_counter</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;events&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">events</span><span class="p">)</span>
+
+
+    <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># no end or start run buffers</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculating start time from file timestamp&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">+</span> <span class="s1">&#39; No start or end buffer - calculating time from file timestamp.&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">+</span> <span class="s1">&#39; Recorded </span><span class="si">{}</span><span class="s1"> original events.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">ch_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">total_time</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># For some reason there was no BEGUNBUF but ENDRUNBUF exists</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculating start time from stop time&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">+</span> <span class="s1">&#39; No start buffer - calculating time from end time.&#39;</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">stop_time</span> <span class="o">-</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">total_time</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">stop_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># There was no ENDRUNBUF</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculating stop time from start time&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">notes</span> <span class="o">+</span> <span class="s1">&#39; No end buffer - calculating time from start buffer.&#39;</span>
+        <span class="n">stop_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">total_time</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start_time</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">stop_time</span>
+    <span class="c1">#self._update()</span>
+    <span class="c1">#self.metadata.calculate()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;exit read raw data, load channel data.&#39;</span><span class="p">)</span>
+    <span class="c1">#self._load_channel_data(data_path)</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    class Pixie4Data(Data):</span>
+
+<span class="sd">        def __init__(self, config, **kwargs):</span>
+<span class="sd">            super().__init__(config, **kwargs)</span>
+<span class="sd">            self.data_ext = &#39;bin&#39;</span>
+<span class="sd">            self.data_type = &#39;Pixie-4&#39;</span>
+
+
+
+<span class="sd">        def _read_raw_data(self, data_path, save_metadata=False):</span>
+
+<span class="sd">            # First read the readout scheme</span>
+
+<span class="sd">            dtformat = &#39;%H.%M.%S %a, %d %b %Y&#39;</span>
+<span class="sd">            with (data_path / (self.base_name + &#39;.ifm&#39;)).open(&#39;r&#39;) as df:</span>
+<span class="sd">                lines = df.readlines()</span>
+<span class="sd">                for lidx, line in enumerate(lines):</span>
+<span class="sd">                    if line.startswith(&#39;Acquisition started at&#39;):</span>
+<span class="sd">                        start = dt.datetime.strptime(line[23:].strip(), dtformat)</span>
+<span class="sd">                    elif line.startswith(&#39;stopped at&#39;):</span>
+<span class="sd">                        stop = dt.datetime.strptime(line[11:].strip(), dtformat)</span>
+<span class="sd">                    elif line.startswith(&#39;BUFFER_HEAD_LENGTH&#39;):</span>
+<span class="sd">                        buf_head_len = int(line.split()[1])</span>
+<span class="sd">                    elif line.startswith(&#39;EVENT_HEAD_LENGTH&#39;):</span>
+<span class="sd">                        ev_head_len = int(line.split()[1])</span>
+<span class="sd">                    elif line.startswith(&#39;CHANNEL_HEAD_LENGTH&#39;):</span>
+<span class="sd">                        ch_head_len = int(line.split()[1])</span>
+<span class="sd">                    elif line.startswith(&#39;NUMBER_EVENTS&#39;):</span>
+<span class="sd">                        num_ev = int(line.split()[1])</span>
+<span class="sd">                    elif line.startswith(&#39;Module	 Run Time(s)&#39;):</span>
+<span class="sd">                        self.total_time.fill(0)</span>
+<span class="sd">                        self.total_time += int(float(lines[lidx+1].split()[1])*1e9)</span>
+<span class="sd">                    elif line.startswith(&#39;Module	 Channel&#39;):</span>
+<span class="sd">                        for ch_idx in range(self.num_ch):</span>
+<span class="sd">                            num_str = lines[lidx+1+ch_idx].split()[2:5]</span>
+<span class="sd">                            self.live_time[ch_idx] = int(float(num_str[0]) * 1e9)</span>
+<span class="sd">                            self.input_rate[ch_idx] = float(num_str[1])</span>
+<span class="sd">                            self.output_rate[ch_idx] = float(num_str[2])</span>
+
+<span class="sd">            self.first = True</span>
+
+<span class="sd">            datacounter = 0</span>
+<span class="sd">            list_size = 100000</span>
+<span class="sd">            data_mat = np.zeros((list_size, self.num_ch), dtype=&#39;uint16&#39;)</span>
+<span class="sd">            time_vec = np.zeros((list_size,), dtype=&#39;uint64&#39;)</span>
+<span class="sd">            chunk_size = 11000</span>
+<span class="sd">            chunk = np.zeros((chunk_size//4, self.num_ch), dtype=&#39;uint16&#39;)</span>
+<span class="sd">            time_chunk = np.zeros((chunk_size//4,), dtype=&#39;uint64&#39;)</span>
+<span class="sd">            buffer = bytearray(chunk_size)</span>
+<span class="sd">            header = bytearray(buf_head_len)</span>
+<span class="sd">            self.file_counter = 0</span>
+<span class="sd">            bufbody = 0</span>
+<span class="sd">            datafile = data_path / (self.base_name + &#39;.&#39; + self.data_ext)</span>
+<span class="sd">            file_length_in_bytes = datafile.stat().st_size</span>
+<span class="sd">            channel_list = bin(0)[2:]  # just empty for printing</span>
+<span class="sd">            num_of_buffer = 0</span>
+<span class="sd">            with open(datafile, &#39;rb&#39;) as df:</span>
+
+<span class="sd">                while self.file_counter &lt; file_length_in_bytes:</span>
+<span class="sd">                    header = df.read(buf_head_len*2)</span>
+<span class="sd">                    (BUF_NDATA, BUF_MODNUM, BUF_FORMAT,</span>
+<span class="sd">                     BUF_TIMEHI, BUF_TIMEMI, BUF_TIMELO) = self._read_header(header, buf_head_len)</span>
+
+<span class="sd">                    if self.first:</span>
+<span class="sd">                        self.RunTask = hex(BUF_FORMAT)</span>
+<span class="sd">                        self.first = False</span>
+
+<span class="sd">                    self.file_counter += 2 * buf_head_len  # increment counter for the header</span>
+<span class="sd">                    # Pixie4 does occasionally corrupt the buffers. Check</span>
+<span class="sd">                    # that what we read is a header to next buffer.</span>
+<span class="sd">                    if self.RunTask != hex(BUF_FORMAT):</span>
+<span class="sd">                        print(&#39;Corrupt buffer!&#39;, &#39;bufbody&#39;, bufbody)</span>
+<span class="sd">                        self._err_corr(df)  # Find next header and rewind file to it</span>
+<span class="sd">                        continue  # go to retrieve next header</span>
+
+<span class="sd">                    # check run mode</span>
+<span class="sd">                    if BUF_FORMAT == 0x2103:</span>
+<span class="sd">                        # print(&#39;self.RunTask&#39;, self.RunTask, TraceInfo)</span>
+<span class="sd">                        # BUF_FORMAT equals runtask (x103) plus x20T0,</span>
+<span class="sd">                        # where T equals channel mask for saved traces</span>
+<span class="sd">                        # (0 in case of x103, so x2103 is always runtask 103)</span>
+<span class="sd">                        uncompress = self._compr3</span>
+
+<span class="sd">                    else:</span>
+<span class="sd">                        print(&#39;RunTask&#39;, hex(BUF_FORMAT), hex(0x2103))</span>
+<span class="sd">                        print(self.file_counter)</span>
+<span class="sd">                        raise ValueError(&#39;Only mode 0x103 is supported&#39;)</span>
+
+<span class="sd">                    # calculate amount of data in the buffer</span>
+<span class="sd">                    bufbody = 2 * (BUF_NDATA - buf_head_len)</span>
+<span class="sd">                    bufidx = 0  # index in current buffer</span>
+<span class="sd">                    eventcounter = 0  # index of separate event</span>
+<span class="sd">                    if bufbody == 0:</span>
+<span class="sd">                        continue  # go to next iteration if buffer is empty</span>
+
+<span class="sd">                    # todo: handling of chunk length.</span>
+<span class="sd">                    if chunk_size &lt; bufbody:</span>
+<span class="sd">                        chunk_size = bufbody</span>
+<span class="sd">                        chunk = np.zeros((chunk_size // 4, self.num_ch), dtype=&#39;uint16&#39;)</span>
+<span class="sd">                        time_chunk = np.zeros((chunk_size // 4,), dtype=&#39;uint64&#39;)</span>
+<span class="sd">                        buffer = bytearray(chunk_size)</span>
+<span class="sd">                        print(&#39;Chunk size increased to&#39;, chunk_size)</span>
+
+<span class="sd">                    # read the full buffer into memory</span>
+<span class="sd">                    buffer[: bufbody] = df.read(bufbody)</span>
+<span class="sd">                    self.file_counter += bufbody</span>
+
+<span class="sd">                    if num_of_buffer % 500 == 0:</span>
+<span class="sd">                        print(&#39;Buffer max:&#39;, self.file_counter, file_length_in_bytes, datacounter)</span>
+<span class="sd">                    while bufidx &lt; bufbody:</span>
+<span class="sd">                        # Event header</span>
+<span class="sd">                        (EVT_PATTERN, EVT_TIMEHI, EVT_TIMELO) = st.unpack(&#39;&lt;&#39; +</span>
+<span class="sd">                                                                          &#39;H&#39; * ev_head_len,</span>
+<span class="sd">                                                                          #buffer.read(ev_head_len * 2))</span>
+<span class="sd">                                                                          buffer[bufidx:bufidx + ev_head_len * 2])</span>
+
+<span class="sd">                        bufidx += ev_head_len * 2</span>
+<span class="sd">                        channel_list = bin(EVT_PATTERN)[2:][-1:-5:-1]</span>
+
+<span class="sd">                        time_chunk[eventcounter] = self._parse_time(BUF_TIMEHI, EVT_TIMEHI, EVT_TIMELO)</span>
+<span class="sd">                        #times, energies = uncompress(buffer[bufidx:bufidx + 4], sum(channel_list))</span>
+<span class="sd">                        for idx in range(self.num_ch):</span>
+
+<span class="sd">                            if channel_list[idx] == &#39;1&#39;:</span>
+<span class="sd">                                time, energy = uncompress(buffer[bufidx:bufidx + 4])</span>
+<span class="sd">                                bufidx += 4</span>
+<span class="sd">                                chunk[eventcounter, idx] = energy</span>
+<span class="sd">                            else:</span>
+<span class="sd">                                chunk[eventcounter, idx] = 0</span>
+<span class="sd">                        eventcounter += 1</span>
+
+<span class="sd">                    if datacounter + eventcounter &gt; list_size:  # flush if the matrix would overflow</span>
+<span class="sd">                        self.data_mat = np.concatenate((self.data_mat, data_mat[:datacounter, :].copy()), axis=0)</span>
+<span class="sd">                        self.data_dict[&#39;time&#39;] = np.concatenate((self.data_dict[&#39;time&#39;], ((time_vec[:datacounter]) * 1000/75).astype(&#39;uint64&#39;)))</span>
+
+<span class="sd">                        datacounter = 0</span>
+
+<span class="sd">                    # copy to data matrix</span>
+<span class="sd">                    data_mat[datacounter: datacounter + eventcounter, :] = chunk[:eventcounter, :]</span>
+<span class="sd">                    time_vec[datacounter: datacounter + eventcounter] = time_chunk[:eventcounter]</span>
+<span class="sd">                    datacounter += eventcounter</span>
+
+<span class="sd">                    num_of_buffer += 1</span>
+
+<span class="sd">            self.data_dict[&#39;time&#39;] -= self.data_dict[&#39;time&#39;].min()  # need to zero</span>
+<span class="sd">            self.counts = np.count_nonzero(self.data_mat, axis=0).astype(&#39;uint64&#39;)</span>
+<span class="sd">            self.input_counts += (self.output_rate * self.total_time * 1e-9).astype(&#39;uint64&#39;)</span>
+
+<span class="sd">            self.start_time = [start for _x in range(self.num_ch)]</span>
+<span class="sd">            self.stop_time = [stop for _x in range(self.num_ch)]</span>
+
+<span class="sd">        @staticmethod</span>
+<span class="sd">        def _read_header(buff, buflen):</span>
+<span class="sd">            (BUF_NDATA, BUF_MODNUM, BUF_FORMAT, BUF_TIMEHI, BUF_TIMEMI,</span>
+<span class="sd">             BUF_TIMELO) = st.unpack(&#39;&lt;&#39;+&#39;H&#39;*3+&#39;H&#39;*(buflen-3),</span>
+<span class="sd">                                     buff[:buflen*2])</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            if self.first:</span>
+<span class="sd">                self.RunTask = hex(BUF_FORMAT)</span>
+<span class="sd">                self.first = False</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            return (BUF_NDATA, BUF_MODNUM, BUF_FORMAT, BUF_TIMEHI, BUF_TIMEMI,</span>
+<span class="sd">                    BUF_TIMELO)</span>
+
+<span class="sd">        @staticmethod</span>
+<span class="sd">        def _parse_time(BUF_TIMEHI, EVT_TIMEHI, EVT_TIMELO):</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            From PIXIE-4 User’s Manual V2.54:</span>
+<span class="sd">            EventTime = EVT_TIMELO;</span>
+<span class="sd">            For best precision, use 1us/75 in the conversion from clock ticks to seconds, 13.33e-9s may lead to rounding</span>
+<span class="sd">            errors.</span>
+<span class="sd">            EventTime += EVT_TIMEHI*pow(2,16);</span>
+<span class="sd">            EventTime += BUF_TIMEHI*pow(2,32);</span>
+<span class="sd">            EventTime *= 1e-6/75s;</span>
+<span class="sd">            This EventTime can be used to match</span>
+
+
+<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            time_in_ticks = (EVT_TIMELO +</span>
+<span class="sd">                         EVT_TIMEHI*pow(2, 16) +</span>
+<span class="sd">                         BUF_TIMEHI*pow(2, 32))</span>
+<span class="sd">            #time_in_s *= 1e-6/75</span>
+
+<span class="sd">            return time_in_ticks</span>
+
+<span class="sd">        def _err_corr(self, fileid):</span>
+
+<span class="sd">            start_idx = self.file_counter</span>
+<span class="sd">            seeking = True</span>
+<span class="sd">            seek_idx = 0</span>
+<span class="sd">            words = [0, 0]</span>
+<span class="sd">            while seeking:</span>
+<span class="sd">                # we are trying to find piece of header with runtask and number of channels</span>
+<span class="sd">                # set correctly</span>
+<span class="sd">                words[seek_idx % 2] = st.unpack(&#39;&lt;H&#39;, fileid.read(2))[0]</span>
+<span class="sd">                self.file_counter += 2</span>
+
+<span class="sd">                if words[seek_idx % 2 - 1] &lt; 4 and hex(words[seek_idx % 2]) == self.RunTask:</span>
+<span class="sd">                    self.file_counter -= 6</span>
+<span class="sd">                    fileid.seek(self.file_counter)</span>
+<span class="sd">                    seeking = False</span>
+<span class="sd">                    print(&#39;Found new buffer at&#39;, self.file_counter, &#39;losing&#39;,</span>
+<span class="sd">                          self.file_counter - start_idx, &#39;bytes&#39;)</span>
+<span class="sd">                seek_idx += 1</span>
+
+<span class="sd">        @staticmethod</span>
+<span class="sd">        def _compr1(buffer):</span>
+<span class="sd">            # For uncompressed and mode 1 data with traces</span>
+<span class="sd">            (CHAN_NDATA, CHAN_TRIGTIME, CHAN_ENERGY, </span>
+<span class="sd">                CHAN_XIAPSA, CHAN_USERPSA, T1, </span>
+<span class="sd">                T2, T3, CHAN_REALTIMEHI) = st.unpack(&#39;&lt;&#39; + &#39;H&#39; * 9, buffer.read(18))</span>
+
+<span class="sd">            return CHAN_TRIGTIME, CHAN_REALTIMEHI, CHAN_ENERGY</span>
+
+<span class="sd">        @staticmethod</span>
+<span class="sd">        def _compr3(inbuffer, size=1):</span>
+<span class="sd">            # For  mode 3 data</span>
+<span class="sd">            (CHAN_TRIGTIME, CHAN_ENERGY) = st.unpack(&#39;&lt;&#39; + &#39;H&#39; * 2 * size, inbuffer)</span>
+
+<span class="sd">            return CHAN_TRIGTIME, CHAN_ENERGY</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    class DSPECData(Data):</span>
+<span class="sd">        def __init__(self, config, **kwargs):</span>
+<span class="sd">            super().__init__(config, **kwargs)</span>
+<span class="sd">            self.data_ext = &#39;Lis&#39;</span>
+<span class="sd">            self.name = &#39;DSPEC data&#39;</span>
+
+<span class="sd">        def _read_raw_data(self, data_path, save_metadata):</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+<span class="sd">            :param data_file:</span>
+<span class="sd">            :return:</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            data_file = self.base_name + &#39;.{}&#39;.format(self.data_ext)</span>
+
+<span class="sd">            chunk_size = 10000</span>
+<span class="sd">            streamer = StreamData(data_path, self.base_name, 1, max_data_sz=chunk_size)</span>
+
+<span class="sd">            livetime = 0</span>
+<span class="sd">            rt_word = 0</span>
+<span class="sd">            input_counts = 0</span>
+
+<span class="sd">            self.data_mat = np.zeros((0, self.num_ch), dtype=&#39;uint16&#39;)</span>
+<span class="sd">            self.data_dict[&#39;time&#39;] = np.zeros((0,), dtype=&#39;uint64&#39;)</span>
+
+<span class="sd">            E_chunk = np.zeros((chunk_size, self.num_ch), dtype=&#39;uint16&#39;)</span>
+<span class="sd">            t_chunk = np.zeros((chunk_size,), dtype=&#39;uint64&#39;)</span>
+<span class="sd">            input_counts = np.zeros((1,), dtype=&#39;uint64&#39;)</span>
+<span class="sd">            counts = np.zeros((1,), dtype=&#39;uint64&#39;)</span>
+
+<span class="sd">            with (data_path / data_file).open(&#39;rb&#39;) as df:</span>
+<span class="sd">                header = df.read(256)</span>
+<span class="sd">                total_time, live_time, start, stop = self._parse_header(header)</span>
+<span class="sd">                evnt = True</span>
+<span class="sd">                while evnt:</span>
+<span class="sd">                    eventcounter = 0</span>
+<span class="sd">                    while eventcounter &lt; chunk_size:</span>
+<span class="sd">                        try:</span>
+<span class="sd">                            data_word = st.unpack(&#39;&lt;I&#39;, df.read(4))[0]</span>
+<span class="sd">                        except st.error:</span>
+<span class="sd">                            print(&#39;{} events&#39;.format(eventcounter))</span>
+<span class="sd">                            evnt = False</span>
+<span class="sd">                            break</span>
+<span class="sd">                        except:</span>
+<span class="sd">                            raise</span>
+
+<span class="sd">                        if data_word &amp; 0xc0000000 == 0xc0000000:  # data word</span>
+<span class="sd">                            E_chunk[eventcounter, 0] = (data_word &amp; 0x3fff0000) &gt;&gt; 16</span>
+<span class="sd">                            t_chunk[eventcounter] = ((data_word &amp; 0xffff) | rt_word) * 200  # to ns</span>
+<span class="sd">                            eventcounter += 1</span>
+<span class="sd">                        elif data_word &amp; 0xc0000000 == 0x80000000:  # counter for 50000 ticks rollover</span>
+<span class="sd">                            rt_word = (data_word &amp; 0x3fffffff)*50000</span>
+<span class="sd">                        elif data_word &amp; 0xc0000000 == 0x40000000:  # live time in ns, 10 ms resolution</span>
+<span class="sd">                            livetime = (data_word &amp; 0x3fffffff)*1e7</span>
+<span class="sd">                        elif data_word &amp; 0xffff0000 == 0x4000000:  # ADC counts per 10 ms</span>
+<span class="sd">                            input_counts[0] += data_word &amp; 0xffff</span>
+
+<span class="sd">                    self.data_mat = np.concatenate((self.data_mat, E_chunk[:eventcounter]))</span>
+<span class="sd">                    self.data_dict[&#39;time&#39;] = np.concatenate((self.data_dict[&#39;time&#39;], t_chunk[:eventcounter]))</span>
+<span class="sd">                    streamer.write([eventcounter], [(t_chunk[:eventcounter], E_chunk[:eventcounter])])  # stream to .dat file to speed up</span>
+
+<span class="sd">            self.events = self.data_mat.shape[0]</span>
+<span class="sd">            counts[0] = self.events</span>
+
+
+<span class="sd">        def _parse_header(self, header):</span>
+<span class="sd">            headerinfo = st.unpack(&#39;&lt;iid&#39;, header[:16])</span>
+<span class="sd">            if headerinfo[0] != -13:</span>
+<span class="sd">                print(&#39;Invalid header for .Lis file&#39;)</span>
+<span class="sd">                sys.exit()</span>
+<span class="sd">            if headerinfo[1] != 2:</span>
+<span class="sd">                print(&#39;List mode format {} not supported!&#39;.format(headerinfo[1]))</span>
+
+<span class="sd">            total_time = np.zeros((self.num_ch,), dtype=&#39;int64&#39;)</span>
+<span class="sd">            live_time = np.zeros((self.num_ch,), dtype=&#39;int64&#39;)</span>
+<span class="sd">            start_time = []</span>
+<span class="sd">            stop_time = []</span>
+
+<span class="sd">            stringinfo = st.unpack(&#39;&lt;80c9c16c80cc4c&#39;, header[16:206])</span>
+<span class="sd">            #ecal = st.unpack(&#39;&lt;3f&#39;, header[206:218])</span>
+<span class="sd">            #is_shapecal = st.unpack(&#39;&lt;?&#39;, header[218:219])[0]</span>
+<span class="sd">            #shapecal = st.unpack(&#39;&lt;fff&#39;, header[219:231])</span>
+<span class="sd">            gain, det_id, r_t, l_t = st.unpack(&#39;&lt;iiff&#39;, header[231:247])</span>
+<span class="sd">            total_time[0] = int(r_t*1e9)</span>
+<span class="sd">            live_time[0] = int(l_t*1e9)</span>
+<span class="sd">            # Stupid OLE Automation date format starts from 0 at 30.12.1899</span>
+<span class="sd">            start_time.append(dt.datetime(1899, 12, 30, 00, 00, 00) + dt.timedelta(days=headerinfo[2]))</span>
+<span class="sd">            stop_time.append(start_time[0] + dt.timedelta(seconds=r_t))</span>
+
+<span class="sd">            return total_time, live_time, start_time, stop_time</span>
+<span class="sd">    &#39;&#39;&#39;</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">listmode</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../manual/manual.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../manual/configuration.html">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodocs/reference.html">Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Timo Hilden.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>listmode.utils &#8212; listmode 0.5.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for listmode.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">listmode</span> <span class="kn">import</span> <span class="n">misc</span>
+<span class="kn">import</span> <span class="nn">listmode.exceptions</span> <span class="k">as</span> <span class="nn">ex</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utils is a repository for generally useful functions and classes for thing such as reading and writing.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="delete_channel_data"><a class="viewcode-back" href="../../autodocs/utils.html#listmode.utils.delete_channel_data">[docs]</a><span class="k">def</span> <span class="nf">delete_channel_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used to delete channel files after parsing.</span>
+<span class="sd">    :param data_path:</span>
+<span class="sd">    :param base_name:</span>
+<span class="sd">    :param cfg:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timenames</span><span class="p">,</span> <span class="n">enames</span><span class="p">,</span> <span class="n">tnames</span><span class="p">,</span> <span class="n">xnames</span> <span class="o">=</span> <span class="n">find_data_files</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;channel&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">timenames</span> <span class="o">+</span> <span class="n">enames</span> <span class="o">+</span> <span class="n">tnames</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">fname</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">chnamelist</span> <span class="ow">in</span> <span class="n">xnames</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">chnamelist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+                    <span class="n">fname</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="find_data_files"><a class="viewcode-back" href="../../autodocs/utils.html#listmode.utils.find_data_files">[docs]</a><span class="k">def</span> <span class="nf">find_data_files</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">cfg</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate filenames (paths) of all the data produced by config. You can select either &#39;event&#39; or &#39;channel&#39;</span>
+<span class="sd">    type names.</span>
+
+<span class="sd">    :param data_path:</span>
+<span class="sd">    :param base_name:</span>
+<span class="sd">    :param cfg:</span>
+<span class="sd">    :param mode:</span>
+<span class="sd">    :return: timing, energy, time and extras filenames as lists. For event data the first (and only) item in the list</span>
+<span class="sd">             is the relevant filename. For channel data there is a single name for every channel. Extra names are given</span>
+<span class="sd">             as a list of names, one per extra (for each channel as in other data).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">extras</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;extras&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;event&#39;</span><span class="p">:</span>
+        <span class="n">timenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_timestamps.dat&#39;</span><span class="p">)]</span>
+        <span class="n">enames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_events.dat&#39;</span><span class="p">)]</span>
+        <span class="n">tnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_timing.dat&#39;</span><span class="p">)]</span>
+        <span class="n">xnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">extra</span> <span class="ow">in</span> <span class="n">extras</span><span class="p">:</span>
+                <span class="n">xnames</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extra</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))])</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;channel&#39;</span><span class="p">:</span>
+        <span class="n">timenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_timestamps_ch</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_list&#39;</span><span class="p">]]</span>
+        <span class="n">enames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_events_ch</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_list&#39;</span><span class="p">]]</span>
+        <span class="n">tnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_timing_ch</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_list&#39;</span><span class="p">]]</span>
+        <span class="n">xnames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">extras</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">extra</span> <span class="ow">in</span> <span class="n">extras</span><span class="p">:</span>
+                <span class="n">xnames</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>  <span class="c1"># all extras get a position in list</span>
+                <span class="k">if</span> <span class="n">extra</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;latency&#39;</span><span class="p">,</span> <span class="s1">&#39;multihit&#39;</span><span class="p">]:</span>
+                    <span class="c1"># this extra is present in channel data and will be combined either as</span>
+                    <span class="c1"># a bit in a bitmask or a column in a matrix.</span>
+                    <span class="k">try</span><span class="p">:</span>  <span class="c1"># channel mask default is ones</span>
+                        <span class="n">ch_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">extra</span><span class="p">[</span><span class="s1">&#39;ch_mask&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">ch_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_cfg&#39;</span><span class="p">]),),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Extra names are retrieved by channel index. In cases there is no extra defined</span>
+                    <span class="c1"># for a channel we need to put something in to the list. Let it be None then.</span>
+                    <span class="k">for</span> <span class="n">ch_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_cfg&#39;</span><span class="p">])):</span>
+                        <span class="n">xnames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">ch_mask</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]:</span>
+                            <span class="n">efil</span> <span class="o">=</span> <span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">_ch</span><span class="si">{}</span><span class="s1">.dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extra</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">ch_idx</span><span class="p">))</span>
+                            <span class="c1">#assert(efil.exists())</span>
+                            <span class="n">xnames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">efil</span>
+
+    <span class="k">return</span> <span class="n">timenames</span><span class="p">,</span> <span class="n">enames</span><span class="p">,</span> <span class="n">tnames</span><span class="p">,</span> <span class="n">xnames</span></div>
+
+
+<span class="k">def</span> <span class="nf">write_channel_metadata</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">metadata</span><span class="p">):</span>
+    <span class="n">datetime_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">]</span>
+    <span class="c1"># make sure data_path is a pathlib Path</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">temp_for_file</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">datetime_type</span><span class="p">}</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">raise</span> <span class="n">ex</span><span class="o">.</span><span class="n">ListModeException</span><span class="p">(</span><span class="s1">&#39;write metadata&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;notes&#39;</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">]:</span>
+        <span class="n">temp_for_file</span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_for_file</span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Metadata defined by raw files.&#39;</span>
+
+    <span class="k">if</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp_for_file</span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;Missing start time substituted by compile time.&#39;</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;stop&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp_for_file</span><span class="p">[</span><span class="s1">&#39;notes&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39;Missing stop time calculated from timestamps.&#39;</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;stop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">+</span> \
+                                    <span class="n">dt</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="s1">&#39;total_time&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1e-9</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">datetime_type</span><span class="p">:</span>
+        <span class="n">temp_for_file</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">[</span><span class="n">channel</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="p">(</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_metadata_ch</span><span class="si">{:02d}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">)))</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">temp_for_file</span><span class="p">,</span> <span class="n">fil</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">read_channel_metadata</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">base_name</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+    <span class="k">with</span> <span class="p">(</span><span class="n">data_path</span> <span class="o">/</span> <span class="p">(</span><span class="n">base_name</span> <span class="o">+</span> <span class="s1">&#39;_metadata_ch</span><span class="si">{:02d}</span><span class="s1">.json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">)))</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+        <span class="n">temp_from_file</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+
+    <span class="n">datetime_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">]</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">temp_from_file</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">datetime_type</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">datetime_type</span><span class="p">:</span>
+        <span class="c1">#metadata[key] = dt.datetime.fromisoformat(temp_from_file[key]) # not present in python 3.6</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">temp_from_file</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">metadata</span>
+
+
+<span class="k">def</span> <span class="nf">find_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+    <span class="n">home</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="s1">&#39;home&#39;</span><span class="p">])</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">)</span>  <span class="c1">#name of the file</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">home</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">loadpath</span> <span class="o">=</span> <span class="n">home</span> <span class="o">/</span> <span class="n">filename</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Found local file&#39;</span><span class="p">,</span> <span class="n">loadpath</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loadpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="s1">&#39;cfg_dir&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="n">suffix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="o">/</span> <span class="n">filename</span>
+    <span class="k">return</span> <span class="n">loadpath</span>
+
+
+<div class="viewcode-block" id="load_plot_config"><a class="viewcode-back" href="../../autodocs/utils.html#listmode.utils.load_plot_config">[docs]</a><span class="k">def</span> <span class="nf">load_plot_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">plot_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads a plot configuration from a json file.</span>
+
+<span class="sd">    :param config: Config data that has the config.path in it</span>
+<span class="sd">    :param plot_name_list: plot config name without the _plotcfg.json postfix or a list of names</span>
+<span class="sd">    :return: a plot config dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">find_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">plot_name</span><span class="p">,</span> <span class="s1">&#39;_plotcfg.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+            <span class="n">plot_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ex</span><span class="o">.</span><span class="n">ListModeConfigurationError</span><span class="p">(</span><span class="s1">&#39;Could not find plot configuration.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plot_config</span></div>
+
+
+<div class="viewcode-block" id="load_style_sheet"><a class="viewcode-back" href="../../autodocs/utils.html#listmode.utils.load_style_sheet">[docs]</a><span class="k">def</span> <span class="nf">load_style_sheet</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">style_name_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads a matplotlib style sheet written as a json file.</span>
+
+<span class="sd">    :param config: Detector configuration object</span>
+<span class="sd">    :param style_name_list: style path or a list of paths</span>
+<span class="sd">    :return: list of style dictionaries</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">style_cfg_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">style_name_list</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># single stylesheet if string is given</span>
+        <span class="n">style_name_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">style_name_list</span><span class="p">]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">style_name_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">style_name</span> <span class="o">=</span> <span class="n">style_name_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">find_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">style_name</span><span class="p">,</span> <span class="s1">&#39;_stylecfg.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+                <span class="n">style_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+            <span class="n">style_cfg_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">style_config</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ex</span><span class="o">.</span><span class="n">ListModeConfigurationError</span><span class="p">(</span><span class="s1">&#39;Could not find stylesheet.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">style_cfg_list</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_effcal</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">eff</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">eff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">eff</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;effcal&#39;</span><span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">find_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">eff</span><span class="p">,</span> <span class="s1">&#39;_effcal.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fil</span><span class="p">)</span>
+        <span class="n">effcal</span> <span class="o">=</span> <span class="n">temp</span>
+    <span class="k">return</span> <span class="n">effcal</span>
+
+
+<div class="viewcode-block" id="load_strip_cal"><a class="viewcode-back" href="../../autodocs/utils.html#listmode.utils.load_strip_cal">[docs]</a><span class="k">def</span> <span class="nf">load_strip_cal</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load strip calibration files if they exist.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">strips</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">det</span><span class="p">[</span><span class="s1">&#39;ch_cfg&#39;</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ch</span><span class="p">[</span><span class="s1">&#39;cal_array&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">strips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ch</span><span class="p">[</span><span class="s1">&#39;cal_array&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">strips</span><span class="p">:</span>
+        <span class="n">strip_cal</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cal</span> <span class="ow">in</span> <span class="n">strips</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">find_path</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">cal</span><span class="p">,</span> <span class="s1">&#39;_stripcal.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fil</span><span class="p">:</span>
+                    <span class="n">strip_cal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fil</span><span class="p">)[</span><span class="s1">&#39;calibration&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Strip calibration file not found!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ex</span><span class="o">.</span><span class="n">ListModeConfigurationError</span><span class="p">(</span><span class="s1">&#39;Strip calibration file not found!&#39;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">strip_cal</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">listmode</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../manual/manual.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../manual/configuration.html">Configuration files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autodocs/reference.html">Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Timo Hilden.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

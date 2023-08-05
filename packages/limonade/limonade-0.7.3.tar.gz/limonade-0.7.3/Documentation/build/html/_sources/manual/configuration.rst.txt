@@ -1,0 +1,197 @@
+.. _configuration:
+
+Configuration files
+===================
+
+Detector configuration
+----------------------
+
+:name:          Name of the detector.
+
+:data_type:     Defines the raw data loader. Built-in options are:
+
+                :standard:      The data mode native to Listmode. All other data is converted to native
+                                format before parsing
+
+                :caen:          The data file saved by Caen MC2 program with extra data set on.
+
+                :panda:         For PANDA data files.
+
+                :ortec:         For data files saved with Ortec Maestro program.
+
+:extension:     The extension of the raw data files. Extension can include wildcard characters.
+
+:daq_type:      Might be redundant.
+
+:coinc_win:     Coincidence window length in nanoseconds. This is the max time interval between two
+                counts so that they will be built into a single event.
+
+:sample_ns:     Size of the time tick of the detector in ns.
+
+:readout_cfg:   Optional, will probably be moved to another config file. Defines readout electronics
+                specific configuration file used for daq.
+
+:cal_name:      Name of the energy calibration file for the detector. Located in config/ecal directory.
+
+:effcal:        Name of the gamma efficiency calibration file. Located in config/effcal directory.
+
+:ch_cfg:        List of ch_config dictionaries. One per channel.
+
+:events:        Definition of energy information. A data_info dictionary.
+
+:extras:        Definition of any extra data. A list of data_info dictionaries.
+
+:latency:       Latency values in ns. A list of values, one per channel, which are added to channel
+                timestamps before searching for coincidences.
+
+:histo_size:    Optional, will probably be moved to another config file. Defines the number of bins in
+                the histogram returned by daq.
+
+:ch_list:       List of channels with indices to 'ch_cfg' list. Defines the order (and number) of
+                channels in the output. Functionality of this may be changed in the future.
+
+
+ch_config
+^^^^^^^^^
+
+:name:          Name of the channel. Will appear in title and legend of plots.
+
+:cfg_file:      Optional, will probably be moved to another config file. Defines readout channel
+                specific configuration file used for daq.
+
+:pdeadtime:     Dead time of a single pulse in the channel. This value will be used to calculate
+                estimated dead time in data formats where hardware calculated dead time does not
+                exist (Caen) or where it cannot be fully trusted (Caen). This value includes the
+                rise time, flat top and any trigger holdoff values and needs to be corrected whenever
+                configuration is changed.
+
+data_info
+^^^^^^^^^
+
+:name:          the name of the data. Energy information is always 'energy' and value in this field is
+                ignored.
+
+:type:          Numpy type string describing the data format in the binary file. For energy the default
+                is 'i2' for signed 16-bit integer. Extras don't have defaults and type must be defined.
+
+:ch_mask:       Defines which energy channels have this extra associated with. Given as a list of zeros
+                and ones. Energy data is always one column per channel and this key is ignored. Default
+                is all channels.
+
+:aggregate:     Defines how the data is combined or created in the event parser. Normally extras are just
+                read from channel files and combined as events in the event construction. Some builtin
+                extra data types are created while the events are built and exist only as final data.
+
+                :col:           Data is saved as columns in a matrix with number of columns defined by 'ch_mask'.
+
+                :bit:           Bit mask with a single bit ber channel.
+
+                :latency:       *Builtin extra.* The time difference between counts in different channels. Needs
+                                additional key 'main' to define the channel that is compared against the others.
+                                Output is always (number of channels - 1) columns.
+
+                :multihit:      *Builtin extra.* A bit mask with bit set on a channel that received multiple
+                                hits per event.
+
+:multi:         Defines what happens if two or more hits are detected in a single channel within a single
+                event (inside the coincidence window). Valid values are:
+
+                :sum:           Sum of the values
+
+                :max:           Maximum of the values
+
+                :min:           Minimum of the values
+
+                :mean:          Mean of the values
+
+                :kill:          The event is discarded
+
+                :max_e:         Value in the hit where energy is largest
+
+:raw unit:      String that is used as unit for uncalibrated data. Default is 'ch'.
+
+:unit:          String that is used for calibrated data. Default for energy is 'KeV'.
+
+:empty_val:     Value given to channels that don't have information. Default for energy is -1, for all
+                other extras the default is 0. Latency extra has this set to smallest value of the datatype
+                and ignores this parameter.
+
+:num_col:       Number of columns in the parsed data matrix. It is automatically calculated. For energy it is the number
+                of channels, for extras this value is calculated based on 'ch_mask' or defined by the type of inbuilt
+                extra. It is used by the data loader.
+
+:main:          'main' is used by the 'latency' aggregate to single out which channel time is compared against
+                the others.
+
+Plot configuration
+------------------
+Plot configuration defines the data in the plot as well as the plotting parameters, such as labels, scales etc.
+Only one plot can be defined per Plot object. However multiple plots can be stacked into the plot_cfg list of the plot
+configuration. If all of the plots are 1d and have same axes they can be plotted into a single figure. Creating figures
+and handling how to stack plots into figures should be done explicitly by the user. Two Plot instances can be compared
+for equality. The result is True only if they can be shown in the same axes. The Plot class uses only the information
+in plot_cfg and the name.
+
+:name:          Name of the canvas. Will be visible in the title of the plot.
+
+:plot_cfg:      List defining all plots in the configuration file. If multi plot configuration is given the index of the
+                plot has to be set by plot_idx keyword on initialization of the Plot object. First plot in this list is
+                configured if index is not given. A plot is defined by its name, axes and gates:
+
+                :plot_name:     Name for the individual plot that helps to understand the content of the plot. Will be
+                                visible in the legend of 1d plots and as the label of the colorbar in 2d plots.
+
+                :axes:          An axis info dictionary defining the x-axis of the plot or a list defining two
+                                axis_infos for a 2d plot.
+
+                :gates:         A list of gate_info dictionaries. All gates in this list are applied in AND mode.
+
+The rest of the plot configuration is not used by listmode library at all.
+
+:xscale:        Defines whether x axis of a plot is logarithmic ("log") or linear ("linear",
+                default).
+
+:yscale:        Defines whether x axis of a plot is logarithmic ("log") or linear ("linear",
+                default).
+
+:zscale:        Defines whether z axis (colorbar) of a 2d-plot is logarithmic ("log") or linear
+                ("linear", default)
+
+:reverse_x_axis: Optional string that defines whether x-axis is reversed in a plot.
+
+:reverse_y_axis: Optional string that defines whether y-axis is reversed in a plot.
+
+
+axis_info
+^^^^^^^^^
+A dictionary defining each data axis of the plot:
+:channel:       The channel to plot. Note that some extra data have different number of channels. Note also that this
+                defines the name printed to legend for 1d plots, also for time axes. It should match the gate used
+                for selecting the data (if applicable) for time plots.
+
+:data:          A string defining the name of the data to be plotted on this axis. This can be "time", "energy" or any of
+                the extras.
+
+:bin_width:     For normal data this is an integer width of bin in raw units. Note, for time axis this is in timebase
+                units instead and fractional bin widths can be used.
+
+:range:         A two item list defining lower and upper limits in calibrated units. Ignored with time axes.
+
+:timebase:      Only relevant for time axes. A string defining the base unit for time axes.
+                ("ns", "us", "ms", "s", "m", "h" and "d").
+
+gate_info
+^^^^^^^^^
+A dictionary defining a gate
+:channel:       The channel to gate with.
+
+:data:          A string defining the name of the data to be gated with. This can be "time", "energy" or any of the extras.
+
+:range:         A nested list defining the ranges that are used for the gate. Each range is a list of start and stop values.
+                The ranges are defined in calibrated units. Bitmask type data ignores range. An event is in range if
+                True and not if False.
+
+:coinc:         An integer defining whether the gate is anticoincident (negative integer), coincident (positive
+                integer) or null (zero). Coincident gate only passes events with data value in that channel contained
+                within the gate range, anticoincident passes if not. A zero defines a null gate. It will not cause
+                filtering of the data - it is not processed at all. Use null gates to switch off gates quickly.
