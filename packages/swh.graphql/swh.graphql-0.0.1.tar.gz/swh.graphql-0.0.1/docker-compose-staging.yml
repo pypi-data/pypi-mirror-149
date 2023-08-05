@@ -1,0 +1,11 @@
+version: "3.4"
+
+services:
+  app:
+    dns: 192.168.100.29
+    environment:
+      - RUNNING_ENV=staging
+    command: gunicorn --bind=0.0.0.0:8000 --workers=2 wsgi:application
+
+  # haproxy:
+  #   command: uvicorn swh.graphql.app:app --host 0.0.0.0 --port 8000

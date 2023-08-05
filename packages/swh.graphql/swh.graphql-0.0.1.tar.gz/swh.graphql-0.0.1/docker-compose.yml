@@ -1,0 +1,13 @@
+version: "3.4"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - RUNNING_ENV=dev
+    volumes:
+      - ".:/usr/src/app"      
+    ports:
+      - "8000:8000"

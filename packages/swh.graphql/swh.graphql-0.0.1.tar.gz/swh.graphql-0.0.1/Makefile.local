@@ -1,0 +1,20 @@
+.PHONY: run-dev
+run-dev:
+	uvicorn asgi:application --reload
+
+.PHONY: run-dev-stable
+run-dev-stable:
+	uvicorn asgi:application
+
+.PHONY: run-dev-docker
+run-dev-docker:
+	docker-compose -f docker-compose.yml -f docker-compose-dev.yml up --build
+
+.PHONY: run-staging
+run-staging:
+	docker-compose -f docker-compose.yml -f docker-compose-staging.yml up --build
+
+.PHONY: update-staging
+update-staging:
+	git pull origin master
+	docker-compose -f docker-compose.yml -f docker-compose-staging.yml restart

@@ -1,0 +1,338 @@
+scalar SWHID
+
+scalar HashValue
+
+scalar DateTime
+
+interface Node {
+  id: ID!
+}
+
+interface SWHNode {
+  SWHID: SWHID!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
+type OriginConnection {
+  edges: [OriginEdge]
+  nodes: [Origin]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type OriginEdge {
+  cursor: String!
+  node: Origin
+}
+
+type Origin implements Node {
+  id: ID!
+  url: String!
+  visits(
+    first: Int!
+    after: String
+  ): VisitConnection!
+  latestVisit: Visit
+  snapshots(
+    first: Int!
+    after: String
+  ): SnapshotConnection
+}
+
+type VisitConnection {
+  edges: [VisitEdge]
+  nodes: [Visit]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type VisitEdge {
+  cursor: String!
+  node: Visit
+}
+
+type Visit implements Node {
+  id: ID!
+  visitId: Int
+  date: DateTime!
+  type: String
+  status(
+    first: Int
+    after: String
+  ): VisitStatusConnection
+  latestStatus: VisitStatus
+}
+
+type VisitStatusConnection {
+  edges: [VisitStatusEdge]
+  nodes: [VisitStatus]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type VisitStatusEdge {
+  cursor: String!
+  node: VisitStatus
+}
+
+type VisitStatus {
+  status: String!
+  date: DateTime!
+  snapshotSWHID: SWHID
+  snapshot: Snapshot
+  type: String
+}
+
+type SnapshotConnection {
+  edges: [SnapshotEdge]
+  nodes: [Snapshot]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type SnapshotEdge {
+  cursor: String!
+  node: Snapshot
+}
+
+type Snapshot implements SWHNode & Node {
+  id: ID!
+  SWHID: SWHID!
+
+  branches(
+    first: Int!
+    after: String
+    types: [BranchTypes]
+    nameInclude: String
+  ): BranchConnection
+}
+
+type BranchConnection {
+  edges: [BranchConnectionEdge]
+  nodes: [Branch]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type BranchConnectionEdge {
+  cursor: String!
+  node: Branch
+}
+
+type Person {
+  email: String
+  name: String
+  fullname: String
+}
+
+
+union BranchTarget = Revision | Release | Branch | Content | Directory | Snapshot
+
+enum BranchTypes {
+  revision
+  release
+  alias
+  content
+  directory
+  snapshot
+}
+
+type Branch {
+  name: String
+  type: BranchTypes
+  target: BranchTarget
+}
+
+type RevisionConnection {
+  edges: [RevisionEdge]
+  nodes: [Revision]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type RevisionEdge {
+  cursor: String!
+  node: Revision
+}
+
+type Revision implements SWHNode & Node {
+  id: ID!
+  SWHID: SWHID!
+  message: String
+  author: Person
+  committer: Person
+  date: DateTime
+  type: String   # Revision type: FIXME, change to an enum
+  # directorySWHID: SWHID
+  directory: Directory
+  parentSWHIDs: [SWHID]
+  parents(
+    first: Int
+    after: String
+  ): RevisionConnection
+  revisionLog(
+    first: Int!
+    after: String
+  ): RevisionConnection
+}
+
+union ReleaseTarget = Release | Revision | Directory | Content
+
+enum ReleaseTargetType {
+  release
+  revision
+  content
+  directory
+}
+
+type Release implements SWHNode & Node {
+  id: ID!
+  SWHID: SWHID!
+  name: String
+  message: String
+  author: Person
+  date: DateTime
+  targetType: ReleaseTargetType
+  target: ReleaseTarget
+}
+
+type DirectoryEntryConnection {
+  edges: [DirectoryEntryEdge]
+  nodes: [DirectoryEntry]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type DirectoryEntryEdge {
+  cursor: String!
+  node: DirectoryEntry
+}
+
+union DirectoryEntryTarget = Directory | Content
+
+enum DirectoryEntryType {
+  dir
+  file
+  rev
+}
+
+type DirectoryEntry {
+  name: String
+  type: DirectoryEntryType
+  target: DirectoryEntryTarget
+}
+
+type Directory implements SWHNode & Node {
+  id: ID!
+  SWHID: SWHID!
+  entries(
+    first: Int
+    after: String
+  ): DirectoryEntryConnection
+}
+
+type ContentChecksum {
+  blake2s256: HashValue
+  sha1: HashValue
+  sha1_git: HashValue
+  sha256: HashValue
+}
+
+# type ContentType {
+#   test: String
+# }
+
+# type ContentLanguage {
+#   test: String
+# }
+
+# type ContentLicense {
+#   test: String
+# }
+
+type Content implements SWHNode & Node {
+  id: ID!
+  SWHID: SWHID!
+  checksum: ContentChecksum
+  # data:
+  # filetype: ContentType
+  # language: ContentLanguage
+  # license: ContentLicense
+  length: Int
+  status: String
+  data: String
+}
+
+type Query {
+  """
+  Get an origin with its url
+  """
+  origin(
+    url: String!
+  ): Origin
+
+  """
+  Get a list of origins
+  matching the given filters
+  Can also be used to search for an origin
+  """
+  # FIMXE, use Input types to make this cleaner
+  origins(
+    first: Int!
+    after: String
+    urlPattern: String
+  ): OriginConnection
+
+  """
+  Get a visit object with its id
+  and/or origin and visit id
+  """
+  visit(
+    originUrl: String!
+    visitId: Int!
+  ): Visit
+
+  """
+  Get a snapshot with Sha1
+  """
+  snapshot(
+    SWHID: SWHID!
+  ): Snapshot
+
+  """
+  Get the revision with the given Sha1
+  """
+  revision(
+    SWHID: SWHID!
+  ): Revision
+
+  """
+  Get the release with the given Sha1
+  """
+  release(
+    SWHID: SWHID!
+  ): Release
+
+  """
+  Get the directory with the given Sha1
+  """
+  directory(
+    SWHID: SWHID!
+  ): Directory
+
+  """
+  Get the content with the given Sha1
+  """
+  content(
+    SWHID: SWHID!
+  ): Content
+
+  # """
+  # Search with the given swhid
+  # """
+  # searchWithSwhid
+}
