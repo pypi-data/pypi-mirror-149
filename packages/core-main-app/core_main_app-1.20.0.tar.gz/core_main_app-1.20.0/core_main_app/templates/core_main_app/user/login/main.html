@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-12 form-login">
+        <h2>Login</h2>
+
+        {% if data.login_error %}
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> Invalid username and/or password. Please try again or
+            contact an administrator for any assistance.
+        </div>
+        {% endif %}
+        {% if data.login_locked %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Your username is not activated yet. Please check back soon or
+            contact an administrator for any assistance.
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'core_main_app_login' %}" class="form-horizontal">
+            {% csrf_token %}
+
+            {% for field in data.login_form.visible_fields %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div>
+                    {{ field }}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for field in data.login_form.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+
+            <div class="form-group">
+                <div class="row">
+                    {% if data.with_website_features %}
+                    <div class="col-9">
+                        <a class="btn btn-secondary btn-lg request account"
+                           href="{% url 'core_website_app_account_request' %}">
+                            <i class="fas fa-user-plus"></i> Request an Account
+                        </a>
+                        <a class="btn btn-secondary btn-lg" href="{% url 'password_reset' %}">
+                            <i class="fas fa-lock" aria-hidden="true"></i> Forgot password
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-lg btn-primary float-right">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

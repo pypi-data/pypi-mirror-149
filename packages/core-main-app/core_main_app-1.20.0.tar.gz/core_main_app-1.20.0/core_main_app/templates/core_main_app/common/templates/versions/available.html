@@ -1,0 +1,53 @@
+<!--FIXME: make a common box.html-->
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+{% load timestamptags %}
+
+{% block box_title %}
+    Version manager for {{ data.object_name }} {{data.version_manager.title }}
+{% endblock %}
+
+{% block box_tools %}
+
+{% endblock %}
+
+{% block box_body %}
+<div id="model_version">
+	<table class="table table-bordered table-hover">
+        <tr>
+            <th style="width: 15%">Version #</th>
+            <th style="width: 20%">Status</th>
+            <th style="width: 20%">Upload date</th>
+            <th>Actions</th>
+        </tr>
+	    {% for version in data.version_manager.versions.available reversed %}
+           <tr>
+               <td>{{ version.index }}</td>
+               {% if version.object == data.version_manager.current %}
+                    <td style='font-weight:bold;color:green'>Current</td>
+               {% else %}
+                    <td style='font-weight:bold;color:orange'>Uploaded</td>
+               {% endif %}
+
+               <td>
+                   {{ version.object|print_datetime_from_object_id }}
+               </td>
+
+               <td>
+                   {% block box_actions %}
+                    <a class="btn btn-secondary results-xslt"
+                        href="{% url 'core_main_app_template_xslt' version.object %}">
+                        <i class="fas fa-file-code"></i> XSLT
+                    </a>
+                   {% if 'core_parser_app' in INSTALLED_APPS %}
+                    <a class="btn btn-secondary modules"
+                        href="{% url 'core_parser_app_template_modules' version.object %}">
+                        <i class="fas fa-cubes"></i> Modules
+                    </a>
+                   {% endif %}
+                   {% endblock %}
+               </td>
+           </tr>
+       {% endfor %}
+   </table>
+</div>
+{% endblock %}
