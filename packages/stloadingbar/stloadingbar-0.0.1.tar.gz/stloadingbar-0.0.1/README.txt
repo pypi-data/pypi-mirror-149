@@ -1,0 +1,1 @@
+This Is A Very Simple Loading Progress Bar That Easily Takes An Amount Of Time To Load, It Takes The Time For Your Computer To Process The Factorials Between 2000, 3000. This Way It Takes Some Time To Load. Use In The Terminal (Powershell, Cmd, Etc)
