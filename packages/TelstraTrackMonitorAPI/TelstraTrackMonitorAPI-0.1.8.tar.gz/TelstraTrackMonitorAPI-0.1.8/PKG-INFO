@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: TelstraTrackMonitorAPI
+Version: 0.1.8
+Summary: Structured way to interface with Telstra Track and Monitor
+Home-page: https://github.com/Razmo99/TelstraTrackMonitorAPI
+Author: razmo99
+Author-email: lewis.munro@live.com
+License: MIT License
+Description: # TelstraTrackMonitorAPI
+        Intended to be a Structured way to interface with Telstra's Track & Monitor API.\
+        
+        It mostly focuses on devices for now.
+        
+        Has classes and methods for:
+        * Token Management - Get/Load/save/update
+        * Getting Devices with specified params
+        
+        # Usage
+        Firstly you need to make up an instance of the TokenManager Class.\
+        This Class will be used to pass the retrieved Token to other methods later
+        ~~~python
+        ttm_token = TelstraTrackMonitorAPI.TokenManager(
+        	server='https://tapi.telstra.com'
+        	client_id='XXXXXXXXXXXXXXXXXXXXX'
+        	client_secret='XXXXXXXXXXXXXXXXXXXXX'
+        	save_location='ttm_token.json'
+        )
+        ttm_token.load_token() #Loads any token information in the save_location json file
+        ttm_token.update_token() # Check if the token is expired and renews if so.
+        ~~~
+        Once the above is done we can actually pull some information from Track & Monitor API
+        ~~~python
+        with TelstraTrackMonitorAPI.Sessions(ttm_token.server,ttm_token.access_token) as TTM:
+            ttm_devices=TTM.devices_get(
+                {'$filter':'not(deviceFriendlyName eq null)'}
+            )
+        ~~~
+        The above method will get all devices in Track & Monitor API that have a Device Friendly name.
+        
+        
+        # Installation
+        
+        `pip install TelstraTrackMonitorAPI`
+        
+Keywords: Telstra,API,"Track and Monitor",Track,Monitor
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: ~=3.8
+Description-Content-Type: text/markdown
