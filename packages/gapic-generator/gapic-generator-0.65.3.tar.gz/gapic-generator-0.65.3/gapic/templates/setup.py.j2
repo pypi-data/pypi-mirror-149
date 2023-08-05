@@ -1,0 +1,62 @@
+{% extends '_base.py.j2' %}
+
+{% block content %}
+
+import io
+import os
+import setuptools  # type: ignore
+
+version = '0.1.0'
+
+package_root = os.path.abspath(os.path.dirname(__file__))
+
+readme_filename = os.path.join(package_root, 'README.rst')
+with io.open(readme_filename, encoding='utf-8') as readme_file:
+    readme = readme_file.read()
+
+setuptools.setup(
+    name='{{ api.naming.warehouse_package_name }}',
+    author="Google LLC",
+    author_email="googleapis-packages@google.com",
+    url="https://github.com/googleapis/python-{{ api.naming.warehouse_package_name }}",
+    version=version,
+    long_description=readme,
+    {% if api.naming.namespace %}
+    packages=setuptools.PEP420PackageFinder.find(),
+    namespace_packages={{ api.naming.namespace_packages }},
+    {% else %}
+    packages=setuptools.PEP420PackageFinder.find(),
+    {% endif %}
+    platforms='Posix; MacOS X; Windows',
+    include_package_data=True,
+    install_requires=(
+        {# TODO(dovs): remove when 1.x deprecation is complete #}
+        {% if 'rest' in opts.transport %}
+        'google-api-core[grpc] >= 2.7.0, < 3.0.0dev',
+        {% else %}
+        'google-api-core[grpc] >= 1.31.0, < 3.0.0dev',
+        {% endif %}
+        'libcst >= 0.2.5',
+        'googleapis-common-protos >= 1.55.0, <2.0.0dev',
+        'proto-plus >= 1.19.7',
+    {# TODO: Remove after https://github.com/googleapis/gapic-generator-python/pull/1240 is merged. #}
+    {% if api.requires_package(('google', 'iam', 'v1')) or opts.add_iam_methods or api.has_iam_mixin %}
+        'grpc-google-iam-v1 >= 0.12.3, < 0.13dev',
+    {% endif %}
+    ),
+    python_requires='>=3.6',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Topic :: Internet',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+    ],
+    zip_safe=False,
+)
+{% endblock %}
