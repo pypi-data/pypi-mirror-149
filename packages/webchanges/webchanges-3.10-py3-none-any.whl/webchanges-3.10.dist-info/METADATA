@@ -1,0 +1,282 @@
+Metadata-Version: 2.1
+Name: webchanges
+Version: 3.10
+Summary: Check web (or commands) for changes since last run and notify.  Anonymously alerts you of webpage changes.
+Home-page: https://pypi.org/project/webchanges/
+Author: Mike Borsetti
+Author-email: mike@borsetti.com
+License: MIT, BSD 3-Clause License
+Project-URL: Issues, https://www.github.com/mborsetti/webchanges/issues
+Project-URL: CI, https://www.github.com/mborsetti/webchanges/actions
+Project-URL: Documentation, https://webchanges.readthedocs.io/
+Project-URL: Source Code, https://www.github.com/mborsetti/webchanges/
+Project-URL: Changelog, https://webchanges.readthedocs.io/en/stable/changelog.html
+Keywords: webmonitoring monitoring
+Platform: UNKNOWN
+Classifier: Environment :: Console
+Classifier: Topic :: Internet
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Indexing/Search
+Classifier: Topic :: Utilities
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Developers
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: cssselect
+Requires-Dist: html2text
+Requires-Dist: lxml
+Requires-Dist: markdown2
+Requires-Dist: msgpack
+Requires-Dist: platformdirs
+Requires-Dist: pyyaml
+Requires-Dist: requests
+Requires-Dist: colorama ; os_name == "nt"
+Requires-Dist: tzdata ; os_name == "nt"
+Requires-Dist: backports.zoneinfo ; python_version < "3.9"
+Provides-Extra: all
+Requires-Dist: Pillow ; extra == 'all'
+Requires-Dist: aioxmpp ; extra == 'all'
+Requires-Dist: beautifulsoup4 ; extra == 'all'
+Requires-Dist: chump ; extra == 'all'
+Requires-Dist: cssbeautifier ; extra == 'all'
+Requires-Dist: deepdiff ; extra == 'all'
+Requires-Dist: jsbeautifier ; extra == 'all'
+Requires-Dist: keyring ; extra == 'all'
+Requires-Dist: matrix-client ; extra == 'all'
+Requires-Dist: pdftotext ; extra == 'all'
+Requires-Dist: playwright ; extra == 'all'
+Requires-Dist: psutil ; extra == 'all'
+Requires-Dist: pushbullet.py ; extra == 'all'
+Requires-Dist: pytesseract ; extra == 'all'
+Requires-Dist: redis ; extra == 'all'
+Requires-Dist: vobject ; extra == 'all'
+Requires-Dist: jq ; (os_name != "nt") and extra == 'all'
+Provides-Extra: beautify
+Requires-Dist: beautifulsoup4 ; extra == 'beautify'
+Requires-Dist: jsbeautifier ; extra == 'beautify'
+Requires-Dist: cssbeautifier ; extra == 'beautify'
+Provides-Extra: bs4
+Requires-Dist: beautifulsoup4 ; extra == 'bs4'
+Provides-Extra: deepdiff
+Requires-Dist: deepdiff ; extra == 'deepdiff'
+Provides-Extra: ical2text
+Requires-Dist: vobject ; extra == 'ical2text'
+Provides-Extra: jq
+Requires-Dist: jq ; (os_name != "nt") and extra == 'jq'
+Provides-Extra: matrix
+Requires-Dist: matrix-client ; extra == 'matrix'
+Provides-Extra: ocr
+Requires-Dist: pytesseract ; extra == 'ocr'
+Requires-Dist: Pillow ; extra == 'ocr'
+Provides-Extra: pdf2text
+Requires-Dist: pdftotext ; extra == 'pdf2text'
+Provides-Extra: pushbullet
+Requires-Dist: pushbullet.py ; extra == 'pushbullet'
+Provides-Extra: pushover
+Requires-Dist: chump ; extra == 'pushover'
+Provides-Extra: redis
+Requires-Dist: redis ; extra == 'redis'
+Provides-Extra: safe_password
+Requires-Dist: keyring ; extra == 'safe_password'
+Provides-Extra: use_browser
+Requires-Dist: playwright ; extra == 'use_browser'
+Requires-Dist: psutil ; extra == 'use_browser'
+Provides-Extra: xmpp
+Requires-Dist: aioxmpp ; extra == 'xmpp'
+
+.. role:: underline
+    :class: underline
+.. role:: additions
+    :class: additions
+.. role:: deletions
+    :class: deletions
+
+==========
+webchanges
+==========
+
+**webchanges** checks web content and notifies you via e-mail (or one of many other supported services) if a change is
+detected. **webchanges** can also check the output of local commands. The notification includes the changed URL or
+command and a summary of what has changed.
+
+**webchanges** *anonymously* alerts you of webpage changes.
+
+
+
+Requirements
+============
+**webchanges** requires |support|.
+
+You should use the latest version of `Python <https://www.python.org/downloads/>`__ if possible, but older
+Python versions are supported for 3 years after being obsoleted by a new major release (3.x). For each major release,
+only the latest bug and security fix version (3.x.y) is supported.
+
+
+Installation
+============
+Install **webchanges** |pypi_version| |format| |status| with::
+
+   pip install webchanges
+
+
+
+Documentation
+=============
+The documentation is hosted on `Read the Docs <https://webchanges.readthedocs.io/>`__ |readthedocs|.
+
+
+Quick Start
+============
+Initialize
+----------
+
+#. Run the following command to create the default ``config.yaml`` (configuration) and ``jobs.yaml`` (jobs) files and
+   open an editor to add your `jobs <https://webchanges.readthedocs.io/en/stable/jobs.html>`__:
+
+   .. code-block:: bash
+
+      webchanges --edit
+
+
+#. Run the following command to change the default `configuration
+   <https://webchanges.readthedocs.io/en/stable/configuration.html>`__, e.g. to receive change notifications
+   ("`reports <https://webchanges.readthedocs.io/en/stable/reporters.html>`__")
+   by `e-mail <https://webchanges.readthedocs.io/en/stable/reporters.html#smtp>`__ and/or one of many other methods:
+
+   .. code-block:: bash
+
+      webchanges --edit-config
+
+
+Run
+---
+To check the sources in your jobs and report on (e.g. display or via e-mail) any changes found from the previous
+execution, just run:
+
+.. code-block:: bash
+
+   webchanges
+
+**webchanges** does not include a scheduler. We recommend using a system scheduler to automatically run **webchanges**
+periodically:
+
+- On Linux or macOS, you can use cron (if you have never used cron before, see
+  `here <https://www.computerhope.com/unix/ucrontab.htm>`__); `crontab.guru <https://crontab.guru>`__ will build a
+  schedule expression for you.
+- On Windows, you can use the built-in `Windows Task Scheduler
+  <https://en.wikipedia.org/wiki/Windows_Task_Scheduler>`__.
+
+
+Code
+====
+|coveralls| |issues|
+
+The code and issues tracker are hosted on `GitHub <https://github.com/mborsetti/webchanges>`__.
+
+
+Contributing
+============
+We welcome any contribution, e.g. documentation, bug reports, new features, etc., as both pull requests and
+`issue reports <https://github.com/mborsetti/webchanges/issues>`__.
+
+More information for developers and documentation editors is `here
+<https://github.com/mborsetti/webchanges/blob/main/CONTRIBUTING.rst>`__, and our wishlist is `here
+<https://github.com/mborsetti/webchanges/blob/main/WISHLIST.md>`__.
+
+
+License
+=======
+|license|
+
+Released under the `MIT License <https://opensource.org/licenses/MIT>`__, but including
+`code <https://github.com/thp/urlwatch/tree/346b25914b0418342ffe2fb0529bed702fddc01f>`__ licensed under the
+`BSD 3-Clause License <https://opensource.org/licenses/BSD-3-Clause>`__. See the full license `here
+<https://github.com/mborsetti/webchanges/blob/main/LICENSE>`__.
+
+
+Compatibility with **urlwatch**
+================================
+
+This project is based on code of`urlwatch <https://github.com/thp/urlwatch>`__ 2.21. You can easily upgrade from
+**urlwatch** 2.25 (see `here <https://webchanges.readthedocs.io/en/stable/migration.html>`__) using the same job and
+configuration files and benefit from many HTML-focused improvements, including:
+
+* Report links that are `clickable <https://pypi.org/project/webchanges/>`__!
+* Original formatting such as **bolding / headers**, *italics*, :underline:`underlining`, list bullets (•) and
+  indentation;
+* :additions:`Added` and :deletions:`deleted` lines clearly highlighted by color and strikethrough, and long lines that
+  wrap around;
+* Correct rendering by email clients who override stylesheets (e.g. Gmail);
+* Other legibility improvements;
+* Use of stable Playwright instead of buggy Pyppeteer for websites that need JavaScript rendering before capture,
+  increasing stability, reliability, flexibility and control;
+* New filters such as `additions_only <https://webchanges.readthedocs.io/en/stable/diff_filters.html#additions-only>`__,
+  which makes it easier to track content that was added without the distractions of the content that was deleted;
+* Much better `documentation <https://webchanges.readthedocs.io/>`__;
+* More reliability and stability, including a 39 percentage point increase in testing coverage to 81%;
+* Many other additions, refinements and fixes (see `detailed information
+  <https://webchanges.readthedocs.io/en/stable/migration.html#upgrade-details>`__).
+
+Examples:
+
+.. image:: https://raw.githubusercontent.com/mborsetti/webchanges/main/docs/html_diff_filters_example_1.png
+    :width: 504
+
+|
+
+.. image:: https://raw.githubusercontent.com/mborsetti/webchanges/main/docs/html_diff_filters_example_3.png
+    :width: 504
+
+
+
+
+.. |support| image:: https://img.shields.io/pypi/pyversions/webchanges.svg
+    :target: https://www.python.org/downloads/
+    :alt: Supported Python versions
+.. |pypi_version| image:: https://img.shields.io/pypi/v/webchanges.svg?label=
+    :target: https://pypi.org/project/webchanges/
+    :alt: PyPI version
+.. |format| image:: https://img.shields.io/pypi/format/webchanges.svg
+    :target: https://pypi.org/project/webchanges/
+    :alt: Kit format
+.. |downloads| image:: https://img.shields.io/pypi/dw/webchanges.svg
+    :target: https://pypi.org/project/webchanges/
+    :alt: Weekly PyPI downloads
+.. |license| image:: https://img.shields.io/pypi/l/webchanges.svg
+    :target: https://pypi.org/project/webchanges/
+    :alt: License at https://pypi.org/project/webchanges/
+.. |issues| image:: https://img.shields.io/github/issues-raw/mborsetti/webchanges
+    :target: https://github.com/mborsetti/webchanges/issues
+    :alt: Issues at https://github.com/mborsetti/webchanges/issues
+.. |readthedocs| image:: https://img.shields.io/readthedocs/webchanges/stable.svg?label=
+    :target: https://webchanges.readthedocs.io/
+    :alt: Documentation status
+.. |CI| image:: https://github.com/mborsetti/webchanges/workflows/Tests/badge.svg?branch=main
+    :target: https://github.com/mborsetti/webchanges/actions
+    :alt: CI testing status
+.. |coverage| image:: https://codecov.io/gh/mborsetti/webchanges/branch/main/graphs/badge.svg
+    :target: https://app.codecov.io/gh/mborsetti/webchanges/branch/main
+    :alt: Code coverage by Codecov
+.. |coveralls| image:: https://coveralls.io/repos/github/mborsetti/webchanges/badge.svg?branch=main
+    :target: https://coveralls.io/github/mborsetti/webchanges?branch=main
+    :alt: Code coverage by Coveralls
+.. |status| image:: https://img.shields.io/pypi/status/webchanges.svg
+    :target: https://pypi.org/project/webchanges/
+    :alt: Package stability
+
+
