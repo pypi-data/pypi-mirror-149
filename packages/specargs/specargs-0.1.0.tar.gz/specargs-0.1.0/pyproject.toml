@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "specargs"
+version = "0.1.0"
+description = "A library for request parsing and response serialization that generates OpenAPI Specification files"
+repository = "https://github.com/maz808/specargs"
+license = "MIT"
+keywords = ["OpenAPI", "Flask", "webargs", "marshmallow", "Generator"]
+authors = ["Manuel Zamora <mzamora808@gmail.com>"]
+classifiers = [
+    "Intended Audience :: Developers"
+]
+readme = "README.md"
+packages = [
+    {include = "specargs"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+apispec = {extras = ["marshmallow", "yaml"], version = "^5.1.1"}
+webargs = "^8.1.0"
+apispec-webframeworks = "^0.5.2"
+attrs = "^21.4.0"
+cattrs = "^1.10.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-mock = "^3.7.0"
+rstcheck = "^3.3.1"
+pytest-cov = "^3.0.0"
+commitizen = "^2.24.0"
+pre-commit = "^2.18.1"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.1"
+tag_format = "$version"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
