@@ -1,0 +1,131 @@
+{% from 'tf1x_utils.j2' import build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+
+
+{% macro layer_u_net(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer, PerceptiLabsVisualizer):
+    def __init__(self):
+        super().__init__()
+        self._variables = {}
+
+    def call(self, inputs, training=True):
+        """ Takes a tensor and sends it as input to the U-Net model."""
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8) }}
+        input_ = inputs['input']
+        output = self.unet(input_, training=training)
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'output', 'preview': 'output'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+
+    def build(self, input_shape):
+        """ Called by the Keras framework upon the first invocation of the call method """
+        input_shape_ = input_shape['input']
+        if len(input_shape_) > 3:
+            input_shape_ = input_shape_[1:]
+
+        filter_num = {{layer_spec.filter_num}}
+        n_labels = {{layer_spec.n_labels}}
+        stack_num_down = {{layer_spec.stack_num_down}}
+        stack_num_up = {{layer_spec.stack_num_up}}
+        activation = '{{layer_spec.activation}}'
+        {% call indented_if(layer_spec.output_activation) %}
+            output_activation = '{{layer_spec.output_activation}}'
+        {% endcall %}
+        {% call indented_if(not layer_spec.output_activation) %}
+            output_activation = None
+        {% endcall %}
+        batch_norm = {{layer_spec.batch_norm}}
+        {% call indented_if(layer_spec.pool) %}
+            pool = '{{layer_spec.pool}}'
+        {% endcall %}
+        {% call indented_if(not layer_spec.pool) %}
+            pool = False
+        {% endcall %}
+        {% call indented_if(layer_spec.unpool) %}
+            unpool = '{{layer_spec.unpool}}'
+        {% endcall %}
+        {% call indented_if(not layer_spec.unpool) %}
+            unpool = False
+        {% endcall %}
+        {% call indented_if(layer_spec.backbone) %}
+            backbone = '{{layer_spec.backbone}}'
+        {% endcall %}
+        {% call indented_if(not layer_spec.backbone) %}
+            backbone = None
+        {% endcall %}
+        {% call indented_if(layer_spec.backbone and layer_spec.backbone_weights) %}
+            backbone_weights = 'imagenet'
+        {% endcall %}
+        {% call indented_if(not layer_spec.backbone or not layer_spec.backbone_weights ) %}
+            backbone_weights = None
+        {% endcall %}
+        {% call indented_if(layer_spec.backbone) %}
+            freeze_backbone = {{layer_spec.freeze_backbone}}
+        {% endcall %}
+        {% call indented_if(not layer_spec.backbone) %}
+            freeze_backbone = False
+        {% endcall %}
+        {% call indented_if(layer_spec.backbone) %}
+            freeze_batch_norm = {{layer_spec.freeze_batch_norm}}
+        {% endcall %}
+        {% call indented_if(not layer_spec.backbone) %}
+            freeze_batch_norm = False
+        {% endcall %}
+        {% call indented_if(layer_spec.attention) %}
+            atten_activation = '{{layer_spec.atten_activation}}'
+            atten_type = '{{layer_spec.atten_type}}'
+        {% endcall %}
+        
+        name = '{{layer_spec.name}}'
+
+        {% call indented_if(not layer_spec.attention) %}
+            self.unet = unet_models.unet_2d(input_size=input_shape_, filter_num=filter_num, n_labels=n_labels,
+                                        stack_num_down=stack_num_down, stack_num_up=stack_num_up, activation=activation,
+                                        output_activation=output_activation, batch_norm=batch_norm, pool=pool,
+                                        unpool=unpool, backbone=backbone, weights=backbone_weights,
+                                        freeze_backbone=freeze_backbone, freeze_batch_norm=freeze_batch_norm, name='unet')
+        {% endcall %}
+
+        {% call indented_if(layer_spec.attention) %}
+            self.unet = unet_models.att_unet_2d(input_size=input_shape_, filter_num=filter_num, n_labels=n_labels, 
+                                    stack_num_down=stack_num_down, stack_num_up=stack_num_up, activation=activation, 
+                                    atten_activation=atten_activation, attention=atten_type, output_activation=output_activation, 
+                                    batch_norm=batch_norm, pool=pool, unpool=unpool, 
+                                    backbone=backbone, weights=backbone_weights, 
+                                    freeze_backbone=freeze_backbone, freeze_batch_norm=freeze_batch_norm, 
+                                    name='attunet')
+        {% endcall %}
+
+        {% call indented_if(not layer_spec.output_activation) %}
+            self.kernel = self.unet.layers[-1].weights[0]
+            self.bias = self.unet.layers[-1].bias
+        {% endcall %}
+        {% call indented_if(layer_spec.output_activation) %}
+            self.kernel = self.unet.layers[-2].weights[0]
+            self.bias = self.unet.layers[-2].bias
+        {% endcall %}
+
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+
+    @property
+    def visualized_trainables(self):
+        """ Returns two tf.Variables (weights, biases) to be visualized in the frontend """
+        return self.kernel, self.bias
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )
+
+{% endmacro %}
+

@@ -1,0 +1,37 @@
+{% from 'tf1x_utils.j2' import batch_normal, build_output_dict, check_input_vars %}
+{% from 'controlflow.j2' import indented_if %}
+{% from 'activations.j2' import activation_function %}
+
+
+{% macro layer_tf2x_one_hot(layer_spec, graph_spec) %}
+class {{layer_spec.sanitized_name}}Keras(tf.keras.layers.Layer):
+    def call(self, inputs, training=True):
+        """ Takes a tensor and one-hot encodes it """
+        {{ check_input_vars(layer_spec, ['input'])|indent(width=8)}}                
+        input_ = inputs['input']
+        y = tf.one_hot(tf.cast(input_, dtype=tf.int32), {{layer_spec.n_classes}})
+
+        {{ build_output_dict(
+            'self._outputs',
+            {'output': 'y', 'preview': 'y'},
+            ['output', 'preview'])|indent(width=8)
+        }}
+        return self._outputs
+	
+    def get_config(self):
+        """Any variables belonging to this layer that should be rendered in the frontend.
+        
+        Returns:
+            A dictionary with tensor names for keys and picklable for values.
+        """
+        return {}
+        
+
+class {{layer_spec.sanitized_name}}(Tf2xLayer):
+    def __init__(self):
+        super().__init__(
+            keras_class={{layer_spec.sanitized_name}}Keras
+        )        
+    
+{% endmacro %}
+
