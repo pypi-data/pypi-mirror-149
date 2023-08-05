@@ -1,0 +1,186 @@
+Metadata-Version: 2.1
+Name: sciencer
+Version: 0.1.3
+Summary: A smarter way to find new articles
+Home-page: https://github.com/SciencerIO/sciencer-toolkit
+Author: SciencerIO
+Author-email: diogo.rato.11@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Utilities
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+<div id="top"></div>
+<h1 align="center">
+  <br>
+  Sciencer Toolkit
+</h1>
+
+<h4 align="center">A smarter way to find articles.</h4>
+
+<p align="center">
+    <a href="https://pypi.org/project/sciencer/">
+    <img src="https://img.shields.io/pypi/status/sciencer.svg?style=flat-square"
+         alt="PyPi Package Version"></a>
+    <a href="https://github.com/SciencerIO/sciencer-toolkit/issues">
+    <img src="https://img.shields.io/github/issues-raw/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
+         alt="GitHub issues"></a>
+    <a href="https://github.com/SciencerIO/sciencer-toolkit/pulls">
+    <img src="https://img.shields.io/github/issues-pr-raw/SciencerIO/sciencer-toolkit.svg?style=flat-square&logo=github&logoColor=white"
+         alt="GitHub pull requests"></a>
+    <a href="https://github.com/SciencerIO/sciencer-toolkit/LICENSE">
+    <img src="https://img.shields.io/github/license/SciencerIO/sciencer-toolkit.svg?style=flat-square"
+         alt="License: MIT License"></a>
+
+</p>
+
+<p align="center">
+  <a href="#about">About</a> -
+  <a href="#usage">Usage</a> -
+  <a href="#roadmap">Roadmap</a> -
+  <a href="#contributing">Contributing</a>
+</p>
+<p align="center">
+  <a href="#collectors">Collectors</a> -
+  <a href="#expanders">Expanders</a> -
+  <a href="#filters">Filters</a> -
+  <a href="#providers">Providers</a>
+</p>
+
+---
+
+## About
+Sciencer Toolkit enables researchers to **programmatically conduct a literature review** using an intuitive yet flexible interface.
+
+At its core, Sciencer collects sets of papers.
+The initial set of papers is created through the use of **Collectors** (e.g. paper doi, author name).
+Then, Sciencer iteratively finds new papers using **Expanders** (e.g. authors, citations, references).
+Finally, new found papers need to satisfy a series of **Filters** in order to be accepted into the current set.
+Being iterative in nature, Sciencer allows you to repeat the above steps has many times as you'd like.
+
+This project was motivated by the absence of tools to automate systematic reviews using clear and well-defined criteria.
+Still, for literature reviews that do not need to follow specific criteria, there are a several tools that can help to discover new papers.
+
+## Usage
+
+```python
+# Create the Sciencer Core Component
+sciencer = Sciencer()
+
+# Define provider
+sciencer.add_provider(SemanticScholarProvider())
+
+# Define collectors
+## this collector will gather all known papers authored by "John Doe" into de set
+sciencer.add_collector(sciencer.collectors.CollectByAuthorID("John Doe"))
+## this collector will collect the paper with DOI "1234567890" into the set
+sciencer.add_collector(sciencer.collectors.CollectByDOI("1234567890"))
+## this collector will collect the papers with 
+sciencer.add_collector(sciencer.collectors.CollectByTerms(["Term 1", "Term 2", "Term 3"]))
+
+# Define expanders
+## this expander will gather all known papers written by authors in the current set.
+sciencer.add_expander(sciencer.expanders.ExpandByAuthors())
+## this expander will gather all the referenced papers
+sciencer.add_expander(sciencer.expanders.ExpandByReferences())
+## this expander will gather all the cited papers
+sciencer.add_expander(sciencer.expanders.ExpandByCitations())
+
+# Define filters
+## this filter will reject papers that were published before 2010 and after 2030
+sciencer.add_filter(sciencer.filters.FilterByYear(min_year=2010, max_year=2030))
+## this filter will reject all the papers that do not have the word social on the abstract
+sciencer.add_filter(sciencer.filters.FilterByAbstract("social"))
+## this filter will reject all the papers that do not have the field of study Computer Science
+sciencer.add_filter(sciencer.filters.FilterByFieldOfStudy("Computer Science"))
+
+# Run one iteration
+results = sciencer.iterate()
+
+```
+
+For more examples on how to use the Sciencer toolkit, please check the directory `examples/`.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Collectors
+
+| Name      | Description                                  | Parameters                                |
+| --------- | :------------------------------------------- | :---------------------------------------- |
+| Author ID | Collects all the papers written by an author | Authors's SemanticScholar ID              |
+| Paper DOI | Collects a paper by its DOI                  | Paper's DOI                               |
+| Terms     | Collects papers by terms                     | Query Terms <br> Maximum Number of Papers |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Expanders
+
+| Name       | Description                       |
+| ---------- | :-------------------------------- |
+| Authors    | Expands a paper by its authors    |
+| References | Expands a paper by its references |
+| References | Expands a paper by its citations  |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Filters
+
+| Name              | Description                           | Parameters                                                                          |
+| ----------------- | :------------------------------------ | ----------------------------------------------------------------------------------- |
+| By Year           | Filters a paper by its year           | The lowest acceptable year (inclusive) <br> The highest acceptable year (inclusive) |
+| By Abstract Words | Filters a paper by its abstract       | The collection of words the abstract should include (at least one)                  |
+| By Field Of Study | Filters a paper by its field of study | The field of study the paper should have                                            |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Providers
+
+
+|       Name       |                                      Provider                                      | Features                                                                                                   |
+| :--------------: | :--------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------- |
+| Semantic Scholar | [Semantic Scholar Academic Graph API](https://www.semanticscholar.org/product/api) | **Search by Author** (Name, S2ID) <br> **Search By Paper ID** (S2ID, DOI, ArXiv, MAG, ACL, PubMed, Corpus) |
+|       DBLP       |    [DBLP Search API](https://dblp.org/faq/How+to+use+the+dblp+search+API.html)     | *Work in Progress*                                                                                         |
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Roadmap
+
+- [ ] Create Paper's and Author's Cache
+- [x] Add Bulk Expanders (to avoid redundancy)
+- [ ] Add support for multithreading
+- [ ] Add Collectors
+  - [ ] Add Collect by Venue/Proceedings
+- [ ] Add Expanders
+  - [x] Add Expand by Citations
+  - [x] Add Expand by References
+  - [ ] Add Expand by Venue/Proceedings
+- [ ] Add Filters
+  - [ ] Add Filter by Number of Citations
+  - [x] Add Filter by Topic
+  - [ ] Add Filter by Keywords
+- [ ] Add Compound Filters
+- [x] Add utility to write results to a *.csv
+
+See the [open issues](https://github.com/SciencerIO/sciencer-toolkit/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+## Contributing
+
+Want to **add a new provider, filter or expander**?
+Looking to improve **the core functionality of sciencer toolkit**.
+We look forward to include your contributions in the toolkit!
+If you have a suggestion that would improve the toolkit just send us a Pull Request!
+
+If you are looking for an additional collector/filter/expander/provider or just want to report a bug, you can also simply open an issue with the tag "enchament" or "bug", respectively.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
