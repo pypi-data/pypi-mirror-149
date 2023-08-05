@@ -1,0 +1,209 @@
+Metadata-Version: 2.1
+Name: pycache3
+Version: 0.1.0
+Summary: A safe and lightweight cache library, written in pure-Python.
+Home-page: https://github.com/VenusMonkey/Cache3
+Author: Clark Monkey
+Author-email: clarkmonkey@163.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Other Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+License-File: LICENSE
+
+cache3: Python3 cache library
+=============================
+
+**Cache3** is a MIT licensed  safe and lightweight cache library, written
+in pure-Python.
+
+A tag
+-----
+.. image:: https://img.shields.io/badge/LICENSE-MIT-green
+    :align: right
+    :alt: LICENSE
+
+.. image:: https://img.shields.io/badge/version-0.1.0-informational
+    :align: right
+    :alt: Version
+
+.. image:: https://img.shields.io/badge/python-3.5-blueviolet
+    :align: right
+    :alt: Python Version
+
+cache3 is a safe, lightweight, efficient and persistent cache library. It is very small and completely implemented by the Python standard library without any third-party dependencies, so it can be easily embedded in any Python program or script. If you want high performance and cross-process sharing like Redis without introducing dependencies other than Python then cache3 is an excellent choice. cache3 can give you excellent read and write performance.
+
+Installing
+==========
+
+cache3 is available from PyPI and can be installed by running:
+
+.. code:: shell
+
+    pip install -U cache3
+
+or install from github
+
+.. code:: shell
+
+    pip install ....
+
+or download the file and install it locally
+
+.. code-block:: shell
+
+    $ git clone git@github.com:VenusMonkey/Cache3.git
+    $ cd Cache3
+    $ python setup.py install
+
+Some simple example
+===================
+
+DiskCache object
+----------------
+
+.. code-block::python
+
+    >>> from cache3 import DiskCache
+    >>> cache = DiskCache()
+    >>> cache
+    <DiskCache name=default.cache3 position=/Users/venus/.pycache3/default.cache3 timeout=300.00>
+    >>> len(cache)      # length 0
+    0
+    # Default SQLite file storage location
+    >>> cache.position
+    '/Users/venus/.pycache3/default.cache3'
+
+    # Default timeout 300s
+    >>> cache.timeout
+    300.0
+    # Default max size  1 << 24 (16M)
+    >>> cache.max_size
+    16777216
+
+    # Default evict policy
+    >>> cache.evict
+    'lru_evict'
+
+    # Default name
+    >>> cache.name
+    'default.cache3'
+
+Set and get
+-----------
+
+.. code-block::python
+
+    # set key, value.
+    # This approach is simple but does not specify an ``timeout`` or ``tag``
+    >>> cache['name'] = 'cache3'
+    >>> cache['name']
+    'cache3'
+
+    # set.
+    # Allows you to specify an ``timeout`` and ``tag`` for the key
+    >>> cache.set('age', 18, timeout=100, tag='info:clark')
+    True
+
+    # ex_set.
+    # A way to ensure atomicity and mutual exclusion, even in multi-process
+    # environments. success if the key-tag does not exist otherwise failed.
+    >>> cache.ex_set('age', 81, timeout=100, tag='info:clark')
+    False
+
+    # Tag is very important.
+    >>> cache.get('age')   # None
+    >>> cache.get('age', tag='info:clark')
+    18
+
+Attributes
+----------
+
+.. code-block::python
+
+    # inspect
+    # Gets key detail.
+    >>> cache.inspect('name')
+    {
+        'key': 'name',
+        'store': 1644718388.4478312,
+        'expire': 1644718688.4478312,
+        'access': 1644718388.4478312,
+        'access_count': 0,
+        'tag': 'default',
+        'value': 'cache3',
+        'store_key': 'name',
+        'serial_value': 'cache3'
+    }
+
+    # ttl
+    # Gets the ttl
+    >>> cache.ttl('name')
+    297.9396250247955
+
+    # touch
+    # Touch the key and reset ttl
+    >>> cache.touch('name', 100)
+    True
+    >>> cache.ttl('name')
+    98.66487669944763
+
+
+Iterable
+--------
+
+    # It's iterable.
+    >>> cache['age'] = 18
+    >>> for pair in cache:
+    ...     print(pair)
+    ...
+    ('name', 'value', 'default')
+    ('age', 18, 'default')
+
+
+Cached Function
+---------------
+
+.. code-block:: python
+
+    from cache3 import SimpleCache
+
+    cache: SimpleCache = SimpleCache()
+
+    @cache.memoize(timeout=10)
+    def query_pages() -> bytes:
+        return b'<h1> Hello Cache3 </h1>'
+
+    # Note: This decorator is insensitive to parameters.
+
+
+Feature
+=======
+
+- Pure-Python
+- Thread-safe and process-safe
+- High performance
+- 100% test coverage
+- Extension friendly
+- Supports multiple eviction policies and is easy to scale
+- Supports multiple data types
+- Compatible with all platforms
+
+
+License
+=======
+
+Copyright (c) 2014-2021 clarkmonkey@163.com
+Licensed under the MIT License.
+
+
+
