@@ -1,0 +1,149 @@
+Metadata-Version: 2.1
+Name: talk2stat
+Version: 0.1.5
+Summary: Open a bidirectional pipe to R, julia, matlab, or python (etc.) and communicate with it via a socket.
+Home-page: https://pypi.org/project/talk2stat/
+Author: Haim Bar
+Author-email: haim.bar@uconn.edu
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pexpect
+
+# talk2stat
+
+A python package to communicate with statistical software
+
+talk2stat allows programs (such as latextopdf, nodejs) to communicate with statistical packages. Currently, we connect with R, julia, matlab, or python but extending it to other tools like Stata or SAS, is very simple. The package contains two main functions: server() talks to the client program (e.g latextopdf) via a socket (inet), and to the stats package (R, julia, matlab, python) via a bi-directional pipe. The client() function is called by the user (e.g. latextopdf) to establish a connection with the server and pass code to the statistical package, and get the results.
+
+
+## Prerequisites and installation
+
+talk2stat requires **Python 3.8** and up. It uses several built-in packages: configparser, sys, os, os.path, unicodedata, re, and socket. Also, it uses the **pexpect** package to manage the bi-directional pipe to the statistical software. When you install talk2stat, pexpect will also be installed (if not already installed). To install it manually, just use
+
+```
+pip3 install pexpect
+```
+
+And, similarly, to install talk2stat use
+
+```
+pip3 install talk2stat
+```
+
+To install from a local copy,
+
+```
+pip3 install somefolder/talk2stat-x.y.z.tar.gz 
+```
+
+## Usage
+
+An invocation of talk2stat is associated with a specific project. For now, it should be used by a single user, although in the future we plan to implement shared sessions. The reason for associating each instance of talk2stat with a single project is to prevent conflicting namespaces, variables, etc.
+In the current version talk2stat connects with one statistical software per invocation, but we consider a multithreaded version which will allow a user to use the same server to connect with multiple software tools.
+
+In the project directory, create a configuration file for each statistical software you want talk2stat to use. For example, if you plan to use R, create a file called R.config which contains something like the following:
+
+```
+[SERVERCONFIG]
+PORT = 65432
+DEBUGFILE = Rdebug.txt
+PIPETIMEOUT = 300
+```
+
+If you use talk2stat in multiple concurrent projects you must use a different port number for each. Note that currently the IP address of the server is hard-coded to 127.0.0.1. The debug file name (which contains the messages to and from R, in this case) can be the same across projects, since they are stored in different directories. The PIPETIMEOUT is used to specify how long (in seconds) the bidirectional pipe will wait for a response from the statistical package.
+
+To start the server for a specific project we have to specify the location of the configuration file, and the selected language (a project can use more than one statistical package, but as mentioned above, each one uses a different invocation of the server). To start a server which listens to the selected inet port and connects to the selected statistical package (R, julia, matlab, python), use the following:
+
+```
+from talk2stat import server
+server(dirname, language)
+```
+
+For example,
+
+```
+from talk2stat import server
+server('myproject/', 'R')
+```
+
+The directory must contain a file called R.config. If you plan to use julia, create a file called julia.config and be sure to use a unique port number. Then you can run (a possibly concurrent) server process by running
+
+```
+from talk2stat import server
+server('myproject/', 'julia')
+```
+
+The server will continue to run until you stop it (see below how.) This is useful to maintain a continuous session. This is faster and more efficient than invoking R/julia/matlab/python each time a code fragment is executed. 
+The server() function can take an optional third argument called doFork (default = True). If set to False, the server will still continue to run, but it will be blocking and will not return to prompt-mode until the server is stopped. When the server is started by a latex compiler, it must be in non-blocking mode (doFork=True). The blocking mode is appropriate if the server is started manually at a terminal.
+
+Setting the `messages' argument in the server function to True will result in the user session messages to be printed to the screen.
+
+To connect to a running server, we use the client() function, like this:
+
+```
+from talk2stat import client
+client(dirname, language, inputfile)
+```
+
+where inputfile contains the code fragment or program to be executed. The output from the server is printed to stdout. The code can also generate files (e.g. graphics, reports).
+
+It is possible to send the code to the client directly, and not through an input file names. The syntax is:
+```
+from talk2stat import client
+client(dirname, language, "```somecode```")
+```
+
+To stop the server, we send the following message (using our previous example) through the client:
+
+```
+client('myproject/','R','QUIT')
+```
+
+The package creates a log file called talk2stat.log in the directory where the server and client functions are invoked. If the server is started with messages=True option, then the log file will contain all the input/output from the statistical software.
+
+## Windows Users
+
+talk2stat relies on two UNIX-based functions, namely, fork and spawn (the latter is implemented in the pexpect package.) However, Windows 10 users can still use talk2stat, thanks to the 'Windows Subsystem for Linux' app which is freely available from the MicroSoft Store.
+Detailed installation instructions are available [here.](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+It is convenient to use the [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started) in order to access the Linux subsystem (e.g. Ubuntu 20.04 LTS).
+Once all the installation steps are complete, open the Windows Terminal and access your Linux subsystem. When you use it for the first time, you have to update the operating system, and install a few components.
+
+```
+sudo apt update
+sudo apt install python3
+sudo apt install python3-pip
+sudo apt install r-base
+pip3 install talk2stat
+```
+
+Now you have two operating systems on your computer - Windows 10, and a Linux subsystem. The two have access to the same resources which talk2stat uses, namely, the file system and TCP/IP interface. This means that a client used on the Windows10 side can communicate with a server which runs on the Linux side. Using the Windows Terminal, start the talk2stat server on the Linux subsystem (per the instructions in the Usage section). Note that the client functionality of talk2stat does not require the fork and spawn functions, so it can be used from any application on the Windows 10 machine.
+
+Note, however, that WSL can’t share executables (e.g. python/R/Julia) with the host Windows system, so in order to use talk2stat, these applications as well as any required packages have to be installed on the WSL.
+
+## Updates
+
+May 3, 2022 Version 0.1.5: when used to communicate with a python engine we initialize it with python3 -iqu to supress the banner.
+Also, to execute a file when using a python engine we use exec(open(somefile).read()). In the previous versions it was implemented via a lambda expression, but that meant that variables/functions defined in the input file are not available after the execution.
+
+## Authors
+
+* **Haim Bar** - *Initial work*, contributions from HaiYing Wang, Edan Bar
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+<!---
+## Acknowledgments
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
+-->
+
+
