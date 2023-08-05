@@ -1,0 +1,303 @@
+"""Admin AJAX views
+"""
+import json
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http.response import HttpResponseBadRequest, HttpResponse
+from django.urls import reverse_lazy
+from django.utils.html import escape
+from requests import ConnectionError
+from rest_framework import status
+
+from core_main_app.commons.exceptions import NotUniqueError
+from core_main_app.utils.requests_utils.requests_utils import send_get_request
+from core_main_app.views.common.ajax import (
+    AddObjectModalView,
+    EditObjectModalView,
+    DeleteObjectModalView,
+)
+from core_oaipmh_provider_app.components.oai_provider_metadata_format import (
+    api as oai_provider_metadata_format_api,
+)
+from core_oaipmh_provider_app.components.oai_provider_metadata_format.models import (
+    OaiProviderMetadataFormat,
+)
+from core_oaipmh_provider_app.components.oai_provider_set import (
+    api as oai_provider_set_api,
+)
+from core_oaipmh_provider_app.components.oai_provider_set.models import OaiProviderSet
+from core_oaipmh_provider_app.components.oai_settings import api as oai_settings_api
+from core_oaipmh_provider_app.components.oai_settings.models import OaiSettings
+from core_oaipmh_provider_app.components.oai_xsl_template import (
+    api as oai_xsl_template_api,
+)
+from core_oaipmh_provider_app.components.oai_xsl_template.models import OaiXslTemplate
+from core_oaipmh_provider_app.views.admin.forms import (
+    EditIdentityForm,
+    MetadataFormatForm,
+    EditMetadataFormatForm,
+    TemplateMetadataFormatForm,
+    SetForm,
+    MappingXSLTForm,
+)
+
+
+@staff_member_required
+def check_registry(request):
+    """Check the availability of a registry.
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        http_response = send_get_request(request.GET["url"])
+        is_available = http_response.status_code == status.HTTP_200_OK
+    except ConnectionError:
+        return HttpResponseBadRequest(
+            "Connection error while checking availability",
+            content_type="application/javascript",
+        )
+    except Exception as e:
+        return HttpResponseBadRequest(
+            escape(str(e)), content_type="application/javascript"
+        )
+
+    return HttpResponse(
+        json.dumps({"is_available": is_available}),
+        content_type="application/javascript",
+    )
+
+
+class EditIdentityView(EditObjectModalView):
+    form_class = EditIdentityForm
+    document = OaiSettings
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_identity")
+    success_message = "Data provider edited with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_settings_api.upsert(self.object)
+        except Exception as e:
+            form.add_error(None, str(e))
+
+
+class AddMetadataFormatView(AddObjectModalView):
+    form_class = MetadataFormatForm
+    document = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = "Metadata Format created with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_metadata_format_api.add_metadata_format(
+                self.object.metadata_prefix, self.object.schema, request=self.request
+            )
+        except Exception as e:
+            form.add_error(None, str(e))
+
+
+class DeleteMetadataFormatView(DeleteObjectModalView):
+    document = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = "Metadata Format deleted with success."
+    field_for_name = "metadata_prefix"
+
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_provider_metadata_format_api.delete(self.object)
+
+
+class EditMetadataFormatView(EditObjectModalView):
+    form_class = EditMetadataFormatForm
+    document = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = "Metadata Format edited with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_metadata_format_api.upsert(self.object, request=self.request)
+        except NotUniqueError:
+            form.add_error(
+                None,
+                "A Metadata Format with the same prefix already exists. Please "
+                "choose another prefix.",
+            )
+        except Exception as e:
+            form.add_error(None, str(e))
+
+
+class AddTemplateMetadataFormatView(AddObjectModalView):
+    form_class = TemplateMetadataFormatForm
+    document = OaiProviderMetadataFormat
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_metadata_formats")
+    success_message = "Template Metadata Format created with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_provider_metadata_format_api.add_template_metadata_format(
+                self.object.metadata_prefix, self.object.template.id, self.request
+            )
+        except Exception as e:
+            form.add_error(None, str(e))
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddTemplateMetadataFormatView, self).get_form_kwargs(
+            *args, **kwargs
+        )
+        kwargs["request"] = self.request
+        return kwargs
+
+
+class AddSetView(AddObjectModalView):
+    form_class = SetForm
+    document = OaiProviderSet
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = "Set created with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            self.object.templates_manager = [
+                x.id for x in self.object.templates_manager
+            ]
+            oai_provider_set_api.upsert(self.object)
+        except Exception as e:
+            form.add_error(None, str(e))
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddSetView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
+
+
+class DeleteSetView(DeleteObjectModalView):
+    document = OaiProviderSet
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = "Set deleted with success."
+    field_for_name = "set_spec"
+
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_provider_metadata_format_api.delete(self.object)
+
+
+class EditSetView(EditObjectModalView):
+    form_class = SetForm
+    document = OaiProviderSet
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = "Set edited with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            self.object.templates_manager = [
+                x.id for x in self.object.templates_manager
+            ]
+            oai_provider_set_api.upsert(self.object)
+        except Exception as e:
+            form.add_error(None, str(e))
+
+    def get_initial(self):
+        initial = super(EditSetView, self).get_initial()
+        initial["templates_manager"] = [x.id for x in self.object.templates_manager]
+
+        return initial
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(EditSetView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
+
+
+class AddTemplateMappingView(AddObjectModalView):
+    form_class = MappingXSLTForm
+    document = OaiXslTemplate
+    success_message = "Mapping created with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_xsl_template_api.upsert(self.object)
+        except Exception as e:
+            form.add_error(None, str(e))
+
+    def get_initial(self):
+        initial = super(AddTemplateMappingView, self).get_initial()
+        initial["oai_metadata_format"] = self.kwargs.pop("oai_metadata_format")
+
+        return initial
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AddTemplateMappingView, self).get_form_kwargs(*args, **kwargs)
+        kwargs["request"] = self.request
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "admin:core_oaipmh_provider_app_xslt_template_mapping",
+            args=(self.object.oai_metadata_format.id,),
+        )
+
+
+class DeleteTemplateMappingView(DeleteObjectModalView):
+    document = OaiXslTemplate
+    success_url = reverse_lazy("admin:core_oaipmh_provider_app_sets")
+    success_message = "Mapping deleted with success."
+
+    def _delete(self, request, *args, **kwargs):
+        # Delete treatment.
+        oai_xsl_template_api.delete(self.object)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "admin:core_oaipmh_provider_app_xslt_template_mapping",
+            args=(self.object.oai_metadata_format.id,),
+        )
+
+    def _get_object_name(self):
+        return "the mapping using the template {0} and the xslt {1} ".format(
+            self.object.template.display_name, self.object.xslt.name
+        )
+
+
+class EditTemplateMappingView(EditObjectModalView):
+    form_class = MappingXSLTForm
+    document = OaiXslTemplate
+    success_message = "Mapping edited with success."
+
+    def _save(self, form):
+        # Save treatment.
+        try:
+            oai_xsl_template_api.upsert(self.object)
+        except Exception as e:
+            form.add_error(None, str(e))
+
+    def get_initial(self):
+        initial = super(EditTemplateMappingView, self).get_initial()
+        initial["xslt"] = self.object.xslt.id
+        initial["template"] = self.object.template.id
+
+        return initial
+
+    def get_form_kwargs(self):
+        """This method is what injects forms with their keyword
+        arguments."""
+        # grab the current set of form #kwargs
+        kwargs = super(EditTemplateMappingView, self).get_form_kwargs()
+        # Update the kwargs
+        kwargs["edit_mode"] = True
+        kwargs["request"] = self.request
+
+        return kwargs
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "admin:core_oaipmh_provider_app_xslt_template_mapping",
+            args=(self.object.oai_metadata_format.id,),
+        )
