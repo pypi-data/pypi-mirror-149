@@ -1,0 +1,70 @@
+Metadata-Version: 2.1
+Name: rteInstallServer
+Version: 0.0.1
+Summary: RTE server installation
+Author: Hendrik du Toit
+Author-email: hendrik@brightedge.co.za
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.8
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: reahl-component (<6.1,>=6.0)
+Requires-Dist: reahl-web (<6.1,>=6.0)
+Requires-Dist: reahl-sqlalchemysupport (<6.1,>=6.0)
+Requires-Dist: reahl-sqlitesupport (<6.1,>=6.0)
+Requires-Dist: reahl-web-declarative (<6.1,>=6.0)
+
+Project Short Description (default ini)
+
+    Project long description or extended summary goes in here (default ini)
+
+=======
+Testing
+=======
+
+This project uses ``pytest`` to run tests and also to test docstring examples.
+
+Install the test dependencies.
+
+.. code-block:: bash
+
+    $ pip install -r requirements_test.txt
+
+Run the tests.
+
+==========
+Developing
+==========
+
+This project uses ``black`` to format code and ``flake8`` for linting. We also support ``pre-commit`` to ensure these have been run. To configure your local environment please install these development dependencies and set up the commit hooks.
+
+.. code-block:: bash
+
+    $ pip install black flake8 pre-commit
+    $ pre-commit install
+
+=========
+Releasing
+=========
+
+Releases are published automatically when a tag is pushed to GitHub.
+
+.. code-block:: bash
+
+    # Set next version number
+    export RELEASE = x.x.x
+
+    # Create tags
+    git commit --allow -empty -m "Release $RELEASE"
+    git tag -a $RELEASE -m "Version $RELEASE"
+
+    # Push
+    git push upstream --tags
+
+
+
