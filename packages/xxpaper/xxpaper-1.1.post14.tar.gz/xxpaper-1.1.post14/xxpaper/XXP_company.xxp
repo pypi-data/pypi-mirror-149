@@ -1,0 +1,101 @@
+company:
+
+  _:
+    _major_fill:
+    _major_fill_1:  ${_/_major_fill}
+    _major_fill_2: ${_/_major_fill_1}
+    _minor_fill:
+    _minor_fill_1:  ${_/_minor_fill}
+    _minor_fill_2: ${_/_minor_fill_1}
+    _share_pct_text_fill_x: $[black_or_white (${_/_related_fill})]
+    _share_pct_text_fill_1: $[black_or_white (${outside_box/fill})]
+    share_pct_text_fill: ${_/_share_pct_text_fill_$[1 if n == "1" else "x"]}
+    _related_fill: "$[desaturate_and_brighten (${_/_minor_fill}, 0.4, 0.5)]"
+
+  index:
+
+  charter:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_charter_default/.}
+    cutline_box: ${DEFAULT/charter_tile}
+    index:
+      "1":
+    _include_:
+      - XXP_company_charter_objects.xxp
+
+  concession:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_concession_default/.}
+    cutline_box: ${DEFAULT/asset_tile}
+    index:
+    _include_:
+      - XXP_company_concession_objects.xxp
+
+  minor_charter:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_minor_charter_default/.}
+    index:
+    cutline_box: ${DEFAULT/minor_charter_tile}
+    _include_:
+      - XXP_company_minor_charter_objects.xxp
+
+  narrow_charter:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_narrow_charter_default/.}
+    index:
+    cutline_box: ${DEFAULT/narrow_charter_tile}
+    _include_:
+      - XXP_company_narrow_charter_objects.xxp
+
+  wide_charter:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_wide_charter_default/.}
+    index:
+    cutline_box: ${DEFAULT/wide_charter_tile}
+    _include_:
+      - XXP_company_wide_charter_objects.xxp
+
+  share:
+    CUT_ELEMENT: cutline_box
+    ELEMENTS: ${TEMPLATE_share_default/.}
+    index:
+      "1":
+        type_bar_box:
+          suppress: False
+        share_num_text:
+          text: 2 Shares
+        share_desc_text:
+          suppress: False
+        share_pct_text:
+          text: 20%
+          fill: $[black_or_white (${type_bar_box/fill})]
+        token_1_embed:
+          suppress: True
+        token_2a_embed:
+          suppress: False
+        token_2b_embed:
+          suppress: False
+      "2":
+      "3":
+      "4":
+      "5":
+      "6":
+      "7":
+      "8":
+      "9":
+    cutline_box: ${DEFAULT/asset_tile}
+    _include_:
+      - XXP_company_share_objects.xxp
+
+  token:
+    index:
+    ELEMENTS: ${TEMPLATE_default/.}
+    EMBED_ELEMENTS:
+      - top_half_box
+      - bottom_half_box
+      - name_stripe_box
+      - short_name_text
+      - outline_circle
+    EMBED_CUT_ELEMENT: outline_circle
+    _include_:
+      - XXP_token_objects.xxp
