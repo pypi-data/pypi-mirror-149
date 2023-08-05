@@ -1,0 +1,2 @@
+class BulkRequestClient:
+    pass
