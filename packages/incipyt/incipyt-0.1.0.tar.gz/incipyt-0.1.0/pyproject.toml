@@ -1,0 +1,97 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core"]
+
+[project.urls]
+documentation = "https://github.com/NotANameServer/incipyt/wiki"
+homepage = "https://pypi.org/incipyt"
+repository = "https://github.com/NotANameServer/incipyt"
+
+[project]
+authors = [
+  {name = "Not at Name", email = "julien@drlazor.be"},
+]
+description = "incipyt is a command-line tool that bootstraps a python project."
+maintainers = [
+  {name = "Not at Name", email = "julien@drlazor.be"},
+]
+name = "incipyt"
+readme = "README.md"
+requires-python = ">=3.7, <4.0"
+version = "0.1.0"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development",
+]
+dependencies = [
+  "click",
+  "signalslot",
+  "toml",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "build",
+  "flake8",
+  "flakeheaven",
+  "flake8-bandit",
+  "flake8-bugbear",
+  "flake8-builtins",
+  "flake8-comprehensions",
+  "flake8-docstrings",
+  "flake8-simplify",
+  "flake8-use-fstring",
+  "pep8-naming",
+  "pre-commit",
+]
+doc = [
+  "m2r2",
+  "sphinxcontrib-apidoc",
+  "sphinx_rtd_theme",
+]
+test = [
+  "pytest-cov",
+  "pytest-subprocess",
+]
+
+[project.scripts]
+incipyt = "incipyt.__main__:main"
+
+[tool.flakeheaven]
+exclude = [
+  ".env",
+  ".git",
+]
+
+[tool.flakeheaven.plugins]
+flake8-bandit = ["+*", "-S101", "-S404", "-S603", "-S607"]
+flake8-bugbear = ["+*"]
+flake8-builtins = ["+*"]
+flake8-comprehensions = ["+*"]
+flake8-docstrings = ["+*", "-D105", "-D107"]
+flake8-simplify = ["+*"]
+flake8-use-fstring = ["+*", "-FS003"]
+pep8-naming = ["+*"]
+pycodestyle = ["+*", "-W503", "-E501"]
+pyflakes = ["+*"]
+
+[tool.flakeheaven.exceptions."incipyt/*__init__.py"]
+pyflakes = ["-F401"]
+
+[tool.flakeheaven.exceptions."incipyt/_*/*.py"]
+flake8-docstrings = ["-*"]
+
+[tool.flakeheaven.exceptions."incipyt/__*__.py"]
+flake8-docstrings = ["-D100", "-D103", "-D104"]
+
+[tool.flakeheaven.exceptions."incipyt/tools/*.py"]
+flake8-docstrings = ["-D100"]
+
+[tool.flakeheaven.exceptions."tests/*.py"]
+flake8-docstrings = ["-*"]
