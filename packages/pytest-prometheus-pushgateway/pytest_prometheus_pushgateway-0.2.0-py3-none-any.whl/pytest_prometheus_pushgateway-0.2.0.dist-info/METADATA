@@ -1,0 +1,96 @@
+Metadata-Version: 2.1
+Name: pytest-prometheus-pushgateway
+Version: 0.2.0
+Summary: Pytest report plugin for Zulip
+Home-page: https://github.com/treussart/pytest-prometheus-pushgateway
+Author: mtreussart
+Author-email: matthieu@treussart.com
+License: BSD
+Keywords: py.test pytest prometheus pushgateway report
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Utilities
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: prometheus-client
+Requires-Dist: pytest
+
+# pytest-prometheus-pushgateway
+
+Pytest report plugin for [Prometheus PushGateway](https://github.com/prometheus/pushgateway)
+
+Allow to send reports test results to a Prometheus PushGateway.
+
+## installation
+
+    pip install pytest-prometheus-pushgateway
+
+## Configure via env var
+
+    PROMETHEUS_PUSHGATEWAY_URL=""
+    PROMETHEUS_PUSHGATEWAY_JOB=""
+
+Basic Auth:
+
+    PROMETHEUS_PUSHGATEWAY_BASIC_AUTH="true"
+    PROMETHEUS_PUSHGATEWAY_USERNAME=""
+    PROMETHEUS_PUSHGATEWAY_PASSWORD=""
+
+Optional:
+
+    PROMETHEUS_PUSHGATEWAY_METRIC_PREFIX=""
+    PROMETHEUS_PUSHGATEWAY_EXTRA_LABEL="{'test':'value','test1':'value1'}"
+
+## Add labels via hook
+
+    def pytest_metrics_add_labels(session: Session, exitstatus: Union[int, ExitCode]) -> str:
+        return {"html_report": report_url}
+
+## Add option to send metrics
+
+    pytest --metrics
+
+## Dev
+
+### Change version
+
+edit
+
+    pytest_prometheus_pushgateway/__init__.py
+
+commit
+
+    git commit -m "v0.1.0"
+
+tag
+
+    git tag v0.1.0
+
+### Build package
+
+    python -m build
+    twine upload dist/*
+
+### Test
+
+Create endpoint on [requestbin](https://requestbin.com/)
+and add the url to PROMETHEUS_PUSHGATEWAY_URL to set_env fixture into conftest.py
+
+Use the runner in Pycharm.
+
+    pytest test_pytest_prometheus.py::TestPrometheus
+
+
