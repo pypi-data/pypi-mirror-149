@@ -1,0 +1,75 @@
+{% set instance_pascal = model_type_from_dependency(dependency).__name__ %}
+{% set instance_snake = to_snake_case(instance_pascal) %}
+"""Generated from manifest by `benchling-sdk`.
+
+Do not edit manually; subclass if you want to extend it.
+
+To instantiate model and access field values:
+```
+{{ dependency_to_snake_case(dependency) }} = {{ dependency_to_pascal_case(dependency) }}.from_{{ instance_snake }}({{ instance_snake }})
+{{ dependency_to_snake_case(dependency) }}.id  # Access native fields normally
+{{ dependency_to_snake_case(dependency) }}.fields.{{ dependency_to_snake_case(dependency.field_definitions[0]) }}.value
+{{ dependency_to_snake_case(dependency) }}.fields.{{ dependency_to_snake_case(dependency.field_definitions[0]) }}.display_value
+```
+"""
+from __future__ import annotations
+
+from typing import Any, cast, Dict, Iterable, List, Type, TypeVar
+
+from benchling_api_client.types import UNSET
+
+from benchling_sdk.helpers.serialization_helpers import fields
+from benchling_sdk.models import {{ instance_pascal }}, Field, Fields
+
+T = TypeVar("T", bound="{{ dependency_to_pascal_case(dependency) }}")
+
+
+class {{ dependency_to_pascal_case(dependency) }}({{ instance_pascal }}):
+    fields: {{ dependency_to_pascal_case(dependency) }}Fields
+
+    @classmethod
+    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..parameters import dependencies
+        if src_dict.get("schema"):
+            actual_schema_id = src_dict["schema"]["id"]
+            expected_schema_id = dependencies.{{ dependency_to_snake_case(dependency) }}.id
+            assert actual_schema_id == expected_schema_id, (
+                f'Resource has schema ID "{actual_schema_id}", expected "{expected_schema_id}"'
+            )
+
+        {{ dependency_to_snake_case(dependency) }} = super().from_dict(src_dict)
+        {{ dependency_to_snake_case(dependency) }}.fields = {{ dependency_to_pascal_case(dependency) }}Fields.from_fields(cast(Fields, {{ dependency_to_snake_case(dependency) }}.fields))
+        return {{ dependency_to_snake_case(dependency) }}
+
+    @classmethod
+    def from_{{ instance_snake }}(cls: Type[T], {{ instance_snake }}: {{ instance_pascal }}) -> T:
+        return cls.from_dict({{ instance_snake }}.to_dict())
+
+    @classmethod
+    def from_list_endpoint(cls: Type[T], pages: Iterable[List[{{ instance_pascal }}]]) -> Iterable[T]:
+        for page in pages:
+            for {{ instance_snake }} in page:
+                yield cls.from_{{ instance_snake }}({{ instance_snake }})
+
+
+class {{ dependency_to_pascal_case(dependency) }}Fields(Fields):
+    @classmethod
+    def from_fields(cls, fields: Fields) -> {{ dependency_to_pascal_case(dependency) }}Fields:
+        return cls.from_dict(fields.to_dict())
+
+    @classmethod
+    def init(cls{% for field_definition in dependency.field_definitions %}, {{ dependency_to_snake_case(field_definition) }}=UNSET{% endfor %}) -> {{ dependency_to_pascal_case(dependency) }}Fields:
+        from ..parameters import dependencies
+        field_to_value = {
+{% for field_definition in dependency.field_definitions %}
+            dependencies.{{ dependency_to_snake_case(dependency) }}.fields.{{ dependency_to_snake_case(field_definition) }}.name: {{ dependency_to_snake_case(field_definition) }},
+{% endfor %}
+        }
+        return cls.from_fields(fields({field: {"value": value} for field, value in field_to_value.items() if value != UNSET}))
+{% for field_definition in dependency.field_definitions %}
+
+    @property
+    def {{ dependency_to_snake_case(field_definition) }}(self) -> Field:
+        from ..parameters import dependencies
+        return self[dependencies.{{ dependency_to_snake_case(dependency) }}.fields.{{ dependency_to_snake_case(field_definition) }}.name]
+{% endfor %}

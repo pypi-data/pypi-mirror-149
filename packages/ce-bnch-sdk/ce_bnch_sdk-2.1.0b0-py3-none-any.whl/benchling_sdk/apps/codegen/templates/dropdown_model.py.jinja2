@@ -1,0 +1,48 @@
+"""Generated from manifest by `benchling-sdk`. Do not edit manually.
+
+The generated enum can be used as follows:
+
+```
+{{ dependency_to_snake_case(dependency) }} = {{ dependency_to_pascal_case(dependency) }}.from_id("sfso_123")
+{{ dependency_to_snake_case(dependency) }}.value  # "sfso_123"
+{{ dependency_to_snake_case(dependency) }}.display_value  # "My Dropdown Option"
+```
+"""
+from __future__ import annotations
+
+from enum import auto, Enum
+
+
+class {{ dependency_to_pascal_case(dependency) }}(Enum):
+{% for option in dependency.options %}
+    {{ dependency_to_pascal_case(option) }} = auto()
+{% endfor %}
+
+    @property
+    def value(self) -> str:
+        from ..parameters import dependencies
+        values = {
+    {% for option in dependency.options %}
+            {{ dependency_to_pascal_case(dependency) }}.{{ dependency_to_pascal_case(option) }}: dependencies.{{ dependency_to_snake_case(dependency) }}.options.{{ dependency_to_snake_case(option) }}.id,
+    {% endfor %}
+        }
+        return values[self]
+
+    @property
+    def display_value(self) -> str:
+        from ..parameters import dependencies
+        display_values = {
+    {% for option in dependency.options %}
+        {{ dependency_to_pascal_case(dependency) }}.{{ dependency_to_pascal_case(option) }}: dependencies.{{ dependency_to_snake_case(dependency) }}.options.{{ dependency_to_snake_case(option) }}.name,
+    {% endfor %}
+        }
+        return display_values[self]
+
+    @classmethod
+    def from_id(cls, id: str) -> {{ dependency_to_pascal_case(dependency) }}:
+        from ..parameters import dependencies
+    {% for option in dependency.options %}
+        if id == {{ dependency_to_pascal_case(dependency) }}.{{ dependency_to_pascal_case(option) }}.value:
+            return {{ dependency_to_pascal_case(dependency) }}.{{ dependency_to_pascal_case(option) }}
+    {% endfor %}
+        raise ValueError(f"Missing Enum entry for {cls}. Was it dynamically modified?")
