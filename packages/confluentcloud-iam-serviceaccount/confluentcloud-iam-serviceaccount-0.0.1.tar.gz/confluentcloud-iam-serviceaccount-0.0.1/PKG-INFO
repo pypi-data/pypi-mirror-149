@@ -1,0 +1,78 @@
+Metadata-Version: 2.1
+Name: confluentcloud-iam-serviceaccount
+Version: 0.0.1
+Summary: AWS CFN Resource to provision a Confluent Cloud Service account
+License: LICENSE
+Keywords: aws,cloudformation,kafka,confluent
+Author: John Preston
+Author-email: john@ews-network.net
+Requires-Python: >=3.7,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU General Public License v2 (GPLv2)
+Classifier: License :: Other/Proprietary License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: cloudformation-cli-python-lib (>=2.1.11,<3.0.0)
+Requires-Dist: compose-x-common (>=0.4.2,<0.5.0)
+Requires-Dist: confluent-cloud-sdk (>=0.1.0,<0.2.0)
+Description-Content-Type: text/markdown
+
+# Confluent::IAMv2::ServiceAccount
+
+Allows to create a new Service Account into an organization in Confluent Cloud via API.
+
+See the [docs](./docs/README.md) for properties
+
+
+## Requirements
+
+You need
+
+* An account on Confluent Cloud Platform
+* Create a new API key for cloud resource, ie. as follows from CLI.
+
+```bash
+confluent api-key create --resource cloud
+```
+
+## Example
+
+### Set up requirements
+
+```bash
+
+# Optionally create an API key via the CLI
+confluent api-key create --resource cloud -o json
+
+export API_KEY=THEAPIKEYRETURNED
+export API_SECRET=THEAPISECRETRETURNED
+
+aws cloudformation deploy --stack-name confluent-cloud-api-credentials --template confluent-secrets.template \
+  --parameter-overrides ConfluentApiKey=${API_KEY} ConfluentSecretKey=${API_SECRET}
+
+export SECRET_ARN=`aws cloudformation describe-stack-resources --stack-name confluent-cloud-api-credentials --logical-resource-id ConfluentSecret | jq -r .StackResources[0].PhysicalResourceId`
+
+```
+
+### Activate the 3rd party CloudFormation resource
+
+```bash
+aws cloudformation deploy --stack cfn-resource--confluentcloud-iam-serviceaccount --template activate.template \
+  --capabilities CAPABILITY_IAM
+```
+
+
+### Create a new Service account
+
+```bash
+aws cloudformation deploy --stack-name my-first-service-account --template resource-test.template \
+  --parameter-overrides ConfluentCloudApiSecrets=${SECRET_ARN}
+```
+
