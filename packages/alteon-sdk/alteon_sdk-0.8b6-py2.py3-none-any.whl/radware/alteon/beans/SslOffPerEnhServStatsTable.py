@@ -1,0 +1,78 @@
+
+from radware.sdk.beans_common import *
+
+
+class SslOffPerEnhServStatsTable(DeviceBean):
+    def __init__(self, **kwargs):
+        self.VirtServIndex = kwargs.get('VirtServIndex', None)
+        self.VirtServiceIndex = kwargs.get('VirtServiceIndex', None)
+        self.VirtServPort = kwargs.get('VirtServPort', None)
+        self.SslPolId = kwargs.get('SslPolId', None)
+        self.NewhandShake = kwargs.get('NewhandShake', None)
+        self.ReusedhandShake = kwargs.get('ReusedhandShake', None)
+        self.PercReusedhandShake = kwargs.get('PercReusedhandShake', None)
+        self.SessUsingSSLv2 = kwargs.get('SessUsingSSLv2', None)
+        self.SessUsingSSLv3 = kwargs.get('SessUsingSSLv3', None)
+        self.SessUsingTLS = kwargs.get('SessUsingTLS', None)
+        self.SessUsingTLS11 = kwargs.get('SessUsingTLS11', None)
+        self.SessUsingTLS12 = kwargs.get('SessUsingTLS12', None)
+        self.RejectedHandShake = kwargs.get('RejectedHandShake', None)
+        self.ByCipherHandShake = kwargs.get('ByCipherHandShake', None)
+        self.RejectedCertificates = kwargs.get('RejectedCertificates', None)
+        self.IgnoredCertificates = kwargs.get('IgnoredCertificates', None)
+        self.ExpiredCertificates = kwargs.get('ExpiredCertificates', None)
+        self.UntrustedCertificates = kwargs.get('UntrustedCertificates', None)
+        self.CertificateHostnameMismatches = kwargs.get('CertificateHostnameMismatches', None)
+        self.BeNewhandShake = kwargs.get('BeNewhandShake', None)
+        self.BeReusedhandShake = kwargs.get('BeReusedhandShake', None)
+        self.BePercReusedhandShake = kwargs.get('BePercReusedhandShake', None)
+        self.BeSessUsingSSLv2 = kwargs.get('BeSessUsingSSLv2', None)
+        self.BeSessUsingSSLv3 = kwargs.get('BeSessUsingSSLv3', None)
+        self.BeSessUsingTLS = kwargs.get('BeSessUsingTLS', None)
+        self.BeSessUsingTLS11 = kwargs.get('BeSessUsingTLS11', None)
+        self.BeSessUsingTLS12 = kwargs.get('BeSessUsingTLS12', None)
+        self.BeRejectedHandShake = kwargs.get('BeRejectedHandShake', None)
+        self.BeByCipherHandShake = kwargs.get('BeByCipherHandShake', None)
+        self.FeRejectedCertificates = kwargs.get('FeRejectedCertificates', None)
+        self.FeIgnoredCertificates = kwargs.get('FeIgnoredCertificates', None)
+        self.FeExpiredCertificates = kwargs.get('FeExpiredCertificates', None)
+        self.FeUntrustedCertificates = kwargs.get('FeUntrustedCertificates', None)
+        self.FeCertificateHostnameMismatches = kwargs.get('FeCertificateHostnameMismatches', None)
+        self.NewhandShakeTotal = kwargs.get('NewhandShakeTotal', None)
+        self.ReusedhandShakeTotal = kwargs.get('ReusedhandShakeTotal', None)
+        self.PercReusedhandShakeTotal = kwargs.get('PercReusedhandShakeTotal', None)
+        self.SessUsingSSLv2Total = kwargs.get('SessUsingSSLv2Total', None)
+        self.SessUsingSSLv3Total = kwargs.get('SessUsingSSLv3Total', None)
+        self.SessUsingTLSTotal = kwargs.get('SessUsingTLSTotal', None)
+        self.SessUsingTLS11Total = kwargs.get('SessUsingTLS11Total', None)
+        self.SessUsingTLS12Total = kwargs.get('SessUsingTLS12Total', None)
+        self.RejectedHandShakeTotal = kwargs.get('RejectedHandShakeTotal', None)
+        self.ByCipherHandShakeTotal = kwargs.get('ByCipherHandShakeTotal', None)
+        self.RejectedCertificatesTotal = kwargs.get('RejectedCertificatesTotal', None)
+        self.IgnoredCertificatesTotal = kwargs.get('IgnoredCertificatesTotal', None)
+        self.ExpiredCertificatesTotal = kwargs.get('ExpiredCertificatesTotal', None)
+        self.UntrustedCertificatesTotal = kwargs.get('UntrustedCertificatesTotal', None)
+        self.CertificateHostnameMismatchesTotal = kwargs.get('CertificateHostnameMismatchesTotal', None)
+        self.BeNewhandShakeTotal = kwargs.get('BeNewhandShakeTotal', None)
+        self.BeReusedhandShakeTotal = kwargs.get('BeReusedhandShakeTotal', None)
+        self.BePercReusedhandShakeTotal = kwargs.get('BePercReusedhandShakeTotal', None)
+        self.BeSessUsingSSLv2Total = kwargs.get('BeSessUsingSSLv2Total', None)
+        self.BeSessUsingSSLv3Total = kwargs.get('BeSessUsingSSLv3Total', None)
+        self.BeSessUsingTLSTotal = kwargs.get('BeSessUsingTLSTotal', None)
+        self.BeSessUsingTLS11Total = kwargs.get('BeSessUsingTLS11Total', None)
+        self.BeSessUsingTLS12Total = kwargs.get('BeSessUsingTLS12Total', None)
+        self.BeRejectedHandShakeTotal = kwargs.get('BeRejectedHandShakeTotal', None)
+        self.BeByCipherHandShakeTotal = kwargs.get('BeByCipherHandShakeTotal', None)
+        self.FeRejectedCertificatesTotal = kwargs.get('FeRejectedCertificatesTotal', None)
+        self.FeIgnoredCertificatesTotal = kwargs.get('FeIgnoredCertificatesTotal', None)
+        self.FeExpiredCertificatesTotal = kwargs.get('FeExpiredCertificatesTotal', None)
+        self.FeUntrustedCertificatesTotal = kwargs.get('FeUntrustedCertificatesTotal', None)
+        self.FeCertificateHostnameMismatchesTotal = kwargs.get('FeCertificateHostnameMismatchesTotal', None)
+
+    def get_indexes(self):
+        return self.VirtServIndex, self.VirtServiceIndex,
+    
+    @classmethod
+    def get_index_names(cls):
+        return 'VirtServIndex', 'VirtServiceIndex',
+

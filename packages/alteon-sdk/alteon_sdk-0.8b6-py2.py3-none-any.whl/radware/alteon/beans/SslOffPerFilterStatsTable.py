@@ -1,0 +1,75 @@
+
+from radware.sdk.beans_common import *
+
+
+class SslOffPerFilterStatsTable(DeviceBean):
+    def __init__(self, **kwargs):
+        self.Id = kwargs.get('Id', None)
+        self.NewhandShake = kwargs.get('NewhandShake', None)
+        self.ReusedhandShake = kwargs.get('ReusedhandShake', None)
+        self.RateReusedhandShake = kwargs.get('RateReusedhandShake', None)
+        self.PerSessUsingSSLv3 = kwargs.get('PerSessUsingSSLv3', None)
+        self.PerSessUsingTLS10 = kwargs.get('PerSessUsingTLS10', None)
+        self.PerSessUsingTLS11 = kwargs.get('PerSessUsingTLS11', None)
+        self.PerSessUsingTLS12 = kwargs.get('PerSessUsingTLS12', None)
+        self.RejectedHandShakes = kwargs.get('RejectedHandShakes', None)
+        self.HttpToHTTPSRedir = kwargs.get('HttpToHTTPSRedir', None)
+        self.ByCipherHandShake = kwargs.get('ByCipherHandShake', None)
+        self.RejectedCertificates = kwargs.get('RejectedCertificates', None)
+        self.IgnoredCertificates = kwargs.get('IgnoredCertificates', None)
+        self.ExpiredCertificates = kwargs.get('ExpiredCertificates', None)
+        self.UntrustedCertificates = kwargs.get('UntrustedCertificates', None)
+        self.CertificateHostnameMismatch = kwargs.get('CertificateHostnameMismatch', None)
+        self.BeNewhandShake = kwargs.get('BeNewhandShake', None)
+        self.BeReusedhandShake = kwargs.get('BeReusedhandShake', None)
+        self.BeRateReusedhandShake = kwargs.get('BeRateReusedhandShake', None)
+        self.BePerSessUsingSSLv3 = kwargs.get('BePerSessUsingSSLv3', None)
+        self.BePerSessUsingTLS10 = kwargs.get('BePerSessUsingTLS10', None)
+        self.BePerSessUsingTLS11 = kwargs.get('BePerSessUsingTLS11', None)
+        self.BePerSessUsingTLS12 = kwargs.get('BePerSessUsingTLS12', None)
+        self.BeRejectedHandShakes = kwargs.get('BeRejectedHandShakes', None)
+        self.BeHttpToHTTPSRedir = kwargs.get('BeHttpToHTTPSRedir', None)
+        self.BeByCipherHandShake = kwargs.get('BeByCipherHandShake', None)
+        self.FeRejectedCertificates = kwargs.get('FeRejectedCertificates', None)
+        self.FeIgnoredCertificates = kwargs.get('FeIgnoredCertificates', None)
+        self.FeExpiredCertificates = kwargs.get('FeExpiredCertificates', None)
+        self.FeUntrustedCertificates = kwargs.get('FeUntrustedCertificates', None)
+        self.FeCertificateHostnameMismatch = kwargs.get('FeCertificateHostnameMismatch', None)
+        self.NewhandShakeTotal = kwargs.get('NewhandShakeTotal', None)
+        self.ReusedhandShakeTotal = kwargs.get('ReusedhandShakeTotal', None)
+        self.RateReusedhandShakeTotal = kwargs.get('RateReusedhandShakeTotal', None)
+        self.PerSessUsingSSLv3Total = kwargs.get('PerSessUsingSSLv3Total', None)
+        self.PerSessUsingTLS10Total = kwargs.get('PerSessUsingTLS10Total', None)
+        self.PerSessUsingTLS11Total = kwargs.get('PerSessUsingTLS11Total', None)
+        self.PerSessUsingTLS12Total = kwargs.get('PerSessUsingTLS12Total', None)
+        self.RejectedHandShakesTotal = kwargs.get('RejectedHandShakesTotal', None)
+        self.HttpToHTTPSRedirTotal = kwargs.get('HttpToHTTPSRedirTotal', None)
+        self.ByCipherHandShakeTotal = kwargs.get('ByCipherHandShakeTotal', None)
+        self.RejectedCertificatesTotal = kwargs.get('RejectedCertificatesTotal', None)
+        self.IgnoredCertificatesTotal = kwargs.get('IgnoredCertificatesTotal', None)
+        self.ExpiredCertificatesTotal = kwargs.get('ExpiredCertificatesTotal', None)
+        self.UntrustedCertificatesTotal = kwargs.get('UntrustedCertificatesTotal', None)
+        self.CertificateHostnameMismatchTotal = kwargs.get('CertificateHostnameMismatchTotal', None)
+        self.BeNewhandShakeTotal = kwargs.get('BeNewhandShakeTotal', None)
+        self.BeReusedhandShakeTotal = kwargs.get('BeReusedhandShakeTotal', None)
+        self.BeRateReusedhandShakeTotal = kwargs.get('BeRateReusedhandShakeTotal', None)
+        self.BePerSessUsingSSLv3Total = kwargs.get('BePerSessUsingSSLv3Total', None)
+        self.BePerSessUsingTLS10Total = kwargs.get('BePerSessUsingTLS10Total', None)
+        self.BePerSessUsingTLS11Total = kwargs.get('BePerSessUsingTLS11Total', None)
+        self.BePerSessUsingTLS12Total = kwargs.get('BePerSessUsingTLS12Total', None)
+        self.BeRejectedHandShakesTotal = kwargs.get('BeRejectedHandShakesTotal', None)
+        self.BeHttpToHTTPSRedirTotal = kwargs.get('BeHttpToHTTPSRedirTotal', None)
+        self.BeByCipherHandShakeTotal = kwargs.get('BeByCipherHandShakeTotal', None)
+        self.FeRejectedCertificatesTotal = kwargs.get('FeRejectedCertificatesTotal', None)
+        self.FeIgnoredCertificatesTotal = kwargs.get('FeIgnoredCertificatesTotal', None)
+        self.FeExpiredCertificatesTotal = kwargs.get('FeExpiredCertificatesTotal', None)
+        self.FeUntrustedCertificatesTotal = kwargs.get('FeUntrustedCertificatesTotal', None)
+        self.FeCertificateHostnameMismatchTotal = kwargs.get('FeCertificateHostnameMismatchTotal', None)
+
+    def get_indexes(self):
+        return self.Id,
+    
+    @classmethod
+    def get_index_names(cls):
+        return 'Id',
+
