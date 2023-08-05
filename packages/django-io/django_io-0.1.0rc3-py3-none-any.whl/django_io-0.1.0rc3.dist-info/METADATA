@@ -1,0 +1,92 @@
+Metadata-Version: 2.1
+Name: django-io
+Version: 0.1.0rc3
+Summary: Importing and exporting of data, and other file operations for Django apps
+Home-page: https://github.com/kaoslabsinc/django-io
+Author: Kaos Labs Inc.
+Author-email: keyvan@keyvanm.com
+License: BSD-3-Clause
+Keywords: django,io,import,export
+Platform: UNKNOWN
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: django (>=3.2)
+Provides-Extra: test
+Requires-Dist: tox ; extra == 'test'
+Requires-Dist: pytest-django ; extra == 'test'
+Requires-Dist: pytest-pythonpath ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+
+# Django I/O
+
+Importing and exporting of data, and other file operations for Django apps
+
+## Quick start
+
+```shell
+pip install django-io
+```
+
+Add `django_io` to `INSTALLED_APPS`
+
+```python
+INSTALLED_APPS = [
+    ...,
+    'django_io',
+]
+```
+
+Create a form to upload your data and save it, and the view to show the form. In the admin panel for the model you are
+importing:
+
+```python
+@admin.register(SomeModel)
+class SomeModelAdmin(
+    DataImportableAdmin,
+    admin.ModelAdmin
+):
+    upload_url = reverse_lazy('app:model:upload')  # path to the view
+```
+
+## Development and Testing
+
+### IDE Setup
+
+Add the `example` directory to the `PYTHONPATH` in your IDE to avoid seeing import warnings in the `tests` modules. If
+you are using PyCharm, this is already set up.
+
+### Running the Tests
+
+Install requirements
+
+```
+pip install -r requirements.txt
+```
+
+For local environment
+
+```
+pytest
+```
+
+For all supported environments
+
+```
+tox
+```
+
+
