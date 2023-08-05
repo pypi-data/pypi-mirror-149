@@ -1,0 +1,85 @@
+[tool.poetry]
+name = "netsgiro"
+version = "2.0.0"
+description = "File parsers for Nets AvtaleGiro and OCR Giro"
+homepage = 'https://pypi.org/project/netsgiro/'
+repository = 'https://github.com/otovo/python-netsgiro'
+authors = ["Otovo AS <jodal+netsgiro@otovo.com>"]
+license = 'Apache License, Version 2.0'
+readme = 'README.rst'
+keywords = ['avtalegiro', 'ocr', 'giro']
+packages = [{ include = 'netsgiro' }]
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Typing :: Typed'
+]
+include = [
+    'LICENSE',
+    'docs/*.rst',
+    'references/*.pdf',
+]
+
+[tool.poetry.urls]
+"Docs" = "https://netsgiro.readthedocs.io/"
+"Changelog" = "https://netsgiro.readthedocs.io/en/latest/changelog/"
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+attrs = ">=17.4"
+
+# Backports
+"backports.zoneinfo" = { version="^0.2.1", python="<3.9" }
+
+[tool.poetry.extras]
+# Holidays can be installed to enable holiday-adjustments
+# in minimum due-date validation.
+holidays = ['holidays']
+
+[tool.poetry.dev-dependencies]
+check-manifest = "*"
+hypothesis = "*"
+pydocstyle = "*"
+pytest = "*"
+pytest-xdist = "*"
+Sphinx = "*"
+sphinx-rtd-theme = "*"
+pre-commit = "^2.17.0"
+coverage = [
+    { extras = ["toml"], version = "^6", python = "3.10" },
+    { version = "^5 || ^6", python = ">=3.6!=3.10" },
+]
+holidays = "^0.13"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+quiet = true
+line-length = 100
+skip-string-normalization = true
+preview = true
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.coverage.run]
+source = ['netsgiro']
+omit = []
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    'if TYPE_CHECKING:',
+    'pragma: no cover',
+]
