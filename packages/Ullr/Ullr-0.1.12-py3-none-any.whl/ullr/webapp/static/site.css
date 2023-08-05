@@ -1,0 +1,572 @@
+html {
+    height: 100%;
+    padding-top: 0;
+}
+
+body, input, textarea, button {
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: row-reverse;
+    height: 100%;
+    padding: 1px 1px 0 1px;
+    margin: 0;
+    background-color: #aaa;
+}
+
+* {box-sizing: border-box;}
+
+.menu_bar{
+    display: flex;
+    flex-direction: column-reverse;
+    background-color: #ddd;
+    flex: 0 1 20%;
+}
+
+#config_menu {
+    display: none;
+}
+
+.menu_bar button, .status button{
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.8;
+    position: relative;
+    width: 100%;
+}
+
+.menu_bar button {
+    margin: 1px;
+}
+
+.menu_bar button:hover, .status button:hover {
+    opacity: 1;
+  }
+
+.main_window{
+    display: flex;
+    justify-self: left;
+    flex-direction: column;
+    flex: 1 4 auto;
+    height: 100%;
+    /** max-width: 80%; **/
+    min-width: 0;
+    min-height: 0;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    color: white;
+    font-size: 1em;
+    line-height: .4;
+    border-radius: 5px;
+    margin: 0px;
+    padding: 20px 10px 20px 20px;
+    white-space: pre-wrap;
+    flex: 0 1 70px;
+    overflow: hidden;
+}
+
+.title {
+    flex: 0 1 auto;
+    margin-right: 0;
+    font-family: 'Skranji', cursive;
+}
+
+.subtitle {
+    flex: 0 1 auto;
+    margin: 5px;
+    color: rgb(180, 180, 180);
+}
+
+.status h3 {
+    flex: 0 1 auto;
+    margin: 5px;
+    color: rgb(180, 180, 180);
+    margin-right: 2em;
+    font-family: 'Skranji', cursive;
+}
+
+#config_button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 15%;
+    margin-left: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.tabs {
+    overflow: hidden;
+    border: none;
+    background-color: rgb(160, 160, 160);
+}
+
+.tabs button {
+    background-color: #ccc;
+    float: left;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    outline: none;
+    cursor: pointer;
+    margin: .1em .1em 0 .1em;
+    padding: 5px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+  }
+
+.tabs button:hover {
+    background-color: #ddd;
+}
+  
+.tabs button.active {
+    background-color: lightslategray;
+}
+
+#client_status {
+    display: flex;
+    width: fit-content;
+    margin: .3em .3em 0 auto;
+}
+
+.devices {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: auto 5px 5px 5px;
+    font-size: 13px;
+    min-height: 0;
+    min-width: 0;
+    border-radius: 5px;
+    align-items: flex-end;
+    -webkit-animation: fadeEffect .5s;
+    animation: fadeEffect .5s;
+}
+
+.device table {
+    flex: 0 1 auto;
+    border-collapse: collapse;
+    width: 18em;
+    margin: 5px;
+    overflow: hidden;
+    width: 18em;
+    min-height: 0;
+    min-width: 0;
+    border-radius: 5px;
+  }
+
+#dce .device_name:hover {
+    opacity: 0.8;
+}
+
+.device_name {
+    height: auto;
+}
+
+.online_dot {
+    height: 8px;
+    width: 8px;
+    background-color: red;
+    border-radius: 50%;
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.device table form{
+    text-align: right;
+}
+  
+.device td, .device th {
+    border: 1px solid #ddd;
+    padding: 2px;
+    border-left: 0;
+    border-right: 0;
+  }
+
+.device th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    color: white;
+    height: 4.25em;
+}
+
+.device tfoot td {
+    padding: 10px;
+    text-align: left;
+    color: white;
+    height: auto;
+    border-width: 0;
+}
+
+.device td {
+    min-width: 5.5em;
+    overflow: auto;
+}
+  
+.device tr:nth-child(even){background-color: #f2f2f2;}
+  
+.device tr:nth-child(odd) {background-color: #ddd;}
+  
+.serial_device th, .serial_device tfoot td{
+    background-color: rgb(170, 56, 56);
+}
+
+.dweet_device th, .dweet_device tfoot td{
+    background-color: rgb(0, 201, 201);
+}
+
+.hamburger_container {
+    cursor: pointer;
+    position: relative;
+    padding-top: 3px;
+}
+  
+.hamburger_bar {
+    width: 20px;
+    height: 3px;
+    background-color: #333;
+    margin: 3px 0;
+    transition: 0.4s;
+    
+}
+
+.late_badge {
+    background-color: #fa3e3e;
+    border-radius: 2px;
+    color: white;
+   
+    padding: 1px 3px;
+    font-size: 10px;
+    
+    position: absolute; /* Position the badge within the relatively positioned button */
+    top: 0;
+    left: 0;
+  }
+
+.tape {
+    background-color: white;  
+}
+
+.timing_tape {
+    white-space: pre;
+    overflow: auto;
+    max-width: 18em;
+    min-width: 0;
+    max-height: 20em;
+    min-height: 0;
+}
+
+.timing_tape div:hover {
+    overflow: auto;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: relative;
+  top: 0;
+  right: 0;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+  justify-content: left;
+}
+
+/* Add styles to the form container */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+}
+
+.form-container label{
+    display:inline-block;
+    justify-content: left;
+}
+
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 1px 0 1px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+.form-container input[type=checkbox], input[type=radio] {
+    display: inline-block;
+    vertical-align: middle; 
+    position: relative;
+    bottom: .08em; /* this is a better value for different fonts! */
+}
+
+.form-container input[type=number]{
+    width: 4em;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+.form-container select{
+    display: inline-flex;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: rgb(0, 201, 201);
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin: 1px 0 1px 0;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .local {
+  background-color: rgb(199, 0, 0);
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+
+#mode {
+    margin-top: 5px;
+}
+
+.device_window{
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 100%;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    background-color: lightslategray;
+    border-radius: 5px;
+}
+
+.device_window:hover{
+    overflow: auto;
+}
+
+.console {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    line-height: 1.30769231;
+    color: whitesmoke;
+    background-color: black;
+    border-radius: 5px 5px 0 0;
+    margin: 0;
+    padding: 12px;
+    flex: 0 1 auto;
+    overflow: hidden;
+    max-height: 20%;
+    text-indent: 0px;
+    max-width: 100%;
+    min-width: 0;
+    justify-self: flex-end;
+    padding: .2em .5em;
+}
+
+#console_tab {
+    color: white;
+    width: 100%;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    align-self: center;
+    position: relative;
+    opacity: 0.5;
+    justify-content: center;
+}
+
+#console_tab:hover{
+    opacity: 1;
+}
+
+#console {
+    display: none;
+    position: relative;
+    overflow: hidden;
+    margin: .1em;
+}
+
+#console:hover {
+    overflow: auto;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+.advanced-menu {
+    position: relative;
+    background-color: #fefefe;
+    margin: 50px auto auto auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  }
+
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.apply {
+    background-color: rgb(102,34,34);
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 1px 0 1px 0;
+    opacity: 1;
+}
+
+.apply:hover {
+    opacity: 0.8;
+}
+
+.close:hover,
+.close:focus {
+    color: rgb(49, 49, 49);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.advanced-header {
+    padding: 2px 16px;
+    background-color: black;
+    color: white;
+}
+
+.advanced-body {
+    padding: 2px 16px;
+    background-color: #919191;
+}
+
+.advanced-body input[type=text] {
+    width: 2em;
+}
+
+/* Floating column for labels: 25% width */
+.col-25 {
+    float: left;
+    width: 20%;
+    margin-top: 6px;
+}
+  
+  /* Floating column for inputs: 75% width */
+.col-75 {
+    float: left;
+    width: 80%;
+    margin-top: 6px;
+}
+
+.col-75 input[type=text]{
+    width: 80%;
+}
+  
+  /* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.late-messages-box {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+}
+
+.late-messages-box button {
+    height: 3em;
+    margin: 1em 1em 0 0;
+    border-width: thin;
+    border-style: double;
+    background-color: #292929;
+    color: white;
+}
+
+.late-messages-box label {
+    vertical-align: top;
+}
+
+.advanced-footer {
+    display: flex;
+    padding: 2px 16px;
+    background-color: #919191;
+    color: white;
+    justify-content: flex-end;
+}
+
+.advanced-menu form {
+    margin: 1em;
+}
+
+.late-messages-box table {
+    margin: 1em 2px;
+    font-size: .8em;
+}
+
+.advanced-menu td, .advanced-menu th {
+    height: auto;
+    color: black;
+}
+
+.late-message-form select {
+    width: 18em;
+    height: 6em;
+    overflow: auto;
+}
+
+.device-options label {
+    margin-right: 3em;
+}
+
+@-webkit-keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
