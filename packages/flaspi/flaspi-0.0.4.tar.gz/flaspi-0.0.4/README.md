@@ -1,0 +1,86 @@
+# flaspi (easy api maker for flask)
+
+下の方に日本語の説明があります
+
+## Overview
+- A tool to create flask APIs easily.
+- API for sending and receiving JSON
+	- Note that it is not a strict RESTful API.
+
+## Usage example
+
+- Server side
+```python
+import flask
+import flaspi
+
+# Define a flask app (web server)
+app = flask.Flask(__name__)
+
+# function describing the API behavior
+def greeting_func(req_obj):
+	return {"message": "Hello, %s!!"%req_obj["name"]}
+
+# Define the API for post (params: the URL path, the function that defines the API action, and the flask app)
+flaspi.post_api("/greeting", greeting_func, app = app)
+
+# run flask server
+app.run(host = "0.0.0.0", port = "80", debug = False)
+```
+
+- Example API call
+```bash
+curl http://localhost:80/greeting -X POST -H "Content-Type: application/json" --data '{"name": "Hoge"}'
+```
+
+- Result (response)
+```JSON
+{"message": "Hello, Hoge!"}
+```
+
+- Example of API call (using flaspi)
+```python
+res = flaspi.call_post_api("http://localhost:80/greeting", {"name": "Hoge"})	# -> (200, {'message': 'Hello, Hoge!!'})
+```
+
+
+## 概要
+- flaskのAPIを簡単に作れるツール
+- JSONを送受信する形のAPI
+	- 厳密なRESTful-APIではないので注意
+
+## 使用例
+
+- サーバー側
+```python
+import flask
+import flaspi
+
+# flaskのアプリ(ウェブサーバー)を定義
+app = flask.Flask(__name__)
+
+# APIの動作を記述した関数
+def greeting_func(req_obj):
+	return {"message": "Hello, %s!!"%req_obj["name"]}
+
+# postのAPIを定義 (URLのパス、動作を定義した関数、flaskのappを渡す)
+flaspi.post_api("/greeting", greeting_func, app = app)
+
+# flaskサーバー立ち上げ
+app.run(host = "0.0.0.0", port = "80", debug = False)
+```
+
+- APIの呼び出し例
+```bash
+curl http://localhost:80/greeting -X POST -H "Content-Type: application/json" --data '{"name": "Hoge"}'
+```
+
+- 結果 (レスポンス)
+```JSON
+{"message": "Hello, Hoge!!"}
+```
+
+- APIの呼び出し例 (flaspiを利用した場合)
+```python
+res = flaspi.call_post_api("http://localhost:80/greeting", {"name": "Hoge"})	# -> (200, {'message': 'Hello, Hoge!!'})
+```
