@@ -1,0 +1,79 @@
+Metadata-Version: 2.1
+Name: trytond-account-es
+Version: 6.4.0
+Summary: Tryton with Spanish chart of accounts
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/account_es
+Keywords: tryton account chart spanish
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Spanish
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Classifier: Topic :: Office/Business :: Financial :: Accounting
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: python-sql (>=1.1.0)
+Requires-Dist: phonenumbers
+Requires-Dist: trytond-company (<6.5,>=6.4)
+Requires-Dist: trytond-currency (<6.5,>=6.4)
+Requires-Dist: trytond-account (<6.5,>=6.4)
+Requires-Dist: trytond-account-eu (<6.5,>=6.4)
+Requires-Dist: trytond-account-invoice (<6.5,>=6.4)
+Requires-Dist: trytond-party (<6.5,>=6.4)
+Requires-Dist: trytond (<6.5,>=6.4)
+Provides-Extra: test
+Requires-Dist: proteus (<6.5,>=6.4) ; extra == 'test'
+Requires-Dist: trytond-account-asset (<6.5,>=6.4) ; extra == 'test'
+Requires-Dist: trytond-account-payment-sepa (<6.5,>=6.4) ; extra == 'test'
+Requires-Dist: trytond-sale-advance-payment (<6.5,>=6.4) ; extra == 'test'
+
+Spanish Account Module
+######################
+
+The Spanish account module defines the following charts of account:
+
+ * Plan General Contable Español 2008
+ * Plan Contable para PYMES 2008
+
+The chart was published as `REAL DECRETO 1514/2007
+<https://www.boe.es/boe/dias/2007/11/20/pdfs/C00001-00152.pdf>`_ on 20th November
+2007.
+
+A wizard allows to generate the following AEAT files:
+
+* Modelo 111
+* Modelo 115
+* Modelo 303
+
+The module generates the chart of accounts for the normal and pyme charts.
+The XML files for each variant are generated from the same original XML file
+thanks to the create_variant.xsl XSLT script. The script will produce on the
+standard output the desired XML file. The XSLT script can be launched with the
+following commands::
+
+    xsltproc --stringparam chart <chart> create_chart.xsl account.xml
+    xsltproc --stringparam chart <chart> create_chart.xsl tax.xml
+
+where ``chart`` is `normal` or `pyme`
+
+
