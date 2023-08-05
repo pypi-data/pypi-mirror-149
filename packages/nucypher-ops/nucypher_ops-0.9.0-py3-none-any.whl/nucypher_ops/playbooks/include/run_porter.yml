@@ -1,0 +1,21 @@
+- name: "Run Porter"
+  hosts: "{{ play_hosts }}"
+  remote_user: "{{default_user}}"
+  gather_facts: no
+  tasks:
+
+    - name: "run porter"
+      become: yes
+      docker_container:
+        name: porter
+        state: started
+        restart: yes
+        image: "{{ docker_image }}"
+        restart_policy: "unless-stopped"
+        command: 'nucypher porter run --eth-provider {{ eth_provider }} {{CLI_RUNTIME_OPTIONS}}'
+        container_default_behavior: "compatibility"
+        volumes:
+          - ~/nucypher/nucypher:/root/.local/share/nucypher
+        ports:
+          - "80:9155/tcp"
+          - "443:9155/tcp"
