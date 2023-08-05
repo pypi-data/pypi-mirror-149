@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.check-manifest]
+ignore = ["tbump.toml", ".*", "codecov.yml"]
+
+[tool.tbump.version]
+current = "0.20.0"
+regex = '''
+  (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
+  ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
+'''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "jupyter_releaser/__init__.py"
+
+[[tool.tbump.file]]
+src = "docs/source/conf.py"
+
+[tool.jupyter-releaser]
+skip = ["check-links"]
+
+[tool.jupyter-releaser.hooks]
+after-draft-release = "bash ./.github/scripts/bump_tag.sh"
+
+[tool.pytest.ini_options]
+addopts = "-raXs --durations 10 --color=yes --doctest-modules"
+testpaths = [
+    "jupyter_releaser/tests/"
+]
+filterwarnings= [
+  # Fail on warnings
+  "error",
+  "ignore:Using deprecated setup.py invocation:UserWarning",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = false
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+no_implicit_reexport = false
+pretty = true
+show_error_context = true
+show_error_codes = true
+strict_equality = true
+strict_optional = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_return_any = false
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [
+  "toml.*",
+  "jsonschema",
+  "ghapi.*",
+  "github_activity",
+  "pkginfo",
+  "pypandoc",
+]
+ignore_missing_imports = true
