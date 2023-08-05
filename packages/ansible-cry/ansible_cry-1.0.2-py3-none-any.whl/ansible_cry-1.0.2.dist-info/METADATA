@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: ansible-cry
+Version: 1.0.2
+Summary: Encrypt and decrypt ansible-vault string/file: Perfect for external tools.
+Home-page: https://github.com/pylanglois/ansible-cry
+License: MIT
+Author: Pierre-Yves Langlois
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: ansible
+Requires-Dist: plumbum
+Description-Content-Type: text/markdown
+
+# CRY
+Encrypt and decrypt ansible-vault string/file perfect external tools
+
+```
+CRY me a river of encrypted data. Cry cry Cry.
+
+Utilisation:
+    cry [OPTIONS] [SUB_COMMAND [OPTIONS]] 
+
+Meta-options:
+    -h, --help                        Print this message
+    --help-all                        Prints help messages of all sub-commands and quits
+    -v, --version                     Show version
+
+Options:
+    --config VALEUR:ExistingFile      Filename with the vault password.; default: $HOME/.vault.pass
+    -d, --decrypt                     Encrypt by default, add -d to decrypt
+    --show-params                     Show parameters given to cry and exit.
+
+Sub-commands:
+    file                              see 'cry file --help' for infos
+    string                            see 'cry string --help' for infos
+```
+
+```
+Utilisation:
+    cry file [OPTIONS] files...
+
+Hidden-switches:
+    -h, --help              Print this message
+    --help-all              Prints help messages of all sub-commands and quits
+    -v, --version           Show version
+
+Options:
+    -c, --show-context      Show the context around the string to decode
+```
+
+```
+Utilisation:
+    cry string [OPTIONS] strings...
+
+Hidden-switches:
+    -h, --help         Print this message
+    --help-all         Prints help messages of all sub-commands and quits
+    -v, --version      Show version
+
+Options:
+    -s, --stdin        Use stdin as source
+```
