@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "pyusage"
+version = "0.1.5"
+description = ""
+license = "Apache-2.0"
+authors = ["PyUsage Team <packages@pyusage.org>"]
+maintainers = [
+    "Balaji Veeramani <bveeramani@berkeley.edu>",
+    "Michael Wan <m.wan@berkeley.edu>",
+]
+readme = "README.md"
+homepage = "https://pyusage.org"
+repository = "https://github.com/pyusage/pyusage"
+documentation = "https://docs.pyusage.org"
+keywords = ["usage", "users", "monitoring", "analytics"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Monitoring",
+]
+packages = [
+    { include = "usage", from = "src" },
+    { include = "pyusage", from = "src" },
+]
+
+[tool.poetry.scripts]
+usage = 'usage.cli:usage'
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pydantic = "^1.9.0"
+rich = "^12.3.0"
+termcolor = "^1.1.0"
+importlib-metadata = "^4.11.3"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.13.5"
+black = "^22.3.0"
+mypy = "^0.942"
+bandit = "^1.7.4"
+isort = "^5.10.1"
+pydocstyle = { extras = ["toml"], version = "^6.1.1" }
+pytest = "^7.1.1"
+toml = "^0.10.2"
+invoke = "^1.7.0"
+Sphinx = "^4.5.0"
+myst-parser = "^0.17.2"
+sphinx_external_toc = "^0.3.0"
+sphinx-book-theme = "^0.3.2"
+sphinx-copybutton = "^0.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.messages_control]
+disable = ["missing-module-docstring"]
+extension-pkg-whitelist = ["pydantic"]
+
+[tool.pydocstyle]
+convention = "google"
+# D100 is "Missing docstring in public module"
+# D104 is "Missing docstring in public package"
+add-ignore = ["D100", "D104"]
