@@ -1,0 +1,77 @@
+{% load dict_key_extras %}
+
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            {% if data.menu %}
+                <th>
+                    <input type="checkbox" id="select_all_{{group}}"
+                           onchange="selectAll(this, '{{group}}')">
+                </th>
+            {% endif %}
+            <th>File name</th>
+            <th>Upload date</th>
+            {% if come_from_admin %}
+                <th>User</th>
+            {% endif %}
+            {% if not data.title%}
+                <th>Workspace</th>
+            {% endif %}
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in objects %}
+            <tr class="{{ rowcolors }}" objectid="{{object.file.id}}">
+                {% if data.menu %}
+                <td id="actionCheckbox_{{forloop.counter}}">
+                    <input type="checkbox" id={{object.file.id}} name={{group}}>
+                </td>
+                {% endif %}
+                <td>
+                    <span class="blob-link" data-blob-url="{{ object.url }}">
+                        {{ object.file.filename }}
+                    </span>
+                </td>
+                <td>{{ object.date }}</td>
+                {% if come_from_admin %}
+                    <td>
+                        {{object.user}}
+                    </td>
+                {% endif %}
+                {% if not data.title%}
+                    <td>
+                        {% if object.file.workspace %}
+                            {{ object.file.workspace.title }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                {% endif %}
+                <td>
+                    <a class="btn btn-secondary download-{{data.document}}-btn" href="{{ object.url }}">
+                        <i class="fas fa-list"></i> Download
+                    </a>
+                    {% if data.share_pid_button %}
+                        {% include 'core_linked_records_app/user/sharing/data_detail/button_inline.html' %}
+                    {% endif %}
+                    {% if object.can_change_workspace %}
+                        <a class="btn btn-secondary assign-workspace-record-btn">
+                            <i class="fas fa-folder"></i> Change workspace
+                        </a>
+                    {% endif %}
+                    {% if object.is_owner %}
+                        <a class="btn btn-secondary change-owner-btn">
+                            <i class="fas fa-folder"></i> Change Owner
+                        </a>
+                    {% endif %}
+                    <button class="btn btn-danger delete-document-btn" objectid="{{ object.file.id }}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% include 'core_main_app/common/pagination/data_source_pagination.html' with pagination=data.pagination%}

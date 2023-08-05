@@ -1,0 +1,92 @@
+{# This file is included by other files which already contains <table> tags #}
+{% load dict_key_extras %}
+{% load draft_extras %}
+{% load timestamptags %}
+
+<thead>
+    <tr>
+        {% if data.menu and not data.title %}
+            <th>
+                <input type="checkbox" id="select_all_{{group}}"
+                       onchange="selectAll(this, '{{group}}')" />
+            </th>
+        {% endif %}
+        <th>Name</th>
+        <th>Template</th>
+        <th>Last Modification date</th>
+        {% if data.username_list %}
+            <th>User</th>
+        {% endif %}
+        {% if not data.title%}
+            <th>Workspace</th>
+        {% endif %}
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for data_loaded in objects %}
+        <tr objectid="{{data_loaded.data.id}}">
+            {% if data.menu and not data.title %}
+            <td id="actionCheckbox_{{forloop.counter}}">
+                <input type="checkbox" id={{data_loaded.data.id}} name={{group}}>
+            </td>
+            {% endif %}
+            <td>
+                {{ data_loaded.data.title }}
+                {% if data_loaded.data|has_draft:request.user %}
+                    ,<text class="text-danger">&nbsp;Draft</text>
+                {% endif %}
+            </td>
+            <td>
+                {{ data_loaded.data.template.display_name }}
+            </td>
+            <td>
+                {{ data_loaded.data.last_modification_date|print_datetime_utc_unaware }}
+            </td>
+            {% if data.username_list %}
+            <td>
+                {% with key=data_loaded.data.user_id %}
+                  {{ data.username_list|get:key }}
+                {% endwith %}
+            </td>
+            {% endif %}
+            {% if not data.title%}
+            <td>
+                {% if data_loaded.data.workspace %}
+                    {{ data_loaded.data.workspace.title }}
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>
+                {% if data_loaded.can_read %}
+                    <button class="btn btn-secondary view-record-btn">
+                        <i class="fas fa-file-alt"></i> View
+                    </button>
+                {% endif %}
+                {% if data.share_pid_button %}
+                    {% include 'core_linked_records_app/user/sharing/data_detail/button_inline.html' %}
+                {% endif %}
+                {% if data_loaded.can_write %}
+                    <button class="btn btn-secondary edit-record-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    {% if data_loaded.can_change_workspace %}
+                        <button class="btn btn-secondary assign-workspace-record-btn">
+                            <i class="fas fa-folder"></i> Change workspace
+                        </button>
+                    {% endif %}
+                {% endif %}
+                {% if data_loaded.is_owner %}
+                    <button class="btn btn-secondary change-owner-btn">
+                        <i class="fas fa-user-circle"></i> Change Owner
+                    </button>
+                    <button class="btn btn-danger delete-document-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>

@@ -1,0 +1,51 @@
+{% load dict_key_extras %}
+{% load get_attribute %}
+<table class="table table-bordered table-striped table-hover fixed-table
+        {% if come_from_admin %}table-col-4{% else %}table-col-3{% endif %}">
+    <thead>
+        <th>Template name</th>
+        <th>Filename</th>
+        {% if come_from_admin %}
+            <th>User</th>
+        {% endif %}
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        {% for object in objects %}
+            <tr objectid="{{object.template_version.id}}">
+                <td>{{ object.title }}</td>
+                <td>{{ object.template.filename }}</td>
+                {% if come_from_admin %}
+                    <td>
+                        {{object.user}}
+                    </td>
+                {% endif %}
+                <td>
+                    {% if object.template_version|get_attribute:'is_disabled' %}
+                    <a class="btn btn-secondary restore-{{data.document}}-btn" objectid="{{ object.template_version.id }}">
+                        <i class="fas fa-undo"></i> Restore
+                    </a>
+                    {% else %}
+                        {% if come_from_admin %}
+                            <a class="btn btn-secondary view-{{data.document}}-btn" href="{% url 'admin:core_main_app_manage_template_versions' object.template_version.id %}">
+                                <i class="fas fa-list"></i> Versions
+                            </a>
+                            {% url 'admin:core_dashboard_app_edit_template' object.template_version.id as edit_url %}
+                            {% include 'core_main_app/common/buttons/edit.html' %}
+                        {% else %}
+                            <a class="btn btn-secondary view-{{data.document}}-btn" href="{% url 'core_main_app_manage_template_versions' object.template_version.id %}">
+                                <i class="fas fa-list"></i> Versions
+                            </a>
+                            {% url 'core_dashboard_app_edit_template' object.template_version.id as edit_url %}
+                            {% include 'core_main_app/common/buttons/edit.html' %}
+                        {% endif %}
+                        <button class="btn btn-danger disable-{{data.document}}-btn" objectid="{{ object.template_version.id }}">
+                            <i class="fas fa-trash"></i> Disable
+                        </button>
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
