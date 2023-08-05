@@ -1,0 +1,30 @@
+name: PR Title
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+    pr-title:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Setup Python
+          uses: actions/setup-python@v2
+          with:
+              python-version: 3.8
+
+        - name: Install Dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install .[dev]
+
+        - name: Check PR Title
+          env:
+              TITLE: ${{ github.event.pull_request.title }}
+          run: cz check --message "$TITLE"
