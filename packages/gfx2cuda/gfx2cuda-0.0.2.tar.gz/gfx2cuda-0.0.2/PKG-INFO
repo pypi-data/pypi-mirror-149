@@ -1,0 +1,97 @@
+Metadata-Version: 2.1
+Name: gfx2cuda
+Version: 0.0.2
+Summary: Fast graphics texture to cuda transfer
+Home-page: https://github.com/SvenDH/
+License: MIT
+Keywords: Screen Capture,Screenshot,Computer Vision
+Author: Sven den Hartog
+Author-email: denhartog.sven@gmail.com
+Requires-Python: >=3.6
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Multimedia :: Graphics :: Capture
+Requires-Dist: comtypes (>=1.1.7,<1.2.0)
+Requires-Dist: numpy (>=1.16.5,<1.17.0)
+Project-URL: Repository, https://github.com/SvenDH/
+Description-Content-Type: text/markdown
+
+# Gfx2Cuda - Graphics to CUDA interoperability
+
+_Gfx2Cuda_ is a python implementation of CUDA's graphics interopability methods for DirectX, OpenGL, etc.
+The main usage is for quick transfer of images rendered with for example Godot or Unity to CUDA memory buffers such as 
+pytoch tensors, without needing to transfer the image to cpu and back to gpu.
+
+For now only DirectX 11 is supported. This can be useful for implementing CUDA ipc (interprocess-communication) for 
+Windows, since that functionality is not available in vanilla CUDA for Windows. 
+You would use a DirectX texture as buffer that can be seen by multiple processes without having to download any gpu data
+to cpu and back.
+
+### Example
+
+**Render to texture and copy to pytorch tensor**
+
+```python
+import gfx2cuda
+import torch
+
+# Shape: [height, width, channels]
+shape = [480, 640, 4]
+tensor1 = torch.ones(shape).contiguous().cuda()
+tensor2 = torch.zeros(shape).contiguous().cuda()
+
+# Create copy of a tensor but as a texture
+tex = gfx2cuda.texture(tensor1)
+
+with tex as ptr:
+    tex.copy_to(tensor2)
+
+print(tensor2.data)
+# pytorch tensor should now contain a copy of the texture data
+```
+
+**Share texture between process, write on one process and see results in the other**
+
+```python
+from multiprocessing import Process
+
+import gfx2cuda
+import torch
+
+shape = [4, 4, 4]
+
+def f(handle):
+    tex = gfx2cuda.open_ipc_texture(handle)
+    # Received and opened the texture
+    print(tex)
+    # >> Texture with format TextureFormat.RGBA32FLOAT (4 x 4)
+    tensor1 = torch.ones(shape).contiguous().cuda()
+    with tex:
+        tex.copy_from(tensor1)
+
+if __name__ == "__main__":
+    tensor = torch.zeros(shape).contiguous().cuda()
+    # Initialize as all zeros
+    tex = gfx2cuda.texture(tensor)
+
+    p = Process(target=f, args=(tex.ipc_handle,))
+    p.start()
+    p.join()
+
+    with tex:
+        tex.copy_to(tensor)
+
+    print(tensor.data)
+    # See all ones
+```
+
