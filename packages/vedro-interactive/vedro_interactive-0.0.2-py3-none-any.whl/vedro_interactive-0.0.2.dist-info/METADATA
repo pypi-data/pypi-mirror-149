@@ -1,0 +1,59 @@
+Metadata-Version: 2.1
+Name: vedro-interactive
+Version: 0.0.2
+Summary: UNKNOWN
+Home-page: https://github.com/nikitanovosibirsk/vedro-interactive
+Author: Nikita Tsvetkov
+Author-email: nikitanovosibirsk@yandex.com
+License: Apache-2.0
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: vedro (<2.0,>=1.5)
+Requires-Dist: rich (<11.0,>=10.0)
+
+# Vedro Interactive
+
+[![Codecov](https://img.shields.io/codecov/c/github/nikitanovosibirsk/vedro-interactive/master.svg?style=flat-square)](https://codecov.io/gh/nikitanovosibirsk/vedro-interactive)
+[![PyPI](https://img.shields.io/pypi/v/vedro-interactive.svg?style=flat-square)](https://pypi.python.org/pypi/vedro-interactive/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/vedro-interactive?style=flat-square)](https://pypi.python.org/pypi/vedro-interactive/)
+[![Python Version](https://img.shields.io/pypi/pyversions/vedro-interactive.svg?style=flat-square)](https://pypi.python.org/pypi/vedro-interactive/)
+
+## Installation
+
+### 1. Install package
+
+```shell
+$ pip3 install vedro-interactive
+```
+
+### 2. Enable plugin
+
+```python
+# ./vedro.cfg.py
+import vedro
+import vedro_interactive
+
+class Config(vedro.Config):
+
+    class Plugins(vedro.Config.Plugins):
+
+        class Interactive(vedro_interactive.Interactive):
+            enabled = True
+```
+
+## Usage
+
+### Run tests
+
+```shell
+$ vedro run -r silent -I
+```
+
+
