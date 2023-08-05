@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "dbt-athena2"
+version = "1.2.2"
+description = "Athena adapter for dbt platform"
+authors = ["Duc Nguyen"]
+readme = "README.md"
+packages = [
+    { include = "dbt"},
+]
+repository = "https://github.com/vdn-tools/dbt-athena2"
+classifiers=[
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Operating System :: Unix",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+    ]
+
+[tool.poetry.dependencies]
+python = ">=3.7.2,<4.0"
+dbt-core = "1.1.*"
+pyathena = "2.5.2"
+boto3 = "1.20.47"
+tenacity = "8.0.1"
+
+[tool.semantic_release]
+version_variable = [
+    "dbt/adapters/athena/__version__.py:version",
+    "pyproject.toml:version"
+]
+branch = "main"
+upload_to_pypi = true
+upload_to_release = true
+build_command = "pip install poetry && cat requirements.txt|xargs poetry add && poetry build"
