@@ -1,0 +1,94 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "realms": [
+                {
+                    "name": "{realm}",
+                    "roles": [
+                        {
+                            "name": "iocs_agent",
+                            "permissions": [
+                                {
+                                    "uri": "{address_root}.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "iocs_controller",
+                            "permissions": [
+                                {
+                                    "uri": "{address_root}.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+		    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": {port}
+                    },
+		    "paths": {
+			"ws": {
+			    "type": "websocket",
+			    "auth": {
+				"anonymous": {
+				    "type": "static",
+				    "role": "iocs_agent"
+				}
+			    },
+                "options": {
+                    "open_handshake_timeout": 2500,
+                    "close_handshake_timeout": 1000,
+                    "auto_ping_interval": 10000,
+                    "auto_ping_timeout": 5000,
+                    "auto_ping_size": 4
+                }
+			},
+			"call": {
+			    "type": "caller",
+			    "realm": "{realm}",
+			    "role": "iocs_controller",
+			    "options": {
+				}
+			}
+		    }
+                }
+            ]
+        }
+    ]
+}
