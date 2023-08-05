@@ -1,0 +1,173 @@
+Metadata-Version: 2.1
+Name: tdapiclient
+Version: 1.0.0.0
+Summary: Teradata API Client Python package
+Home-page: http://www.teradata.com/
+Author: Teradata Corporation
+License: Teradata License Agreement
+Keywords: Teradata
+Platform: MacOS X, Windows, Linux
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Topic :: Database :: Front-Ends
+Classifier: License :: Other/Proprietary License
+Requires-Python: >=3.0
+Description-Content-Type: text/markdown
+Requires-Dist: teradataml (>=17.00.00.00)
+Requires-Dist: sagemaker (>=2.75.00)
+
+## tdapiclient - Teradata Third Party Analytics Integration Python Library
+
+ tdapiclient Python library allows AWS SageMaker and Teradata users to use AWS SageMaker Python library's interface to train/predict using teradataml DataFrame. tdapiclient will transparantly convert teradataml DataFrame in S3 address to be used for training and it will also allow user to use teradataml DataFrame as input for inference.
+
+For community support, please visit the [Connectivity Forum](http://community.teradata.com/t5/Tools/bd-p/DevXToolsBoard).
+For Teradata customer support, please visit [Teradata Access](https://access.teradata.com/).
+
+Copyright 2022, Teradata. All Rights Reserved.
+
+### Table of Contents
+- [Release Notes](#release-notes)
+- [Installation and Requirements](#installation-and-requirements)
+- [Using the tdapiclient Python Package](#using-the-tdapiclient-python-package)
+- [Documentation](#documentation)
+- [License](#license)
+
+## Release Notes
+#### tdapiclient 1.00
+* `tdapiclient 1.00.00.00` is the first release version. Please refer to the _API Integration Guide for Cloud Machine Learning_ for a list of Limitations and Usage Considerations.
+
+## Installation and Requirements
+
+### Package Requirements
+* Python 3.6 or later
+
+Note: 32-bit Python is not supported.
+
+### Minimum System Requirements
+* Windows 7 (64Bit) or later
+* macOS 10.9 (64Bit) or later
+* Red Hat 7 or later versions
+* Ubuntu 16.04 or later versions
+* CentOS 7 or later versions
+* SLES 12 or later versions
+* Teradata Vantage Advanced SQL Engine:
+    * Advanced SQL Engine 17.05 Feature Update 1 or later
+
+### Installation
+
+Use pip to install the tdapiclient - Teradata Sagemaker Python Library
+
+Platform       | Command
+-------------- | ---
+macOS/Linux    | `pip install tdapiclient`
+Windows        | `py -3 -m pip install tdapiclient`
+
+## Using the tdapiclient Python Package
+
+Your Python script must import the `tdapiclient` package in order to use the tdapiclient Python Library
+```
+>>> from tdapiclient import create_aws_context,TDApiClient
+>>> from teradataml import create_context, DataFrame, copy_to_sql
+
+>>> # Create connection to Teradata Vantage System
+>>> host = input("Host: ")
+>>> username = input("Username: ")
+>>> password = getpass.getpass("Password: ")
+>>> td_context = create_context(host=host, username=username, password=password)
+
+# Create AWS Context to be used in TDApiClient
+>>> s3_bucket = input("S3 Bucket(Please give just the bucket name) :")
+>>> access_id = input("Access ID:")
+>>> access_key = getpass.getpass("Acess Key: ")
+>>> region = input("AWS Region: ")
+
+>>>   os.environ["AWS_ACCESS_KEY_ID"] = access_id
+>>>   os.environ["AWS_SECRET_ACCESS_KEY"] = access_key
+>>>   os.environ["AWS_REGION"] = region
+
+>>> aws_context = create_tdapi_context("aws", bucket_name=s3_bucket)
+# Create TDApiClient Instance
+>>> td_apiclient = TDApiClient(aws_context)
+
+# Load data in teradata tables
+>>> from sklearn.model_selection import train_test_split
+>>> from sklearn.datasets import fetch_california_housing
+
+>>> data = fetch_california_housing()
+>>> X_train, X_test, y_train, y_test = train_test_split(
+     data.data, data.target, test_size=0.25, random_state=42)
+
+>>> trainX = pd.DataFrame(X_train, columns=data.feature_names)
+>>> trainX["target"] = y_train
+
+>>> testX = pd.DataFrame(X_test, columns=data.feature_names)
+>>> testX["target"] = y_test
+
+>>> train_table = "housing_data_train"
+>>> test_table = "housing_data_test"
+
+>>> column_types = {"MedInc": FLOAT, "HouseAge": FLOAT,
+                "AveRooms": FLOAT, "AveBedrms": FLOAT, "Population": FLOAT,
+                "AveOccup": FLOAT, "Latitude": FLOAT, "Longitude": FLOAT,
+                "target" : FLOAT}
+
+>>> copy_to_sql(df=trainX, table_name=train_table, if_exists="replace", types=column_types)
+>>> copy_to_sql(df=testX, table_name=test_table, if_exists="replace", types=column_types)
+
+# Create teradataml DataFrame for input tables
+
+>>> test_df = DataFrame(table_name=test_table)
+>>> train_df = DataFrame(table_name=train_table)
+
+>>> exec_role_arn = "arn:aws:iam::XX:role/service-role/AmazonSageMaker-ExecutionRole-20210112T215668"
+>>> FRAMEWORK_VERSION = "0.23-1"
+# Create an estimator object based on sklearn sagemaker class
+>>> sklearn_estimator = td_apiclient.SKLearn(
+    entry_point="sklearn-script.py",
+    role=exec_role_arn,
+    instance_count=1,
+    instance_type="ml.m5.large",
+    framework_version=FRAMEWORK_VERSION,
+    base_job_name="rf-scikit",
+    metric_definitions=[{"Name": "median-AE", "Regex": "AE-at-50th-percentile: ([0-9.]+).*$"}],
+    hyperparameters={
+        "n-estimators": 100,
+        "min-samples-leaf": 3,
+        "features": "MedInc HouseAge AveRooms AveBedrms Population AveOccup Latitude Longitude",
+        "target": "target",
+    },
+)
+>>> # Start training using DataFrame objects
+>>> sklearn_estimator.fit({"train": test_df, "test": train_df}, content_type="csv", wait=True)
+
+>>> from sagemaker.serializers import CSVSerializer
+>>> from sagemaker.deserializers import CSVDeserializer
+>>> csv_ser = CSVSerializer()
+>>> csv_dser = CSVDeserializer()
+>>> predictor = sklearn_estimator.deploy(instance_type="ml.m5.large", initial_instance_count=1,serializer=csv_ser,  deserializer=csv_dser)
+
+>>> # Now let's try prediction with UDF and Client options.
+>>> input = DataFrame(table_name='housing_data_test')
+>>> column_list = ["MedInc","HouseAge","AveRooms","AveBedrms","Population","AveOccup","Latitude","Longitude"]
+>>> input = input.sample(n=5).select(column_list)
+
+>>> output = predictor.predict(input, mode="UDF",content_type='csv')
+
+```
+
+## Documentation
+
+General product information, including installation instructions, is available in the [Teradata Documentation website](https://docs.teradata.com/)
+
+## License
+
+Use of the Teradata Python Package is governed by the *License Agreement for the Teradata Sagemaker Python Library*.
+After installation, the `LICENSE` and `LICENSE-3RD-PARTY` files are located in the `tdapiclient` directory of the Python installation directory.
+
+
+
