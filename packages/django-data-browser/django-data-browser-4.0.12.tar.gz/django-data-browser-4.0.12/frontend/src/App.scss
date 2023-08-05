@@ -1,0 +1,449 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+:root {
+  --dark-color: hsl(209, 17%, 24%);
+  --link-color: hsl(237, 100%, 45%); /* was hsl(200, 100%, 30%)*/
+  --dark-link-color: hsl(237, 100%, 30%); /* was hsl(200, 100%, 30%)*/
+  --border-color: hsl(0, 0%, 80%);
+  --shade-color: hsl(0, 0%, 93%);
+  --null-color: hsl(0, 0%, 87%);
+  --bad-color: hsl(14, 100%, 50%);
+  --good-color: hsl(126, 68%, 30%);
+
+  --concrete-field-color: hsl(126, 36%, 88%);
+  --calculated-field-color: hsl(0, 0%, 88%);
+  --aggregate-field-color: hsl(237, 33%, 88%);
+  --function-field-color: hsl(126, 36%, 88%);
+  --related-field-color: hsl(0, 0%, 100%);
+}
+
+.ConcreteField {
+  background-color: var(--concrete-field-color);
+}
+
+.CalculatedField {
+  background-color: var(--calculated-field-color);
+}
+
+.AggregateField {
+  background-color: var(--aggregate-field-color);
+}
+
+.FunctionField {
+  background-color: var(--function-field-color);
+}
+
+.RelatedField {
+  background-color: var(--related-field-color);
+}
+
+select,
+input,
+th,
+button,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+body {
+  font-family: "Roboto", "Noto Sans", sans-serif;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  color: var(--dark-color);
+}
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
+  &:visited {
+    color: var(--dark-link-color);
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: normal;
+}
+h2 {
+  font-size: 20px;
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+}
+p {
+  margin: 5px auto;
+}
+
+select,
+input {
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+}
+input {
+  padding: 3px 6px;
+}
+select {
+  display: inline;
+  width: auto;
+  padding: 2px;
+}
+.TLink {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  cursor: pointer;
+  color: var(--dark-link-color);
+  text-align: left;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.Symbol,
+.SLink {
+  font-size: inherit;
+  font-weight: inherit;
+  vertical-align: -20%;
+}
+.SLink {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  cursor: pointer;
+  color: var(--dark-link-color);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--border-color);
+}
+
+/***************** Element specific stuff *****************/
+#root {
+  position: relative;
+}
+
+.QueryPage {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  padding: 10px 0 0 0;
+  > * {
+    flex: 0 0 auto;
+  }
+  > .MainSpace {
+    flex: 0 1 auto;
+  }
+}
+.MainSpace {
+  display: flex;
+  flex-flow: row;
+  padding: 0;
+  max-width: 100vw;
+  justify-content: space-between;
+  overflow-y: hidden;
+  > * {
+    flex: 0 0 auto;
+  }
+  > .Results {
+    margin: 10px;
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+  > .FieldsList {
+    margin: 10px 0 10px 10px;
+  }
+}
+
+.Scroller {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.ModelSelector {
+  margin: 0 auto;
+  text-align: center;
+  text-align-last: center;
+  border: none;
+  padding: 1px;
+  font-size: 28px;
+  color: var(--dark-color);
+  &:hover {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 0;
+  }
+  option,
+  optgroup {
+    text-align: left;
+    text-align-last: left;
+  }
+}
+
+/* Filters */
+
+.Filters {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  min-height: 19px;
+  .FiltersToggle {
+    position: absolute;
+    right: -18px;
+  }
+  p {
+    margin: 5px;
+  }
+  table,
+  table th,
+  table td {
+    border: none;
+    padding: 3px 1px;
+  }
+}
+
+select.FilterValue,
+input.FilterValue {
+  width: 330px;
+}
+.FilterValue.Half {
+  width: 50%;
+}
+select.Lookup {
+  width: 100%;
+}
+
+/* Fields */
+.FieldsList {
+  display: flex;
+  flex-flow: column nowrap;
+  .Scroller,
+  table table {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+  }
+  tbody,
+  th,
+  td {
+    border: none;
+    vertical-align: top;
+  }
+  th,
+  td {
+    padding: 0px;
+    padding: 1px;
+  }
+  td {
+    text-align: left;
+  }
+  .FieldName {
+    border-radius: 4px;
+    padding: 4px;
+  }
+}
+
+/* Results */
+.Results {
+  position: relative;
+  .Freeze {
+    position: sticky;
+    top: 2px;
+  }
+  .Scroller,
+  th,
+  td {
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+  }
+  tr {
+    line-height: 120%;
+  }
+  th,
+  td {
+    padding: 5px;
+  }
+  td.number,
+  td.time {
+    text-align: right;
+  }
+  td.Empty {
+    border: none;
+  }
+  td.HoriBorder,
+  th.HoriBorder {
+    border-top: 2px solid black;
+    /*border-bottom: 1px solid black;*/
+  }
+  td.LeftBorder,
+  th.LeftBorder {
+    border-left: 2px solid black;
+  }
+  th {
+    text-align: center;
+  }
+}
+
+/* Logo */
+
+a.Logo {
+  position: absolute;
+  margin: 0 15px;
+  font-size: 40px;
+  font-family: "Anton", sans-serif;
+  cursor: pointer;
+  color: var(--dark-color);
+  > span {
+    display: inline-block;
+  }
+  > span.Version {
+    font-size: 20px;
+  }
+}
+
+/* Index Page */
+
+.HomePage {
+  margin: 0;
+  padding: 40px 30px 30px 30px;
+  display: flex;
+  align-items: flex-start;
+  > div {
+    flex: 1;
+    color: var(--dark-color);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    margin: 30px 2% 0 2%;
+    padding: 0 2% 2% 2%;
+  }
+}
+.SavedViewList div {
+  margin: 0 0 20px 0;
+}
+.SavedViewList div:last-child {
+  margin: 0;
+}
+
+/* Edit View */
+
+.EditSavedView {
+  margin: 0 auto;
+  padding: 50px 10px 30px 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  > div {
+    margin: 0 auto;
+  }
+  .SavedViewTitle {
+    font-size: 28px;
+  }
+  form {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 15px 15px 12px 15px;
+  }
+  .SavedViewName {
+    font-size: 20px;
+    width: 100%;
+  }
+  textarea {
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 10px;
+    min-width: 500px;
+    width: 100%;
+    min-height: 100px;
+  }
+  th {
+    padding: 2px;
+    font-weight: bold;
+    text-align: left;
+  }
+  td {
+    padding: 2px;
+  }
+  table {
+    padding: 5px 2px;
+  }
+}
+.SavedViewActions {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+td.SavedViewLimit {
+  padding: 0px;
+}
+
+input.RowLimit {
+  padding: 1px 3px;
+  width: 100px;
+}
+
+.CopyToClipboard {
+  font-size: 13px;
+}
+
+.Overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.Fade {
+  opacity: 0.3;
+}
+
+.Error {
+  color: var(--bad-color);
+}
+
+.Success {
+  color: var(--good-color);
+}
+
+.Tooltip,
+.ContextMenu {
+  position: fixed;
+  background: white;
+  border: 1px solid var(--border-color);
+  padding: 5px;
+  box-shadow: 3px 3px 10px var(--dark-color);
+  p {
+    padding: 5px;
+    margin: 0px;
+  }
+}
+
+.Tooltip {
+  margin: 10px;
+}
+
+.DataCell .Null {
+  color: var(--null-color);
+}
+
+.ContextCursor {
+  cursor: context-menu;
+}
