@@ -1,0 +1,27 @@
+/*
+   Copyright (c) 2013-2020, Dell Inc. or its subsidiaries.
+   All rights reserved.
+   See file LICENSE for licensing information.
+*/
+
+digraph hierarchy {
+	rankdir = BT
+	Frame [style=dashed]
+	Command [style=dashed]
+	Request [style=dashed]
+	Response [style=dashed]
+	CreateRequestContext [style=dashed]
+	DirectoryInformation [style=dashed]
+
+	Netbios -> Frame
+	Smb2 -> Frame
+	Command -> Frame
+	Request -> Command
+	Response -> Command
+	CreateRequest -> Request
+	QueryDirectoryResponse -> Response
+	CreateRequestContext -> Frame
+	LeaseRequest -> CreateRequestContext
+	DirectoryInformation -> Frame
+	FileDirectoryInformation -> DirectoryInformation
+}
