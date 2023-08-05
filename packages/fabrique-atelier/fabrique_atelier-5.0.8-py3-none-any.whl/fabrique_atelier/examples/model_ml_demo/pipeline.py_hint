@@ -1,0 +1,70 @@
+from fabrique_atelier.actors import Pipeline, Mapper
+
+##0. define parameters
+
+import json
+import numpy as np
+import lightgbm as lgb
+
+classes = ("about", "services", "contacts", "roaming", "tariffs",
+           "simcards", "balance", "internet", "messaging", "support")
+
+np.seterr(all='raise') #raise errors on division by zero for example
+
+class FeatureExtractor(Mapper):
+
+    ## 1. extract features from json message
+
+    def get_result(self, body):
+
+        # 1.1. parse message and get features
+        mes = json.loads(body['data'])        
+        features = np.array([mes['traffic'][cl] for cl in classes]).flatten()
+
+        # 1.2. create intermediate message
+        data = dict(ts=mes['ts'], uid=mes['uid'], number=mes['number'], features=features.tolist())
+        return {'data': data}
+
+class ModelExecutor(Mapper):
+
+    ## 2. make prediction
+
+    def __init__(self):
+        self.bst = lgb.Booster(model_file='./model.txt')  # init model
+
+    def get_batch_result(self, batch):    
+
+        # 2.1 get prediction
+        features_batch = np.array([body['data']['features'] for body in batch])
+        pred_batch = self.bst.predict(features_batch)
+
+        out_batch = []
+        for i, body in enumerate(batch):
+            in_data = body['data']
+            scores = pred_batch[i]
+
+            # 2.2 normalize scores, get class
+            try:
+                scores = scores / scores.sum() # try to normalize
+            except:
+                pass
+            reason_num = scores.argmax()
+            reason = classes[reason_num]
+
+            # 2.3 make and serialize message
+            scores_dict = {cls: round(scores[i], 2) for i, cls in enumerate(classes)}
+            out_data = dict(ts=in_data['ts'], uid=in_data['uid'], number=in_data['number'],
+                            classes=scores_dict, reason=reason)
+            out_body = dict(data=json.dumps(out_data).encode(), metrics={"reason_num": int(reason_num)})
+            out_batch.append(out_body)
+
+        return out_batch
+
+# topology
+pipeline = Pipeline(['extractor', 'model'])
+
+ids = pipeline.ids
+nodes = pipeline.nodes
+
+nodes.extractor = FeatureExtractor.to(ids.model)
+nodes.model = ModelExecutor.to(ids.end)

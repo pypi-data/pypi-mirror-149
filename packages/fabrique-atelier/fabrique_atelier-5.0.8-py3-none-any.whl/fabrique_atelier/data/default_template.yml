@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {name}
+  labels:
+    app: {name}
+spec:
+  replicas: {n_workers}
+  selector:
+    matchLabels:
+      app: {name}
+      pipeline_ver: {pipeline_ver}
+      pipeline_name: {pipeline_name}
+      actor_type: {actor_type}
+      nodename: {nodename}
+  template:
+    metadata:
+      labels:
+        app: {name}
+        pipeline_ver: {pipeline_ver}
+        pipeline_name: {pipeline_name}
+        actor_type: {actor_type}
+        nodename: {nodename}
+    spec:
+      containers:
+        - name: {name}
+          #command: ["/bin/sh"]
+          command: ["start_fabrique_pipeline.py"]
+          #args: ["-c", "while true; do echo hello; sleep 10; done"]
+          image: {image_name}
+          env:
+            - name: ACTOR_TYPE
+              value: "{actor_type}"
+            - name: TOPIC_IN
+              value: "{TOPIC_IN}"
+            - name: TOPIC_OUT
+              value: "{TOPIC_OUT}"
+            - name: TOPIC_OUT_DICT
+              value: "{TOPIC_OUT_DICT}"
+            - name: TOPIC_ERR
+              value: "{TOPIC_ERR}"
+            - name: TOPIC_METRICS
+              value: "{TOPIC_METRICS}"
+            - name: GROUP_ID
+              value: "{nodename}"
+            - name: NODENAME
+              value: "{nodename}"
+            - name: PIPELINE_NAME
+              value: "{pipeline_name}"
+            - name: PIPELINE_VERSION
+              value: "{pipeline_ver}"
+          envFrom:
+            - configMapRef:
+                name: fabrique-kafka-config
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
