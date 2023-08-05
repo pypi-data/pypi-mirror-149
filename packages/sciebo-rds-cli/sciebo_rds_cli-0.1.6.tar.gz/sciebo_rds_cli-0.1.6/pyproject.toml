@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "sciebo_rds_cli"
+version = "0.1.6"
+description = "Script for install sciebo RDS in sciebo"
+authors = ["Peter Heiss <peter.heiss@uni-muenster.de>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Sciebo-RDS/Sciebo-RDS-CLI"
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+paramiko = "^2.9.2"
+PyYAML = "^6.0"
+kubernetes = "^21.7.0"
+click = "^8.0.4"
+
+
+[tool.poetry.group.dev.dependencies]
+poetry2setup = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sciebords = "sciebo_rds_cli.main:cli"
