@@ -1,0 +1,504 @@
+openapi: 3.0.3
+info:
+  description: OpenDataDiscovery Adapter Contract
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: OpenDataDiscovery Adapter Contract
+  version: 0.0.1
+servers:
+- url: /
+paths:
+  /entities:
+    get:
+      description: Provides list of available entities
+      operationId: get_data_entities
+      parameters:
+      - description: Get data enitites updated after changed_since date
+        explode: true
+        in: query
+        name: changed_since
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataEntityList'
+          description: OK
+      tags:
+      - OpenDataDiscoveryAdapter
+      x-openapi-router-controller: odd_models.adapter.controllers.open_data_discovery_adapter_controller
+components:
+  schemas:
+    DataEntityList:
+      example:
+        data_source_oddrn: //aws/glue/123456789010/
+        items:
+        - null
+        - null
+      properties:
+        data_source_oddrn:
+          example: //aws/glue/123456789010/
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/DataEntity'
+          type: array
+      required:
+      - data_source_oddrn
+      type: object
+    DataEntity:
+      allOf:
+      - $ref: '#/components/schemas/BaseObject'
+      - $ref: '#/components/schemas/DataEntity_allOf'
+    BaseObject:
+      properties:
+        oddrn:
+          example: //aws/glue/{account_id}/{database}/{tablename}
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        owner:
+          example: //aws/iam/{account_id}/user/name
+          type: string
+        metadata:
+          items:
+            $ref: '#/components/schemas/MetadataExtension'
+          type: array
+      required:
+      - name
+      - oddrn
+      type: object
+    MetadataExtension:
+      properties:
+        schema_url:
+          description: The JSON Pointer (https://tools.ietf.org/html/rfc6901) URL
+            to the corresponding version of the schema definition for this extension
+          example: https://raw.githubusercontent.com/opendatadiscovery/opendatadiscovery-specification/main/specification/extensions/glue.json#/definitions/GlueDataSetExtension
+          format: uri
+          type: string
+        metadata:
+          additionalProperties: true
+          type: object
+      required:
+      - metadata
+      - schema_url
+      type: object
+    DataEntityType:
+      enum:
+      - TABLE
+      - VIEW
+      - FILE
+      - FEATURE_GROUP
+      - KAFKA_TOPIC
+      - JOB
+      - JOB_RUN
+      - ML_MODEL
+      - ML_MODEL_TRAINING
+      - DASHBOARD
+      - DAG
+      - ML_EXPERIMENT
+      - GRAPH_NODE
+      - UNKNOWN
+      - MICROSERVICE
+      - API_CALL
+      - DATABASE_SERVICE
+      - API_SERVICE
+      - KAFKA_SERVICE
+      type: string
+    DataSet:
+      properties:
+        parent_oddrn:
+          type: string
+        rows_number:
+          format: int64
+          type: integer
+        field_list:
+          items:
+            $ref: '#/components/schemas/DataSetField'
+          type: array
+      required:
+      - field_list
+      type: object
+    DataSetField:
+      allOf:
+      - $ref: '#/components/schemas/BaseObject'
+      - $ref: '#/components/schemas/DataSetField_allOf'
+    DataSetFieldType:
+      properties:
+        type:
+          enum:
+          - TYPE_STRING
+          - TYPE_NUMBER
+          - TYPE_INTEGER
+          - TYPE_BOOLEAN
+          - TYPE_CHAR
+          - TYPE_DATETIME
+          - TYPE_TIME
+          - TYPE_STRUCT
+          - TYPE_BINARY
+          - TYPE_LIST
+          - TYPE_MAP
+          - TYPE_UNION
+          - TYPE_DURATION
+          - TYPE_UNKNOWN
+          type: string
+        logical_type:
+          type: string
+        is_nullable:
+          type: boolean
+      required:
+      - is_nullable
+      - type
+      type: object
+    DataSetFieldStat:
+      properties:
+        complex_stats:
+          $ref: '#/components/schemas/ComplexFieldStat'
+        boolean_stats:
+          $ref: '#/components/schemas/BooleanFieldStat'
+        integer_stats:
+          $ref: '#/components/schemas/IntegerFieldStat'
+        number_stats:
+          $ref: '#/components/schemas/NumberFieldStat'
+        string_stats:
+          $ref: '#/components/schemas/StringFieldStat'
+        binary_stats:
+          $ref: '#/components/schemas/BinaryFieldStat'
+        datetime_stats:
+          $ref: '#/components/schemas/DateTimeFieldStat'
+      type: object
+    ComplexFieldStat:
+      properties:
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - nulls_count
+      - unique_count
+      type: object
+    BooleanFieldStat:
+      properties:
+        true_count:
+          format: int64
+          type: integer
+        false_count:
+          format: int64
+          type: integer
+        nulls_count:
+          format: int64
+          type: integer
+      required:
+      - false_count
+      - nulls_count
+      - true_count
+      type: object
+    IntegerFieldStat:
+      properties:
+        low_value:
+          format: int64
+          type: integer
+        high_value:
+          format: int64
+          type: integer
+        mean_value:
+          format: int64
+          type: integer
+        median_value:
+          format: int64
+          type: integer
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - high_value
+      - low_value
+      - nulls_count
+      - unique_count
+      type: object
+    NumberFieldStat:
+      properties:
+        low_value:
+          type: number
+        high_value:
+          type: number
+        mean_value:
+          type: number
+        median_value:
+          type: number
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - high_value
+      - low_value
+      - nulls_count
+      - unique_count
+      type: object
+    StringFieldStat:
+      properties:
+        max_length:
+          type: integer
+        avg_length:
+          type: number
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - avg_length
+      - max_length
+      - nulls_count
+      - unique_count
+      type: object
+    BinaryFieldStat:
+      properties:
+        max_length:
+          type: integer
+        avg_length:
+          type: number
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - avg_length
+      - max_length
+      - nulls_count
+      - unique_count
+      type: object
+    DateTimeFieldStat:
+      properties:
+        low_value:
+          format: date-time
+          type: string
+        high_value:
+          format: date-time
+          type: string
+        mean_value:
+          format: date-time
+          type: string
+        median_value:
+          format: date-time
+          type: string
+        nulls_count:
+          format: int64
+          type: integer
+        unique_count:
+          format: int64
+          type: integer
+      required:
+      - high_value
+      - low_value
+      - nulls_count
+      - unique_count
+      type: object
+    DataTransformer:
+      properties:
+        source_code_url:
+          type: string
+        sql:
+          type: string
+        inputs:
+          items:
+            type: string
+          type: array
+        outputs:
+          items:
+            type: string
+          type: array
+      required:
+      - inputs
+      - outputs
+      type: object
+    DataTransformerRun:
+      properties:
+        transformer_oddrn:
+          type: string
+        start_time:
+          format: date-time
+          type: string
+        end_time:
+          format: date-time
+          type: string
+        status_reason:
+          type: string
+        status:
+          $ref: '#/components/schemas/JobRunStatus'
+      required:
+      - start_time
+      - status
+      - transformer_oddrn
+      type: object
+    JobRunStatus:
+      enum:
+      - SUCCESS
+      - FAILED
+      - SKIPPED
+      - BROKEN
+      - ABORTED
+      - RUNNING
+      - UNKNOWN
+      type: string
+    DataQualityTest:
+      properties:
+        suite_name:
+          type: string
+        dataset_list:
+          items:
+            type: string
+          type: array
+        expectation:
+          $ref: '#/components/schemas/DataQualityTestExpectation'
+        suite_url:
+          type: string
+        linked_url_list:
+          items:
+            $ref: '#/components/schemas/LinkedUrl'
+          type: array
+      required:
+      - dataset_list
+      - expectation
+      - suite_name
+      type: object
+    DataQualityTestExpectation:
+      additionalProperties:
+        type: string
+      properties:
+        type:
+          example: expect_table_row_count_to_be_between
+          type: string
+      type: object
+    LinkedUrl:
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+      required:
+      - name
+      - url
+      type: object
+    DataQualityTestRun:
+      properties:
+        data_quality_test_oddrn:
+          type: string
+        start_time:
+          format: date-time
+          type: string
+        end_time:
+          format: date-time
+          type: string
+        status_reason:
+          type: string
+        status:
+          $ref: '#/components/schemas/QualityRunStatus'
+      required:
+      - data_quality_test_oddrn
+      - end_time
+      - start_time
+      - status
+      type: object
+    QualityRunStatus:
+      enum:
+      - SUCCESS
+      - FAILED
+      - SKIPPED
+      - BROKEN
+      - ABORTED
+      - RUNNING
+      - UNKNOWN
+      type: string
+    DataInput:
+      properties:
+        outputs:
+          items:
+            type: string
+          type: array
+      type: object
+    DataConsumer:
+      properties:
+        inputs:
+          items:
+            type: string
+          type: array
+      type: object
+    DataEntityGroup:
+      properties:
+        entities_list:
+          items:
+            type: string
+          type: array
+        group_oddrn:
+          type: string
+      required:
+      - entities_list
+      type: object
+    DataEntity_allOf:
+      properties:
+        updated_at:
+          format: date-time
+          type: string
+        created_at:
+          format: date-time
+          type: string
+        type:
+          $ref: '#/components/schemas/DataEntityType'
+        dataset:
+          $ref: '#/components/schemas/DataSet'
+        data_transformer:
+          $ref: '#/components/schemas/DataTransformer'
+        data_transformer_run:
+          $ref: '#/components/schemas/DataTransformerRun'
+        data_quality_test:
+          $ref: '#/components/schemas/DataQualityTest'
+        data_quality_test_run:
+          $ref: '#/components/schemas/DataQualityTestRun'
+        data_input:
+          $ref: '#/components/schemas/DataInput'
+        data_consumer:
+          $ref: '#/components/schemas/DataConsumer'
+        data_entity_group:
+          $ref: '#/components/schemas/DataEntityGroup'
+      required:
+      - type
+      type: object
+    DataSetField_allOf:
+      properties:
+        parent_field_oddrn:
+          type: string
+        type:
+          $ref: '#/components/schemas/DataSetFieldType'
+        is_key:
+          type: boolean
+        is_value:
+          type: boolean
+        default_value:
+          type: string
+        stats:
+          $ref: '#/components/schemas/DataSetFieldStat'
+      required:
+      - type
+      type: object
