@@ -1,0 +1,31 @@
+{% set name = "PhyloPyPruner" %}
+{% set version = "1.2.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+ git_url: https://github.com/fethalen/phylopypruner.git
+
+build:
+ number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+
+  run:
+    - python
+
+test:
+  imports:
+    -
+
+about:
+  home: https://github.com/fethalen/phylopypruner
+  doc_url: https://github.com/fethalen/phylopypruner#readme
+  license: GPL3
+  license_file: LICENSE.txt
+  summary: "Tree-based orthology inference with functionality for reducing contamination"

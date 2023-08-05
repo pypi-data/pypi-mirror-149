@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+
+"Module for running PhyloPyPruner by just invoking this script."
+
+import os
+import sys
+
+ARGUMENTS = []
+for argument in sys.argv[1:]:
+    if os.path.exists(argument):
+        argument = os.path.abspath(argument)
+    ARGUMENTS.append(argument)
+
+SCRIPT_PATH = os.path.abspath((os.path.dirname(sys.argv[0])))
+PPP_EXECUTABLE = os.path.dirname(SCRIPT_PATH) + "/phylopypruner/__main__.py"
+os.system("{} {} {}".format(
+    sys.executable, PPP_EXECUTABLE, " ".join(ARGUMENTS)))
