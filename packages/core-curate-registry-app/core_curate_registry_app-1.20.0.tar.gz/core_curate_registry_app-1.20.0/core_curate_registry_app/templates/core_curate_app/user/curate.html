@@ -1,0 +1,32 @@
+{% load static %}
+
+<div class="title-page">
+{% if data.custom_resource %}
+<i class="fas {{data.custom_resource.icon}}" style="color: {{data.custom_resource.icon_color}};" aria-hidden="true"></i>
+    Add a new {{data.custom_resource.title}}
+{% else %}
+Add a new Resource
+{% endif %}
+</div>
+
+<br/>
+<div id ="role_title" style="display: none;">
+    {{data.custom_resource.title}}
+</div>
+<div class="alert alert-danger" id="banner_errors" style="display: none;">
+        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+     	<h4><i class="fas fa-exclamation-circle"></i> Error</h4>
+        <div id="form_start_errors">
+</div>
+</div>
+
+Please select one of the following options to Add your Resource. You can create a new resource, or upload an XML file.
+
+<br/><br/>
+<div id="form_start_content">
+</div>
+<div id="template_id" class="hidden">{{ data.template_id }}</div>
+<br/><br/>
+
+<button id="btn-display-data" class="btn btn-primary"><i class="fas fa-play"></i> Start</button>
+<div id="role" class="hidden">{{ data.role }}</div>
