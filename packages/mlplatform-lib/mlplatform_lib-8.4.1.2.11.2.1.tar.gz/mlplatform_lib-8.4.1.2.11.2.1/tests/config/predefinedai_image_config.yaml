@@ -1,0 +1,148 @@
+#################################
+# sentiment anlysis test config #
+#################################
+train:
+  model: "Sentiment Analysis"
+  template:
+    image: "sentiment_analysis:hd8.3.6_20210625_v1"
+    imagePullPolicy: "Always"
+    cpu: 4
+    memory: 4
+    gpu: 0
+    workingDir: "/root/sentiment_analysis"
+    # train은 항상 아래의 커맨드로 동작합니다. 변경할 수 없습니다.
+    # command: ["python", "train.py"]
+
+    # args 및 envs에 입력이 필요한 옵션들을 반드시 추가해야 합니다.
+    # key에 해당하는 value들은 default 값입니다.
+    args:
+      - type: int
+        name: seed
+        min: 5
+        max: 10
+        default: 8
+        window: 1
+        description: "seed"
+        required: true
+      - type: int
+        name: vocab-size
+        min: 5000
+        max: 50000
+        default: 25000
+        window: 1
+        description: "vocab-size"
+        required: true
+      - type: int
+        name: embedding-dim
+        min: 50
+        max: 150
+        default: 100
+        window: 1
+        description: "embedding-dim"
+        required: true
+      - type: int
+        name: hidden-dim
+        min: 50
+        max: 200
+        default: 120
+        window: 1
+        description: "hidden-dim"
+        required: true
+      - type: int
+        name: output-dim
+        min: 1
+        max: 1
+        default: 1
+        window: 1
+        description: "output-dim"
+        required: true
+      - type: float
+        name: learning-rate
+        min: 1e-6
+        max: 1e-2
+        default: 1e-3
+        window: 1e-6
+        description: "learning-rate"
+        required: true
+      - type: int
+        name: batch-size
+        min: 32
+        max: 96
+        default: 64
+        window: 1
+        description: "batch-size"
+        required: true
+      - type: int
+        name: epoch
+        min: 1
+        max: 100
+        default: 3
+        window: 1
+        description: "epoch"
+        required: true
+      - type: column
+        name: id-column
+        required: true
+        description: "id-column"
+      - type: column
+        name: review-column
+        required: true
+        description: "review-column"
+      - type: column
+        name: sentiment-column
+        required: true
+        description: "sentiment-column"
+    envs:
+
+retrain:
+  # 재학습은 선택한 Workflow의 옵션들을 그대로 제공하게 되어 있습니다.
+  # 아래에 해당하는 옵션들만 수정할 수 있습니다.
+  template:
+    cpu: 4
+    memory: 4
+    gpu: 0
+    envs:
+
+inference:
+  # 추론은 선택한 Workflow의 옵션들을 그대로 제공하게 되어 있습니다.
+  # 아래에 해당하는 옵션들만 수정할 수 있습니다.
+  template:
+    cpu: 2
+    memory: 2
+    gpu: 0
+    args:
+      - type: column
+        name: id-column
+        required: true
+        description: "id-column"
+      - type: column
+        name: review-column
+        required: true
+        description: "review-column"
+    envs:
+
+serving:
+  # 서빙은 선택한 Workflow의 옵션들을 그대로 제공하게 되어 있습니다.
+  # 아래에 해당하는 옵션들만 수정할 수 있습니다.
+  # request 및 limit에 대한 자원 설정을 수정하지 않을 시, request limit 둘다 workflow에 할당되어있는 자원 값을 사용합니다.
+  template:
+    cpu: 2
+    memory: 2
+    gpu: 0
+    minReplicas: 1
+    maxReplicas: 1
+    args:
+      - type: str
+        name: "name"
+        description: "Serving model name"
+        default: "serving_default_name"
+        required: true
+      - type: column
+        name: id-column
+        required: true
+        description: "id-column"
+      - type: column
+        name: review-column
+        required: true
+        description: "review-column"
+    envs:
