@@ -1,0 +1,55 @@
+Metadata-Version: 2.1
+Name: trytond-account-be
+Version: 6.4.0
+Summary: Tryton module with Belgian chart of accounts
+Home-page: http://www.tryton.org/
+Download-URL: http://downloads.tryton.org/6.4/
+Author: Tryton
+Author-email: bugs@tryton.org
+License: GPL-3
+Project-URL: Bug Tracker, https://bugs.tryton.org/
+Project-URL: Documentation, https://docs.tryton.org/
+Project-URL: Forum, https://www.tryton.org/forum
+Project-URL: Source Code, https://hg.tryton.org/modules/account_be
+Keywords: tryton account chart belgian
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Framework :: Tryton
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: Dutch
+Classifier: Natural Language :: French
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Office/Business
+Classifier: Topic :: Office/Business :: Financial :: Accounting
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: trytond-account (<6.5,>=6.4)
+Requires-Dist: trytond-account-eu (<6.5,>=6.4)
+Requires-Dist: trytond (<6.5,>=6.4)
+
+Belgian Account Module
+######################
+
+The Belgian account module defines the standard chart of account.
+
+The module generates french and dutch chart of accounts / chart of taxes. The
+french / dutch XML files are generated from the same original XML file thanks
+to the localize.xsl XSLT script. The script will produce on the standard output
+the desired XML file. The XSLT script can be launched with the following
+command::
+
+   xsltproc --stringparam lang <lang> localize.xsl <xml file>
+
+where ``lang`` is either ``fr`` or ``nl``.
+
+
