@@ -1,0 +1,88 @@
+from canvas_workflow_kit import events
+from canvas_workflow_kit.protocol import (
+    ClinicalQualityMeasure,
+    ProtocolResult,
+    STATUS_DUE,
+    STATUS_SATISFIED
+)
+from canvas_workflow_kit.constants import CHANGE_TYPE
+from canvas_workflow_kit.recommendation import Recommendation
+
+
+class {class_name}(ClinicalQualityMeasure):
+    """
+    {title}
+    """
+
+    class Meta:
+
+        title = '{title}'
+
+        version = '{year}-v1'
+
+        description = '{description}'
+
+        information = '{information_link}'
+
+        identifiers = ['CMS{class_name}']
+
+        types = {types}
+
+        responds_to_event_types = [
+            events.HEALTH_MAINTENANCE,
+        ]
+
+        compute_on_change_types = [
+            CHANGE_TYPE.CONDITION
+        ]
+
+        authors = [
+            {authors}
+        ]
+
+        references = [
+            {references}
+        ]
+
+        funding_source = '{funding_source}'
+
+
+    def in_denominator(self):
+        """
+        Patients in the initial population.
+
+        """
+        {denominator}
+
+    def in_numerator(self):
+        """
+        Patients that have already been notified.
+        """
+        {numerator}
+
+
+    def compute_results(self):
+        """
+        """
+        result = ProtocolResult()
+        if self.in_denominator():
+            if self.in_numerator():
+                result.status = STATUS_SATISFIED
+            else:
+                result.due_in = -1
+                result.status = STATUS_DUE
+                result.add_narrative(
+                    f'{{self.patient.first_name}} has at least two eGFR measurements < 60 ml/min '
+                    f'over the last two years suggesting renal disease. '
+                    f'There is no associated condition on the Conditions List.')
+                title = (f'Consider updating the Conditions List to include kidney '
+                         f'related problems as clinically appropriate')
+                result.add_recommendation(
+                    Recommendation(
+                        key='HCC002v2_RECOMMEND_DIAGNOSE',
+                        rank=1,
+                        button='Diagnose',
+                        title=title,
+                        narrative=result.narrative,
+                        command={{'type': 'diagnose'}}))
+        return result
