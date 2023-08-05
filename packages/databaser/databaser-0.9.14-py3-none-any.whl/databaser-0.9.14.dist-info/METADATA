@@ -1,0 +1,475 @@
+Metadata-Version: 2.1
+Name: databaser
+Version: 0.9.14
+Summary: A small package to generate SQL for postgreSQL
+Home-page: https://github.com/alymohamedhassan/databaser
+Author: Aly Mohamed Hassan
+Author-email: alyhassan10@hotmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/alymohamedhassan/databaser/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# Databaser
+
+## Introduction
+
+It is query builder that can be connected to the database (Currently, Postgresql), 
+and gives you the ability to insert and select using python dictionary making development more flexible and easier than other production ORMs.
+
+### Databases Supported
+
+- Postgresql
+
+## Design Principles
+
+- Having a small learning curve
+- Manage databases easily, and quickly prototype/develop
+- Focus on readability
+- Avoiding SQL typos and mistakes
+
+
+# Documentation 
+
+### Project Components
+
+1) Query Builder:
+   This component is responsible for building SQL Query using simple python object
+
+2) Table Structure:
+   This is a query builder for table structure
+
+3) Data Model:
+    Data models represents a table in the postgres database, holds:
+   1) Table Name
+   2) Schema Name
+   3) Fields
+
+4) PG Engine
+    A simple query/statement executor built-in for data models
+
+### Query Builder 
+The query class contains the crud operations as internal methods
+
+1) Find
+2) Insert
+3) Update
+4) Delete
+
+The method used to return the raw SQL statement is .get_sql() inside the Query Class 
+
+### A) Find
+
+This is used for select statements in PG SQL
+
+#### Basic SELECT
+
+A simple SELECT query will mostly look like this
+
+    SELECT * FROM tableA
+
+Let's convert it to the python Code
+
+    Query("pgsql").find("tableA").get_sql()
+
+How about calling fields?
+Hint: table names are added by default next to a field name automatically to avoid ambiguous fields in joins
+
+    SELECT "tableA"."id", "tableA"."name" FROM tableA
+
+Let's convert it to the python Code
+
+    Query("pgsql").find("tableA", ["id", "name"]).get_sql()
+
+Want to limit the results to 10 only? easy
+
+    SELECT "tableA"."id", "tableA"."name" FROM tableA LIMIT 10
+
+Let's convert it to the python Code
+
+    Query("pgsql").find("tableA", ["id", "name"], limit=10).get_sql()
+
+Offset? get results between certain ranges?
+
+    SELECT "tableA"."id", "tableA"."name" FROM tableA LIMIT 10 OFFSET 10
+
+Let's convert it to the python Code
+
+    Query("pgsql").find("tableA", ["id", "name"], limit=10, skip=10).get_sql()
+
+##### Where Conditions
+
+Let's say we want to limit our query to name = "John"
+
+    SELECT * FROM "tableA" WHERE "tableA"."name" = 'John' LIMIT 10;
+
+Python:
+
+Type the field name inside an object and inside that a new dictionary that holds the condition name you need like below
+
+    condition = {
+        "name": {
+            "$value": "John"
+        },
+    }
+
+    Query("pgsql").find("tableA", condition=condition)
+
+Reference
+
+Before continuing the documentation, here are some notations that are used below.
+
+These are keywords to use on the conditions, inspired from mongodb querying
+
+    1- $value: This requires a value and means literal equal (=)
+    2- $like: This represents the LIKE in SQL and the value is expected to contain the wildcards (%)
+    3- $in: Corresponds to Not IN, in SQL => Expecting a string separated with a comma ("a,b,c")
+    4- $nin: Corresponds to Not IN, in SQL => Expect the same as $in
+    5- $group: grouping statments like, ((X = 1 AND Y = 1) OR Z = 2)
+        a- Requires $type => ( OR, AND )
+            eg:- WHEN $type = OR, (A = 1 OR B = 1)
+            eg:- WHEN $type = AND, (A = 1 AND B = 1)
+
+Continuing the tutorial...
+
+The rest of the tutorial of the conditions will only contain the condition dictionary
+
+    WHERE "name" = 'John';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$value": "John"
+        }
+    }
+
+Getting names that starts with John
+
+    WHERE "name" LIKE 'John%';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$like": "John%"
+        }
+    }
+
+Getting records that has one of those names John, Mike, Zack
+
+    WHERE "name" IN ('John', 'Mike', 'Zack');
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$in": "John,Mike,Zack"
+        }
+    }
+
+Getting records that not in one of those names John, Mike
+
+    WHERE "name" IN ('John', 'Mike');
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$nin": "John,Mike"
+        }
+    }
+
+Grouping conditions 
+
+    WHERE ("name" = 'John' OR "name" = 'Mike') AND "name" = 'Zack';
+
+Corresponds to ...
+
+    condition = {
+        "name": {
+            "$value": "Zack"
+        },
+        "$group": {
+            "$type": "OR",
+            "name": {
+                "$value": "John",
+            },
+            "name": {
+                "$value": "Mike",
+            },
+        }
+    }
+
+And now run this to get the result
+
+    Query("pgsql").find("tableA", condition=condition).get_sql()
+
+This allows for a lot of flexibility when writing code
+
+What about joins? Well, the same idea goes here too.
+
+    SELECT * FROM "tableA" INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY";
+
+Create a dictionary and follow the instructions below
+
+    joins = {
+        "tableB": {
+            "$table": "$this",
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+            }
+        },
+    }
+
+To follow with the join instructions, there are some notation for it
+
+    1) $table => References the table joined
+    2) $schema_name => Schema Name for all tables joined, default "public"
+    3) $this => Used with the notation above to indicate that the joining table is the currently selected table
+
+    4) $on => Corresponds to the (ON) keyword in SQL used in joins
+        i) $type => type of join, Equijoin, non-equijoin
+            a) $eq => Equal (=)
+            a) $gt => Greater Than (>)
+            a) $gte => Greater Than or Equal (>=)
+            a) $lt => Less Than (<)
+            a) $lte => Less Than or Equal (<=)
+            a) $ne => Not Equal (<>)
+
+        ii) $tableA => References the table on the left when joining, the value is the field joining on
+        iii) $tableB => References the table on the right when joining, the value is the field joining on
+
+Again, the rest of the joining documentation will continue with the join dictionary only
+
+    INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY";
+
+Corresponds to ...
+
+    joins = {
+        "tableB": {
+            "$table": "$this",  # This table is the table joined 
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",  # eq, gt, gte, lt, lte, ne
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+            }
+        },
+    }
+
+How about adding another condition in the join? easy
+
+    INNER JOIN "tableB" ON "tableA"."columnX" = "tableB"."columnY" AND "tableA"."columnX" = "tableB"."columnY";
+
+Corresponds to ...
+
+    joins = {
+        "tableB": {
+            "$table": "$this",
+            "$type": "innerJoin",  # innerJoin, leftJoin, rightJoin
+            "$on": {
+                "$type": "$eq",
+                "$tableA": "columnX",
+                "$tableB": "columnY",
+                "$and": {  # $and, $or
+                    "$table": "$this",
+                    "$on": {
+                        "$type": "$eq",
+                        "$tableA": "columnX",
+                        "$tableB": "columnY",
+                    }
+                }
+            }
+        },
+    }
+
+#### Insert
+
+Inserting statements is much easier
+
+    INSERT INTO "table_name" ("a", "b", "c") VALUES ('1', '2', '3');
+
+Create a dictionary called data and call the following
+
+    data = {
+        "a": 1,
+        "b": 2,
+        "c": 3,
+    }
+    sql = Query("pgsql").insert("table_name", data=data, value_quote=True).get_sql()
+
+Realize the value_quote=True parameter? this is used to add single quotes for string values
+
+Insert from a select statement?
+
+    INSERT INTO table_name (a,b,c) SELECT * FROM tableB;
+
+Create your select query first
+
+    select = Finder("tableB", group_by=["name", "id"])
+
+Then ...
+
+    InsertFromSelect("table_name", ['a','b','c',], select).get_sql()
+
+#### Update
+
+The update class supports both, the data and the conditions dictionaries as parameters 
+
+To generate this ...
+
+    UPDATE "table_name" SET "name" = 'John' WHERE "name" = 'Mike';
+
+Add this ...
+
+    conditions = {
+        "name": {
+            "$value": "Mike"
+        }
+    }
+    data = {
+        "name": "John"
+    }
+    sql = Query("pgsql").update("table_name", data=data, conditions=conditions).get_sql()
+
+
+#### Delete
+
+To delete a record
+
+    DELETE FROM "table_name" WHERE "name" = 'Mike';
+
+Add ...
+
+    conditions = {
+        "name": {
+            "$value": "Mike"
+        }
+    }
+    sql = Query("pgsql").delete("table_name", conditions=conditions).get_sql()
+
+
+### Table Stucture
+
+Create a table structure with the following 
+
+    CREATE TABLE "XYZ" (
+        id serial not null primary key,
+        name character varying not null
+    );
+
+Python Code:
+
+    fields = [
+        TableField(**{
+            "name": "id",
+            "data_type": "serial",
+            "not_null": True,
+            "primary_key": True,
+        }),
+        TableField(**{
+            "name": "name",
+            "data_type": "character varying",
+            "not_null": True,
+        }),
+    ]
+    sql = TableStructure("pgsql").create_table("table_name", fields).get_sql()
+
+To add a column
+
+    ALTER TABLE "tablename" ADD COLUMN "field_name" character varying not null;
+
+Python Code ...
+
+    TableStructure("pgsql").add_column("tablename", "field_name", "character varying", not_null=True).get_sql()
+
+
+
+### Data Model
+
+A data model represents a table in the database, there are two types of models
+
+1) Data Model:
+   - Represents a simple table in the database
+
+2) Many 2 Many Data Model (Under Development)
+   - represents a many-2-many table in the database, supporting automatic joins on data selection.
+
+For a data model to work, create a class with the name of the table, inherit the class  (DataModel), and assign the internal properties like the following
+
+There are 3 main properties
+
+    table_name: The Name of the table
+    schema_name: by default set to public
+    fields: a list that holds the fields, 
+    -----
+    Hint: A field is a TableField class used from the table structure in the query builder, go back to the table structure section
+        to find the remaining of the TableField properties, like foreign key, and context_data_type
+
+Full code ...
+
+    class User(DataModel):
+        table_name = 'user_user'
+
+        fields = [
+            TableField(name="user_id", data_type="serial", primary_key=True, not_null=True,),
+        ]
+
+The sole purpose of data models is to make all CRUD operations easier, so it supports all the above query building operations internally.
+
+Let's select 5 users with name that starts with mike.
+
+    conditions = {
+        "name": {
+            "$like": "mike%"
+        }
+    }
+
+    User().get(
+        condition=conditions,
+        limit=5,
+    ).show()
+
+Date models support these methods internally,
+
+    - get
+    - get_one
+    - count
+    - insert
+    - insert_many (Under Development)
+    - update
+    - delete
+
+A follow-up documentation will talk more about the details ...
+
+
+### Database Engine
+
+    conn_string = {'host': 'localhost', 'database': 'db_name', 'user': 'postgres', 'password': 'mysecretpassword'}
+
+
+    DatabaseEngine(**conn_string).execute("SELECT * FROM X")
+
+The DatabaseEngine Class responds with an ExecutionResult data type
+
+    class ExecutionResult(BaseModel):
+        has_values: bool
+        sql: str
+        result: Optional[Union[List[Dict], Dict]]
+
+The result parameter will return a list by default, 
+
+But if the execute method has return_many=False, logically used when the limit is = 1, but not enforced
+
+    DatabaseEngine(**conn_string).execute("SELECT * FROM X", return_many=False)
+
+
+
