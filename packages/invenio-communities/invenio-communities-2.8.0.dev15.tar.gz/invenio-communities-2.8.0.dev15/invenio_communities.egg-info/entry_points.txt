@@ -1,0 +1,47 @@
+[flask.commands]
+communities = invenio_communities.cli:communities
+
+[invenio_assets.webpack]
+invenio_communities = invenio_communities.webpack:communities
+
+[invenio_base.api_apps]
+invenio_communities = invenio_communities:InvenioCommunities
+
+[invenio_base.api_blueprints]
+invenio_communities_api = invenio_communities.views:create_communities_api_blueprint
+invenio_communities_ext = invenio_communities.views:blueprint
+invenio_communities_members_api = invenio_communities.views:create_members_api_bp_from_app
+
+[invenio_base.apps]
+invenio_communities = invenio_communities:InvenioCommunities
+
+[invenio_base.blueprints]
+invenio_communities = invenio_communities.views:create_ui_blueprint
+invenio_communities_ext = invenio_communities.views:blueprint
+
+[invenio_celery.tasks]
+invenio_communities = invenio_communities.fixtures.tasks
+
+[invenio_db.alembic]
+invenio_communities = invenio_communities:alembic
+
+[invenio_db.models]
+invenio_communities = invenio_communities.communities.records.models
+invenio_communities_members = invenio_communities.members.records.models
+
+[invenio_i18n.translations]
+messages = invenio_communities
+
+[invenio_jsonschemas.schemas]
+communities = invenio_communities.communities.records.jsonschemas
+
+[invenio_requests.entity_resolvers]
+communities = invenio_communities.communities.resolver:CommunityResolver
+
+[invenio_requests.types]
+community_invitation = invenio_communities.members.services.request:CommunityInvitation
+
+[invenio_search.mappings]
+communities = invenio_communities.communities.records.mappings
+communitymembers = invenio_communities.members.records.mappings
+
