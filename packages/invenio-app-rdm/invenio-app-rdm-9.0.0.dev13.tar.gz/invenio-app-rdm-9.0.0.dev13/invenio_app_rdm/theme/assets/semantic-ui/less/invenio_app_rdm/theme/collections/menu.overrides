@@ -1,0 +1,294 @@
+/***********************************************
+         Invenio App RDM Menu Overrides
+***********************************************/
+
+.ui.menu.compact {
+  .item.active {
+    background-color: @primaryColor;
+    color: @white;
+    border-color: @primaryDarkenColor;
+
+    &:hover {
+      background-color: @primaryColorHover;
+    }
+  }
+}
+
+.ui.menu.secondary.pointing {
+  .item.active {
+    border-color: @secondaryColor;
+  }
+}
+
+#invenio-nav.ui.menu {
+  height: @relative75px;
+  position: relative;
+
+  .ui.menu {
+    background-color: transparent;
+    box-shadow: none;
+
+    .ui.dropdown.rdm-plus-menu {
+      padding: 1rem;
+    }
+
+    .item {
+      padding: 0;
+
+      a:not(.ui.button){
+        padding: 2rem 1rem;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: @white;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .item {
+
+    &.logo {
+      padding-right: 1rem;
+    }
+
+    &.search-bar {
+      padding-right: 1rem;
+    }
+
+    &:first-of-type {
+      padding-left: 0;
+    }
+
+    &:last-of-type {
+      padding-left: 0;
+    }
+
+    &.right.menu {
+      padding-right: 0;
+      display: flex;
+    }
+  }
+
+  .rdm-plus-menu {
+    padding-right: 15px;
+  }
+
+  #user-profile-dropdown {
+    width: 13em;
+
+    #user-profile-dropdown-btn {
+      width: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #user-profile-menu.ui.menu {
+      width: inherit;
+      background-color: rgb(255,255,255);
+    }
+  }
+}
+
+#header-search-bar {
+  width: 100%;
+
+  .ui.input {
+    width: 90% !important;
+
+    & > input {
+      width: 90% !important;
+    }
+
+  }
+}
+
+@media all and (max-width: @largestTabletScreen) {
+  #invenio-nav.ui.menu {
+
+    &.active .ui.menu {
+      flex-direction: column;
+      position: fixed;
+      right: 0;
+      max-width: 25rem;
+      box-shadow: 0px 0px 7px rgba(0,0,0,0.2);
+      background-color: rgb(255,255,255);
+      height: 100vh;
+      z-index: 3;
+      padding: 5rem 1.5rem 1.5rem 1.5rem;
+      overflow-y: scroll;
+
+      .item {
+        width: 100%;
+        padding: .5rem 0;
+
+        &.search-bar {
+          margin-bottom: 1.5rem;
+        }
+
+        a:not(.ui.button) {
+          color: @textColor;
+          padding: 0;
+        }
+
+        &.search-bar {
+          width: 100%;
+
+          .ui.input {
+            width: 99% !important;
+          }
+        }
+
+        .icon.inverted {
+          color: @textColor;
+        }
+
+        &.right.menu {
+          padding: 0;
+          margin-left: unset !important;
+          flex-direction: column;
+          align-items: flex-start;
+
+          .sub-menu {
+            width: 100%;
+            margin: 2rem 0 0 0;
+
+            .ui.heading {
+              color: @textColor;
+            }
+
+            .item {
+              padding: .5rem 1rem;
+            }
+          }
+
+          form {
+            margin-top: 1rem;
+          }
+        }
+      }
+    }
+
+
+    #rdm-burger-toggle {
+      font-size: 20px;
+      z-index: 4;
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &.active #rdm-burger-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 0;
+    }
+
+    &:not(.active) {
+      .mobile-hidden {
+        display: none;
+      }
+    }
+  }
+}
+
+#additional-details {
+  .ui.top.attached.menu {
+
+    @media screen and (max-width: @largestTabletScreen) {
+      flex-wrap: wrap;
+    }
+
+    &:not(.tabular) {
+      @media screen and (max-width: @largestTabletScreen) {
+        border-bottom: 0;
+      }
+    }
+
+    .item {
+      flex: 1 0 auto;
+
+      @media screen and (max-width: @largestTabletScreen) {
+        border-bottom: 1px solid #D4D4D5;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@media all and (min-width: @computerBreakpoint) {
+  #invenio-nav {
+    #rdm-burger-toggle {
+      display: none;
+    }
+  }
+}
+
+/* menu icon (Hamburger icon) */
+.rdm-menu-icon {
+  cursor: pointer;
+  display: inline-block;
+  float: right;
+  padding: 2rem 1.5rem;
+  position: relative;
+  user-select: none;
+}
+
+.rdm-menu-icon .navicon {
+  background: #333;
+  display: block;
+  height: 2px;
+  position: relative;
+  transition: background 0.2s ease-out;
+  width: 18px;
+}
+
+.rdm-menu-icon .navicon:before,
+.rdm-menu-icon .navicon:after {
+  background: #333;
+  content: "";
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all 0.2s ease-out;
+  width: 100%;
+}
+
+.rdm-menu-icon .navicon:before {
+  top: 5px;
+}
+
+.rdm-menu-icon .navicon:after {
+  top: -5px;
+}
+
+/* menu btn */
+
+.rdm-menu-btn {
+  display: none;
+}
+
+.rdm-menu-btn:checked ~ .menu {
+  max-height: 240px;
+}
+
+.rdm-menu-btn:checked ~ .rdm-menu-icon .navicon {
+  background: transparent;
+}
+
+.rdm-menu-btn:checked ~ .rdm-menu-icon .navicon:before {
+  transform: rotate(-45deg);
+}
+
+.rdm-menu-btn:checked ~ .rdm-menu-icon .navicon:after {
+  transform: rotate(45deg);
+}
+
+.rdm-menu-btn:checked ~ .rdm-menu-icon:not(.steps) .navicon:before,
+.rdm-menu-btn:checked ~ .rdm-menu-icon:not(.steps) .navicon:after {
+  top: 0;
+}
+
