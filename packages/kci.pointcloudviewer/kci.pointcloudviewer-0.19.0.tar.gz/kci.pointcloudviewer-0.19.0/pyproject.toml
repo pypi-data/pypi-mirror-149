@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "kci.pointcloudviewer"
+version = "0.19.0"
+description = "Webブラウザ上に点群を描画する python ライブラリ"
+authors = ["Kurusugawa Computer"]
+license = "BSD"
+keywords = ["point-cloud", "pcd"]
+repository = "https://github.com/kurusugawa-computer/pointcloud-viewer"
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: BSD License",
+	"Programming Language :: Python",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Topic :: Utilities",
+	"Operating System :: OS Independent",
+]
+include = [
+    "kci/pointcloudviewer/public/*",
+    "kci/pointcloudviewer/_internal/protobuf/*",
+]
+packages = [
+	{ include = "kci" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.9"
+protobuf = "^3.15.6"
+websockets = "^8.1"
+numpy = "^1.20.2"
+Pillow = "^9.0.1"
+python-lzf = "^0.2.4"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.5"
+Sphinx = "^4.0.0"
+flake8 = "^4.0.1"
+pylint = "^2.12.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
