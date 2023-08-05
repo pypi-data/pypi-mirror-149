@@ -1,0 +1,145 @@
+# Input parameter file for VoigtFit
+# Please fill in the blanks (__), in some cases I have left clues for the type of input.
+# If in doubt, see the manual describing the input parameter language.
+
+
+# Define metadata for the dataset
+name :  __
+z_sys:  __
+norm_method:  linear   # or spline
+interactive_view : wave   # or velocity
+mask_view : wave   # or velocity
+norm_view : wave   # or velocity
+
+
+# Load spectra:
+#     filename     spectral resolution
+data  ____         ___
+# spectral resolution can either be a float (resolution in km/s)
+# or a filename containing the line-spread function as a function of wavelength.
+# add the keyword 'norm' at the end of the line if the spectrum is normalized
+# add the keyword 'air' at the end of the line if the wavelength are air wavelengths
+
+
+# Include optional commands to the fit, e.g., rebin=2, method='nelder', sampling=5
+# or ftol=0.001, factor=10. etc. Check the documentation for more details.
+#fit-options rebin=2 sampling=5
+
+
+# Continuum Fitting using Chebyshev Polynomials:
+# Use negative order to turn off the Chebyshev fitting, this is the default behaviour
+C_order = -1
+
+
+# Uncomment to enable interactive masking for all lines:
+#mask
+# Or enable interactive masking for specific lines only:
+#mask __line__
+
+# If you want to regenerate the mask of a specific line or lines
+# you can include the option *force* in the statement, ex:
+#mask __line1__  force
+#mask __line2__
+# This will only reset the mask of line1 everytime the dataset is fitted.
+# The mask of line2 will be loaded from the saved dataset.
+
+
+# Define the lines that should be included in the fit:
+# The default velocity span is 500 km/s but can specified
+# for each individual lines
+lines __line__  velspan=300
+lines __line__
+
+
+
+# --- Components:
+
+# Define components in redshift space:
+#          ion   z    b   logN
+#component ___  ___  ___  ____
+
+
+# Define components using relative velocities
+# by including the 'velocity' keyword at the end:
+#           ion  rel_vel   b    logN   keyword
+#component  FeII  -50.     20.  14.3   velocity
+
+
+
+# Define components using the interactive mode:
+# The components will be used for all lines from the same ion
+interactive  __
+# But the interactive mode can be run multiple times for different
+# lines of the same ion to append new components.
+# Interactive components will overwrite the components defined above
+# through the normal 'component' statement.
+
+
+# Copy components to other ions.
+# The parameter language is flexible, so both statements are acceptable:
+copy components to __ion__ from __ion__
+copy components from __ion__ to __ion__
+# -- Note: Components defined above using the component statement are kept
+#          and included together with the components copied from another ion!
+
+# By default when copying components, the column densities are scaled
+# using Solar relative abundances. Otherwise use the 'scale' statement:
+copy components from __ion__ to __ion__ and scale logN=__ of component __
+
+# In order to remove components from a copied structure do the following:
+#delete component 3 from __ion__
+#delete component 2 from __ion__
+# -- Note:  Component numbers start from 0.
+
+# --- Define Fitting Variables:
+#def dlogN  value=-0.5  [vary=True  min=__  max=__  expr='__']
+
+# Use these flexible variables to define parameter constraints for the components
+# of the fit. The variables can also be tied together using algebraic expressions
+# given by the 'expr' keyword. For more information and examples, see the online documentation.
+
+
+# --- Upper Limits for non-detected lines:
+# You can include lines that are not detected in order to obtain upper limits
+# on the equivalent width and corresponding column density:
+#limit __line1__  [ref=__ref-line__  nofit=False  sigma=3.0]
+
+# This will determine the upper limit on the given '__line__', e.g., TiII_1910.
+# This must be a line that exists in the linelist of VoigtFit (same as for 'lines' above)
+# By default, the integration range in velocity space is determined from the best-fit
+# to the other lines in the dataset using the strongest line with the same ionization state
+# as reference. If you want to use a specific line as reference, you can force this by using
+# the option 'ref=__ref-line__', ex: ref=FeII_2374. This reference line must be included
+# in the dataset and fitted using the 'lines' and 'component' statements above.
+# Alternatively, you can use the observed data instead of the fitted profile to determine
+# the integration range, byt specifying 'nofit=True'.
+# -- Note: several 'limit' statements can be given in the input file.
+
+
+
+# --- Output Commands:
+
+# To print the relative velocity of the best-fit line components
+# instead of redshifts, use the output option 'velocity':
+output velocity
+
+# Use the output option 'individual-components' to output individual components
+# of all lines to a file ending in .components:
+#output  individual-components
+
+
+# Print total column densities for each ion:
+total
+
+
+# To print the metallicity for each ion assuming a logNHI:
+print metallicity logNHI = __ +/- __
+# The parameter language is flexible and accepts words
+# between the keywords, so the following works just
+# as well as the line above:
+#calculate metallicity based on logNHI  21.3   0.1
+
+
+
+# Great job, now you're ready to fit the data.
+# Go ahead, try it out!
