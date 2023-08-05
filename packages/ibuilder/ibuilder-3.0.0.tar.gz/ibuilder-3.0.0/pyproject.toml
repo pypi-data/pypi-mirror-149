@@ -1,0 +1,56 @@
+[internal]
+created = 2019-06-15
+
+[tool.poetry]
+name = "ibuilder"
+version = "3.0.0"
+description = "image builder; build, tag, and push docker images"
+authors = ["David Rader <sa@adercon.com>"]
+maintainers = ["David Rader <sa@adercon.com>"]
+license = "GPL-3.0-only"
+readme = "README.md"
+homepage = "https://gitlab.com/drad/boi"
+repository = "https://gitlab.com/drad/boi"
+keywords = ["cli", "docker", "containers", "build", "ci", "cd"]
+
+[tool.poetry.scripts]
+ib = "ibuilder.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+arrow = "1.2.2"
+click = "8.1.3"
+docker = "5.0.3"
+packaging = "21.3"
+pydantic = "1.9.0"
+requests = "2.27.1"
+rich = "12.3.0"
+tinydb = "4.7.0"
+tomli = "2.0.1"
+typer = "0.4.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | api/migrations
+)/
+'''
