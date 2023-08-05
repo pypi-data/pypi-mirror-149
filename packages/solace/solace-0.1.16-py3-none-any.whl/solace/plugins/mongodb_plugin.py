@@ -1,0 +1,1 @@
+""" A MongoDB Plugin for Solace """

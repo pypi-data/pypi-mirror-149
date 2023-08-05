@@ -1,0 +1,1 @@
+""" A Solace JWT Plugin """
