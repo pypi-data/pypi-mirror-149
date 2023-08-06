@@ -1,0 +1,793 @@
+#!python
+
+import argparse
+from http import server
+import os
+import string
+import datetime
+import json
+import sys
+import random
+import tempfile
+import subprocess
+import hashlib
+import requests
+import shutil
+import re
+import socketio
+import time
+
+from requests.exceptions import HTTPError
+from http.server import  HTTPServer, SimpleHTTPRequestHandler
+import ssl
+from dotenv import load_dotenv
+
+from locker_client import LockerClient, version
+import locker_client
+
+from loguru import logger
+
+#
+# TODO: use one redirect URI?
+#
+# --insecure
+#
+
+# global locker client instance
+locker = None
+
+class LockerRequestHandler(SimpleHTTPRequestHandler):
+    def do_GET(self):
+
+        if self.path == '/_config.js':                
+            self.send_response(200)
+            self.send_header("Content-type", "application/javascript")
+            self.end_headers()    
+            
+            data = f"locker_addr = '{locker.base_url}'\n"
+
+            self.wfile.write(data.encode())
+
+        else:
+            return super().do_GET()
+
+def get_args():
+
+    load_dotenv(dotenv_path='.env')
+
+    # def_apps = os.getenv('LOCKER_APPS_PATH', '/opt/locker-apps')
+    def_locker = os.getenv('LOCKER_PATH', '/opt/locker')
+    def_api_key = os.getenv('LOCKER_KEY', None)
+    def_host = os.getenv('LOCKER_HOST', None)
+    def_bind = os.getenv('LOCKER_BIND','0.0.0.0:8000')
+
+
+    epilog = '''
+Remote file operations:
+    ls PATH
+    jlist PATH
+    cat PATH
+    edit PATH
+    rm [-r] PATH
+    mkdir PATH
+
+Upload/download:
+    get PATH [LOCAL_PATH]       # get options.json /tmp , get options.json /tmp/options.json
+    put LOCAL_PATH PATH
+
+Other:
+    # run static webserver
+    serve [LOCAL_PATH] [ --bind 0.0.0.0:8000 ]
+    
+    # deploy application on locker-server
+    deploy [LOCAL_PATH]
+    add-origin ORIGIN
+
+    # create/delete app on local locker server
+    create USER APP_NAME --key KEY
+    delete USER APP_NAME
+    addkey USER APP_NAME [ --key KEY ]
+
+    # accept log records from site
+    log
+
+    version
+    '''
+
+    parser = argparse.ArgumentParser(
+        description=f'Locker admin {version}', 
+        formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+
+    parser.add_argument('cmd', help='command: ls / cat / edit / put / get / rm')
+    parser.add_argument('arg', help='arguments', nargs='*')
+        
+    g = parser.add_argument_group('client-side options')
+    g.add_argument('--key', metavar='KEY', default=def_api_key,
+        help='Use this X-API-KEY header: $LOCKER_API_KEY={}'.format(def_api_key))
+    g.add_argument('--host', metavar='HOST', default=def_host,
+        help='Your locker hostname: $LOCKER_HOST={}'.format(def_host))
+    g.add_argument('-r', '--recursive', default=False, action='store_true', 
+        help='recursive flag for download/upload/list/jlist')
+    g.add_argument('--bind', default='0.0.0.0:8000',
+        help=f'http address for --serve ({def_bind})')
+    g.add_argument('--insecure-ssl', default=False, action='store_true',
+        help=f'Do not verify server-side certificate')
+    
+    g = parser.add_argument_group('Other options')    
+    # g.add_argument('--apps', default=def_apps, help='Path to apps ($LOCKER_APPS_PATH={}). Locker-server only.'.format(def_apps))
+    g.add_argument('--locker', default=def_locker, help='Path to locker directory ($LOCKER_PATH={}). Locker-server only.'.format(def_locker))
+
+    g.add_argument('--verbose', '-v', default=False, action='store_true', help="Verbose logging")
+    g.add_argument('--missing-ok', '-m', default=False, action="store_true", help='Ignore missing file on server (for exec/edit operations)')
+
+    g.add_argument('--cert', help='Path to certificate file')
+    g.add_argument('--certkey', help='Path to certificate key file')
+
+
+    return parser.parse_args()
+
+def file_md5(path):
+    hash = hashlib.md5()
+    with open(path, "rb") as fh:
+        content = fh.read()
+        hash.update(content)
+    
+    return hash.hexdigest()
+
+def mkdir(rpath):
+    r = locker.mkdir(rpath)
+    print(r.text.rstrip())
+
+def download(rpath, lpath):
+    stat = locker.stat(rpath)
+    
+    if rpath.endswith('/'):
+        rpath=rpath[:-1]
+
+    if stat.type == 'FILE':
+        if os.path.isdir(lpath):
+            lfilename = os.path.join(lpath,os.path.basename(rpath))
+        else:
+            lfilename = lpath
+        
+        r = locker.get(rpath, stream=True)
+        with open(lfilename, "wb") as fh:
+            for chunk in r.iter_content(chunk_size=8192): 
+                fh.write(chunk)
+        print(lfilename)
+
+    elif stat.type == 'DIR':
+        r = locker.get(rpath, stream=True)
+        r.raise_for_status()
+
+        if os.path.isdir(lpath):
+            ldir = os.path.join(lpath, os.path.basename(rpath))
+        else:
+            ldir = lpath
+
+        if not os.path.isdir(ldir):
+            print(f"{ldir}/")
+            os.mkdir(ldir)
+
+        content = r.json()
+        for k in content:
+            download(os.path.join(rpath, k), ldir)
+
+
+def upload(lpath, rpath):
+    # print(f"UPLOAD l:{lpath} r:{rpath}")
+
+    if rpath.endswith('/'):
+        rpath=rpath[:-1]
+
+    if lpath.endswith('/'):
+        lpath=lpath[:-1]
+
+    if os.path.isdir(lpath):
+        target = os.path.join(rpath, os.path.basename(lpath) )
+        locker.mkdir(target)
+        for f in os.listdir(lpath):
+            upload(os.path.join(lpath, f), target)
+    
+    elif os.path.isfile(lpath):
+        try:
+            stat = locker.stat(rpath)
+            if stat.type == 'DIR':
+                rpath = os.path.join(rpath, os.path.basename(lpath))
+        except HTTPError as e:
+            if e.response.status_code == 404:
+                # everything fine
+                pass
+
+        print(f"{lpath} > {locker.host}:{rpath}")
+        with open(lpath,'r') as fh:
+            data = fh.read()
+            locker.put(rpath, data)
+
+def cat(rpath):
+    r = locker.get(rpath, stream=True)
+    print(r.text.rstrip())
+
+def rm(rpath, recursive=False):
+    r = locker.rm(rpath, recursive=recursive)
+    print(r.text.rstrip())
+
+def edit(rpath, editor=None):
+    editor = editor or os.getenv('EDITOR', "vi")
+    editor_command = list(filter(None, editor.split(' ')))
+    editor_command.append(rpath)
+    exec(editor_command, missing_ok=True)
+
+
+def unused_edit(rpath):
+    r = locker.get(rpath, stream=True)
+    editor = os.getenv('EDITOR','vi')
+
+    # get suffix from rpath
+    splitted = rpath.rsplit('.',1)
+    if len(splitted) == 2:
+        suffix = '.' + splitted[1]
+    else:
+        suffix = '.txt'
+
+    # download
+    fh = tempfile.NamedTemporaryFile(prefix='locker-admin-exec-', suffix=suffix, delete=False)
+    lfname = fh.name 
+    fh.write(r.content)
+    fh.close()
+
+    original_digest = file_md5(lfname)
+
+    editor_command = list(filter(None, editor.split(' ')))
+    editor_command.append(lfname)
+
+    while True:
+        verified = True
+        # edit
+        rc = subprocess.run(editor_command)
+
+        new_digest = file_md5(lfname)
+        
+        if new_digest == original_digest:
+            print("File not changed")
+            return
+
+        if rpath.endswith('.json'):
+            with open(lfname, "r") as fh:
+                try:
+                    json.load(fh)
+                except ValueError as e:
+                    input(f"JSON check failed: {e}. Press ENTER and fix error.")
+                    verified = False
+        
+        if verified:
+            # upload
+            upload(lfname, rpath)
+            return
+        else:
+            print("Skip uploading")
+
+
+def exec(cmd, missing_ok=False):
+    
+    rpath = cmd[-1];
+    
+    tempdir = None
+
+    def cleanup(filepath=None, dirpath=None):
+        if filepath and os.path.exists(filepath):
+            os.unlink(filepath)
+        
+        if dirpath and os.path.exists(dirpath):
+            os.rmdir(dirpath)
+
+    # get suffix from rpath
+    splitted = rpath.rsplit('.',1)
+    if len(splitted) == 2:
+        suffix = '.'+splitted[1]
+    else:
+        suffix = '.txt'
+
+    try:
+        r = locker.get(rpath, stream=True)
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            if not missing_ok:
+                print("No such remote file:", rpath)
+                return
+        else:
+            print(f"Error code: {e.response.status_code} {e.response.reason}")
+            return
+
+        tempdir = tempfile.mkdtemp(prefix=f"locker-admin-{os.getpid()}-")
+        lfname = os.path.join(tempdir, "missing-"+next(tempfile._get_candidate_names()))
+        print(f"No such remote file {rpath}")
+
+    else:
+        # download
+
+        fh = tempfile.NamedTemporaryFile(prefix='locker-admin-edit-', suffix=suffix, delete=False)
+        lfname = fh.name 
+        fh.write(r.content)
+        fh.close()
+
+
+
+    cmd[-1] = lfname
+
+    try:
+        original_digest = file_md5(lfname)
+    except FileNotFoundError:
+        original_digest = None
+
+    while True:
+        verified = True
+        # edit
+        rc = subprocess.run(cmd)
+
+        try:
+            new_digest = file_md5(lfname)
+        except FileNotFoundError:
+            new_digest = None
+
+        if new_digest == original_digest:
+            print("File not changed (will not upload)")
+            cleanup(lfname, tempdir)
+            return
+
+        if rpath.endswith('.json'):
+            with open(lfname, "r") as fh:
+                try:
+                    json.load(fh)
+                except ValueError as e:
+                    input(f"JSON check failed: {e}. Press ENTER and fix error.")
+                    verified = False
+        
+        if verified:
+            # upload
+            upload(lfname, rpath)
+            cleanup(lfname, tempdir)
+            return
+
+
+def add_origin(origin):
+
+    if not (origin.startswith('http://') or origin.startswith('https://')):
+        print("Origin must start from http:// or https://")
+        return
+
+    if '/' in origin[8:]:
+        print("Origin must not contain /")
+        return
+
+    r = locker.get("etc/options.json", stream=True)   
+    data = json.loads(r.content)
+    if not origin in data['origins']:
+        print("add_origin", origin)
+        data['origins'].append(origin)
+        locker.put("etc/options.json", json.dumps(data, indent=4))
+    else:
+        print(f"Origin {origin} already listed")
+
+def remote_jlist(path, recursive=False):
+    r = list()
+    try:
+        stat = locker.stat(path)
+    except requests.exceptions.HTTPError as e:
+        logger.debug(f"404")
+        logger.debug(dir(e.response))
+        logger.debug(f"{e.response.status_code} / {e.response.reason} text:{e.response.text}")
+        if e.response.status_code == 404:
+            print("Not found", e)
+            sys.exit(1)
+        else:
+            raise
+
+    if stat.type == 'DIR':
+        content = locker.get(path).json()
+        l = list()
+        for e in content:
+            ce = content[e]
+            ce['basename'] = e
+            if recursive:
+                ce['content'] = remote_jlist(os.path.join(path, e), recursive=recursive)
+            l.append(ce)
+        return l
+    else:
+        return stat.__dict__
+
+def remote_list(path, recursive=False):
+    def print_e(e, prefix=0):
+        if e['type']=='FILE':
+            print(f"{'':<{prefix}}{e['basename']:<{60-prefix}}sz:{e['size']} mt:{e['mtime']}")
+        elif e['type']=='DIR':
+            print(f"{'':<{prefix}}{e['basename']+'/':<{60-prefix}}DIR mt:{e['mtime']}")
+            if 'content' in e:
+                for ee in e['content']:
+                    print_e(ee, prefix+2)
+
+    l = remote_jlist(path, recursive=recursive)
+    if l is None:
+        return
+
+    if isinstance(l, list):
+        for ll in l:
+            print_e(ll)
+    else:
+        print_e(l)
+
+
+def gen_key(length=40):
+    alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits
+    key = ''.join(random.choice(alphabet) for i in range(length))
+    return key
+
+def create(apps, user, name, key=None):
+    
+    subdirs = ['etc', 'etc/skeleton', 'etc/skeleton/r', 'etc/skeleton/rw', 'home', 'var']
+
+    print(f'Create app {name} in {apps}')
+    if apps is None:
+        print('set $LOCKER_APPS_PATH or --apps PATH to application directory')
+        return
+
+    if not os.path.isdir(apps):
+        print(f'No apps_path. do: mkdir {apps} or specify correct --apps PATH')
+        return
+
+    userdir = os.path.join(apps, user) 
+    appdir = os.path.join(apps, user, name) 
+
+    if not os.path.isdir(userdir):
+        os.mkdir(userdir)
+    
+    if os.path.isdir(appdir):
+        print(f"{appdir} already exists. locker-admin will not delete it. do: rm -r {appdir}")
+        print(f"or: {sys.argv[0]} delete {user} {name}")
+        return
+    
+    print("create", appdir)
+    os.mkdir(appdir)
+    for subdir in subdirs:
+        dir = os.path.join(appdir, subdir)
+        print("create", dir)
+        os.mkdir(dir)
+        # os.mkdir(os.path.join)
+
+
+
+    if key:
+        keytype = 'User-supplied'
+    else:
+        key = gen_key()
+        keytype = 'Auto-generated'
+    print("Generate API key in etc/keys.json")
+    # generate keys
+    keys = [
+            {
+                'key': key,
+                'comment': 'Initial key, generated by locker-admin',
+                'created': datetime.datetime.now().strftime('%Y/%m/%d'),
+                'touched': datetime.datetime.now().strftime('%Y/%m/%d'),
+                'ip': []
+            }
+        ]
+
+    print(f"MASTER KEY ({keytype}): {key}")
+
+    with open(os.path.join(appdir, 'etc/keys.json'), 'w') as fh:
+        json.dump(keys, fh, indent=4)
+
+    print("Generate etc/options.json")
+    options = {
+        'origins': [
+            'http://localhost:8000'
+        ],
+        
+    	"query-options": [
+
+            {
+                "filter_method": "GET",                
+                "headers": {
+                    "Cache-Control": "no-cache, no-store, must-revalidate"
+                }
+            },
+
+            {
+                "filter_method": "PUT",
+                "filter_path": "${HOME}/rw/",
+                
+                "options": {
+                    "create": True,
+                    "max_content_length": 1024,
+                    "set_flag": {
+                        "file": "flags.json",
+                        "flag": "notebook"
+                    }
+                },
+            }
+	    ],
+        "accept_new_users": True,
+        "noregister_url": "http://google.com/",
+    }
+
+    with open(os.path.join(appdir, 'etc/options.json'), 'w') as fh:
+        json.dump(options, fh, indent=4)
+
+    print("Generate etc/oidc_credentials.json")
+    oidc_credentials = {
+        "vendor": ["google"]
+    }
+
+    with open(os.path.join(appdir, 'etc/oidc_credentials.json'), 'w') as fh:
+        json.dump(oidc_credentials, fh, indent=4)
+
+    print("Generate etc/users.json")
+    users_data = {
+        "bindings": {
+        },
+        "control": {
+            "last": 0
+        }
+    }
+
+    with open(os.path.join(appdir, 'etc/users.json'), 'w') as fh:
+        json.dump(users_data, fh, indent=4)
+
+
+def addkey(apps, user, name, key=None):
+    userdir = os.path.join(apps, user) 
+    appdir = os.path.join(apps, user, name) 
+
+    if not os.path.isdir(appdir):
+        print(f"{appdir} missing.")
+        return
+    
+    key = key or gen_key()
+    print("Generate API key in etc/keys.json")
+    # generate keys
+    keystruct =  {
+                'key': key,
+                'comment': 'Recovery key',
+                'created': datetime.datetime.now().strftime('%Y/%m/%d'),
+                'touched': datetime.datetime.now().strftime('%Y/%m/%d'),
+                'ip': []
+            }
+    
+
+    try:
+        with open(os.path.join(appdir, 'etc/keys.json'), 'r') as fh:
+            keys = json.load(fh)
+
+    except:
+        keys = list()
+
+    keys.append(keystruct)
+
+    with open(os.path.join(appdir, 'etc/keys.json'), 'w') as fh:
+        json.dump(keys, fh, indent=4)
+
+
+
+def delete(apps, user, name):
+    
+    print(f'Delete app {name} in {apps}')
+    if apps is None:
+        print('set $LOCKER_APPS_PATH or --apps PATH to application directory')
+        return
+
+    if not os.path.isdir(apps):
+        print(f'No apps_path. do: mkdir {apps} or specify correct --apps PATH')
+        return
+
+    userdir = os.path.join(apps, user) 
+    appdir = os.path.join(apps, user, name) 
+
+    if not os.path.isdir(appdir):
+        print(f"{appdir} missing. locker-admin will not delete it. do: rm -r {appdir} or {sys.argv[0]} delete {user} {app}")
+        return
+    
+    shutil.rmtree(appdir)
+    print(f"Deleted {appdir}")
+
+
+def check_sanity(args):
+
+    if args.cmd in ['cat', 'upload', 'download', 'l', 'ls', 'jlist', 'jls', 
+        'serve', 'deploy', 'rm', 'mkdir', 'edit'] and not locker:
+        
+        print("Need locker app details:")
+        print(f"Key: --key or $LOCKER_KEY: {args.key}")
+        print(f"Host: --host or $LOCKER_HOST: {args.host}")
+        return False
+
+    return True
+
+def serve(path, bind, certfile, keyfile):
+    addr_port = bind.split(':')
+
+    httpd = HTTPServer((addr_port[0], int(addr_port[1])), LockerRequestHandler)
+
+    if certfile:
+        proto='https'
+        httpd.socket = ssl.wrap_socket(httpd.socket,
+            server_side=True,
+            certfile=certfile,
+            keyfile=keyfile,
+            ssl_version=ssl.PROTOCOL_TLSv1_2)
+    else:
+        proto='http'
+        print("Warning: you are using HTTP protocol. Third-party cookies may not work (depending on browser/settings)")
+        print("Generate self signed cert:")
+        print("  openssl req -subj '/CN=localhost'  -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout localhost.key -out localhost.crt")
+        print("And use options:")
+        print("  --cert localhost.cert --certkey localhost.key")
+
+    print(f"Almost static webserver listening on {proto}://{bind}")
+
+    os.chdir(path)
+    httpd.serve_forever()
+
+def deploy(path):
+    depl_path = os.path.join(path, '_locker_deploy/')
+    if not os.path.isdir(depl_path):
+        print(f"Not found {depl_path}")
+        return
+
+    for dpath in ['etc/skeleton', 'etc/default', 'var']:
+        locker.mkdir(dpath)
+
+    for dpath in ['etc/options.json', 'etc/skeleton', 'etc/default', 'var']:
+        local_path = os.path.join(path, '_locker_deploy/', dpath)
+        if not os.path.exists(local_path):
+            continue
+        upload(local_path, os.path.dirname(dpath))
+
+def printlog():
+    # app, user = os.getenv('LOCKER_HOST').split('.')[0].split('-')
+    # room = f"{app}-{user}::logs"
+
+    data = requests.get(f'https://{os.getenv("LOCKER_HOST")}/diag').json()
+    room = f"{data['info']['app']}-{data['info']['user']}::logs"
+
+    secret = gen_key(20)
+    sio = socketio.Client()
+    pubconf = None
+
+    @sio.event
+    def log(data):
+        print(data)
+
+    @sio.event
+    def connect():
+        print(f".. connected to {pubconf['socketio_addr']}")
+        sio.emit('join', {'room': room, 'secret': secret})
+
+
+    pubconf = locker.pubconf()
+    locker.set_roomspace_secret(secret)
+
+    sio.connect(pubconf['socketio_addr'])
+    try:
+        while True:
+            time.sleep(10)
+    except KeyboardInterrupt:
+        print("kb intr")
+        sio.disconnect()
+
+
+
+def main():
+    global locker
+
+    simple_editors = ["vi", "vim", "pico", "nano"]
+    editors = {
+        "code": "code -n",
+    }
+
+    random.seed()
+
+    args = get_args()
+    apps_path = os.path.join(args.locker,'apps')
+
+    logger.remove()
+    if args.verbose:
+        logger.add(sys.stderr, colorize=True, format="{time:HH:MM:SS} <green>{message}</green>", level="DEBUG")
+    else:
+        logger.add(sys.stderr, colorize=True, format="{time:HH:MM:SS} <green>{message}</green>", level="INFO")
+    logger.debug("verbose mode")
+
+    arg1, arg2 = None, None
+    
+    if len(args.arg):
+        arg1 = args.arg[0]
+    
+    if len(args.arg)>=2:
+        arg2 = args.arg[1]
+
+    if args.host and args.key:
+        locker = LockerClient(host=args.host, key=args.key, insecure=args.insecure_ssl)
+
+    if not check_sanity(args):
+        sys.exit(1)
+
+
+    if args.cmd in ['ver', 'version']:
+        print(locker_client.version)
+
+    ### Server commands
+    elif args.cmd == 'create':
+        create(apps=apps_path, user=arg1, name=arg2, key=args.key)
+
+    elif args.cmd == 'delete':
+        delete(apps=apps_path, user=arg1, name=arg2)
+
+    elif args.cmd == 'addkey':
+        addkey(apps=apps_path, user=arg1, name=arg2, key=args.key)
+
+    ### Client options
+    elif args.cmd in ['download', 'down', 'get']:
+        download(rpath=arg1, lpath=arg2 or '.')
+        sys.exit(0)
+
+    elif args.cmd in ['upload', 'up', 'put']:
+        if not arg2:
+            print("specify remote destination")
+            sys.exit(1)
+        upload(arg1, arg2)
+
+    elif args.cmd == 'cat':
+        cat(arg1)
+
+    elif args.cmd in simple_editors:
+        edit(arg1, editor = args.cmd)
+
+    elif args.cmd in editors:
+        edit(arg1, editor = editors[args.cmd])
+
+    elif args.cmd == 'edit':
+        edit(arg1)
+
+    elif args.cmd in editors:
+        edit(arg1, editor = editors[args.cmd])
+
+    elif args.cmd in ['ls','l']:
+        remote_list(arg1 or '', recursive=args.recursive)
+    
+    elif args.cmd in ['jl', 'jlist', 'jls']:
+        r = remote_jlist(arg1 or '', recursive=args.recursive)
+        print(json.dumps(r, indent=4))
+
+    elif args.cmd == 'serve':
+        serve(arg1 or '.', args.bind, 
+        certfile=args.cert, keyfile=args.certkey)
+
+    elif args.cmd == 'deploy':
+        deploy(arg1 or '.')
+    
+    elif args.cmd == 'mkdir':
+        mkdir(arg1)
+
+    elif args.cmd == 'rm':
+        rm(arg1, recursive=args.recursive)
+
+    elif args.cmd == 'add-origin':
+        add_origin(arg1)
+
+    elif args.cmd == 'x' or args.cmd == 'exec':
+        exec(args.arg, missing_ok=args.missing_ok)
+
+    elif args.cmd == 'test':
+        droplist = []
+        for u, ts in locker.get_flags('var/flags.json','updated'):
+            droplist.append([u, ts])        
+        print(locker.drop_flags('var/flags.json', 'updated', droplist))
+
+    elif args.cmd == 'log':
+        printlog()
+    else:
+        print(f"Unknown command {args.cmd!r}")
+        sys.exit(1)
+
+main()
