@@ -1,0 +1,20 @@
+Metadata-Version: 2.1
+Name: hermessplitter
+Version: 0.3.92
+Summary: UNKNOWN
+Author: punchyarchy
+Author-email: ksmdrmvscthny@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+License-File: LICENSE
+Requires-Dist: SQLAlchemy (==1.4.29)
+Requires-Dist: ws-one
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+
+PDS (Port Data Splitter) - это программный разветлитель данных, реализованный в виде TCP сервера,
+прослушивающего некоторый порт (USB, COM) и рассылающего эти данные своим клиентам (subscribers).
+
+Пример использования (Рассыльщик данных с USB на порту 2290 на Linux):
+pds = PortDataSplitter('0.0.0.0', 2290, port_name='/dev/ttyUSB0', debug=False, device_name='USB listener')
+
