@@ -1,0 +1,100 @@
+{% load i18n wagtailcore_tags %}
+
+{% block content %}
+<div id="wtm_cookie_bar" class="cleanslate hidden">
+    <div class="inner">
+        <div class="content-container">
+            <h4>{% if settings.title %}{{ settings.title }}{% else %}{% trans "This website uses cookies" %}{% endif %}</h4>
+            {% if settings.text %}
+                {{ settings.text|richtext }}
+            {% else %}
+                <p>
+                    {% spaceless %}
+                        {% blocktrans %}
+                            This website uses cookies and other tracking technologies for
+                            functional and analytical purposes.
+                            To improve your browsing experience on our site,
+                            we would also like to place tracking cookies.
+                        {% endblocktrans %}
+                    {% endspaceless %}
+                </p>
+            {% endif %}
+        </div>
+
+        <input id="declaration-checkbox" type="checkbox" name="checkbox"/>
+
+        <div class="action-container">
+            <form class="form" action="{% url 'wtm:manage' %}" method="POST">
+                {% csrf_token %}
+                <ul class="form__list">
+                    {% for field in form %}
+                        <li>
+                            {{ field }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        </li>
+                    {% endfor %}
+                    {% if manage_view %}
+                        <li class="manage-link">
+                            <a role="button" href="{% url 'wtm:manage' %}" aria-label="{% trans 'Manage settings' %}" tabindex="0">{% trans "Manage settings" %}</a>
+                        </li>
+                    {% endif %}
+                    {% if declarations|length %}
+                        <li class="detail-link">
+                            <label role="button" for="declaration-checkbox" aria-label="{% trans 'Show details' %}" tabindex="0">
+                                <span data-label-show="{% trans 'Show details' %} &#9661;" data-label-hide="{% trans 'Hide details' %} &#9651;"></span>
+                            </label>
+                        </li>
+                    {% endif %}
+                </ul>
+                <input type="submit" class="button button--green" value="{% trans 'Save' %}" aria-label="{% trans 'Save' %}" tabindex="0" />
+            </form>
+        </div>
+
+        {% if declarations|length %}
+            <div class="declaration-container">
+                {% regroup declarations by cookie_type as declaration_list %}
+
+                {% for cookie_type in declaration_list %}{% spaceless %}
+                    {% with cookie_type.grouper|default:'unclassified'|slugify as grouper %}
+                        <input id="{{ grouper }}" type="radio" name="declaration-tabs"{% if forloop.first %} checked{% endif %} />
+                        <label for="{{ grouper }}">
+                            {% if cookie_type.grouper %}{{ cookie_type.grouper|title }}{% else %}{% trans "Unclassified" %}{% endif %}
+                        </label>
+
+                        <style scoped>
+                            #{{ grouper }}-table { display: none !important; }
+                            #{{ grouper }}:checked ~ #{{ grouper }}-table { display: block !important; }
+                        </style>
+                    {% endwith %}
+                {% endspaceless %}{% endfor %}
+
+                {% for cookie_type in declaration_list %}
+                    {% with cookie_type.grouper|default:'unclassified'|slugify as grouper %}
+                        <table id="{{ grouper }}-table" class="declaration-table">
+                            <tbody>
+                                <tr>
+                                    <th>{% trans "Name" %}</th>
+                                    <th>{% trans "Domain" %}</th>
+                                    <th>{% trans "Purpose" %}</th>
+                                    <th>{% trans "Expiration" %}</th>
+                                    <th>{% trans "Security" %}</th>
+                                </tr>
+                                {% for cookie in cookie_type.list %}
+                                    <tr>
+                                        <td>{{ cookie.name }}</td>
+                                        <td>{{ cookie.domain }}</td>
+                                        <td>{{ cookie.purpose }}</td>
+                                        <td>{{ cookie.expiration }}</td>
+                                        <td>{{ cookie.get_security_display }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endwith %}
+                {% endfor %}
+
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

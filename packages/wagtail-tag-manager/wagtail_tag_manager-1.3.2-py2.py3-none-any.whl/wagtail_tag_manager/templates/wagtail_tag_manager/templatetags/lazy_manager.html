@@ -1,0 +1,13 @@
+{% load static %}
+
+{% if include_style %}
+    <link href="{% static 'wagtail_tag_manager/wtm.bundle.css' %}" rel="stylesheet" />
+{% endif %}
+
+<script>
+    window.wtm = {{ config|safe }}
+</script>
+
+{% if include_script %}
+    <script src="{% static 'wagtail_tag_manager/wtm.bundle.js' %}"></script>
+{% endif %}
