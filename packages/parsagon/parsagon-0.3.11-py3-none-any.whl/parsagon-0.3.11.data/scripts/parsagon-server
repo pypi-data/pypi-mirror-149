@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+ORIG_DIR=$PWD
+IP_ADDR=$(dig @resolver4.opendns.com myip.opendns.com +short)
+
+if [ -e /home/ubuntu/parsagon ]
+then
+    rm -rf /home/ubuntu/parsagon
+fi
+
+mkdir -p /home/ubuntu/parsagon
+cd /home/ubuntu/parsagon
+git clone https://github.com/Sand1929/parsagon-local-server.git
+
+cd /home/ubuntu/parsagon
+echo $1 > api_key
+if [ -z "$2" ]
+then
+    echo 'parsagon.io' > parsagon_host
+else
+    echo $2 > parsagon_host
+fi
+cd /home/ubuntu/parsagon/parsagon-local-server/src/parsagon/server
+printf '%s\n%s\n%s\n' "export PARSAGON_HOST=$(cat /home/ubuntu/parsagon/parsagon_host)" "export API_KEY=$(cat /home/ubuntu/parsagon/api_key)" "$(cat daphne.sh)" > daphne.sh
+printf '%s\n%s\n%s\n' "export PARSAGON_HOST=$(cat /home/ubuntu/parsagon/parsagon_host)" "export API_KEY=$(cat /home/ubuntu/parsagon/api_key)" "$(cat celery.sh)" > celery.sh
+
+sudo apt update
+sudo apt -y upgrade
+
+sudo apt -y install libpq-dev python3-dev
+
+sudo apt -y install unzip xvfb libxi6 libgconf-2-4
+cd /home/ubuntu/parsagon
+wget -O chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_99.0.4844.51-1_amd64.deb
+sudo apt install -y /home/ubuntu/parsagon/chrome.deb
+rm chrome.deb
+
+sudo apt -y install redis-server
+sudo cp /home/ubuntu/parsagon/parsagon-local-server/src/parsagon/redis.conf /etc/redis/redis.conf
+sudo systemctl restart redis.service
+
+sudo apt -y install python3-venv
+python3 -m venv /home/ubuntu/parsagon/venv
+source /home/ubuntu/parsagon/venv/bin/activate
+
+sudo apt -y install daphne
+pip install -r /home/ubuntu/parsagon/parsagon-local-server/src/parsagon/server/requirements.txt
+
+if ! command -v mkcert &> /dev/null
+then
+    cd /home/ubuntu/parsagon
+    sudo apt -y install libnss3-tools
+    sudo apt -y install golang-go
+    git clone https://github.com/FiloSottile/mkcert && cd mkcert
+    go build -ldflags "-X main.Version=$(git describe --tags)"
+    sudo cp mkcert /usr/local/bin/mkcert
+    sudo chmod +x /usr/local/bin/mkcert
+fi
+mkcert -cert-file /home/ubuntu/parsagon/cert.pem -key-file /home/ubuntu/parsagon/key.pem $IP_ADDR
+
+sudo apt -y install nginx
+sudo ufw allow 'Nginx HTTPS'
+sudo cp /home/ubuntu/parsagon/parsagon-local-server/src/parsagon/nginx.conf /etc/nginx/sites-available
+if [ ! -e /etc/nginx/sites-enabled/nginx.conf ]
+then
+    sudo ln -s /etc/nginx/sites-available/nginx.conf /etc/nginx/sites-enabled/
+fi
+if [ -e /etc/nginx/sites-enabled/default ]
+then
+    sudo rm /etc/nginx/sites-enabled/default
+fi
+sudo systemctl restart nginx
+
+sudo apt -y install supervisor
+sudo cp /home/ubuntu/parsagon/parsagon-local-server/src/parsagon/supervisor.conf /etc/supervisor/conf.d/
+sudo supervisorctl stop all
+sudo supervisorctl update
+sudo supervisorctl start all
+
+sudo apt -y autoremove
+
+cd $ORIG_DIR
