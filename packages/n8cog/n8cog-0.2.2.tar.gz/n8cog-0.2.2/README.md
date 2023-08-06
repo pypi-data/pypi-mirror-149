@@ -1,0 +1,1 @@
+# The base of all nwithan8 RedBot cogs
