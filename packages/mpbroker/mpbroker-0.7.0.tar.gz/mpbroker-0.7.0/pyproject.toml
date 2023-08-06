@@ -1,0 +1,54 @@
+[internal]
+created = 2022-04-21
+
+[tool.poetry]
+name = "mpbroker"
+version = "0.7.0"
+description = "Media Player Broker"
+license = "GPL-3.0-only"
+authors = ["David Rader <sa@adercon.com>"]
+maintainers = ["David Rader <sa@adercon.com>"]
+readme = "README.md"
+homepage = "https://gitlab.com/drad/mpbroker"
+repository = "https://gitlab.com/drad/mpbroker"
+keywords = ["media player", "broker", "player", "video", "smplayer", "vlc", "couchdb", "cli"]
+
+[tool.poetry.scripts]
+mpb = "mpbroker.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+typer = {extras = ["all"], version = "^0.4.1"}
+arrow = "^1.2.2"
+pycouchdb = "^1.14.1"
+pydantic = "^1.9.0"
+requests = "^2.27.1"
+rich = "^12.3.0"
+tomli = "^2.0.1"
+pymediainfo = "^5.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
