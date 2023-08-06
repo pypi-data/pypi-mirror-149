@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "pyutgenerator"
+version = "0.12.0"
+description = "python ut test code generator."
+authors = ["shigeshige <5540474+shigeshige@users.noreply.github.com>"]
+license = "MIT"
+homepage = "https://py-ut-generator.readthedocs.io/en/latest/"
+repository = "https://github.com/shigeshige/py-ut-generator"
+readme = "README.md"
+
+[tool.poetry.scripts]
+pyutgen = 'pyutgenerator.run:main'
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pylint = "*"
+autopep8 = "*"
+pep8 = "*"
+flake8 = "*"
+mypy = "*"
+poetry = "*"
+sphinx = "*"
+sphinxcontrib-seqdiag = "^2.0.0"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.pytest.ini_options]
+norecursedirs = "tests/tests/*"
+
+[tool.autopep8]
+max_line_length = 119
