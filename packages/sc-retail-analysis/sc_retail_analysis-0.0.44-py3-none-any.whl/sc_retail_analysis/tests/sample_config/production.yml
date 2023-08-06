@@ -1,0 +1,863 @@
+# 说明：如下配置的索引均从0开始计数，第1列为0、第2列为1，依此类推
+
+# 花名册配置
+manifest:
+  # 花名册文件路径
+  source_file_path: 广州分行各团队、部室成员名单.xlsx
+  # Sheet名称
+  sheet_name: Sheet1
+  sheet_config:
+    # 表头行索引
+    header_row: 1
+    # 工号列索引
+    id_column: 3
+    # 姓名列索引
+    name_column: 2
+    # 所属机构列索引
+    branch_column: 1
+  # 离职人员调整表
+  leave_employee_mapping:
+    陈驰: 李亦凡
+    侯玉: 李亦凡
+    王袭: 李亦凡
+    杨鸿: 李亦凡
+    何周晴: 毛欢
+    郝冲: ''
+    唐静雯: ''
+    高媛: ''
+    伍功平: ''
+
+  # （非息）离职人员归属机构表
+  non_interest_leave_employee_branch_mapping:
+    # 工号
+    '10358':
+      # 姓名
+      name: 唐静雯
+      # 归属机构
+      branch: 广州分行公共
+
+# 机构相关配置
+branch:
+  # 公共户名关键字列表
+  common_account_keyword:
+  - 公共
+  - 虚拟
+  # 广州分行公共名称
+  gz_common_account: 广州分行公共
+  # 名称转换配置
+  name_mapping:
+    广州分行: 广州分行行领导
+    广州分行公共: 广州分行公共
+    广州分行粤能支行: 粤能支行
+    广州粤能支行: 粤能支行
+    广州分行财智支行: 财智支行
+    广州财智支行: 财智支行
+    广州分行江湾支行: 江湾支行
+    广州江湾支行: 江湾支行
+    广州分行黄埔支行: 黄埔支行
+    广州黄埔支行: 黄埔支行
+    广州分行美博城支行: 东风支行
+    广州美博城支行: 东风支行
+    美博城支行: 东风支行
+    广州东风支行: 东风支行
+    广东分行自贸试验区南沙支行: 南沙支行
+    广东自贸试验区南沙支行: 南沙支行
+    自贸试验区南沙支行: 南沙支行
+    广州分行营业部: 分行营业部
+    广州分行运营管理部: 运营管理部
+    广州运营管理部: 运营管理部
+    广州分行公司业务管理部: 公司业务管理部
+    广州公司业务管理部: 公司业务管理部
+    广州分行中小企业管理部: 中小企业管理部
+    广州中小企业管理部: 中小企业管理部
+    中小企业部: 中小企业管理部
+    广州分行公司业务一部: 公司业务一部
+    广州公司业务一部: 公司业务一部
+    公司一部: 公司业务一部
+    广州分行公司业务三部: 公司业务三部
+    广州公司业务三部: 公司业务三部
+    公司三部: 公司业务三部
+    广州分行公司业务二部: 公司业务二部
+    广州公司业务二部: 公司业务二部
+    公司二部: 公司业务二部
+    广州分行授信审批部: 授信审批部
+    广州授信审批部: 授信审批部
+    广州分行人力财务部: 人力财务部
+    广州人力财务部: 人力财务部
+    广州分行计划财务部: 计划财务部
+    广州计划财务部: 计划财务部
+    广州分行零售业务管理部: 零售业务管理部
+    广州零售业务管理部: 零售业务管理部
+    广州分行风险管理部: 风险管理部
+    广州风险管理部: 风险管理部
+    广州分行综合保卫部: 综合保卫部
+    广州综合保卫部: 综合保卫部
+    广州分行法律合规部: 法律合规部
+    广州法律合规部: 法律合规部
+  # 业绩归属机构列名
+  sales_performance_attribution_column_name: 业绩归属机构
+  # 业绩归属机构配置
+  sales_performance_attribution_mapping:
+    公司业务管理部: 分行营业部
+    零售业务管理部: 分行营业部
+    人力财务部: 分行营业部
+    计划财务部: 分行营业部
+    风险管理部: 分行营业部
+    授信审批部: 分行营业部
+    运营管理部: 分行营业部
+    法律合规部: 分行营业部
+    综合保卫部: 分行营业部
+    分行营业部: 分行营业部
+    广州分行: 广州分行行领导
+    广州分行公共: 广州分行公共
+
+
+# 零售
+retail:
+  # 生成的目标Excel文件存放路径
+  target_directory: ./
+  # 目标文件名称
+  target_filename: 广州分行考核指标统计.xlsx
+  # 目标文件名称
+  target_report_filename: 播报.txt
+  # 生成的Excel中按客户经理汇总的Sheet的名称
+  target_manager_summary_sheet_name: 客户经理汇总
+  # 生成的Excel中按客户经理汇总的Sheet的名称
+  target_branch_summary_sheet_name: 机构汇总
+  # 个人非息收入
+  non_interest:
+    # 基金认申购
+    fund_purchase:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 基金认申购
+      # 个人业绩统计汇总表文件路径
+      source_file_path: 个人业绩统计汇总表.xls
+      # Sheet名称
+      sheet_name: 个人业绩统计汇总表
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 工号列索引
+        id_column: 0
+        # 姓名列索引
+        name_column: 1
+        # 持营基金业绩列索引
+        holding_fund_amount_column: 28
+        # 持营基金业绩列索引
+        holding_fund_sales_income_column: 29
+        # 首发基金业绩列索引
+        initial_fund_amount_column: 31
+        # 首发基金业绩列索引
+        initial_fund_sales_income_column: 32
+        # 生成的Excel中基金确认金额的列名
+        target_confirmed_amount_column_name: 基金确认金额
+        # 生成的Excel中基金确认金额中收的列名
+        target_sales_income_column_name: 基金确认金额中收
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 理财
+    financing:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 理财
+      # 个人理财业务客户余额明细表
+      source_file_path: 个人理财业务客户余额明细表.csv
+      # 中收的比例
+      sales_income_percentage: 0.0016
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 推荐人工号列索引
+        id_column: 15
+        # 时点余额列索引
+        point_balance_column: 6
+        # 年化日均列索引
+        annualized_daily_average_column: 7
+        # 生成的Excel中年化日均的列名
+        target_point_balance_column_name: 理财时点余额
+        # 生成的Excel中年化日均的列名
+        target_annualized_daily_column_name: 理财时期数
+        # 生成的Excel中中收的列名
+        target_sales_income_column_name: 理财中收
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 理财(从CIF系统数据计算)
+    financing_cif:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 理财（CIF）
+      # 个人业绩统计汇总表文件路径
+      source_file_path: 个人业绩统计汇总表.xls
+      # Sheet名称
+      sheet_name: 个人业绩统计汇总表
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 工号列索引
+        id_column: 0
+        # 姓名列索引
+        name_column: 1
+        # 自营理财中收列索引
+        self_running_fund_sales_income_column: 24
+        # 自营理财计价列索引
+        self_running_fund_valuation_column: 25
+        # 代销理财中收列索引
+        delegate_fund_sales_income_column: 26
+        # 代销理财计价列索引
+        delegate_fund_valuation_column: 27
+        # 生成的Excel中理财中收的列名
+        target_sales_income_column_name: 理财中收（CIF）
+        # 生成的Excel中理财计价的列名
+        target_valuation_column_name: 理财计价（CIF）
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 贵金属
+    precious_metal:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 贵金属
+      # 贵金属业务明细表文件路径
+      source_file_path: 贵金属业务明细表.xlsx
+      # Sheet名称
+      sheet_name: 贵金属业务明细表
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 推荐人工号列索引
+        id_column: 16
+        # 推荐人姓名列索引
+        name_column: 17
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          13: 贵金属交易金额
+          14: 贵金属交易手续费
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 存款
+    deposit:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 存款
+      # 经理存款统计文件路径
+      source_file_path: 经理存款统计.xlsx
+      # Sheet名称
+      sheet_name: First
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 工号列索引
+        id_column: 1
+        # 姓名列索引
+        name_column: 2
+        # 所属机构列索引
+        branch_column: 0
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          9: 储蓄存款(时点)
+          10: 储蓄存款(时期)
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 财富客户
+    wealthy_client:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 财富客户
+      # 财富客户数统计文件路径
+      source_file_path: 财富客户数.xlsx
+      # Sheet名称
+      sheet_name: Sheet1
+
+      # 管户机构对应配置
+      manage_branch_mapping:
+        # 如果是管户机构是分行营业部，并且管户经理是公司业务二部的业绩，归属公司业务二部
+        公司业务二部: 分行营业部
+        # 如果是管户机构是分行营业部，并且管户经理是公司业务三部的业绩，归属公司业务三部
+        公司业务三部: 分行营业部
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 管户机构列索引
+        manage_branch_column: 22
+        # 管户经理列索引
+        manager_column: 24
+        # ECIF客户号列索引
+        ecif_id_column: 1
+        # 生成的Excel中财富客户数的列名
+        target_client_count_column_name: 财富客户数
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 代理保险
+    delegate_insurance:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 代理保险业务明细表
+      # 代理保险业务明细表文件路径
+      source_file_path: 代理保险业务明细表.xlsx
+      # 需要分析的保单状态
+      status_to_be_analyzed:
+        - 正常
+      # Sheet名称
+      sheet_name: 代理保险业务明细表
+      sheet_config:
+        # 表头行索引
+        header_row: 5
+        # 推荐人工号列索引
+        id_column: 14
+        # 推荐人姓名列索引
+        name_column: 15
+        # 保单状态名称列索引
+        status_column: 13
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          11: 保费金额
+          12: 代理保险中收
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 代理信托业务明细
+    delegate_trust:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 代理信托业务明细表
+      # 代理信托业务明细表文件路径
+      source_file_path: 代理信托业务明细表.xlsx
+      # Sheet名称
+      sheet_name: 代理信托业务明细表
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 推荐人工号列索引
+        id_column: 22
+        # 推荐人姓名列索引
+        name_column: 23
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          17: 代理信托金额
+          20: 代理信托中收
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+
+  # 零售贷款类业务
+  loan:
+    # 融意通卡
+    rongyitong:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 融卡
+      # 融卡发卡及相关数据明细表文件路径
+      source_file_path: 融卡发卡及相关数据明细表.xlsx
+      # Sheet名称
+      sheet_name: Sheet1
+      sheet_config:
+        # 表头行索引
+        header_row: 1
+        # 客户经理列索引
+        name_column: 4
+        # 客户姓名列索引
+        client_name_column: 5
+        # 客户联系方式列索引
+        client_contact_info_column: 6
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          # 垫款额
+          18: 融卡
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [4, 5, 7-22]
+    # 心意通卡
+    xinyitong:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 心卡
+      # 心卡发卡及相关数据明细表文件路径
+      source_file_path: 心卡发卡及相关数据明细表.xlsx
+      # Sheet名称
+      sheet_name: Sheet1
+      sheet_config:
+        # 表头行索引
+        header_row: 1
+        # 客户经理列索引
+        name_column: 4
+        # 客户姓名列索引
+        client_name_column: 5
+        # 客户联系方式列索引
+        client_contact_info_column: 6
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          # 垫款额
+          18: 心卡
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [4, 5, 7-22]
+    # 转账支付卡
+    transfer_payment_card:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 转卡
+      # 转卡发卡及相关数据明细表文件路径
+      source_file_path: 转卡发卡及相关数据明细表.xlsx
+      # Sheet名称
+      sheet_name: Sheet1
+      sheet_config:
+        # 表头行索引
+        header_row: 1
+        # 客户经理列索引
+        name_column: 4
+        # 客户姓名列索引
+        client_name_column: 5
+        # 客户联系方式列索引
+        client_contact_info_column: 6
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          # 垫款额
+          18: 转卡
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [4, 5, 7-22]
+    # 易得贷
+    easy_loan:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 易得贷
+      # 易得贷客户经理业绩表文件路径
+      source_file_path: 易得贷客户经理业绩查询报表.xlsx
+      # Sheet名称
+      sheet_name: 易得贷客户经理业绩查询报表
+      sheet_config:
+        # 表头行索引
+        header_row: 3
+        # 工号列索引
+        id_column: 2
+        # 客户经理列索引
+        name_column: 3
+        # 所属支行列索引
+        branch_column: 1
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          6: 易得贷
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 大额分期
+    large_installments:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 分期余额
+      # 信用卡大额分期报表文件路径
+      source_file_path: 信用卡大额分期（非循环）时点日报（含个人明细）.xlsx
+      # Sheet名称
+      sheet_name: 信用卡大额分期（非循环）时点日报（含个人明细）
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 3
+        # 员工姓名列索引
+        name_column: 4
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          11: 分期余额
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [3-13]
+    # 分支行消费信贷产能表
+    consumption_loan_productivity:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 分支行消费信贷产能表
+      # 信用卡大额分期报表文件路径
+      source_file_path: 分支行消费信贷产能表.xlsx
+      # Sheet名称
+      sheet_name: 客户经理
+      # 过滤的机构名称
+      filter_branch_name: 广州分行
+      sheet_config:
+        # 表头行索引
+        header_row: 3
+        # 员工工号列索引
+        id_column: 0
+        # 员工姓名列索引
+        name_column: 1
+        # 分支行列索引
+        branch_column: 3
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          8: 消费信贷本年申请数合计
+        # 需要播报的列的索引与输出列名对
+        report_column_pairs:
+          # 列索引：输出的列名
+          24:
+            title: 秒贷(含易得贷)进件
+            unit: 户[拳头]
+          25:
+            title: 心意通卡进件
+            unit: 户[拳头]
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 消费信贷余额结构表（多维度）
+    consumption_loan_balance:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 消费信贷余额结构表（多维度）
+      # 信用卡大额分期报表文件路径
+      source_file_path: 消费信贷余额结构表（多维度）.xlsx
+      # Sheet名称
+      sheet_name: 客户经理
+      # 过滤的机构名称
+      filter_branch_name: 广州分行
+      sheet_config:
+        # 表头行索引
+        header_row: 3
+        # 员工工号列索引
+        id_column: 1
+        # 员工姓名列索引
+        name_column: 2
+        # 分支行列索引
+        branch_column: 4
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          5: 消费信贷余额合计
+        # 需要播报的列的索引与输出列名对
+        report_column_pairs:
+          # 列索引：输出的列名
+          18:
+            title: 快乐秒贷新增余额
+            unit: 万元[烟花]
+          24:
+            title: 易得贷新增余额
+            unit: 万元[烟花]
+          30:
+            title: 心意通卡新增余额
+            unit: 万元[烟花]
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 贷款明细
+    loan_detail:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 线下+房抵贷+秒贷
+      # 业务种类与业务大类对应关系，最后余额会按业务大类汇总
+      business_type_mapping:
+        一手楼住房按揭贷款: 按揭
+        二手楼住房按揭贷款: 按揭
+        一手楼个人商业用房按揭贷款: 按揭
+        二手楼个人商业用房按揭贷款: 按揭
+        个人经营贷款(快乐房抵贷): 经营
+        个人经营贷款: 经营
+        个人消费贷款(快乐秒贷): 秒贷
+        个人消费贷款: 消费
+        个人经营贷款(新心助力贷): 经营
+        房e快贷: 经营
+        呼啦快贷: 经营
+      # 贷款明细报表文件路径
+      source_file_path: 贷款明细报表查询_下载.xlsx
+      # Sheet名称
+      sheet_name: 贷款明细报表查询_下载
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 客户经理列索引
+        name_column: 18
+        # 客户名称列索引
+        client_name_column: 2
+        # 客户证件号码列索引
+        client_id_column: 3
+        # 余额列索引
+        balance_column: 7
+        # 业务种类列索引
+        business_type_column: 4
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [0-2, 4, 5, 7-9, 13, 15-18]
+  # 湘籍客户分析
+  hn_client:
+    # 是否启用分析，True：分析，False：不分析
+    enabled: true
+    # 业务分类类型说明
+    business_type: 湘籍客户
+    # 生成的Excel中机构列的列名
+    target_branch_column_name: 所在部门
+    # 生成的Excel中湘籍客户数量列的列名
+    target_hn_client_column_name: 湘籍客户数
+    # 湘籍客户身份证前缀
+    hn_client_id_prefix: "'43"
+    # 是否使用手工计算的数据
+    is_using_manual_data: true
+    # 日期格式
+    date_format: '%Y%m%d'
+    # 此日期之前使用手工计算的结果（如果上面的开关配置为True）
+    manual_calculate_base_date: '20210831'
+    # 手动计算湘籍客户
+    manual:
+      # 湘籍客户-手工统计文件路径
+      source_file_path: 湘籍客户-手工统计.xlsx
+      # 基数列名格式
+      base_month_format: '%Y年%m月'
+      # Sheet名称
+      sheet_name: 基数汇总
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 所在部门索引
+        branch_column: 0
+        # 年初基数列索引
+        yearly_base_column: 1
+    # 湘籍个人客户
+    personal:
+      # 湘籍客户文件路径
+      source_file_path: 湘籍客户交叉销售明细表.csv
+      sheet_config:
+        # 表头行索引
+        header_row: 0
+        # 二级分支机构列索引
+        branch_column: 1
+        # 客户姓名列索引
+        name_column: 5
+        # 客户身份证号码列索引
+        client_id_column: 6
+        # 开户日期列索引
+        account_open_date_column: 3
+    # 湘籍企业客户
+    corporate:
+      # 湘籍企业客户清单文件路径
+      source_file_path: 2021年上门开户统计清单汇总.xlsx
+      # Sheet名称
+      sheet_name: Sheet1
+      sheet_config:
+        # 表头行索引
+        header_row: 1
+        # 上门开户日期列索引
+        account_open_date_column: 1
+        # 户数列索引
+        total_client_column: 3
+        # 其中湘籍客户数列索引
+        hn_client_column: 4
+        # 归属支行/团队列索引
+        attribute_branch_column: 6
+        # 上门网点列索引
+        service_branch_column: 7
+        # 是否湘籍客户列索引
+        is_hn_client_column: 8
+
+  # 信用卡业务
+  credit_card:
+    # 信用卡收入（含个人明细）
+    income:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 信用卡收入税后
+      # 信用卡收入（含个人明细）文件路径
+      source_file_path: 信用卡收入税后（含个人明细）.xlsx
+      # Sheet名称
+      sheet_name: 信用卡收入税后（含个人明细）
+      sheet_config:
+        # 表头行索引
+        header_row: 3
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          8: 信用卡非息收入合计
+          21: 信用卡收入
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [4-17]
+    # 信用卡大额分期（非循环）投放额日报（含个人明细）
+    credit_amount:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 分期投放
+      # 信用卡大额分期（非循环）投放额日报（含个人明细）文件路径
+      source_file_path: 信用卡大额分期（非循环）投放额日报（含个人明细）.xlsx
+      # Sheet名称
+      sheet_name: 信用卡大额分期（非循环）投放额日报（含个人明细）
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 3
+        # 员工姓名列索引
+        name_column: 4
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          # 合计
+          11: 分期投放
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [3-12]
+    # 信用卡发卡量（含个人明细）
+    issue_count:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 信用卡发卡量
+      # 信用卡发卡量（含个人明细）文件路径
+      source_file_path: 信用卡发卡量（含个人明细）.xlsx
+      # Sheet名称
+      sheet_name: 信用卡发卡量（含个人明细）
+      sheet_config:
+        # 表头行索引
+        header_row: 3
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          6: 信用卡发卡量
+          15: 历史累计发卡量
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [4-20]
+    # 信用卡批核率统计报表
+    issue_rate:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 信用卡进件
+      # 信用卡批核率统计报表文件路径
+      source_file_path: 信用卡批核率统计报表.xlsx
+      # Sheet名称
+      sheet_name: 信用卡批核率统计报表
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          6: 信用卡进件
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 2022旺季营销信用卡有效发卡日报（含个人明细）
+    valid_issue_count:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 信用卡发卡量
+      # 2022旺季营销信用卡有效发卡日报（含个人明细）文件路径
+      source_file_path: 2022旺季营销信用卡有效发卡日报（含个人明细）.xlsx
+      # Sheet名称
+      sheet_name: 2022旺季营销信用卡有效发卡日报（含个人明细）
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          12: 信用卡有效户
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 信用卡有效卡日报表（含个人明细表）
+    daily_valid_issue_count:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 信用卡有效卡
+      # 信用卡有效卡日报表（含个人明细表）文件路径
+      source_file_path: 信用卡有效卡日报表（含个人明细表）.xlsx
+      # Sheet名称
+      sheet_name: 信用卡有效卡日报表（含个人明细表）
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          10: 当年新增信用卡有效户数
+          13: 累计信用卡有效户数
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+    # 分支行信用卡垫款余额
+    advance_amount_balance:
+      # 是否启用分析，True：分析，False：不分析
+      enabled: true
+      # 业务分类类型说明
+      business_type: 分支行信用卡垫款余额
+      # 分支行信用卡垫款余额.xlsx
+      source_file_path: 分支行信用卡垫款余额.xlsx
+      # Sheet名称
+      sheet_name: 分支行信用卡垫款余额
+      sheet_config:
+        # 表头行索引
+        header_row: 2
+        # 员工工号列索引
+        id_column: 4
+        # 员工姓名列索引
+        name_column: 5
+        # 需要统计的列的索引与输出列名对
+        value_column_pairs:
+          # 列索引：输出的列名
+          # 大额分期余额
+          8: 大额分期余额
+        # 源数据导出，所有需要导出列的索引列表
+        export_column_list: [all]
+
+  # 按机构汇总分析
+  branch_summary:
+    # 是否启用分析，True：分析，False：不分析
+    enabled: true
+    # 业务分类类型说明
+    business_type: 机构汇总
+    # 大类汇总
+    business_type_summary:
+      个经:
+        - 融卡
+        - 转卡
+        - 经营
+      个消:
+        - 心卡
+        - 易得贷
+        - 分期余额
+        - 按揭
+        - 消费
+        - 秒贷
+      个人业务非息收入:
+        - 基金确认金额中收
+        - 理财中收（CIF）
+        - 贵金属交易手续费
+        - 代理保险中收
+        - 代理信托中收
+      消贷:
+        - 心卡
+        - 易得贷
+        - 按揭
+        - 消费
+        - 秒贷
+environment: production
