@@ -1,0 +1,45 @@
+{% extends 'portfolio/_common.html' %}
+{% load static %}
+
+{% block portfolio %}
+<!-- ======= Portfolio Section ======= -->
+<section id="portfolio" class="portfolio section-bg">
+  <div class="container" data-aos="fade-up">
+
+    <div class="section-title">
+      <h2>{{ portfolio.title }}</h2>
+      <p>{{ portfolio.subtitle }}</p>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
+        <ul id="portfolio-flters">
+          <li data-filter="*" class="filter-active">All</li>
+          {% for filter in categories.all %}
+          <li data-filter=".filter-{{ filter }}">{{ filter }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="row portfolio-container" data-aos="fade-up" data-aos-delay="200">
+      {% for item in items.all %}
+      <div class="col-lg-4 col-md-6 portfolio-item filter-{{ item.filter }}">
+        <div class="portfolio-wrap">
+          <img src="{{ item.image1.url }}" class="img-fluid" alt="">
+          <div class="portfolio-info">
+            <h4>{{ item.title }}</h4>
+            <p>{{ item.subtitle }}</p>
+            <div class="portfolio-links">
+              <!-- <a href="{{ item.image1.url }}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{ item.title }}"><i class="bx bx-plus"></i></a> -->
+              <a href="{% url 'portfolio_details:details' theme color item.id %}" class="portfolio-details-lightbox" data-glightbox="type: external" title="More Details"><i class="bx bx-link"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section><!-- End Portfolio Section -->
+{% endblock %}
