@@ -1,0 +1,131 @@
+Metadata-Version: 2.1
+Name: tqsdk2
+Version: 2.0.8
+Summary: TianQin SDK2
+Home-page: UNKNOWN
+Author: TianQin
+Author-email: tianqincn@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+
+<p align="center">
+  <img src ="https://raw.githubusercontent.com/shinnytech/tqsdk-python/master/doc/images/tqsdk_new_logo.png"/>
+</p>
+<p align="center">
+    <img src ="https://img.shields.io/pypi/v/tqsdk2?color=blueviolet">
+    <img src ="https://img.shields.io/badge/platform-windows|ubuntu20.04|debian10-green.svg"/>
+    <img src ="https://img.shields.io/badge/python-3.6+-blue.svg" />
+    <img src ="https://img.shields.io/pypi/dm/tqsdk2?color=yellowgreen">
+    <img src ="https://img.shields.io/github/license/shinnytech/tqsdk-python.svg?color=orange"/>
+</p>
+
+TqSdk2 天勤量化交易策略程序开发包
+====================================
+
+TqSdk2 是一个由 [信易科技](https://www.shinnytech.com) 发起并贡献主要代码的, 采用 C++ 核心架构, 对外提供 python 和 C++ 接口的库.
+
+依托 [快期多年积累成熟的交易和行情服务器体系](https://www.shinnytech.com/diff) 和开源量化 python 库 [TqSdk](https://github.com/shinnytech/tqsdk-python), 
+TqSdk2 支持用户使用很少的代码量构建各种类型的量化交易策略程序, 并提供包含 历史数据-实时数据-开发调试-策略回测-模拟交易-实盘交易-运行监控-风险管理 的全套解决方案
+
+```python
+  from tqsdk2 import TqApi, TqAuth, TqAccount, TargetPosTask
+
+  api = TqApi(TqAccount("H海通期货", "4003242", "123456"), auth=TqAuth("信易账户", "账户密码"))      # 创建 TqApi 实例, 指定交易账户
+  q_1910 = api.get_quote("SHFE.rb1910")                         # 订阅近月合约行情
+  t_1910 = TargetPosTask(api, "SHFE.rb1910")                    # 创建近月合约调仓工具
+  q_2001 = api.get_quote("SHFE.rb2001")                         # 订阅远月合约行情
+  t_2001 = TargetPosTask(api, "SHFE.rb2001")                    # 创建远月合约调仓工具
+
+  while True:
+    api.wait_update()                                           # 等待数据更新
+    spread = q_1910.last_price - q_2001.last_price        # 计算近月合约-远月合约价差
+    print("当前价差:", spread)
+    if spread > 250:
+      print("价差过高: 空近月，多远月")                            
+      t_1910.set_target_volume(-1)                              # 要求把1910合约调整为空头1手
+      t_2001.set_target_volume(1)                               # 要求把2001合约调整为多头1手
+    elif spread < 200:
+      print("价差回复: 清空持仓")                               # 要求把 1910 和 2001合约都调整为不持仓
+      t_1910.set_target_volume(0)
+      t_2001.set_target_volume(0)
+```
+
+要快速了解如何使用TqSdk2 , 可以访问我们的 [十分钟快速入门指南](https://doc.shinnytech.com/tqsdk2/latest/quickstart.html).
+
+Features
+----------------------------------------------------
+TqSdk2 提供的功能可以支持从简单到复杂的各类策略程序.
+
+* 提供当前所有可交易合约从上市开始的 **全部Tick数据和K线数据**
+* 支持数十家期货公司的 **实盘交易**
+* 支持通过直连模式接入期货公司进行交易
+* 支持直连直连模式接入期货公司 CTP 柜台
+* 支持 **模拟交易**
+* 提供近百个 **技术指标函数及源码**
+* 用户无须建立和维护数据库, 行情和交易数据全在 **内存数据库** , 无访问延迟
+* 优化支持 **pandas** 和 **numpy** 库
+* 无强制框架结构, 支持任意复杂度的策略, 在一个交易策略程序中使用多个品种的K线/实时行情并交易多个品种
+
+Installation
+-------------------------------------------------
+TqSdk2 支持 Windows 和 Ubuntu 20.04 环境下 Python 3.6.4 及以上版本。
+
+### Windows
+
+TqSdk2 核心代码依赖 C++ 运行库, 若您的环境中缺少该库, 可以到微软官网下载安装对应版本即可([ vc_redist 下载地址](https://www.microsoft.com/en-us/download/details.aspx?id=48145)).
+
+推荐使用 pip 进行安装
+
+``` {.sourceCode .bash}
+$ pip install tqsdk2
+```
+
+### Linux
+
+TqSdk2 采用发布包遵循 [PEP600](https://www.python.org/dev/peps/pep-0600) 标准, 支持 Linux 发行版如下:
+
+- <img src ="https://img.shields.io/badge/ubuntu20.04-red.svg"/>
+
+- <img src ="https://img.shields.io/badge/debian10-critical.svg"/>
+
+- <img src ="https://img.shields.io/badge/debian11-important.svg"/>
+
+ 安装如下:
+
+``` {.sourceCode .bash}
+$ sudo apt update
+$ sudo apt install -y build-essential
+$ sudo apt install -y python3 python3-pip
+$ sudo pip install pip --upgrade
+$ sudo pip install tqsdk2
+```
+
+注: 国内用户使用 pip 进行 Python 包安装下载时, 默认采用的是国外镜像源, 下载速度可能较慢. 
+推荐[切换至清华源](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/) 后再进行 TqSdk2 的下载安装.
+
+
+Documentation
+-------------------------------------------------
+在线阅读HTML版本文档: https://doc.shinnytech.com/tqsdk2/latest
+
+在线问答社区: https://www.shinnytech.com/qa
+
+知乎账户【天勤量化】：https://www.zhihu.com/org/tian-qin-liang-hua/activities
+
+用户交流QQ群: **619870862** (目前只允许给我们点过STAR的同学加入, 加群时请提供github用户名)
+
+License
+-------------------------------------------------
+TqSdk2 在 Apache License 2.0 协议下提供, 使用者可在遵循此协议的前提下自由使用本软件.
+
+
+About us
+-------------------------------------------------
+[信易科技](https://www.shinnytech.com) 是专业的期货软件供应商和交易所授权行情服务商. 旗下的快期系列产品已为市场服务超过10年. 
+
+
+
