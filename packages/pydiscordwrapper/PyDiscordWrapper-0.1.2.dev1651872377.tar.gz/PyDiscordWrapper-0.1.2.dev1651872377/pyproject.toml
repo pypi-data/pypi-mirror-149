@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "PyDiscordWrapper"
+version = "0.1.2.dev.1651872377"
+authors = ["Marco Müllner <muellnermarco@gmail.com>"]
+description = "A simple wrapper for the Discord API for Python using async/non async methods with httpx and pydantic."
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/MarcoMuellner/PyDiscordWrapper"
+repository = "https://github.com/MarcoMuellner/PyDiscordWrapper"
+keywords = ["discord","wrapper","api","python","async","non","async","httpx","pydantic"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+httpx = "^0.22.0"
+pydantic = "^1.9.0"
+importlib-metadata = {version = "^4.11.3", python = "<3.8"}
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+coverage = {extras = ["toml"], version = "^6.3.2"}
+pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.18.3"
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["PyDiscordWrapper"]
+
+[tool.coverage.report]
+show_missing = true
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
