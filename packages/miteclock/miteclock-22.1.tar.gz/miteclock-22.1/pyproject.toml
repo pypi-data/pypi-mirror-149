@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "miteclock"
+version = "22.1"
+description = "Clock in and out of mite.yo.lk quickly."
+authors = ["Ilia Kurenkov <ilia.kurenkov@gmail.com>"]
+license="MIT"
+readme = "README.md"
+
+homepage = "https://github.com/iliakur/miteclock"
+repository = "https://github.com/iliakur/miteclock"
+
+keywords = ['time-tracking', 'productivity']
+classifiers = [
+            "Development Status :: 5 - Production/Stable",
+            "Environment :: Console",
+            "Intended Audience :: Developers",
+            "Intended Audience :: Information Technology",
+            "Intended Audience :: System Administrators",
+            "Operating System :: Unix"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = ">=2.23.0"
+click = ">=7.1.1"
+click-aliases = ">=1.0.1"
+backoff = ">=1.11.1"
+tomlkit = "^0.7.2"
+attrs = "^21.4.0"
+importlib-metadata = {version = "^4.10.0", python = "3.7"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=6.2"
+pytest-randomly = ">=3.3.1"
+pytest-xdist = ">=1.32.0"
+pytest-cov = ">=2.10.0"
+tox = ">=3.14.6"
+tox-pyenv = ">=1.1.0"
+pre-commit = ">=2.4.0"
+isort = "*"
+ipython = "*"
+black = {version = "^21.12b0", allow-prereleases = true}
+hypothesis = "^6.31.6"
+pytest-clarity = "^1.0.1"
+
+[tool.poetry.scripts]
+# If you change this, don't forget to re-generate shell completions for it.
+m='miteclock.cli:main'
+
+[tool.isort]
+known_third_party = ["attrs", "backoff", "click", "click_aliases", "hypothesis", "pytest", "requests", "tomlkit"]
+known_first_party = ["miteclock"]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
