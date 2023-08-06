@@ -1,0 +1,192 @@
+Metadata-Version: 2.1
+Name: eta-utility
+Version: 1.4.1b1
+Summary: A framework for researching energy optimization of factory operations
+Home-page: https://eta-fabrik.de
+Author: Technical University of Darmstadt, Institute for Production Management, Technology and Machine Tools (PTW).
+Author-email: info@ptw.tu-darmstadt.de
+License: BSD 2-Clause License
+Project-URL: Documentation, https://eta-fabrik.pages.rwth-aachen.de/public/eta-utility/
+Project-URL: Source, https://git.rwth-aachen.de/eta-fabrik/public/eta-utility
+Project-URL: Issues, https://git.rwth-aachen.de/eta-fabrik/public/eta-utility/-/issues
+Keywords: connectors,servers,simulators,industrial energy optimization,rolling horizon optimization
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Manufacturing
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Requires-Python: >=3.7<=3.8
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: opcua
+Requires-Dist: cryptography
+Requires-Dist: attrs
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: xlrd
+Requires-Dist: requests
+Requires-Dist: lxml
+Requires-Dist: fmpy (>=0.3.5)
+Requires-Dist: python-dateutil
+Requires-Dist: pyModbusTCP
+Requires-Dist: nptyping
+Provides-Extra: develop
+Requires-Dist: gym ; extra == 'develop'
+Requires-Dist: torch ; extra == 'develop'
+Requires-Dist: stable-baselines3 ; extra == 'develop'
+Requires-Dist: tensorboard ; extra == 'develop'
+Requires-Dist: pyomo (<6) ; extra == 'develop'
+Requires-Dist: mmh3 ; extra == 'develop'
+Requires-Dist: sphinx ; extra == 'develop'
+Requires-Dist: sphinx-rtd-theme ; extra == 'develop'
+Requires-Dist: pre-commit ; extra == 'develop'
+Requires-Dist: pytest ; extra == 'develop'
+Requires-Dist: pytest-cov ; extra == 'develop'
+Requires-Dist: black ; extra == 'develop'
+Requires-Dist: blacken-docs ; extra == 'develop'
+Requires-Dist: isort ; extra == 'develop'
+Requires-Dist: pyupgrade ; extra == 'develop'
+Requires-Dist: mypy ; extra == 'develop'
+Requires-Dist: types-python-dateutil ; extra == 'develop'
+Requires-Dist: types-requests ; extra == 'develop'
+Requires-Dist: flake8 ; extra == 'develop'
+Requires-Dist: pyflakes ; extra == 'develop'
+Requires-Dist: pycodestyle ; extra == 'develop'
+Requires-Dist: flake8-builtins ; extra == 'develop'
+Requires-Dist: flake8-eradicate ; extra == 'develop'
+Requires-Dist: flake8-comprehensions ; extra == 'develop'
+Requires-Dist: flake8-mutable ; extra == 'develop'
+Requires-Dist: flake8-print ; extra == 'develop'
+Requires-Dist: flake8-pytest-style ; extra == 'develop'
+Requires-Dist: flake8-requirements ; extra == 'develop'
+Requires-Dist: pep8-naming ; extra == 'develop'
+Requires-Dist: flake8-rst-docstrings ; extra == 'develop'
+Provides-Extra: eta_x
+Requires-Dist: gym ; extra == 'eta_x'
+Requires-Dist: torch ; extra == 'eta_x'
+Requires-Dist: stable-baselines3 ; extra == 'eta_x'
+Requires-Dist: tensorboard ; extra == 'eta_x'
+Requires-Dist: pyomo (<6) ; extra == 'eta_x'
+Requires-Dist: mmh3 ; extra == 'eta_x'
+
+ETA Utility Functions
+======================
+
+While there are many tools which are useful in the area of energy optimized factory operations, at the
+`ETA-Fabrik <https://eta-fabrik.de>`_ at Technical University of Darmstadt we have recognized a lack of
+comprehensive frameworks which combine functionality for optimization, simulation and communication with
+devices in the factory.
+
+Therefore, we developed the *eta_utility* framework, which provides a standardized interface for the development
+of digital twins of factories or machines in a factory. The framework is based on the OpenAI gym environment
+and follows a rolling horizon optimization approach. It provides standardized connectors for multiple
+communication protocols, including OPC UA and Modbus TCP. These facilities can be utilized to easily implement
+rolling horizon optimizations for factory systems and to directly control devices in the factory with the
+optimization results.
+
+Full Documentation can be found on the
+`Documentation Page <https://eta-fabrik.pages.rwth-aachen.de/public/eta-utility/>`_.
+
+The git repository is `hosted on gitlab <https://git.rwth-aachen.de/eta-fabrik/public/eta-utility>`_.
+
+
+.. warning::
+    This is beta software. APIs and functionality might change without prior notice. Please fix the version you
+    are using in your requirements to ensure your software will not be broken by changes in *eta_utility*.
+
+The package *eta_utility* consists of five main modules and some additional functionality:
+
+- *eta_x* is the rolling horizon optimization module which combines the functionality of the
+  other modules. It is based on the OpenAI *gym* framework and utilizes algorithms and functions
+  from the *stable_baselines3* package. *eta_x* also contains extended base classes for
+  environments and additional agents (or algorithms).
+- The *connectors* module provides a standardized way to connect to machines and devices in a
+  factory or other factory systems (such as energy management systems). The **connectors** can also
+  handle subscriptions, for example to regularly store values in a database.
+- The *servers* module can be used to easily instantiate servers, for example to publish optimization
+  results.
+- *simulators* are interfaces based on the *fmpy* package which provide a way to simulate FMU
+  (Functional Mockup Unit) models.
+  The  *simulators* can be used to perform quick complete simulations or to step through simulation
+  models, as would be the case in rolling horizons optimization.
+- *timeseries* is an interface based on the *pandas* package to load and manipulate timeseries data
+  from CSV files. It can for example rename columns, resample data in more complex ways such as
+  multiple different resampling intervals or select random time slices from data. The *scenario_from_csv* function combines much of this functionality.
+- Other functionality includes some general utilities which are available on the top level of the
+  package.
+
+Some particularities
+----------------------
+
+If you want to have logging output from eta utility, call:
+
+.. code-block::
+
+    from eta_utility import get_logger
+    get_logger()
+
+**eta_utility** uses dataframes to pass timeseries data and the dataframes are ensured to
+contain timezone information where sensible.
+
+Citing this project
+--------------------
+
+Please cite this project using our publication:
+
+.. code-block::
+
+    Grosch, B., Ranzau, H., Dietrich, B., Kohne, T., Sossenheimer, J., Lindner, M.,
+    Fuhrländer-Völker, D., Weigold, M., A framework for researching energy optimization of factory operations. ... Publication in review.
+
+We would like to thank the many contributors who developed functionality for the package, helped with
+documentation or provided insights which helped to create the framework architecture.
+
+- *Niklas Panten* for the first implementation of the rolling horizon optimization now available in
+  *eta_x*,
+- *Nina Strobel* for the first implementation of the connectors,
+- *Thomas Weber* for contributions to the rolling horizon optimization with MPC algorithms,
+- *Guilherme Fernandes*, *Tobias Koch*, *Tobias Lademann*, *Saahil Nayyer*, *Magdalena Patyna*, *Jerome Stock*,
+- and all others who made small and large contributions.
+
+Contributions
+--------------------
+
+If you would like to contribute, please create an issue in the repository to discuss you suggestions.
+Once the general idea has been agreed upon, you can create a merge request from the issue and
+implement your changes there.
+
+BSD 2-Clause License
+-----------------------
+
+Copyright (c) 2022, Technical University of Darmstadt, Institute for Production Management, Technology and Machine Tools (PTW).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
