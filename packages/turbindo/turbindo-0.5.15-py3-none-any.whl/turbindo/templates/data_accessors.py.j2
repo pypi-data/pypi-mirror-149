@@ -1,0 +1,50 @@
+#CODE GENERATED -- FILE DO NOT MODIFY
+
+from typing import AsyncIterator, List
+
+from turbindo.database.base_object import SPECIAL_TYPES
+from turbindo.std.streams.stream import Stream
+from turbindo.runtime.exceptions import NoRowFoundException
+
+{% for cls in data_objects  if cls.__name__ != "AbstractDataTable"  %}
+from {{ data_class_pkg }} import {{ cls.__name__ }}
+{% endfor %}
+
+{% for cls in data_objects if cls.__name__ != "AbstractDataTable" %}
+async def has{{ cls.__name__ }}(id) -> bool:
+  try:
+    await {{ cls.__name__ }}(id).read()
+  except NoRowFoundException:
+    return False
+  return True
+
+async def read{{ cls.__name__ }}(id) -> {{ cls.__name__ }}:
+  return await {{ cls.__name__ }}(id).read()
+
+async def write{{ cls.__name__ }}(id, {{ class_type_map[cls.__name__] | join("=SPECIAL_TYPES.NOT_SET, ") }}=SPECIAL_TYPES.NOT_SET) -> {{ cls.__name__ }}:
+  return await {{ cls.__name__ }}(id).set({{ class_prop_map[cls.__name__] | doubleq | join(", ") }})
+
+async def delete{{ cls.__name__ }}(id):
+  return await {{ cls.__name__ }}(id).delete()
+
+async def iterate{{ cls.__name__ }}() -> AsyncIterator[{{ cls.__name__ }}]:
+  raise Exception("unimplemented")
+
+async def dumpAll{{ cls.__name__ }}() -> List[{{ cls.__name__ }}]:
+  return await {{ cls.__name__ }}.dumpAll()
+
+async def iterateKeys{{ cls.__name__ }}() -> AsyncIterator[str]:
+  raise Exception("unimplemented")
+
+async def dumpAllKeys{{ cls.__name__ }}() -> List[str]:
+  return await {{ cls.__name__ }}.dumpAllKeys()
+
+async def clearAll{{ cls.__name__ }}():
+  return await {{ cls.__name__ }}.truncate()
+
+async def stream{{ cls.__name__ }}() -> Stream:
+  raise Exception("unimplemented")
+
+async def select{{ cls.__name__ }}Where( {{ class_type_map[cls.__name__] | join("=SPECIAL_TYPES.NOT_SET, ") }}=SPECIAL_TYPES.NOT_SET) -> List[{{ cls.__name__ }}]:
+  return await {{ cls.__name__ }}.selectWhere({{ class_prop_map[cls.__name__] | doubleq | join(", ") }})
+{% endfor %}
