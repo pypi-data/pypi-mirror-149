@@ -1,0 +1,152 @@
+image: python:latest
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - .venv/
+
+stages:
+  - linting
+  - test
+  - coverage
+  - publish
+
+coverage:
+  stage: coverage
+  before_script:
+    - pip install -U pip
+    - pip install .
+    - pip install coverage
+  script:
+    - coverage run -m unittest discover -s test/ -p "test_*.py" &> /dev/null
+    - coverage report -m
+  coverage: /TOTAL.*\s+(\d+%)$/
+
+black:
+  stage: linting
+  image: python:3.8
+  before_script:
+    - python -V
+    - pip install -U pip
+    - pip install black
+  script:
+    - black --check --verbose -- .
+
+
+flake8:
+  stage: linting
+  image: python:3.8
+  before_script:
+    - python -V
+    - pip install -U pip
+    - pip install flake8
+  script:
+    - flake8 --verbose .
+
+test3.8:
+  stage: test
+  image: python:3.8
+  before_script:
+    - python -V  # Print out python version for debugging
+    - python3 -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install .
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.7:
+  stage: test
+  image: python:3.7
+  before_script:
+    - python -V  # Print out python version for debugging
+    - python3 -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install .
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.9:
+  stage: test
+  image: python:3.9
+  before_script:
+    - python -V  # Print out python version for debugging
+    - python3 -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install .
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.10:
+  stage: test
+  image: python:3.10
+  before_script:
+    - python -V  # Print out python version for debugging
+    - python3 -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install .
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test_documentation:
+  stage: test
+  before_script:
+    - python -V  # Print out python version for debugging
+    - python3 -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install .[docs]
+  script:
+    - cd docs
+    - sphinx-build -M html . build -W
+
+publish_on_test_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --upgrade build twine
+    - python3 -m build
+    - python3 -m twine upload --repository testpypi dist/* -u __token__ -p $TEST_PYPI_TOKEN
+
+install_from_test_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  needs: ["publish_on_test_pypi"]
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.python.org/simple gbprocess-ngs==$CI_COMMIT_REF_NAME
+    - python3 -m gbprocess --help
+
+publish_on_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  needs:
+    ["install_from_test_pypi"]
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --upgrade build twine
+    - python3 -m build
+    - python3 -m twine upload dist/* -u __token__ -p $PYPI_TOKEN
