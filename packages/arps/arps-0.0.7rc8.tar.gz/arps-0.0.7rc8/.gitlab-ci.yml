@@ -1,0 +1,17 @@
+image: "python:3.7"
+
+stages:
+  - test
+  - integration_test
+
+test:
+  stage: test
+  script:
+  - pip install -e .
+  - pytest arps/tests
+
+integration_test:
+  stage: integration_test
+  script:
+  - pip install -e .
+  - pytest -o "addopts=-x" arps/integration_tests
