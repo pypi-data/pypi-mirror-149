@@ -1,0 +1,126 @@
+Metadata-Version: 2.1
+Name: itkdb
+Version: 0.4.0rc1
+Summary: Python wrapper to interface with ITk DB.
+Home-page: https://gitlab.cern.ch/atlas-itk/sw/db/itkdb
+Author: Giordon Stark
+Author-email: gstark@cern.ch
+License: UNKNOWN
+Keywords: physics itk database wrapper
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: COPYING
+Requires-Dist: requests (>=1.6.1)
+Requires-Dist: certifi
+Requires-Dist: cachecontrol[filecache]
+Requires-Dist: click (>=6.0)
+Requires-Dist: python-jose
+Requires-Dist: attrs
+Requires-Dist: python-dotenv
+Requires-Dist: simple-settings
+Requires-Dist: python-magic
+Requires-Dist: pylibmagic
+Requires-Dist: importlib-resources ; python_version < "3.9"
+Provides-Extra: complete
+Requires-Dist: bandit ; extra == 'complete'
+Requires-Dist: betamax ; extra == 'complete'
+Requires-Dist: betamax-serializers ; extra == 'complete'
+Requires-Dist: coverage ; extra == 'complete'
+Requires-Dist: flake8 ; extra == 'complete'
+Requires-Dist: matplotlib ; extra == 'complete'
+Requires-Dist: pre-commit ; extra == 'complete'
+Requires-Dist: pytest ; extra == 'complete'
+Requires-Dist: pytest-cov ; extra == 'complete'
+Requires-Dist: pytest-mock ; extra == 'complete'
+Requires-Dist: requests-mock ; extra == 'complete'
+Requires-Dist: tbump (>=6.7.0) ; extra == 'complete'
+Requires-Dist: twine ; extra == 'complete'
+Requires-Dist: black ; (python_version >= "3.6") and extra == 'complete'
+Provides-Extra: develop
+Requires-Dist: flake8 ; extra == 'develop'
+Requires-Dist: pytest ; extra == 'develop'
+Requires-Dist: pytest-cov ; extra == 'develop'
+Requires-Dist: pytest-mock ; extra == 'develop'
+Requires-Dist: coverage ; extra == 'develop'
+Requires-Dist: tbump (>=6.7.0) ; extra == 'develop'
+Requires-Dist: pre-commit ; extra == 'develop'
+Requires-Dist: bandit ; extra == 'develop'
+Requires-Dist: betamax ; extra == 'develop'
+Requires-Dist: betamax-serializers ; extra == 'develop'
+Requires-Dist: twine ; extra == 'develop'
+Requires-Dist: requests-mock ; extra == 'develop'
+Requires-Dist: black ; (python_version >= "3.6") and extra == 'develop'
+Provides-Extra: plotting
+Requires-Dist: matplotlib ; extra == 'plotting'
+
+# ITk DB v0.4.0rc1
+
+[![PyPI version](https://badge.fury.io/py/itkdb.svg)](https://badge.fury.io/py/itkdb)
+[![Downloads](https://pepy.tech/badge/itkdb)](https://pepy.tech/project/itkdb) [![Downloads](https://pepy.tech/badge/itkdb/month)](https://pepy.tech/project/itkdb) [![Downloads](https://pepy.tech/badge/itkdb/week)](https://pepy.tech/project/itkdb)
+
+To install as a user
+
+```
+pip install itkdb
+```
+
+or if you wish to develop/contribute
+
+```
+git clone ...
+pip install -e .[develop]
+```
+
+or
+
+```
+git clone ...
+pip install -e .[complete]
+```
+
+## Using
+
+Command line available via
+
+```
+itkdb --help
+```
+
+## Environment Variables
+
+See [itkdb/settings/base.py](src/itkdb/settings/base.py) for all environment variables that can be set. All environment variables for this package are prefixed with `ITKDB_`. As of now, there are:
+
+* `ITKDB_ACCESS_CODE1`: access code #1 for authentication
+* `ITKDB_ACCESS_CODE2`: access code #2 for authentication
+* `ITKDB_ACCESS_SCOPE`: scope for the access token authentication request
+* `ITKDB_AUTH_URL`: authentication server
+* `ITKDB_SITE_URL`: API server
+* `ITKDB_CASSETTE_LIBRARY_DIR`: for tests, where to store recorded requests/responses
+
+## Develop
+
+### Bump Version
+
+Run `bump2version x.y.z` to bump to the next version. We will always tag any version we bump, and this creates the relevant commits/tags for you. All you need to do is `git push --tags` and that should be it.
+
+# Examples
+
+```
+import itkdb
+
+client = itkdb.Client()
+comps = client.get(
+    'listComponents', json={'project': 'P', 'pageInfo': {'pageSize': 32}}
+)
+
+for i, comp in enumerate(comps):
+    print(i, comp['code'])
+```
+
+
