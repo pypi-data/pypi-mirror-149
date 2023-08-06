@@ -1,0 +1,3 @@
+# AMP-SCZ Dicom Anonymizer
+
+
