@@ -1,0 +1,20 @@
+{%- if interface.mtu is defined and interface.mtu != None or interface.macaddress is defined and interface.macaddress != None %}
+[Link]
+{%- if interface.mtu != None %}
+MTUBytes={{ interface.mtu }}
+{%- endif %}
+{%- if interface.macaddress != None %}
+MACAddress={{ interface.macaddress }}
+{%- endif %}
+{%- endif %}
+{#-
+# ARP=
+# Multicast=
+# AllMulticast=
+# Promiscuous=
+# Unmanaged=
+# Group=
+# RequiredForOnline=
+# RequiredFamilyForOnline=
+# ActivationPolicy=
+-#}

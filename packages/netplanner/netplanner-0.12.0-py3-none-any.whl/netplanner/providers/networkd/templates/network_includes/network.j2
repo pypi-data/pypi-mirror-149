@@ -1,0 +1,57 @@
+[Network]
+{%- if interface.description != None %}
+Description={{ interface.description }}
+{%- endif %}
+{%- if interface.vrf is defined and interface.vrf != None %}
+VRF={{ interface.vrf }}
+{%- endif %}
+{%- if interface.link_local != None %}
+LinkLocalAddressing={{ interface.link_local | to_systemd_link_local }}
+{%- if 'ipv6' in interface.link_local %}
+IPv6LinkLocalAddressGenerationMode=eui64
+{%- endif %}
+{%- endif %}
+{%- if interface.emit_lldp != None %}
+EmitLLDP={{ interface.emit_lldp | to_systemd_bool }}
+{%- endif %}
+{%- if interface.accept_ra != None %}
+IPv6AcceptRA={{ interface.accept_ra | to_systemd_bool }}
+{%- endif %}
+{%- if interface.addresses %}
+{%- for address in interface.addresses %}
+Address={{ address }}
+{%- endfor %}
+{%- endif %}
+{%- if interface.object_name == 'Ethernet' and parent_interface is defined and parent_interface != None %}
+{%- for parent_interface_name, parent_interface_config in parent_interface.items() %}
+{%- if parent_interface_config.object_name == 'Bond' and parent_interface_config.parameters.primary != None %}
+PrimarySlave={{ (True if parent_interface_config.parameters.primary == interface_name else False) | to_systemd_bool }}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{%- if interface.object_name not in ['Bond', 'Dummy'] and parent_interface is defined and parent_interface != None %}
+{%- for parent_interface_name, parent_interface in parent_interface.items() %}
+{%- if parent_interface.object_name == 'Bond' and interface.object_name == 'VLAN' %}
+ConfigureWithoutCarrier=yes
+{%- else %}
+{{ parent_interface.object_name }}={{ parent_interface_name }}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{%- if interface.object_name in ['Bond', 'Dummy'] and child_interfaces is defined %}
+{%- if interface.object_name == 'Bond' %}
+ConfigureWithoutCarrier=yes
+{%- endif %}
+{%- for child_interface_name, child_interface in child_interfaces.items() %}
+{%- if child_interface.object_name not in ['Ethernet'] %}
+{{ child_interface.object_name }}={{ child_interface_name }}
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+{#
+DNSDefaultRoute=
+NTP=
+IPVLAN=
+ActiveSlave=
+PrimarySlave=
+#}
