@@ -1,0 +1,30 @@
+Metadata-Version: 2.1
+Name: toolcli
+Version: 0.4.0
+Summary: toolcli makes it easy to create structured hierarchical cli tools
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: rich>=12.1.0
+Requires-Dist: typing_extensions>=0.4.0
+Requires-Dist: ipdb>=0.13.1 ; extra == "full"
+Provides-Extra: full
+
+# toolcli
+
+`toolcli` makes it simple to create modular command line interfaces
+
+the main usecase for `toolcli` is allowing many cli subcommands to be defined across many files in a performant way
+
+`toolcli` uses `argparse` under the hood, making it easy to transition from `argparse` to `toolcli` when a project is ready to scale to multiple subcommands or multiple files
+
+
+## Features
+- lazy loading of files for fast startup times
+- is agnostic to synchronous functions or `async` functions
+- uses `rich` for colorized help output
+- uses `argparse` under the hood for parsing arguments
+- no user-facing objects, just simple functions
+- built-in support for common subcommands like `help`, `cd`, and `version`
+- can use middleware before and/or after main command execution (e.g. for logging or additional context injection)
+
+
