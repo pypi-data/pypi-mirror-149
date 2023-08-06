@@ -1,0 +1,88 @@
+Metadata-Version: 2.1
+Name: starred
+Version: 4.0.1
+Summary: creating your own Awesome List used GitHub stars!
+Home-page: https://github.com/maguowei/starred
+Author: maguowei
+Author-email: imaguowei@gmail.com
+License: MIT
+Keywords: GitHub starred
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click (==8.1.3)
+Requires-Dist: requests (==2.27.1)
+Requires-Dist: github3.py (==3.2.0)
+
+# Starred
+
+[![ci](https://github.com/maguowei/starred/actions/workflows/ci.yml/badge.svg)](https://github.com/maguowei/starred/actions/workflows/ci.yml)
+[![Upload Python Package](https://github.com/maguowei/starred/actions/workflows/deploy.yml/badge.svg)](https://github.com/maguowei/starred/actions/workflows/deploy.yml)
+
+## Install
+
+```bash
+
+$ pip install starred
+$ starred --username maguowei --token=xxxxxxxx --sort > README.md
+```
+
+## Usage
+
+```bash
+$ starred --help
+
+Usage: starred [OPTIONS]
+
+  GitHub starred
+
+  creating your own Awesome List used GitHub stars!
+
+  example:     starred --username maguowei --token=xxxxxxxx --sort > README.md
+
+Options:
+  --username TEXT    GitHub username  [required]
+  --token TEXT       GitHub token  [required]
+  --sort             sort by language
+  --repository TEXT  repository name
+  --message TEXT     commit message
+  --version          Show the version and exit.
+  --help             Show this message and exit.
+```
+
+## Demo
+
+```bash
+# automatically create the repository
+$ export GITHUB_TOKEN=yourtoken
+$ starred --username yourname --repository awesome-stars --sort
+```
+
+- [`maguowei/awesome-stars`](https://github.com/maguowei/awesome-stars)
+- [update awesome-stars every day by GitHub Action](https://github.com/maguowei/awesome-stars/blob/master/.github/workflows/schedules.yml) the example with GitHub Action
+
+## FAQ
+
+1. Generate new token
+
+   link: [Github Personal access tokens](https://github.com/settings/tokens)
+
+2. Install the master branch version
+
+    ```bash
+    $ pip install -e git+https://github.com/maguowei/starred#egg=starred
+    ```
+
+
