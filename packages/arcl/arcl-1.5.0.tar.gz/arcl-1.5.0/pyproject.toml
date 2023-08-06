@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "arcl"
+version = "1.5.0"
+description = "The CLI for Archimedes"
+authors = ["Optimeering AS <dev@optimeering.com>"]
+license = "Apache-2.0"
+include = ["docs/*"]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+click = ">=7.0,<8.0"
+cookiecutter = ">=1.7.2"
+requests = "*"
+msal = ">=1.10.0,<2.0.0"
+msal-extensions = "^1.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+arcl = "arcl.cli:cli"
