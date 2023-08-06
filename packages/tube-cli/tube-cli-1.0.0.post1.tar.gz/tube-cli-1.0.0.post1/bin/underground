@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+import requests
+import xmltodict
+from termcolor import colored as coloured
+from datetime import datetime
+
+
+def underground():
+
+    res = "\n".join(
+        requests.get("http://cloud.tfl.gov.uk/TrackerNet/LineStatus").text.split("\n")[
+            1:
+        ]
+    )
+    line_info = xmltodict.parse(res)["ArrayOfLineStatus"]["LineStatus"]
+
+    lines = {}
+    for line in line_info:
+        affected = []
+        if line["BranchDisruptions"]:
+            data = line["BranchDisruptions"]["BranchDisruption"]
+            if isinstance(data, list):
+                for disruption in data:
+                    d = [
+                        disruption["StationFrom"]["@Name"],
+                        disruption["StationTo"]["@Name"],
+                    ]
+                    if disruption.get("StationVia"):
+                        d.append(disruption["StationVia"]["@Name"])
+                    if d not in affected:
+                        affected.append(d)
+            else:
+                disruption = data
+                d = [
+                    disruption["StationFrom"]["@Name"],
+                    disruption["StationTo"]["@Name"],
+                ]
+                if disruption.get("StationVia"):
+                    d.append(disruption["StationVia"]["@Name"])
+                if d not in affected:
+                    affected.append(d)
+        lines[line["Line"]["@Name"]] = {
+            "status": line["Status"]["@Description"],
+            "details": line["@StatusDetails"].replace("GOOD SERVICE", "Good service")
+            or None,
+            "affected": affected,
+        }
+    return lines
+
+
+lines = underground()
+print(
+    coloured(
+        f"Service Updates for London Underground, Overground, TfL Rail, DLR and Trams - {datetime.now().strftime('%A %-d %B, %H:%M')}",
+        attrs=["bold", "underline"],
+    )
+)
+for line, data in lines.items():
+    print(
+        coloured(
+            f"{line} {'Line' if line not in ['Overground', 'TfL Rail', 'DLR', 'Trams'] else ''}",
+            attrs=["bold"],
+        )
+    )
+    if data["status"] == "Good Service":
+        print(coloured("No disruptions to service", "green"))
+    elif data["details"]:
+        print(coloured(f"{data['status']} - {data['details']}", "red"))
+        if data["affected"]:
+            print(
+                coloured(
+                    "Affected Branches: "
+                    + " | ".join(
+                        [
+                            f"{i[0]} to {i[1]}{' via ' + i[2] if len(i) == 3 else ''}"
+                            for i in data["affected"]
+                        ]
+                    ),
+                    "red",
+                )
+            )
+    if line != "Trams":
+        print()
