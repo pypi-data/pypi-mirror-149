@@ -1,0 +1,2 @@
+class NotValidDNIException(ValueError):
+    pass
