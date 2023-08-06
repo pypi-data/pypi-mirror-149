@@ -1,0 +1,25 @@
+STP={{ "yes" if interface.parameters.stp else "no" }}
+{%- if interface.parameters.hello_time != None %}
+HelloTimeSec={{ interface.parameters.hello_time }}
+{%- endif %}
+{%- if interface.parameters.max_age != None %}
+MaxAgeSec={{ interface.parameters.max_age }}
+{%- endif %}
+{%- if interface.parameters.forward_delay != None %}
+ForwardDelaySec={{ interface.parameters.forward_delay }}
+{%- endif %}
+{%- if interface.parameters.ageing_time != None %}
+AgeingTimeSec={{ interface.parameters.ageing_time }}
+{%- endif %}
+{%- if interface.parameters.priority != None %}
+Priority={{ interface.parameters.priority }}
+{%- endif %}
+{%- if interface.parameters.default_vlan_port_id != None %}
+DefaultPVID={{ interface.parameters.default_vlan_port_id }}
+{%- endif %}
+{%- if interface.parameters.vlan_filtering != None %}
+VLANFiltering={{ interface.parameters.vlan_filtering | to_systemd_bool }}
+{%- endif %}
+{%- if interface.parameters.vlan_protocol != None %}
+VLANProtocol={{ interface.parameters.vlan_protocol }}
+{%- endif -%}

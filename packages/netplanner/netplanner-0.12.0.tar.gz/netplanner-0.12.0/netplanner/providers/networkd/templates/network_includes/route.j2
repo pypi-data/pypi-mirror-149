@@ -1,0 +1,49 @@
+{%- if interface.routes %}
+{%- for route in interface.routes %}
+[Route]
+{%- if route.on_link != None %}
+GatewayOnLink={{ route.on_link | to_systemd_bool }}
+{%- endif %}
+{%- if route._from %}
+Source={{ route._from }}
+{%- endif %}
+{%- if route.to != None %}
+Destination={{ route.to }}
+{%- endif %}
+{%- if route.via != None %}
+Gateway={{ route.via }}
+{%- endif %}
+{%- if route.metric != None %}
+Metric={{ route.metric }}
+{%- endif %}
+{%- if route.table != None %}
+Table={{ route.table }}
+{%- endif %}
+{%- if route.scope != None %}
+Scope={{ route.scope.value }}
+{%- endif %}
+{%- if route.type != None %}
+Type={{ route.type }}
+{%- endif %}
+{%- if route.congestion_window != None %}
+InitialCongestionWindow={{ route.congestion_window }}
+{%- endif %}
+{%- if route.advertised_receive_window != None %}
+InitialAdvertisedReceiveWindow={{ route.advertised_receive_window }}
+{%- endif %}
+{%- if route.mtu != None %}
+MTUBytes={{ route.mtu }}
+{%- endif %}
+{#-
+IPv6Preference=
+PreferredSource=
+Protocol=
+QuickAck=
+FastOpenNoCookie=
+TTLPropagate=
+IPServiceType=
+TCPAdvertisedMaximumSegmentSize=
+MultiPathRoute=
+-#}
+{%- endfor %}
+{%- endif %}
