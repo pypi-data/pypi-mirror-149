@@ -1,0 +1,45 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "gpep517"
+authors = [{name = "Michał Górny", email = "mgorny@gentoo.org"}]
+license = {file = "LICENSE"}
+readme = "README.rst"
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+requires-python = ">=3.8"
+dependencies = [
+    "installer >= 0.5",
+    "tomli >= 1.2.3; python_version < '3.11'",
+]
+
+[project.optional-dependencies]
+test = [
+    "flit_core",
+    "pytest",
+]
+test-full = [
+    "hatchling",
+    "pdm-pep517",
+    "poetry-core",
+    "setuptools",
+    "wheel",
+]
+
+[project.scripts]
+gpep517 = "gpep517.__main__:main"
+
+[project.urls]
+Home = "https://github.com/mgorny/gpep517/"
+
+[tool.flit.sdist]
+include = [
+    "test",
+    "tox.ini",
+]
+exclude = [
+    "test/__pycache__",
+    "test/sub-path/__pycache__",
+]
