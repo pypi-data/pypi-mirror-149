@@ -1,0 +1,70 @@
+# This workflow will install Basix, FFCx, DOLFINx and run the DOLFINx unit tests.
+
+name: DOLFINx integration
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Run DOLFINx tests
+    runs-on: ubuntu-latest
+    container: fenicsproject/test-env:latest-openmpi
+
+    env:
+      CC: clang
+      CXX: clang++
+
+      PETSC_ARCH: linux-gnu-complex-32
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      OMPI_MCA_rmaps_base_oversubscribe: 1
+      OMPI_MCA_plm: isolated
+      OMPI_MCA_btl_vader_single_copy_mechanism: none
+      OMPI_MCA_mpi_yield_when_idle: 1
+      OMPI_MCA_hwloc_base_binding_policy: none
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Basix
+        run: |
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build-dir -S ./cpp
+          cmake --build build-dir
+          cmake --install build-dir
+          python3 -m pip install ./python
+      - name: Install FEniCS Python components
+        run: |
+          python3 -m pip install git+https://github.com/FEniCS/ufl.git
+          python3 -m pip install git+https://github.com/FEniCS/ffcx.git
+
+      - name: Run cpp demos
+        run: |
+          python3 -m pytest demo/cpp/test.py
+
+      - name: Get DOLFINx
+        uses: actions/checkout@v2
+        with:
+          path: ./dolfinx
+          repository: FEniCS/dolfinx
+          ref: main
+
+      - name: Install DOLFINx
+        run: |
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build -S dolfinx/cpp/
+          cmake --build build
+          cmake --install build
+          python3 -m pip -v install --global-option build --global-option --debug dolfinx/python/
+
+      - name: Build DOLFINx C++ unit tests
+        run: |
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Developer -B build/test/ -S build/test/
+          cmake --build build/test
+      - name: Run DOLFINx C++ unit tests
+        run: |
+          cd build/test
+          ctest -V --output-on-failure -R unittests
+
+      - name: Run DOLFINx Python unit tests
+        run: python3 -m pytest -n auto dolfinx/python/test/unit
