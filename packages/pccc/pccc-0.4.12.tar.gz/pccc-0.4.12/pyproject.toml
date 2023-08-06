@@ -1,0 +1,159 @@
+# ******************************************************************************
+#
+# pccc, the Python Conventional Commit Checker.
+#
+# Copyright 2020-2022 Jeremy A Gray <gray@flyquackswim.com>.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# ******************************************************************************
+
+[build-system]
+
+# Setuptools.
+requires = [
+  "setuptools",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+# Poetry.
+# requires = ["poetry_core>=1.0.0"]
+# build-backend = "poetry.core.masonry.api"
+
+[tool]
+
+[tool.black]
+
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+    \.git
+    | \.pytest_cache
+    | __pycache__
+    | htmlcov
+  )/
+)
+'''
+
+[tool.isort]
+
+ensure_newline_before_comments = true
+force_single_line = true
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+use_parentheses = true
+
+[tool.pccc]
+
+header_length = 50
+body_length = 72
+wrap = true
+force_wrap = true
+spell_check = false
+repair = false
+ignore_generated_commits = true
+
+generated_commits = [
+  '''^\(tag:\s+v\d+\.\d+\.\d\)\s+\d+\.\d+\.\d+$''',
+  '''^Merge branch 'master' of.*$''',
+]
+
+types = [
+  "build",
+  "ci",
+  "depends",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "refactor",
+  "release",
+  "style",
+  "test",
+]
+
+scopes = [
+  "config",
+  "docs",
+  "parser",
+  "tooling",
+]
+
+footers = [
+  "github-closes",
+  "signed-off-by",
+]
+
+required_footers = [
+  "signed-off-by",
+]
+
+[tool.poetry]
+
+authors = ["Jeremy A Gray <gray@flyquackswim.com>"]
+description = "pccc:  the Python Conventional Commit Checker"
+name = "pccc"
+version = "0.4.12"
+license = "GPL-3.0-or-later"
+maintainers = ["Jeremy A Gray <gray@flyquackswim.com>"]
+readme = "README.rst"
+homepage = "https://github.com/jeremyagray/pccc"
+repository = "https://github.com/jeremyagray/pccc"
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Software Development :: Version Control :: Git",
+]
+
+packages = [
+  { include = "pccc" },
+]
+
+[tool.poetry.dependencies]
+
+bespon = "^0"
+pyenchant = "^3"
+pyparsing = "^3"
+python = ">=3.6.1,<4.0"
+"ruamel.yaml" = "^0"
+toml = "^0"
+tox = "^3"
+
+[tool.poetry.dev-dependencies]
+
+Sphinx = "^4"
+black = { version = "*", allow-prereleases = true }
+factory-boy = "^3.2"
+flake8 = "^3.8"
+flake8-docstrings = "^1.5"
+isort = "^5.6"
+hypothesis = "^6.9"
+pre-commit = "^2.9"
+pyfakefs = "^4.3"
+pytest = "^6.1"
+pytest-cov = "^2.10"
+
+[tool.poetry.scripts]
+
+pccc = "pccc:main"
+
+[tool.poetry.urls]
+
+"Issues" = "https://github.com/jeremyagray/pccc/issues"
+"Documentation" = "https://pccc.readthedocs.io/"
+"Repository" = "https://github.com/jeremyagray/pccc"
+
+[tool.pytest.ini_options]

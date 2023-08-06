@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>README &#8212; pccc 0.4.12 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Classes" href="classes.html" />
+    <link rel="prev" title="pccc Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="readme">
+<h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
+<section id="pccc">
+<h2>pccc<a class="headerlink" href="#pccc" title="Permalink to this headline">¶</a></h2>
+<p>The Python Conventional Commit Checker.</p>
+<a class="reference external image-reference" href="https://badge.fury.io/py/pccc"><img alt="PyPI Version" src="https://badge.fury.io/py/pccc.svg" /></a>
+<a class="reference external image-reference" href="https://pccc.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/pccc/badge/?version=latest" /></a>
+</section>
+</section>
+<section id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>pccc is a PyParsing based grammar and script for parsing and verifying
+a commit message is a conventional commit.  The default grammar
+follows the <a class="reference external" href="https://www.conventionalcommits.org/en/v1.0.0/#specification">specification</a>, but
+allows for the definition of types in addition to <code class="docutils literal notranslate"><span class="pre">feat</span></code> and <code class="docutils literal notranslate"><span class="pre">fix</span></code>
+and for the definition of project specific scopes and footers in
+compliance with the specification.  The maximum line lengths of the
+commit header and commit body and spelling can also be checked.</p>
+<p>Currently, the script interface will load configuration options and a
+commit message and attempt to parse it.  If there are no parse
+exceptions, it will return 0, otherwise 1.  This interface should be
+usable at the git <code class="docutils literal notranslate"><span class="pre">commit-msg</span></code> hook stage now.  It can also be
+configured to ignore certain automatically generated commits (from
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code> for instance) if it is not desirable or possible to
+generate those commits as conventional commits (preferable).</p>
+</section>
+<section id="parsing-grammar">
+<h1>Parsing Grammar<a class="headerlink" href="#parsing-grammar" title="Permalink to this headline">¶</a></h1>
+<p>Github Closes Issue Syntax</p>
+<ul class="simple">
+<li><p>KEYWORD = ‘(close[ds]?|fix(?:es|ed)?|resolve[ds]?)’</p></li>
+<li><p>OWNER = ‘^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$’</p></li>
+<li><p>REPOSITORY = ‘^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$’</p></li>
+<li><p>ISSUE-NUMBER = ‘#d+’</p></li>
+<li><p>Single issue in same repository:  KEYWORD #ISSUE-NUMBER</p></li>
+<li><p>Single issue in different repository:  KEYWORD OWNER/REPOSITORY ISSUE-NUMBER</p></li>
+<li><p>Multiple issues: use full syntax for each issue</p></li>
+</ul>
+<p>The parser in <code class="docutils literal notranslate"><span class="pre">pccc</span></code> requires separating multiple issues on the <code class="docutils literal notranslate"><span class="pre">Github-issues</span></code> line with “, “.</p>
+<p>See:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue/">https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue/</a></p></li>
+<li><p><a class="reference external" href="https://github.com/shinn/github-username-regex/">https://github.com/shinn/github-username-regex/</a></p></li>
+</ol>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Install pccc with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pccc</span>
+<span class="n">pip</span> <span class="n">freeze</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>or add as a poetry dev-dependency.</p>
+<p>If you desire a package locally built with poetry, download the
+source, change the appropriate lines in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, and
+rebuild.</p>
+<p>To use as a git <code class="docutils literal notranslate"><span class="pre">commit-msg</span></code> hook, copy the script <code class="docutils literal notranslate"><span class="pre">pccc</span></code> to
+<code class="docutils literal notranslate"><span class="pre">.git/hooks/commit-msg</span></code> and set the file as executable or integrate
+the script or module into your existing <code class="docutils literal notranslate"><span class="pre">commit-msg</span></code> hook.  <code class="docutils literal notranslate"><span class="pre">pccc</span></code>
+relies on <code class="docutils literal notranslate"><span class="pre">git</span></code> setting the current working directory of the script
+to the root of the repository (where <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> or
+<code class="docutils literal notranslate"><span class="pre">package.json</span></code> typically lives).  If this is not the repository
+default, pass the configuration file path as an argument or symlink
+from the current working directory to an appropriate configuration
+file.</p>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pccc</span> <span class="n">COMMIT_MSG</span>
+<span class="n">cat</span> <span class="n">COMMIT_MSG</span> <span class="o">|</span> <span class="n">pccc</span>
+</pre></div>
+</div>
+<p>In Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pccc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ccr</span> <span class="o">=</span> <span class="n">pccc</span><span class="o">.</span><span class="n">ConventionalCommitRunner</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ccr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ccr</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="s2">&quot;some commit message&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ccr</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ccr</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">ccr</span><span class="o">.</span><span class="n">exc</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">ccr</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>See the source and <a class="reference external" href="https://pccc.readthedocs.io/en/latest/">documentation</a> for more information.</p>
+</section>
+<section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>See <code class="docutils literal notranslate"><span class="pre">pccc.toml</span></code> for an example <code class="docutils literal notranslate"><span class="pre">[tool.pccc]</span></code> section that may be
+copied into a <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.  The same entries may be used
+in a <code class="docutils literal notranslate"><span class="pre">pccc</span></code> entry in <code class="docutils literal notranslate"><span class="pre">package.json</span></code> for JavaScript/TypeScript
+projects.</p>
+</section>
+<section id="copyright-and-license">
+<h1>Copyright and License<a class="headerlink" href="#copyright-and-license" title="Permalink to this headline">¶</a></h1>
+<p>SPDX-License-Identifier: <a class="reference external" href="https://spdx.org/licenses/GPL-3.0-or-later.html">GPL-3.0-or-later</a></p>
+<p>pccc, the Python Conventional Commit Checker.
+Copyright (C) 2020-2021 <a class="reference external" href="mailto:jeremy&#46;a&#46;gray&#37;&#52;&#48;gmail&#46;com">Jeremy A Gray</a>.</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License</a> as published by the Free
+Software Foundation, either version 3 of the License, or (at your
+option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.</p>
+<p>You should have received a copy of the <a class="reference external" href="https://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License</a> along with this program.
+If not, see <a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>.</p>
+</section>
+<section id="author">
+<h1>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="mailto:jeremy&#46;a&#46;gray&#37;&#52;&#48;gmail&#46;com">Jeremy A Gray</a></p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pccc</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">README</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pccc">pccc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#parsing-grammar">Parsing Grammar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#copyright-and-license">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#author">Author</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classes.html">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">pccc Documentation</a></li>
+      <li>Next: <a href="classes.html" title="next chapter">Classes</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021-2022, Jeremy A Gray.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/readme.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
