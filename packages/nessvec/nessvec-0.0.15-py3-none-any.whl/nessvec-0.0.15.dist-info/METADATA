@@ -1,0 +1,131 @@
+Metadata-Version: 2.1
+Name: nessvec
+Version: 0.0.15
+Summary: Decomposition of word embeddings (word vectors) into qualities ('ness'es).
+Home-page: https://gitlab.com/tangibleai/nessvec
+License: GPLv3
+Keywords: NLP,Natural Language Processing,Virtual Assistant,chatbot,Text Processing,Machine Learning,Text Mining,Deep Learning
+Author: Hobson Lane
+Author-email: hobson@tangibleai.com
+Requires-Python: >=3.8.3,<3.10.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
+Requires-Dist: ConfigArgParse (==1.5.3)
+Requires-Dist: Cython (>=0.29.28)
+Requires-Dist: beautifulsoup4 (==4.11.1)
+Requires-Dist: boto3 (==1.22.2)
+Requires-Dist: botocore (==1.25.3)
+Requires-Dist: django (==4.0.4)
+Requires-Dist: edit-distance (==1.0.4)
+Requires-Dist: elasticsearch (==7.17.3)
+Requires-Dist: environment (==1.0.0)
+Requires-Dist: gitpython (>=3.1.27,<4.0.0)
+Requires-Dist: graphviz (>=0.20,<0.21)
+Requires-Dist: h5py (>=3.6.0,<4.0.0)
+Requires-Dist: html2text (>=2020.1.16,<2021.0.0)
+Requires-Dist: html5lib (==1.1)
+Requires-Dist: jedi (==0.18.1)
+Requires-Dist: jupyter (==1.0.0)
+Requires-Dist: jupyter-client (>=7.3.0)
+Requires-Dist: jupyter-console (>=6.4.2)
+Requires-Dist: lxml (==4.6.3)
+Requires-Dist: m2r (==0.2.1)
+Requires-Dist: matplotlib (==3.5.1)
+Requires-Dist: matplotlib-inline (==0.1.3)
+Requires-Dist: meilisearch (==0.18.2)
+Requires-Dist: mistune (==0.8.4)
+Requires-Dist: nlpia2-wikipedia (>=1.5.0,<2.0.0)
+Requires-Dist: pandas (==1.1.3)
+Requires-Dist: pillow (==9.1.0)
+Requires-Dist: pip (==22.0.4)
+Requires-Dist: poetry (>=1.1.13)
+Requires-Dist: pronouncing (==0.2.0)
+Requires-Dist: psutil (>=5.8.0,<6.0.0)
+Requires-Dist: python-dotenv (>=0.13.0,<0.14.0)
+Requires-Dist: python-slugify (==4.0.0)
+Requires-Dist: pyyaml (==6.0)
+Requires-Dist: rapidfuzz (==0.9.1)
+Requires-Dist: recommonmark (==0.6.0)
+Requires-Dist: scikit-image (>=0.17.2,<0.18.0)
+Requires-Dist: scikit-learn (>=1.0,<2.0)
+Requires-Dist: scipy (==1.8.0)
+Requires-Dist: seaborn (>=0.11.2,<0.12.0)
+Requires-Dist: sentence_transformers (>=2.2.0,<3.0.0)
+Requires-Dist: spacy (==3.2.4)
+Requires-Dist: torch (==1.11.0)
+Requires-Dist: tox (>=3.25.0,<4.0.0)
+Requires-Dist: tqdm (>=4.60.0,<5.0.0)
+Project-URL: Documentation, https://gitlab.com/tangibleai/nessvec
+Project-URL: Repository, https://gitlab.com/tangibleai/nessvec
+Description-Content-Type: text/markdown
+
+# nessvec
+
+## Install from Source (recommended)
+
+Clone the repository with all the source code and data:
+
+```console
+$ git clone git@gitlab.com:tangibleai/nessvec
+$ cd nessvec
+```
+
+Create a conda environment and install the dependencies:
+
+```console
+$ conda create -n nessvec 'python==3.9.7'
+$ conda env update -n nessvec -f scripts/environment.yml
+$ pip install -e .
+```
+
+## Install from PyPi (only tested on Linux)
+
+```console
+$ pip install nessvec
+```
+
+## Get Started
+
+```python
+>>> from nessvec.util import load_glove
+>>> w2v = load_glove()
+>>> seattle = w2v['seattle']
+>>> seattle
+array([-2.7303e-01,  8.5872e-01,  1.3546e-01,  8.3849e-01, ...
+>>> portland = w2v['portland']
+>>> portland
+array([-0.78611  ,  1.2758   , -0.0036066,  0.54873  , -0.31474  ,...
+>>> len(portland)
+50
+>>> from numpy.linalg import norm
+>>> norm(portland)
+4.417...
+>>> portland.std()
+0.615...
+
+```
+
+```
+>>> cosine_similarity(seattle, portland)
+0.84...
+>>> cosine_similarity(portland, seattle)
+0.84...
+
+```
+
+```python
+>>> from nessvec.util import cosine_similarity
+>>> cosine_similarity(w2v['los_angeles'], w2v['mumbai'])
+.5
+
+```
+
+##
+
+
