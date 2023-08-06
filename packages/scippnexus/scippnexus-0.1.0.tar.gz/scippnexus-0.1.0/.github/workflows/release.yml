@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  push:  # TODO consider removing push trigger
+    branches:
+      - main
+  release:
+    types: [published]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash -l {0}  # required for conda env
+
+jobs:
+  build_conda:
+    name: Conda build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0  # history required so cmake can determine version
+
+      - uses: conda-incubator/setup-miniconda@v2
+      - run: conda install --yes conda-build
+      - run: conda build --channel conda-forge --channel scipp --python=3.8 --no-anaconda-upload --override-channels --output-folder conda/package conda
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: conda-package-noarch
+          path: conda/package/*/scippnexus*.tar.bz2
+
+  build_wheels:
+    name: Wheels
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # history required so setuptools_scm can determine version
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements/wheels.txt
+
+      - name: Build wheels
+        run: python -m build
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.8
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements/ci.txt
+      - run: sudo apt install --yes pandoc
+      - run: tox -e docs
+      - uses: actions/upload-artifact@v2
+        with:
+          name: html
+          path: html/
+
+  upload_packages:
+    name: Deploy packages
+    needs: [docs, build_conda, build_wheels]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+      - uses: actions/download-artifact@v2
+      - uses: conda-incubator/setup-miniconda@v2
+      - run: conda install -c conda-forge --yes anaconda-client
+      - run: anaconda --token ${{ secrets.ANACONDATOKEN }} upload --user scipp --label main $(ls conda-package-*/*/*.tar.bz2)
+      - uses: actions/setup-python@v3
+
+      - uses: pypa/gh-action-pypi-publish@v1.5.0
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+
+  upload_docs:
+    name: Deploy docs
+    needs: [upload_packages]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    strategy:
+      max-parallel: 1  # Avoid potential race condition when pushing to github pages repo
+      matrix:
+        docs-folder: ['latest', 'release']
+
+    steps:
+      - uses: actions/checkout@v3  # Need to checkout repo so github-pages-deploy-action works
+      - uses: actions/download-artifact@v2
+      - name: Deploy to release docs
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages
+          folder: html
+          target-folder: ${{ matrix.docs-folder == 'latest' && format('release/{0}', github.ref_name) || '' }}
+          single-commit: true
+          clean-exclude: release
+          ssh-key: ${{ secrets.GH_PAGES_DEPLOY_KEY }}
