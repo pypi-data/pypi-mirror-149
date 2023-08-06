@@ -1,0 +1,49 @@
+2022-01-05 14:55:38 | WARNING      | autoParamInjection:__read_yaml:59 - output class file path：/Users/luozhongwen/persion_script/opensourcetest/opensourcetest/httpmodel/Parameter/yamlChoice.py
+2022-01-05 14:55:38 | WARNING      | autoParamInjection:__read_yaml:60 - Use the yaml path configured by mode in OST framework to retrieve
+2022-01-05 14:55:38 | WARNING      | autoParamInjection:__read_yaml:61 - Output Login yaml file address: /Users/luozhongwen/persion_script/opensourcetest/opensourcetest/httpmodel/Parameter/Login/Login.yaml
+2022-01-05 14:55:38 | INFO      | autoParamInjection:__init__:30 - Login Yaml object injection in progress
+2022-01-05 14:55:38 | INFO      | ostHttp:ost_http_runner:32 - Corresponding to yaml interface: {'url': '/api/user/login', 'desc': '登录', 'method': 'post', 'headers': {'Content-Type': 'application/json; charset=utf-8'}, 'params': {}, 'data': {}, 'json': {}}
+2022-01-05 14:55:38 | INFO      | consolelog:log_output:30 - 
+================== request details ==================
+method   : POST
+url      : http://47.108.151.187:8081/api/user/login
+headers  : {
+    "User-Agent": "python-requests/2.23.0",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "44"
+}
+cookies  : {}
+body     : {"username": "zouzou", "password": "zouzou"}
+
+2022-01-05 14:55:38 | INFO      | consolelog:log_output:30 - 
+================== response details ==================
+status_code : 200
+headers  : {
+    "Server": "nginx/1.16.1",
+    "Date": "Wed, 05 Jan 2022 06:55:38 GMT",
+    "Content-Type": "application/json",
+    "Content-Length": "192",
+    "Connection": "keep-alive",
+    "Vary": "Accept, Origin, Cookie",
+    "Allow": "POST, OPTIONS",
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "same-origin"
+}
+cookies  : {}
+encoding : None
+content_type : application/json
+body     : {
+    "code": "2001",
+    "success": true,
+    "msg": "login success",
+    "data": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY0MTk3MDUzOH0.kEFbQg0mU-choCzCfXzIsnDUNUN3RLLzKVhSjdt2yh4"
+    }
+}
+
+2022-01-05 14:55:38 | INFO      | assertChecker:assert_gte:39 - Assert GTE<gt equeal>,Expected Value：200,Response Data：200
+2022-01-05 14:55:38 | INFO      | test_login:test_login:24 - {'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsImV4cCI6MTY0MTk3MDUzOH0.kEFbQg0mU-choCzCfXzIsnDUNUN3RLLzKVhSjdt2yh4'}
