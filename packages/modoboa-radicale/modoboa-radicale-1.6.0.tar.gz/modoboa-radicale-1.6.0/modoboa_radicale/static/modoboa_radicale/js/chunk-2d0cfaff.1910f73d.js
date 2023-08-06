@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cfaff"],{"657a":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"ja",buttonText:{prev:"前",next:"次",today:"今日",month:"月",week:"週",day:"日",list:"予定リスト"},weekText:"週",allDayText:"終日",moreLinkText:function(e){return"他 "+e+" 件"},noEventsText:"表示する予定はありません"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0cfaff.1910f73d.js.map

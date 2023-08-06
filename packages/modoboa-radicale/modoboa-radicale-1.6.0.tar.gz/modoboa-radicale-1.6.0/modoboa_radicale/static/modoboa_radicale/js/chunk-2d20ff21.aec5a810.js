@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d20ff21"],{b690:function(e,t){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"ro",week:{dow:1,doy:7},buttonText:{prev:"precedentă",next:"următoare",today:"Azi",month:"Lună",week:"Săptămână",day:"Zi",list:"Agendă"},weekText:"Săpt",allDayText:"Toată ziua",moreLinkText:function(e){return"+alte "+e},noEventsText:"Nu există evenimente de afișat"};return e}())}}]);
+//# sourceMappingURL=chunk-2d20ff21.aec5a810.js.map

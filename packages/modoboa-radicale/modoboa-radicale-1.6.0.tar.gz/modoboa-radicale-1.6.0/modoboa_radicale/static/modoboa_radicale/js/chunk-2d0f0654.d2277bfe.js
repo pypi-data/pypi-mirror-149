@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0f0654"],{"9bd9":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"ro",week:{dow:1,doy:7},buttonText:{prev:"precedentă",next:"următoare",today:"Azi",month:"Lună",week:"Săptămână",day:"Zi",list:"Agendă"},weekText:"Săpt",allDayText:"Toată ziua",moreLinkText:function(e){return"+alte "+e},noEventsText:"Nu există evenimente de afișat"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0f0654.d2277bfe.js.map

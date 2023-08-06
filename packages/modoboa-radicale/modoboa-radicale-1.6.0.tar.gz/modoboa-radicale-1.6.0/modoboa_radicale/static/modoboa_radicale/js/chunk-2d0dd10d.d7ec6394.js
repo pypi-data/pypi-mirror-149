@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0dd10d"],{8098:function(e,a,t){"use strict";Object.defineProperty(a,"__esModule",{value:!0});var o={code:"sm",buttonText:{prev:"Talu ai",next:"Mulimuli atu",today:"Aso nei",month:"Masina",week:"Vaiaso",day:"Aso",list:"Faasologa"},weekText:"Vaiaso",allDayText:"Aso atoa",moreLinkText:"sili atu",noEventsText:"Leai ni mea na tutupu"};a.default=o}}]);
+//# sourceMappingURL=chunk-2d0dd10d.d7ec6394.js.map

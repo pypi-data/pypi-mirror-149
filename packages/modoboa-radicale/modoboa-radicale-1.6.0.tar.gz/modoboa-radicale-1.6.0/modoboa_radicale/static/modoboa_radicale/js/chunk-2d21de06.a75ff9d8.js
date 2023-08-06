@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21de06"],{d2bd:function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"hy-am",week:{dow:1,doy:4},buttonText:{prev:"Նախորդ",next:"Հաջորդ",today:"Այսօր",month:"Ամիս",week:"Շաբաթ",day:"Օր",list:"Օրվա ցուցակ"},weekText:"Շաբ",allDayText:"Ամբողջ օր",moreLinkText:function(e){return"+ ևս "+e},noEventsText:"Բացակայում է իրադարձությունը ցուցադրելու"};return e}())}}]);
+//# sourceMappingURL=chunk-2d21de06.a75ff9d8.js.map

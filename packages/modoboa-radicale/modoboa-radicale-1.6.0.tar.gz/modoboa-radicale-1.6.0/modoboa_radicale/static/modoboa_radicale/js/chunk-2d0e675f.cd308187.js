@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e675f"],{"999b":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"sr-cyrl",week:{dow:1,doy:7},buttonText:{prev:"Претходна",next:"следећи",today:"Данас",month:"Месец",week:"Недеља",day:"Дан",list:"Планер"},weekText:"Сед",allDayText:"Цео дан",moreLinkText:function(e){return"+ још "+e},noEventsText:"Нема догађаја за приказ"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0e675f.cd308187.js.map

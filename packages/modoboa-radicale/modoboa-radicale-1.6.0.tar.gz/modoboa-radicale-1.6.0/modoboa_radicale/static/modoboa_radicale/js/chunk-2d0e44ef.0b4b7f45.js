@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e44ef"],{9057:function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"el",week:{dow:1,doy:4},buttonText:{prev:"Προηγούμενος",next:"Επόμενος",today:"Σήμερα",month:"Μήνας",week:"Εβδομάδα",day:"Ημέρα",list:"Ατζέντα"},weekText:"Εβδ",allDayText:"Ολοήμερο",moreLinkText:"περισσότερα",noEventsText:"Δεν υπάρχουν γεγονότα προς εμφάνιση"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0e44ef.0b4b7f45.js.map

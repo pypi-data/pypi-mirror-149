@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0de2b8"],{8505:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o={code:"az",week:{dow:1,doy:4},buttonText:{prev:"Əvvəl",next:"Sonra",today:"Bu Gün",month:"Ay",week:"Həftə",day:"Gün",list:"Gündəm"},weekText:"Həftə",allDayText:"Bütün Gün",moreLinkText:function(e){return"+ daha çox "+e},noEventsText:"Göstərmək üçün hadisə yoxdur"};n.default=o}}]);
+//# sourceMappingURL=chunk-2d0de2b8.6f080e21.js.map

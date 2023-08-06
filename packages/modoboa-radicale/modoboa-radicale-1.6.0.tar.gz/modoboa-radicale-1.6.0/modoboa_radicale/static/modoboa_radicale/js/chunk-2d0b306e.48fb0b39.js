@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b306e"],{"272e":function(e,a,n){"use strict";Object.defineProperty(a,"__esModule",{value:!0});var o={code:"bs",week:{dow:1,doy:7},buttonText:{prev:"Prošli",next:"Sljedeći",today:"Danas",month:"Mjesec",week:"Sedmica",day:"Dan",list:"Raspored"},weekText:"Sed",allDayText:"Cijeli dan",moreLinkText:function(e){return"+ još "+e},noEventsText:"Nema događaja za prikazivanje"};a.default=o}}]);
+//# sourceMappingURL=chunk-2d0b306e.48fb0b39.js.map

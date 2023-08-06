@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e2c86"],{"7fbc":function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o={code:"vi",week:{dow:1,doy:4},buttonText:{prev:"Trước",next:"Tiếp",today:"Hôm nay",month:"Tháng",week:"Tuần",day:"Ngày",list:"Lịch biểu"},weekText:"Tu",allDayText:"Cả ngày",moreLinkText:function(e){return"+ thêm "+e},noEventsText:"Không có sự kiện để hiển thị"};n.default=o}}]);
+//# sourceMappingURL=chunk-2d0e2c86.f88596b9.js.map

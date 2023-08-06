@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d207d87"],{a1ef:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"ku",week:{dow:6,doy:12},direction:"rtl",buttonText:{prev:"پێشتر",next:"دواتر",today:"ئەمڕو",month:"مانگ",week:"هەفتە",day:"ڕۆژ",list:"بەرنامە"},weekText:"هەفتە",allDayText:"هەموو ڕۆژەکە",moreLinkText:"زیاتر",noEventsText:"هیچ ڕووداوێك نیە"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d207d87.88a701a9.js.map

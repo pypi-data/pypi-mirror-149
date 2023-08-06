@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d225df8"],{e5f8:function(e,t){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"ar-ly",week:{dow:6,doy:12},direction:"rtl",buttonText:{prev:"السابق",next:"التالي",today:"اليوم",month:"شهر",week:"أسبوع",day:"يوم",list:"أجندة"},weekText:"أسبوع",allDayText:"اليوم كله",moreLinkText:"أخرى",noEventsText:"أي أحداث لعرض"};return e}())}}]);
+//# sourceMappingURL=chunk-2d225df8.9f1ed3af.js.map

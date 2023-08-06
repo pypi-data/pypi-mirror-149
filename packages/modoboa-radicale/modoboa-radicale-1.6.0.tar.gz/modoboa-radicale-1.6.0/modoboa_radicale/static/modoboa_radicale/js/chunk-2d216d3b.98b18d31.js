@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d216d3b"],{c3b7:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o={code:"lv",week:{dow:1,doy:4},buttonText:{prev:"Iepr.",next:"Nāk.",today:"Šodien",month:"Mēnesis",week:"Nedēļa",day:"Diena",list:"Dienas kārtība"},weekText:"Ned.",allDayText:"Visu dienu",moreLinkText:function(e){return"+vēl "+e},noEventsText:"Nav notikumu"};n.default=o}}]);
+//# sourceMappingURL=chunk-2d216d3b.98b18d31.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21049c"],{b6f8:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"km",week:{dow:1,doy:4},buttonText:{prev:"មុន",next:"បន្ទាប់",today:"ថ្ងៃនេះ",year:"ឆ្នាំ",month:"ខែ",week:"សប្តាហ៍",day:"ថ្ងៃ",list:"បញ្ជី"},weekText:"សប្តាហ៍",allDayText:"ពេញមួយថ្ងៃ",moreLinkText:"ច្រើនទៀត",noEventsText:"គ្មានព្រឹត្តិការណ៍ត្រូវបង្ហាញ"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d21049c.142abb17.js.map

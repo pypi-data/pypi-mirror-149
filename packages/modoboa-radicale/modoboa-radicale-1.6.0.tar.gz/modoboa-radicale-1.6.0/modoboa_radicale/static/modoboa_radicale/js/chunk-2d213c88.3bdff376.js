@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d213c88"],{adc2:function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"ar-dz",week:{dow:0,doy:4},direction:"rtl",buttonText:{prev:"السابق",next:"التالي",today:"اليوم",month:"شهر",week:"أسبوع",day:"يوم",list:"أجندة"},weekText:"أسبوع",allDayText:"اليوم كله",moreLinkText:"أخرى",noEventsText:"أي أحداث لعرض"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d213c88.3bdff376.js.map

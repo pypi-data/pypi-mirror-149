@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d20fa99"],{b51a:function(a,e){FullCalendar.globalLocales.push(function(){"use strict";var a={code:"sm",buttonText:{prev:"Talu ai",next:"Mulimuli atu",today:"Aso nei",month:"Masina",week:"Vaiaso",day:"Aso",list:"Faasologa"},weekText:"Vaiaso",allDayText:"Aso atoa",moreLinkText:"sili atu",noEventsText:"Leai ni mea na tutupu"};return a}())}}]);
+//# sourceMappingURL=chunk-2d20fa99.850a3181.js.map

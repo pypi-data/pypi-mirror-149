@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c42fd"],{"3a81":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"km",week:{dow:1,doy:4},buttonText:{prev:"មុន",next:"បន្ទាប់",today:"ថ្ងៃនេះ",year:"ឆ្នាំ",month:"ខែ",week:"សប្តាហ៍",day:"ថ្ងៃ",list:"បញ្ជី"},weekText:"សប្តាហ៍",allDayText:"ពេញមួយថ្ងៃ",moreLinkText:"ច្រើនទៀត",noEventsText:"គ្មានព្រឹត្តិការណ៍ត្រូវបង្ហាញ"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0c42fd.2226e009.js.map

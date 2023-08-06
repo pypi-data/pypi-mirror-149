@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0ba6cd"],{"36c7":function(e,n,a){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var t={code:"nl",week:{dow:1,doy:4},buttonText:{prev:"Vorige",next:"Volgende",today:"Vandaag",year:"Jaar",month:"Maand",week:"Week",day:"Dag",list:"Agenda"},allDayText:"Hele dag",moreLinkText:"extra",noEventsText:"Geen evenementen om te laten zien"};n.default=t}}]);
+//# sourceMappingURL=chunk-2d0ba6cd.aa91eb08.js.map

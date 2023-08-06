@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0da019"],{"6a80":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"bg",week:{dow:1,doy:7},buttonText:{prev:"назад",next:"напред",today:"днес",month:"Месец",week:"Седмица",day:"Ден",list:"График"},allDayText:"Цял ден",moreLinkText:function(e){return"+още "+e},noEventsText:"Няма събития за показване"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0da019.6907e45d.js.map

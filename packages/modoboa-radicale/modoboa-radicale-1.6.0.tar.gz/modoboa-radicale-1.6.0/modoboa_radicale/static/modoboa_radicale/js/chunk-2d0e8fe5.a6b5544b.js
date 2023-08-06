@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e8fe5"],{"8c48":function(e,o){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"es",week:{dow:0,doy:6},buttonText:{prev:"Ant",next:"Sig",today:"Hoy",month:"Mes",week:"Semana",day:"Día",list:"Agenda"},weekText:"Sm",allDayText:"Todo el día",moreLinkText:"más",noEventsText:"No hay eventos para mostrar"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0e8fe5.a6b5544b.js.map

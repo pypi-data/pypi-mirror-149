@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0f15bf"],{"9ffb":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"it",week:{dow:1,doy:4},buttonText:{prev:"Prec",next:"Succ",today:"Oggi",month:"Mese",week:"Settimana",day:"Giorno",list:"Agenda"},weekText:"Sm",allDayText:"Tutto il giorno",moreLinkText:function(e){return"+altri "+e},noEventsText:"Non ci sono eventi da visualizzare"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0f15bf.4aaf602f.js.map

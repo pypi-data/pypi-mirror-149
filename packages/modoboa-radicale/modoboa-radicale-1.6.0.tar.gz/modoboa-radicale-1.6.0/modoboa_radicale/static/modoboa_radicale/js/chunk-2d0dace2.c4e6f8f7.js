@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0dace2"],{"6cba":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"ne",week:{dow:7,doy:1},buttonText:{prev:"अघिल्लो",next:"अर्को",today:"आज",month:"महिना",week:"हप्ता",day:"दिन",list:"सूची"},weekText:"हप्ता",allDayText:"दिनभरि",moreLinkText:"थप लिंक",noEventsText:"देखाउनको लागि कुनै घटनाहरू छैनन्"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0dace2.c4e6f8f7.js.map

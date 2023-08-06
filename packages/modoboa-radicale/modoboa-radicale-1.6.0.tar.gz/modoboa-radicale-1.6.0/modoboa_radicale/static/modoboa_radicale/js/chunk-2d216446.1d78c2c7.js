@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d216446"],{c278:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"ta-in",week:{dow:1,doy:4},buttonText:{prev:"முந்தைய",next:"அடுத்தது",today:"இன்று",month:"மாதம்",week:"வாரம்",day:"நாள்",list:"தினசரி அட்டவணை"},weekText:"வாரம்",allDayText:"நாள் முழுவதும்",moreLinkText:function(e){return"+ மேலும் "+e},noEventsText:"காண்பிக்க நிகழ்வுகள் இல்லை"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d216446.1d78c2c7.js.map

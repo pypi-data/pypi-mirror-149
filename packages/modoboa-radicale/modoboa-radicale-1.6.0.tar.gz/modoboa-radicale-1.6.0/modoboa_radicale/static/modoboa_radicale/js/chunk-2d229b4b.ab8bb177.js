@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d229b4b"],{df1d:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o={code:"uz",buttonText:{month:"Oy",week:"Xafta",day:"Kun",list:"Kun tartibi"},allDayText:"Kun bo'yi",moreLinkText:function(e){return"+ yana "+e},noEventsText:"Ko'rsatish uchun voqealar yo'q"};n.default=o}}]);
+//# sourceMappingURL=chunk-2d229b4b.ab8bb177.js.map

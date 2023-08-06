@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0a3839"],{"0300":function(e,t,o){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"si-lk",week:{dow:1,doy:4},buttonText:{prev:"පෙර",next:"පසු",today:"අද",month:"මාසය",week:"සතිය",day:"දවස",list:"ලැයිස්තුව"},weekText:"සති",allDayText:"සියලු",moreLinkText:"තවත්",noEventsText:"මුකුත් නැත"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d0a3839.c62b4ef0.js.map

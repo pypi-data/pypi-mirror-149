@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d231232"],{eeea:function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"lt",week:{dow:1,doy:4},buttonText:{prev:"Atgal",next:"Pirmyn",today:"Šiandien",month:"Mėnuo",week:"Savaitė",day:"Diena",list:"Darbotvarkė"},weekText:"SAV",allDayText:"Visą dieną",moreLinkText:"daugiau",noEventsText:"Nėra įvykių rodyti"};return e}())}}]);
+//# sourceMappingURL=chunk-2d231232.6aa44019.js.map

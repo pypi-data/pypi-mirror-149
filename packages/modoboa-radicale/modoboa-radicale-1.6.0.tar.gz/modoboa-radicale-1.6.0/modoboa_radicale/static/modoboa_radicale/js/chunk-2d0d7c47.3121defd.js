@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d7c47"],{"77e6":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"he",direction:"rtl",buttonText:{prev:"הקודם",next:"הבא",today:"היום",month:"חודש",week:"שבוע",day:"יום",list:"סדר יום"},allDayText:"כל היום",moreLinkText:"אחר",noEventsText:"אין אירועים להצגה",weekText:"שבוע"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0d7c47.3121defd.js.map

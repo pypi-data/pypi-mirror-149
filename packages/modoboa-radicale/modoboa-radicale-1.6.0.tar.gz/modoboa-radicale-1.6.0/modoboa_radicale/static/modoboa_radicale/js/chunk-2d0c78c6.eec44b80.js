@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c78c6"],{"50a6":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var a={code:"tr",week:{dow:1,doy:7},buttonText:{prev:"geri",next:"ileri",today:"bugün",month:"Ay",week:"Hafta",day:"Gün",list:"Ajanda"},weekText:"Hf",allDayText:"Tüm gün",moreLinkText:"daha fazla",noEventsText:"Gösterilecek etkinlik yok"};t.default=a}}]);
+//# sourceMappingURL=chunk-2d0c78c6.eec44b80.js.map
