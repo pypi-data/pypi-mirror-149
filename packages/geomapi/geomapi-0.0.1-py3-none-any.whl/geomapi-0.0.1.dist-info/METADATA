@@ -1,0 +1,133 @@
+Metadata-Version: 2.1
+Name: geomapi
+Version: 0.0.1
+Summary: A standard library to manage geomatic data
+Home-page: https://gitlab.kuleuven.be/geomatics/research-projects/geomapi
+Author: JelleKUL
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: open3d
+Requires-Dist: opencv-python
+
+# GeomAPI
+
+A joint API to standardize geomatic data storage and processing
+
+## Installation
+
+Install it from here
+
+## Development
+
+Testing the package is done in the tests folder with:
+```py
+from context import geomapi
+```
+
+## Docs
+
+You can read the full API reference here:
+[Documentation](https://geomatics.pages.gitlab.kuleuven.be/research-projects/geomapi/html/index.html)
+
+## Usage
+
+The main use of this API is importing standardized RDF data into easy to use python classes.
+These python classes have a number of fuctions to analyse, edit and combine the most common types of data including:
+- Images (pinhole or panoramic)
+- Meshes
+- Point clouds
+- BIM models
+
+## Classes
+
+This API provides a number of different classes to store data and its metadata.
+
+### Node
+
+The parent class to interpret RDF formatted data, contains all the nescesary function to import and export RDF graphs.
+
+#### Variables
+
+```py
+self.name = None          # (string) name of the node
+self.guid = None          # (string) guid of the node
+self.sessionName = None   # (string) session node name
+self.timestamp = None     # (string) e.g. 2020-04-11 12:00:01 UTC
+self.sensor = None        # (string) sensor information P30, BLK, Hololens2, CANON, etc.
+
+#Geometry
+self.cartesianBounds=None     # (nparray [6x1]) [xMin,xMax,yMin,yMax,zMin,zMax]
+self.accuracy = None          # (float) metric data accuracy e.g. 0.05m
+
+#Coordinate system information
+self.cartesianTransform=None  # (nparray [4x4]) 3D transform including location, scale and rotation 
+self.geospatialTransform=None # (nparray [3x1]) ellipsoidal WGS84 coordinate system {latitude (+=East), longitude(+=North), altitude (+=Up)}
+self.coordinateSystem = None  # (string) coordinate system i.e. Lambert72, Lambert2008, geospatial-wgs84, local + reference /offset
+
+#paths
+self.path = None # (string) relative path from the RDF graph to this node
+self.graphPath= None # (string) absolute path to the folder with the RDF graph 
+
+#metadata
+self.graph = None # (Graph) rdflib
+```
+
+#### Functions
+
+>Todo: add functions
+
+### ImageNode (Node)
+
+A class to store an Image using the opencv framework to store the actual file.
+
+#### Variables
+
+#### Functions
+
+### GeometryNode (Node)
+
+A parent class to store Geometry using the open3d framework
+
+#### Variables
+
+#### Functions
+
+### PointCloudNode (GeometryNode)
+
+A class to store a pcd point cloud using the open3d framework
+
+#### Variables
+
+#### Functions
+
+### MeshNode (GeometryNode)
+
+A class to store a triangle mesh point cloud using the open3d framework
+
+#### Variables
+
+#### Functions
+
+### BIMNode (GeometryNode)
+
+A class to store a BIM model point cloud using the open3d framework
+
+#### Variables
+
+#### Functions
+
+## Tools
+
+A collection of functions to interact with the custom classes and their base data model.
+
+## Licensing
+
+The code in this project is licensed under GNU license.
+
