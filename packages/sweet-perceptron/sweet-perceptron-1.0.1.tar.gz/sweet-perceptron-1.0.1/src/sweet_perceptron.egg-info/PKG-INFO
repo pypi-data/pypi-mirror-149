@@ -1,0 +1,62 @@
+Metadata-Version: 2.1
+Name: sweet-perceptron
+Version: 1.0.1
+Summary: A simple neural network library
+Home-page: https://github.com/SweetBubaleXXX/sweet-perceptron
+Author: SweetBubaleXXX
+Author-email: 1pcpcpc1pc@gmail.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/SweetBubaleXXX/sweet-perceptron/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# sweet-perceptron
+![Python](https://img.shields.io/badge/Python-%3E%3D3.8-brightgreen)
+![NumPy](https://img.shields.io/badge/NumPy-%3E%3D1.15-blue)
+![GitHub](https://img.shields.io/github/license/SweetBubaleXXX/sweet-perceptron)
+
+This is a simple neural network library.
+
+The model of NN is configurable multilayer Perceptron (MLP).
+
+It was built only using [NumPy](https://numpy.org/).
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install [sweet-perceptron](https://pypi.org/project/sweet-perceptron).
+
+```bash
+pip install sweet-perceptron
+```
+
+## Usage
+
+```python
+from perceptron import NeuralNetwork
+from perceptron.Neuron import functions
+
+# Initialize network
+nw = NeuralNetwork((2, 4, 1))
+
+# Change activation functions
+nw.activation_funcs = functions.relu, functions.tanh
+
+# Initialize weights
+nw.initialize_weights()
+
+# Train netwotk and get list with losses
+loss = nw.train(50, ['train inputs set'], ['train outputs set'])
+
+# Get output of forward propagation
+output = nw.forward(['input'])
+```
+
+## License
+
+[MIT License](https://github.com/SweetBubaleXXX/sweet-perceptron/blob/main/LICENSE)
+
