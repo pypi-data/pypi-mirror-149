@@ -1,0 +1,46 @@
+Metadata-Version: 2.1
+Name: sensitive-test
+Version: 1.0.0
+Summary: A small, simple, and fast ordered failfast test-suite for Python.
+Home-page: UNKNOWN
+Author: vierofernando
+Author-email: vierofernando9@gmail.com
+License: MIT
+Keywords: test,tests,ci,debug
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# tests
+
+```
+pip install sensitive_test
+```
+
+A small, simple, and fast ordered fail-fast tests suite for Python.
+
+```py
+import sensitive
+
+# any Exception thrown will make the test running it fail,
+# and the program will immediately return exit code 1.
+
+with sensitive.test("test name 1"):
+  print("Oh yes")
+
+with sensitive.test("test name 2"):
+  test.failfast()
+  
+  raise Exception("Trolled")
+
+with sensitive.test("test name 3"):
+  print("oh no")
+```
+
