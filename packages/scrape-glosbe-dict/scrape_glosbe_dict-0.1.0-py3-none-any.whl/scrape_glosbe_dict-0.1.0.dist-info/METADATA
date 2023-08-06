@@ -1,0 +1,85 @@
+Metadata-Version: 2.1
+Name: scrape-glosbe-dict
+Version: 0.1.0
+Summary: Scrape glosbe dicts given a head words file
+Home-page: https://github.com/ffreemt/scrape-glosbe-dict
+License: MIT
+Author: ffreemt
+Requires-Python: >=3.8.3,<4.0.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: cchardet (>=2.1.7,<3.0.0)
+Requires-Dist: httpx (>=0.22.0,<0.23.0)
+Requires-Dist: icecream (>=2.1.1,<3.0.0)
+Requires-Dist: install (>=1.3.5,<2.0.0)
+Requires-Dist: joblib (>=1.1.0,<2.0.0)
+Requires-Dist: logzero (>=1.7.0,<2.0.0)
+Requires-Dist: pyquery (>=1.4.3,<2.0.0)
+Requires-Dist: set-loglevel (>=0.1.1,<0.2.0)
+Requires-Dist: tenacity (>=8.0.1,<9.0.0)
+Requires-Dist: toml (>=0.10.2,<0.11.0)
+Requires-Dist: tqdm (>=4.64.0,<5.0.0)
+Requires-Dist: typer (>=0.4.1,<0.5.0)
+Project-URL: Repository, https://github.com/ffreemt/scrape-glosbe-dict
+Description-Content-Type: text/markdown
+
+# scrape-glosbe-dict
+[![pytest](https://github.com/ffreemt/scrape-glosbe-dict/actions/workflows/routine-tests.yml/badge.svg)](https://github.com/ffreemt/scrape-glosbe-dict/actions)[![python](https://img.shields.io/static/v1?label=python+&message=3.8%2B&color=blue)](https://www.python.org/downloads/)[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)[![PyPI version](https://badge.fury.io/py/scrape_glosbe_dict.svg)](https://badge.fury.io/py/scrape_glosbe_dict)
+
+Scrape a glosbe dict
+
+## Install it
+
+```shell
+pip install scrape-glosbe-dict
+
+# pip install git+https://github.com/ffreemt/scrape-glosbe-dict
+# poetry add git+https://github.com/ffreemt/scrape-glosbe-dict
+# git clone https://github.com/ffreemt/scrape-glosbe-dict && cd scrape-glosbe-dict
+```
+
+## Use it
+```bash
+scrape-glosbe-dict head-word-file  # default english-chinese
+
+# or python -m scrape_glosbe_dict head-word-file
+
+# scrape-glosbe-dict head-word-file -f de  # german-chinese
+```
+
+head word file formt: one word/phrase per line, empty lines will be ignored.
+
+output will be saved to a tsv file.
+
+## Docs
+```bash
+python -m scrape_glosbe_dict --help
+```
+```bash
+Usage: python -m scrape_glosbe_dict [OPTIONS] head-word-file
+
+Arguments:
+  head-word-file  Head word file, one word/phrase per line, each will be used
+                  to fetch corresponding definitons from https://glosbe.com/.
+                  [required]
+
+Options:
+  -f, --from-lang TEXT  Source language, check https://glosbe.com/ for valid
+                        value, e.g. https://glosbe.com/en/zh implies
+                        from_lang='en'.  [default: en]
+  -t, --to-lang TEXT    Target language, check https://glosbe.com/ for valid
+                        value, e.g. https://glosbe.com/en/zh implies
+                        to_lang='zh'.  [default: zh]
+  -v, --verbose         Show output in the process.
+  -V, --version         Show version info and exit.
+  --help                Show this message and exit.
+```
+
+## Miscellany
+
+* A retry mechanism (via pypi `tenacity`) is built-in to fetch info from glosbe. Refer to the source file for details.
+* Local cache (via pypi `joblib`) is used so that you can interrupt anytime and continue later.
+* Scraping is often frowned upon and sometimes can result in your IP being banned from the website. Use this package at your own discretion.
+
