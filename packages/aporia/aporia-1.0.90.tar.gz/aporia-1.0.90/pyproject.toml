@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "aporia"
+version = "v1.0.90"
+description = "Aporia SDK"
+authors = []
+readme = "README.md"
+repository = "https://github.com/aporia-ai/sdk"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+importlib-metadata = {version = "^1.5.0", python = "<3.8"}
+aiohttp = "^3.7.0"
+tenacity = "^6.2.0"
+orjson = "^3.6.0"
+certifi = "^2020.12.5"
+numpy = { version = "^1.15.0"}
+pandas =  { version = ">=0.21 <2.0.0", optional = true }
+pyspark =  { version = ">=3.0.0 <4.0.0", optional = true }
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3.2"
+flake8 = "^3.7.9"
+flake8-import-order = "^0.18.1"
+flake8-bugbear = {version = "^20.1.2", python = "^3.7"}
+flake8-bandit = "^2.1.2"
+safety = "^1.8.5"
+mypy = "^0.910"
+flake8-annotations = {version = "^2.0.0", python = "^3.7"}
+typeguard = "^2.7.1"
+flake8-docstrings = "^1.5.0"
+darglint = "^1.1.2"
+pytest-asyncio = "^0.14.0"
+aioresponses = "^0.7.2"
+isort = ">=4.3.21 <6.0.0"
+types-orjson = "^0.1.1"
+types-certifi = "^0.1.4"
+
+[tool.poetry.extras]
+training = ["pandas"]
+pandas = ["pandas"]
+pyspark = ["pyspark"]
+all = ["pandas", "pyspark"]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["aporia"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+force_sort_within_sections = true
+lexicographical = true
+order_by_type = false
+group_by_package = true
+no_lines_before = ['LOCALFOLDER']
+line_length = 100
+known_first_party = ['aporia']
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -1,0 +1,46 @@
+Metadata-Version: 2.1
+Name: aporia
+Version: 1.0.90
+Summary: Aporia SDK
+Home-page: https://github.com/aporia-ai/sdk
+Requires-Python: >=3.6,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Provides-Extra: all
+Provides-Extra: pandas
+Provides-Extra: pyspark
+Provides-Extra: training
+Requires-Dist: aiohttp (>=3.7.0,<4.0.0)
+Requires-Dist: certifi (>=2020.12.5,<2021.0.0)
+Requires-Dist: importlib-metadata (>=1.5.0,<2.0.0); python_version < "3.8"
+Requires-Dist: numpy (>=1.15.0,<2.0.0)
+Requires-Dist: orjson (>=3.6.0,<4.0.0)
+Requires-Dist: pandas (>=0.21,<2.0.0); extra == "training" or extra == "pandas" or extra == "all"
+Requires-Dist: pyspark (>=3.0.0,<4.0.0); extra == "pyspark" or extra == "all"
+Requires-Dist: tenacity (>=6.2.0,<7.0.0)
+Project-URL: Repository, https://github.com/aporia-ai/sdk
+Description-Content-Type: text/markdown
+
+# Aporia SDK
+
+## Testing
+
+To run the tests, first install the library locally:
+```
+pip install ".[all]" --upgrade
+```
+
+Then run the tests using `pytest`:
+```
+pytest -v
+```
+
+If you don't have Spark installed, skip the pyspark tests:
+```
+pytest -v --ignore=tests/pyspark
+```
+
