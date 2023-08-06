@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "polliwog"
+version = "3.0.0-alpha.1"
+description = "2D and 3D computational geometry library"
+authors = ["Paul Melnikow <github@paulmelnikow.com>", "Metabolize, Body Labs, and other contributors"]
+license = "BSD-2-Clause"
+include = ["CHANGELOG.md"]
+exclude = ["**/test_*.py", "**/*_test_data.py", "**/*_test_assets.npz", "**/_try_inflection_points.py"]
+homepage = "https://polliwog.dev/"
+repository = "https://github.com/lace/polliwog"
+documentation = "https://polliwog.dev/"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Topic :: Artistic Software",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+numpy = "<1.19.0"
+ounce = ">=1.1.0,<2.0"
+jsonschema = {version = ">=4,<5", optional = true}
+simplejson = {version = ">=3,<4", optional = true}
+vg = ">=2.0.0"
+
+[tool.poetry.extras]
+serialization = ["jsonschema", "simplejson"]
+
+[tool.poetry.dev-dependencies]
+black = "22.3.0"
+click = "8.1.3"
+coverage = "6.3.2"
+executor = "23.2"
+flake8 = "4.0.1"
+flake8-import-order = "0.18.1"
+myst-parser = "0.17.2"
+pytest = "7.1.2"
+pytest-cov = "3.0.0"
+Sphinx = "4.3.2"
+sphinxcontrib-apidoc = "0.3.0"
+
+[build-system]
+# Lint requires setuptools.
+requires = ["setuptools", "poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.report]
+fail_under = 100.0
+omit = [
+    "**/test_*.py",
+    "polliwog/transform/make_rodrigues_test_data.py",
+    "polliwog/polyline/_try_inflection_points.py",
+    "polliwog/transform/_testing_helper.py",
+]
