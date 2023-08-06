@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+import argparse
+import asyncio
+import logging
+
+import btzen
+
+logger = logging.getLogger()
+
+async def create_sensors() -> None:
+    mac = '00:00:00:00:00:00'
+
+    # device trigger, tuple[float, float, float]
+    dev1 = btzen.accelerometer(mac)
+    reveal_type(dev1)
+
+    # device, float
+    dev2 = btzen.pressure(mac)
+    reveal_type(dev2)
+
+    # device trigger, float
+    dev3 = btzen.pressure(mac, make=btzen.Make.THINGY52)
+    reveal_type(dev3)
+
+    # device, float
+    dev4 = btzen.pressure(mac, make=btzen.Make.SENSOR_TAG)
+    reveal_type(dev4)
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--verbose', default=False, action='store_true',
+    help='show debug log'
+)
+args = parser.parse_args()
+
+level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=level)
+
+asyncio.run(create_sensors())
+
+# vim: sw=4:et:ai

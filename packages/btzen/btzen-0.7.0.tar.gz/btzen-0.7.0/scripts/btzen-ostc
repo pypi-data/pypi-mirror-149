@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""
+Connect to OSTC dive computer and show last 20 dives.
+
+See also
+
+    http://git.savannah.nongnu.org/cgit/kenozooid.git/tree/kenozooid/driver/hwos
+"""
+
+import argparse
+import asyncio
+import logging
+import struct
+import typing as tp
+from collections import namedtuple
+from cytoolz import itertoolz as itz  # type: ignore
+from cytoolz.functoolz import identity  # type: ignore
+from datetime import datetime
+from functools import partial
+
+import btzen
+
+logger = logging.getLogger('btzen-ostc')
+
+Device = btzen.Device[btzen.Service, bytes]
+
+DiveHeader = namedtuple('DiveHeader', ['size', 'datetime', 'depth', 'duration', 'dive_number', 'version'])
+to_int = partial(int.from_bytes, byteorder='little', signed=False)
+to_timestamp = lambda value: datetime(value[0] + 2000, *value[1:])
+to_depth = lambda v: v * 9.80665 / 1000
+to_duration = lambda v: (to_int(v[:2]) * 60 + int(v[2])) / 60
+header_parsers = (to_int, to_timestamp, to_depth, to_duration) + (identity,) * 2
+
+def parse_header(item: bytes) -> DiveHeader:
+    data = struct.unpack('<3s5sH3sHB', item)
+    values = (p(v) for p, v in zip(header_parsers, data))
+    return DiveHeader._make(values)
+
+async def start(dev: Device) -> None:
+    await btzen.write(dev, b'\xbb')
+    value = await btzen.read(dev, 2)
+    assert value == b'\xbb\x4d', 'got: {!r}'.format(value)
+    logger.info('started')
+
+async def stop(dev: Device) -> None:
+    await btzen.write(dev, b'\xff')
+    # NOTE: do not wait for the response as device is disconnected now
+    # value = await btzen.read(dev, 2)
+    # assert value == b'\xffM', 'got: {}'.format(value)
+
+async def display(dev: Device, msg: str) -> None:
+    msg_data = '{:16.16}'.format(msg).encode()
+
+    await btzen.write(dev, b'\x6e')
+    value = await btzen.read(dev, 1)
+    assert value == b'\x6e'
+    await btzen.write(dev, msg_data)
+    value = await btzen.read(dev, 1)
+    assert value == b'\x4d'
+
+async def read_data(dev: Device, count: int) -> None:
+    await start(dev)
+    await display(dev, 'BTZen Connected')
+
+    try:
+        await btzen.write(dev, b'\x6d')
+        headers = await btzen.read(dev, 4098)
+        headers = headers[1:-1]
+
+        # get 20 latests dives
+        items = itz.partition(16, headers)
+        # convert back to bytes, see https://github.com/pytoolz/cytoolz/issues/102
+        # also filter unused headers
+        items = (bytes(v) for v in items if v[-1] != 0xff)
+        items = (parse_header(v) for v in items)
+        items = itz.tail(count, items)
+        items = reversed(items)
+
+        for k, header in enumerate(items, 1):
+            fmt = '{:3d}: {:%Y-%m-%d %H:%M} {:5.1f}m {:5.1f}\''.format
+            print(fmt(k, header.datetime, header.depth, header.duration))
+        logger.info('done')
+    finally:
+        await stop(dev)
+
+async def run_single(mac: str, count: int) -> None:
+    """
+    Download dives from a dive computer and exit.
+    """
+    dev = btzen.serial(mac, make=btzen.Make.OSTC)
+    async with btzen.connect([dev]) as session:
+        await read_data(dev, count)
+
+async def run_loop(mac: str, count: int) -> None:
+    """
+    Download dives from a dive computer in a loop.
+    """
+    dev = btzen.serial(mac, make=btzen.Make.OSTC)
+    async with btzen.connect([dev]) as session:
+        while True:
+            await read_data(dev, count)
+
+            # TODO: we need to wait for dive computer disconnection; let's
+            # figure out better mechanism in the future
+            await asyncio.sleep(10)
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--verbose', default=False, action='store_true',
+    help='show debug log'
+)
+parser.add_argument(
+    '-l', '--loop', action='store_true',
+    help='restart download after dives are downloaded'
+)
+parser.add_argument(
+    '-c', '--count', default=20, type=int,
+    help='number of dives to show'
+)
+parser.add_argument('device', help='MAC address of device')
+args = parser.parse_args()
+
+level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=level)
+
+runner = run_loop if args.loop else run_single
+asyncio.run(runner(args.device, args.count))
+
+# vim: sw=4:et:ai

@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""
+BTZen demo using SensorTag Bluetooth device.
+
+The demo supports reconnection of device.
+"""
+
+import argparse
+import asyncio
+import dataclasses as dtc
+import logging
+import uvloop
+import typing as tp
+from datetime import datetime
+
+import btzen
+
+logger = logging.getLogger()
+
+#
+# sensor definitions to math device (sensor) with its data reader
+#
+@dtc.dataclass(frozen=True)
+class Desc:
+    name: str
+    ctor: btzen.device.Ctor[tp.Any]
+    reader: tp.Callable[[str, btzen.Device[btzen.Service, tp.Any]], tp.Coroutine[tp.Any, tp.Any, None]]
+
+@dtc.dataclass(frozen=True)
+class DescTrigger:
+    name: str
+    ctor: btzen.device.CtorTrigger[tp.Any]
+    reader: tp.Callable[[str, btzen.DeviceTrigger[btzen.Service, tp.Any]], tp.Coroutine[tp.Any, tp.Any, None]]
+
+async def read_sensors(mac: str, interface: str) -> None:
+    battery = btzen.battery_level(mac)
+    devices = [s.ctor(mac, make=btzen.Make.SENSOR_TAG) for s in SENSORS]
+    devices.append(battery)
+
+    async with btzen.connect(devices, interface=interface) as session:
+        items = zip(SENSORS, devices)
+        tasks = [s.reader(s.name, dev) for s, dev in items]  # type: ignore
+        tasks.append(read_battery('battery', battery))
+        await asyncio.gather(session, *tasks)
+
+async def read_sensor(
+        name: str, sensor: btzen.Device[btzen.Service, float]
+    ) -> None:
+    loop = asyncio.get_event_loop()
+    async for value in btzen.read_all(sensor):
+        print_data(name, '{:.1f}'.format(value))
+        await asyncio.sleep(-loop.time() % 1)
+
+async def read_accelerometer(
+        name: str, sensor: btzen.DeviceTrigger[btzen.Service, tuple[float, float, float]]
+    ) -> None:
+    async for values in btzen.read_all(sensor):
+        vstr = ', '.join('{:.4f}'.format(v) for v in values)
+        print_data(name, vstr)
+
+async def read_button(
+        name: str, button: btzen.DeviceTrigger[btzen.Service, btzen.Button]
+    ) -> None:
+    async for value in btzen.read_all(button):
+        print_data('button', str(value))
+
+async def read_battery(
+        name: str, battery: btzen.DeviceTrigger[btzen.Service, int]
+    ) -> None:
+    async for value in btzen.read_all(battery):
+        print_data('battery level', value)
+
+def print_data(name: str, value: tp.Union[str, int, float]) -> None:
+    print('{} {}: {}'.format(datetime.now(), name, value))
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--verbose', default=False, action='store_true',
+    help='show debug log'
+)
+parser.add_argument(
+    '-i', '--interface', default='hci0',
+    help='Host controller interface (HCI)'
+)
+parser.add_argument('mac', help='MAC address of device')
+args = parser.parse_args()
+
+SENSORS: list[tp.Union[Desc, DescTrigger]] = [
+    Desc('pressure', btzen.pressure, read_sensor),
+    Desc('temperature', btzen.temperature, read_sensor),
+    Desc('humidity', btzen.humidity, read_sensor),
+    Desc('light', btzen.light, read_sensor),
+    DescTrigger('button', btzen.button, read_button),
+    DescTrigger('accelerometer', btzen.accelerometer, read_accelerometer),
+]
+
+level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=level)
+
+uvloop.install()
+asyncio.run(read_sensors(args.mac, args.interface))
+
+# vim: sw=4:et:ai

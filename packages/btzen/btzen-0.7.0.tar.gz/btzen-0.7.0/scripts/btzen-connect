@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""
+Test connection and reconnection of Bluetooth devices.
+
+Bluez, and as a consequence BTZen library, requires a Bluetooth service to
+reconnect Bluetooth devices. The script uses Bluetooth Battery Service by
+default. Specify some other primary service if Bluetooth Battery Service is
+not available.
+
+This script is tested with some other services (although connecting with
+their Bluetooth Battery Service works as well)
+
+- SensorTag::
+
+    f000aa40-0451-4000-b000-000000000000
+    f000aa00-0451-4000-b000-000000000000
+
+"""
+
+import argparse
+import asyncio
+import logging
+import uvloop
+from functools import partial
+
+import btzen
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--verbose', default=False, action='store_true',
+    help='show debug log'
+)
+parser.add_argument(
+    '-s', '--service',
+    # TODO: use btzen.Battery.service
+    default='0000180f-0000-1000-8000-00805f9b34fb',
+    help='Bluetooth service UUID'
+)
+parser.add_argument(
+    'mac', nargs='+',
+    help='List of MAC addresses of devices to connect'
+)
+args = parser.parse_args()
+
+level = logging.DEBUG if args.verbose else logging.INFO
+logging.basicConfig(level=level)
+
+async def connect_devices(service_uuid: str, mac: list[str]) -> None:
+    srv = btzen.Service(service_uuid)
+    set_trigger = partial(
+        btzen.set_trigger,
+        condition=btzen.TriggerCondition.ON_CHANGE
+    )
+    devices = [set_trigger(btzen.create_device(srv, m)) for m in mac]
+    async with btzen.connect(devices):
+        while True:
+            await asyncio.sleep(5)
+
+uvloop.install()
+asyncio.run(connect_devices(args.service, args.mac))
+
+# vim: sw=4:et:ai

@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import asyncio
+import argparse
+import logging
+import time
+
+import btzen
+
+logging.basicConfig(level=logging.DEBUG)
+
+async def read_values(sensor):
+    for i in range(15):
+        value = await sensor.read()
+        yield value
+        time.sleep(0.1)
+
+async def measure_reading(sensor):
+    start = time.monotonic()
+    values = sorted({v async for v in read_values(sensor)})
+    print('elapsed {:.4f}, got: {}'.format(time.monotonic() - start, values))
+
+async def check_interval(sensor):
+    await sensor.connect()
+
+    # not many pressure value changes
+    sensor.set_interval(1)
+    await measure_reading(sensor)
+
+    # expected more pressure value changes
+    sensor.set_interval(0.1)
+    await measure_reading(sensor)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('device', help='MAC address of device')
+args = parser.parse_args()
+
+sensor = btzen.Pressure(args.device)
+loop = asyncio.get_event_loop()
+loop.run_until_complete(check_interval(sensor))
+sensor.close()
+
+# vim: sw=4:et:ai

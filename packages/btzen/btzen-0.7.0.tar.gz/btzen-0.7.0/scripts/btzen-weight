@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+#
+# BTZen - library to asynchronously access Bluetooth devices.
+#
+# Copyright (C) 2015-2022 by Artur Wroblewski <wrobell@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""
+Display weight data from a scale supporting Bluetooth weight measurement
+characteristic.
+"""
+
+import argparse
+import asyncio
+import logging
+import typing as tp
+
+import btzen
+
+Device = btzen.DeviceTrigger[btzen.ServiceCharacteristic, btzen.WeightData]
+
+async def read_weight(scale: Device) -> None:
+    while btzen.is_active():
+        try:
+            value = await btzen.read(scale)
+        except asyncio.CancelledError as ex:
+            print('{}: {}'.format(scale, ex))
+        else:
+            print('weight: {}'.format(value))
+
+async def read_data(mac: str) -> None:
+    scale: Device = tp.cast(Device, btzen.weight(mac, make=btzen.Make.MI_SMART_SCALE))
+    async with btzen.connect([scale]) as session:
+        await asyncio.gather(session, read_weight(scale))
+
+logging.basicConfig(level=logging.DEBUG)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('device', help='MAC address of device')
+args = parser.parse_args()
+
+asyncio.run(read_data(args.device))
+
+# vim: sw=4:et:ai

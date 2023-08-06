@@ -1,0 +1,153 @@
+Metadata-Version: 2.1
+Name: btzen
+Version: 0.7.0
+Summary: BTZen - library to asynchronously access Bluetooth devices
+Home-page: https://github.com/wrobell/btzen
+Author: Artur Wroblewski
+Author-email: wrobell@riseup.net
+License: GPLv3+
+Platform: UNKNOWN
+Classifier: Topic :: Software Development :: Libraries
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 4 - Beta
+Requires-Python: >=3.9
+Description-Content-Type: text/x-rst
+Provides-Extra: tests
+License-File: COPYING
+
+BTZen is a library to asynchronously access Bluetooth devices using Python
+language. It provides simple API over complex D-Bus Bluez interface.
+
+Features
+========
+
+The main features of BTZen are
+
+1. Connect and access multiple Bluetooth devices in parallel with Python
+   asynchronous coroutines.
+2. GATT notification interface integrated into main API of the library.
+3. Automatic reconnections to devices.
+4. Access to serial devices implementing Stollmann (Telit) protocol.
+5. Support for devices, which do not follow the Bluetooth specification
+   fully like SensorTag (CC2650STK) or Thingy:52.
+6. Support for Bluez managed interfaces of devices, i.e. battery level.
+7. Allow to implement support for new devices easily.
+
+The library can be used with any Bluetooth Smart device. It was tested with
+
+1. SensorTag (CC2650STK) to read temperature, pressure, humidity, light,
+   accelerometer data and state of the buttons.
+2. Thingy:52 to read temperature, pressure, humidity, light data and state
+   of the button.
+3. Mi Smart Scale to read weight data.
+4. OSTC dive computer to read serial device data using Stollmann (Telit)
+   protocol.
+
+The library is tested with default `asyncio` event loop and its drop-in
+replacement `uvloop <https://github.com/MagicStack/uvloop>`_. Use of
+`uvloop` increases performance of the library.
+
+The scripts in `scripts` directory demonstrate reading data from various
+devices.
+
+NOTE: The first version of SensorTag (CC2541DK) is not supported at the
+moment. If you still own the device and would like it to be supported,
+please `raise an issue <https://github.com/wrobell/btzen/issues>`_.
+
+API Changes
+===========
+Please note that since version 0.6.0 the API changed. The benefits are
+
+- support different makes of devices with single API
+- it is much easier to implement functionality for new devices
+- shutting down of BTZen connection sessions is more reliable
+
+If pre-0.6.0 version of BTZen is required, then use appropriate versioning
+in installation requirements of your project.
+
+Documentation
+=============
+This project's documentation is lacking at the moment. Some useful tips
+might be found in this README file and files at
+
+    https://github.com/wrobell/btzen/tree/master/doc
+
+Installation
+============
+Use `pip` to install BTZen library (Cython needs to be installed first),
+for example::
+
+    pip install --user cython
+    pip install --user btzen
+
+BTZen uses experimental API of Bluez adapter interface to connect to
+Bluetooth devices. The `bluetoothd` daemon has to be started with
+experimental option on. This can be permanently achieved by setting
+`Experimental` to `true` in `/etc/bluez/main.conf` file.
+
+Change `AutoEnable` option to true in `/etc/bluetooth/main.conf` to
+automate powering up of Bluetooth controllers. Otherwise a controller might
+need to be switched on manually with `bluetoothctl` tool. BTZen library
+does not perform this operation.
+
+Connection Management
+=====================
+BTZen uses `ConnectDevice` method of Bluez adapter interface to discover
+and connect to Bluetooth devices. MAC address of a device needs to be known
+in order to connect.
+
+BTZen connection manager allows to connect and disconnect Bluetooth devices
+without restarting of an application. If an application is reading data
+from multiple Bluetooth devices, the application can continue working if,
+for example, a sensor requires battery change.
+
+Please note
+
+- when trying to connect to a device using BTZen library, do not start scan
+  with other programs, i.e. `bluetoothctl`
+- if a device is disconnected with an external program, the external program
+  has to be used to reconnect
+
+Obtaining MAC Address
+=====================
+If Bluetooth device MAC address is not known
+
+1. Start `bluetoothctl`.
+2. Start scan.
+3. Save discovered MAC address.
+4. Optionally, remove device with `remove` command of `bluetoothctl`
+   utility.
+5. Start BTZen based application using the discovered MAC address.
+
+Performance
+===========
+The library enables programmers to communicate with mutliple devices in
+parallel without using threads. This avoids context switching of threads
+and minimizes memory requirements, which makes BTZen more efficient than
+other, similar libraries. To keep the library as fast as possible, Cython
+is used to access Bluez D-Bus API. BTZen can be used with `uvloop` for even
+more increased performance of an application.
+
+Support for GATT notification interface allows efficient use of Bluetooth
+devices. For example, data from sensors like accelerometers can be read
+only when sensor wakes up and transmits data after sensor has been moved.
+This limits amount of transferred data and avoids draining battery of the
+sensor, which will happen if data is polled at regular, short intervals.
+
+Requirements
+============
+BTZen library requires the following software components
+
+- Python 3.9
+- bluez 5.64
+- `sd-bus` (part of `systemd`)
+- Cython 0.29
+
+License
+=======
+BTZen library is licensed under terms of GPL license, version 3, see
+`COPYING <https://www.gnu.org/licenses/gpl-3.0.en.html>`_ file for details.
+
+
+
