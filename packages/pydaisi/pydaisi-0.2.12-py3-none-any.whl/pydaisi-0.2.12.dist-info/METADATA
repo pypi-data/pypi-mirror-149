@@ -1,0 +1,92 @@
+Metadata-Version: 2.1
+Name: pydaisi
+Version: 0.2.12
+Summary: A Python interface for the Daisi Platform
+Home-page: https://github.com/BelmontTechnology/PyDaisi
+Author: Daisi Technology, Inc.
+Author-email: eng@daisi.io
+License: Apache License 2.0
+Keywords: Daisi SDK
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: httpx
+Requires-Dist: python-dotenv
+Requires-Dist: dill
+Requires-Dist: rich
+Requires-Dist: requests-toolbelt
+Requires-Dist: trio
+Requires-Dist: tqdm
+
+# Simples steps for using the PyDaisi SDK
+
+## Preliminary tasks
+
+### Install with PIP:
+
+- `pip install pydaisi`
+
+### (Optional) Set your personal access token:
+
+Create your personal access token
+
+- https://app.daisi.io/settings/personal-access-tokens
+
+Set it in the environment:
+```
+export DAISI_ACCESS_TOKEN=a1b2c3d4e5f67890abcdef124567890
+```
+or in a `.env` file:
+```
+DAISI_ACCESS_TOKEN=a1b2c3d4e5f67890abcdef124567890
+```
+
+## Using PyDaisi
+
+### Normal calls
+You can call the Daisi function, it will run until complete, and the result will be available in the `value` attribute when it has returned.
+```
+from pydaisi import Daisi
+
+# instantiate a Daisi object
+daisi = Daisi("my-pebble-tutorial")
+# call a Daisi function. You can also use positional parameters: daisi.median("London")
+temp = daisi.median(city="London")
+print(f"Median temperature in London was: {temp.value}")
+print(f"Mean temperature in Amsterdam was: {daisi.mean('Amsterdam')}.value")
+```
+
+
+### Async calls
+You can also use Python asyncio functions to create and dispatch many calls asynchronously.
+```
+from pydaisi import Daisi
+import asyncio
+
+async def callmany()
+    calls = []
+    # sets up a call, but does not execute
+    with Daisi("my-pebble-tutorial") as daisi:
+        calls.append(daisi.defer.mean("Paris").fetch_result())
+        calls.append(daisi.defer.mean("London").fetch_result())
+        calls.append(daisi.defer.mean("Amsterdam").fetch_result())
+        await asyncio.gather(calls)
+```
+
+
+## Parallel Execution
+You may also use helper functions to execute many calls from your synchronous code
+
+```
+from pydaisi import Daisi
+
+with Daisi('my_daisi_name`) as my_daisi:
+    calls = []
+    calls.append(my_daisi.endpoint1_(**kwargs))
+    calls.append(my_daisi.endpoint2_(**kwargs))
+    calls.append(my_daisi.endpoint3_(**kwargs))
+    print(Daisi.parallel_run(*calls))
+```
+
