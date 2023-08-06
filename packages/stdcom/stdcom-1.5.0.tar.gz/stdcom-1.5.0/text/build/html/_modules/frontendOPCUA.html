@@ -1,0 +1,679 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontendOPCUA &#8212; stdcom 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for frontendOPCUA</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="c1">#  Copyright (C) 2021 Vremsoft LLC and/or its subsidiary(-ies).</span>
+<span class="c1">#  All rights reserved.</span>
+<span class="c1">#  Contact: Laura Chapman  (edc@vremsoft.com)</span>
+<span class="c1">#  Commercial Usage</span>
+<span class="c1">#  Licensees holding valid Vremsoft LLC licenses may use this file in</span>
+<span class="c1">#  accordance with the License Agreement provided with the</span>
+<span class="c1">#  Software or, alternatively, in accordance with the terms contained in+`</span>
+<span class="c1">#  a written agreement between you and Vremsoft. LLC</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">re</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtSvg</span> <span class="kn">import</span> <span class="n">QSvgWidget</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">QSvgWidget</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="kn">from</span> <span class="nn">frontend</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QDialog</span><span class="p">,</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QCheckBox</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QSettings</span><span class="p">,</span> <span class="n">QVariant</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QEvent</span>
+<span class="kn">from</span> <span class="nn">PyQt5.Qt</span> <span class="kn">import</span> <span class="n">pyqtSlot</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+<span class="kn">from</span> <span class="nn">stdcomqt5</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">opcua</span> <span class="kn">import</span> <span class="n">ua</span><span class="p">,</span> <span class="n">Server</span><span class="p">,</span> <span class="n">uamethod</span>
+<span class="c1">#from opcua.common.callback import CallbackType</span>
+<span class="c1">#import copy</span>
+
+
+<div class="viewcode-block" id="Tree"><a class="viewcode-back" href="../code.html#frontendOPCUA.Tree">[docs]</a><span class="k">class</span> <span class="nc">Tree</span> <span class="p">(</span><span class="nb">object</span><span class="p">)</span> <span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple Itor functionallity for traversing names or data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cb</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cb</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cb</span> <span class="o">=</span> <span class="n">cb</span>
+
+<div class="viewcode-block" id="Tree.addname"><a class="viewcode-back" href="../code.html#frontendOPCUA.Tree.addname">[docs]</a>    <span class="k">def</span> <span class="nf">addname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name:  Names coming in</span>
+<span class="sd">        :param data:  Data if uses as data itor</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[.;:,\s]\s*&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">rdx</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">rindex</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+                    <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">rdx</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">newname</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">newname</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="SubHandler"><a class="viewcode-back" href="../code.html#frontendOPCUA.SubHandler">[docs]</a><span class="k">class</span> <span class="nc">SubHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subscription Handler. To receive events from server for a subscription</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span>  <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">firstTime</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cBridge</span> <span class="p">:</span> <span class="n">stdcomPyQt</span> <span class="p">)</span> <span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name: Name of the publication</span>
+<span class="sd">        :param cBridge:    The cBridge</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="n">cBridge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">firstTime</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SubHandler.Same"><a class="viewcode-back" href="../code.html#frontendOPCUA.SubHandler.Same">[docs]</a>    <span class="k">def</span> <span class="nf">Same</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l1</span><span class="p">:</span> <span class="p">[],</span> <span class="n">l2</span><span class="p">:</span> <span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines if 2 lists are the same</span>
+<span class="sd">        :param l1:  List 1</span>
+<span class="sd">        :param l2:  List 2</span>
+<span class="sd">        :return:  True is same, False if not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">l2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">l2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">l1</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">l1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">l2</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="SubHandler.write_from_multiverse"><a class="viewcode-back" href="../code.html#frontendOPCUA.SubHandler.write_from_multiverse">[docs]</a>    <span class="k">def</span> <span class="nf">write_from_multiverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span> <span class="p">:</span> <span class="nb">list</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param name: Name of publication</span>
+<span class="sd">        :param data:   Data coming from multiverse</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">just_in_from_multiverse</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="SubHandler.datachange_notification"><a class="viewcode-back" href="../code.html#frontendOPCUA.SubHandler.datachange_notification">[docs]</a>    <span class="k">def</span> <span class="nf">datachange_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called when opc changes data</span>
+<span class="sd">        :param node:</span>
+<span class="sd">        :param val:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">firstTime</span> <span class="o">==</span> <span class="kc">True</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firstTime</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Same</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">writeValues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span><span class="n">val</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">event_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Python: New event&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA">[docs]</a><span class="k">class</span> <span class="nc">StecMultiverseOPCUA</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stec OPCUA Server used fpr anyone whishing use or make a OPCUA Server to Multiverse</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MultiverseHostname</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">MultiversePort</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OPCUAEndpoint</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OPCUAEndpointPort</span> <span class="o">=</span> <span class="mi">4840</span>
+    <span class="n">OPCUrl</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OPCDest</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">adaptor</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">cBridge</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">server</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">OurUaVars</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OurFolders</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OurSubs</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">OurClientHandlers</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cBridge</span> <span class="p">:</span> <span class="n">stdcomPyQt</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param cBridge: If you are passing a cBridge and it is controlled here, pass it else it will make one</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="n">cBridge</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">Ui_FrontendOPCUA</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiverseHost</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiversePort</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOpcUAPort</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOPCUAEndpoint</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditUrl</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonSave</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SaveConfig</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonClose</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slotButtonClose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButtonDelete</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DeleteRows</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">adaptor</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EachName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adaptorData</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EachData</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="n">stdcomPyQt</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">sigNames</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slotNames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">sigNewData</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slotNewData</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LoadConfig</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetAll</span><span class="p">()</span>
+
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.resetAll"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.resetAll">[docs]</a>    <span class="k">def</span> <span class="nf">resetAll</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal Use</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurClientHandlers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurClientHandlers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">LoadConfig</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">()</span>
+        <span class="n">endPoint</span> <span class="o">=</span> <span class="s2">&quot;opc.tcp://0.0.0.0:4840/freeopcua/server/&quot;</span>
+        <span class="n">endPoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCDest</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">set_endpoint</span><span class="p">(</span><span class="n">endPoint</span><span class="p">)</span>
+
+        <span class="c1"># setup our own namespace, not really necessary but should as spec</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="s2">&quot;http://examples.freeopcua.github.io&quot;</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">register_namespace</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+        <span class="c1"># set all possible endpoint policies for clients to connect through</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">set_security_policy</span><span class="p">([</span>
+            <span class="n">ua</span><span class="o">.</span><span class="n">SecurityPolicyType</span><span class="o">.</span><span class="n">NoSecurity</span><span class="p">,</span>
+            <span class="n">ua</span><span class="o">.</span><span class="n">SecurityPolicyType</span><span class="o">.</span><span class="n">Basic256Sha256_SignAndEncrypt</span><span class="p">,</span>
+            <span class="n">ua</span><span class="o">.</span><span class="n">SecurityPolicyType</span><span class="o">.</span><span class="n">Basic256Sha256_Sign</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">set_server_name</span><span class="p">(</span><span class="s2">&quot;Multiverse NextStep Server&quot;</span><span class="p">)</span>
+
+        <span class="c1"># get Objects node, this is where we should put our nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">get_objects_node</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">myobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">add_object</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;Stec Multiverse&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">myvar1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">myobj</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;NextStep Configuration&quot;</span><span class="p">,</span> <span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">)</span>  <span class="p">])</span>
+   <span class="c1">#     self.myvar1.set_writable()  # Set MyVariable to be writable by clients</span>
+
+        <span class="c1"># starting!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">setDestination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">LoadcBridge</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.createEndpoint"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.createEndpoint">[docs]</a>    <span class="k">def</span> <span class="nf">createEndpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds an endpoint from ip and name internal use</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCDest</span> <span class="o">=</span> <span class="s2">&quot;opc.tcp://&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span><span class="p">)</span>  <span class="o">+</span><span class="s2">&quot;/freeopcua/server/&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditEndPointFull</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCDest</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.closeEvent"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.closeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QEvent</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        internal use</span>
+<span class="sd">        :param event:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Terminate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.allowed"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.allowed">[docs]</a>    <span class="k">def</span> <span class="nf">allowed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param name: Name from setup to determine if we can use it</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.EachName"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.EachName">[docs]</a>    <span class="k">def</span> <span class="nf">EachName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">nameCorrected</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The itor function for each name when it comes it</span>
+<span class="sd">        :param key:</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :param nameCorrected:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InsertRow</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">InsertRow</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">myfolder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">add_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span> <span class="p">:</span> <span class="n">myfolder</span><span class="p">}</span>
+
+        <span class="k">elif</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="p">:</span>
+            <span class="n">myfolder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">add_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="n">key</span> <span class="p">:</span> <span class="n">myfolder</span> <span class="p">})</span>
+
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">myfolder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="n">myvar</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">subscribe</span><span class="p">,</span> <span class="n">readOnly</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">subscribe</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">readOnly</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">subscribe</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="o">==</span> <span class="s2">&quot;TRUE&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">myvar</span> <span class="o">=</span> <span class="n">myfolder</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">nameCorrected</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Waiting&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="p">:</span> <span class="p">[</span><span class="n">myvar</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="n">myvar</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span> <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">readOnly</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;FALSE&quot;</span><span class="p">:</span>
+                <span class="n">myvar</span><span class="o">.</span><span class="n">set_writable</span><span class="p">()</span>
+                <span class="n">handler</span> <span class="o">=</span> <span class="n">SubHandler</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="p">)</span>
+                <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+                <span class="n">handle</span> <span class="o">=</span> <span class="n">sub</span><span class="o">.</span><span class="n">subscribe_data_change</span><span class="p">(</span><span class="n">myvar</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">OurClientHandlers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span><span class="n">handler</span> <span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.EachData"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.EachData">[docs]</a>    <span class="k">def</span> <span class="nf">EachData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">nameCorrected</span><span class="p">,</span> <span class="n">data</span> <span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Data itor when data comes in from multiverse that we are subscribed to</span>
+<span class="sd">        :param key:</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :param nameCorrected:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurFolders</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">EachName</span><span class="p">(</span> <span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">nameCorrected</span><span class="p">,</span> <span class="n">data</span> <span class="p">)</span>
+
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurClientHandlers</span> <span class="p">:</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurClientHandlers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span> <span class="ow">and</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="nb">vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurSubs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">myvar</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">myvar</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.InsertRow"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.InsertRow">[docs]</a>    <span class="k">def</span> <span class="nf">InsertRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>  <span class="n">enabled</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span>  <span class="n">readonly</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">5</span><span class="p">)):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inserts a row with a subscription possibility to the table</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :param enabled:</span>
+<span class="sd">        :param readonly:</span>
+<span class="sd">        :param freq:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">insertRow</span><span class="p">(</span><span class="n">rows</span> <span class="p">)</span>
+
+        <span class="n">itm1</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">()</span>
+        <span class="n">itm1</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">itm4</span> <span class="o">=</span> <span class="n">QTableWidgetItem</span><span class="p">()</span>
+        <span class="n">itm4</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">freq</span><span class="p">))</span>
+
+
+        <span class="n">bxt1</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span> <span class="nb">str</span><span class="p">(</span><span class="n">enabled</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;TRUE&quot;</span> <span class="p">:</span>
+            <span class="n">bxt1</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">bxt2</span> <span class="o">=</span>  <span class="n">QCheckBox</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">readonly</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">readonly</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;TRUE&quot;</span><span class="p">:</span>
+            <span class="n">bxt2</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">itm1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">itm4</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="n">bxt1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setCellWidget</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bxt2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.UpdateAllowedScreen"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.UpdateAllowedScreen">[docs]</a>    <span class="k">def</span> <span class="nf">UpdateAllowedScreen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tells the screen what should be allowed</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">([</span><span class="s2">&quot;Subscription&quot;</span><span class="p">,</span> <span class="s2">&quot;Allowed&quot;</span><span class="p">,</span> <span class="s2">&quot;ReadOnly&quot;</span><span class="p">,</span><span class="s2">&quot;Freq&quot;</span><span class="p">])</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+                    <span class="n">val</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">InsertRow</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.RebuildAllowed"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.RebuildAllowed">[docs]</a>    <span class="k">def</span> <span class="nf">RebuildAllowed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets data from the screen and makes a maps of what to subscribe to</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span>
+        <span class="n">allowed</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+            <span class="n">bxt1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bxt1</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="p">:</span>
+                <span class="n">allow</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">allow</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span>
+
+            <span class="n">bxt2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">cellWidget</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bxt2</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="n">readonly</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">readonly</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span>
+
+
+            <span class="n">timeing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">allowed</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span><span class="p">:</span> <span class="p">[</span><span class="n">allow</span><span class="p">,</span><span class="n">readonly</span><span class="p">,</span><span class="kc">None</span> <span class="p">]})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="o">=</span> <span class="n">allowed</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.Terminate"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.Terminate">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">Terminate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        terminated thread and shuts it all down</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.slotNames"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.slotNames">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">slotNames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param names: names as they come in from multiverse</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adaptor</span><span class="o">.</span><span class="n">addname</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.slotNewData"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.slotNewData">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">slotNewData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        data as it comes in from Multiverse</span>
+<span class="sd">        :param name:</span>
+<span class="sd">        :param data:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adaptorData</span><span class="o">.</span><span class="n">addname</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.slotButtonClose"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.slotButtonClose">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">slotButtonClose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close from screen</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Terminate</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.SaveConfig"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.SaveConfig">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">SaveConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves all setup data</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">RebuildAllowed</span><span class="p">()</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">VSettings</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiverseHost</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiversePort</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOpcUAPort</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOPCUAEndpoint</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditUrl</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span> <span class="s1">&#39;MultiverseHostname&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span> <span class="s1">&#39;MultiversePort&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span> <span class="s2">&quot;Endpoint&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span> <span class="s2">&quot;EndpointPort&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span> <span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span> <span class="s1">&#39;OurAllows&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;URL&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span><span class="p">)</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UpdateAllowedScreen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cBridge</span><span class="o">.</span><span class="n">setDestination</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createEndpoint</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resetAll</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.LoadConfig"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.LoadConfig">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">LoadConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        loads all configurations</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="n">VSettings</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;MultiverseHostname&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;MultiversePort&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span> <span class="o">=</span>  <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;Endpoint&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;EndpointPort&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span> <span class="o">=</span>  <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;URL&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;None&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">5</span><span class="p">]}</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;OurAllows&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OurUaVars</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiverseHost</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiverseHostname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditMultiversePort</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MultiversePort</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOpcUAPort</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpointPort</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditOPCUAEndpoint</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OPCUAEndpoint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">UpdateAllowedScreen</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">lineEditUrl</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">OPCUrl</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createEndpoint</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StecMultiverseOPCUA.DeleteRows"><a class="viewcode-back" href="../code.html#frontendOPCUA.StecMultiverseOPCUA.DeleteRows">[docs]</a>    <span class="nd">@pyqtSlot</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">DeleteRows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deletes a selected row</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">model_index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">selectionModel</span><span class="p">()</span><span class="o">.</span><span class="n">selectedRows</span><span class="p">():</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QPersistentModelIndex</span><span class="p">(</span><span class="n">model_index</span><span class="p">)</span>
+            <span class="n">index_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">row</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">index_list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidgetAllowable</span><span class="o">.</span><span class="n">removeRow</span><span class="p">(</span><span class="n">index</span><span class="p">)</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    bumped version</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;--version&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1.2.3&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">show</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">nextProject</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="n">window</span> <span class="o">=</span> <span class="n">StecMultiverseOPCUA</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Stec OPCUA Server&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;--hide&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hidden Display&quot;</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  <span class="c1"># IMPORTANT!!!!! Windows are hidden by default.</span>
+
+    <span class="c1"># Start the event loop.</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">Terminate</span><span class="p">()</span>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">stdcom</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../code.html">Code Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Ed Chapman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
