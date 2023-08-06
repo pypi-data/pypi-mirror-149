@@ -1,0 +1,98 @@
+{
+  "name": "jupyterlab-mol-visualizer",
+  "version": "0.2.4",
+  "description": "A JupyterLab launcher extension to view the molecular orbitals.",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/osscar-org/jupyterlab-mol-visualizer",
+  "bugs": {
+    "url": "https://github.com/osscar-org/jupyterlab-mol-visualizer/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "Dou Du",
+    "email": "dou.du@epfl.ch"
+  },
+  "files": [
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osscar-org/jupyterlab-mol-visualizer.git"
+  },
+  "scripts": {
+    "build": "jlpm run build:lib && jlpm run build:labextension:dev",
+    "build:prod": "jlpm run clean && jlpm run build:lib && jlpm run build:labextension",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:lib": "tsc",
+    "clean": "jlpm run clean:lib",
+    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
+    "clean:labextension": "rimraf jupyterlab_mol_visualizer/labextension",
+    "clean:all": "jlpm run clean:lib && jlpm run clean:labextension",
+    "eslint": "eslint . --ext .ts,.tsx --fix",
+    "eslint:check": "eslint . --ext .ts,.tsx",
+    "install:extension": "jlpm run build",
+    "watch": "run-p watch:src watch:labextension",
+    "watch:src": "tsc -w",
+    "watch:labextension": "jupyter labextension watch ."
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^3.4.0",
+    "@jupyterlab/apputils": "^3.4.0",
+    "@jupyterlab/coreutils": "5.4.0",
+    "@jupyterlab/filebrowser": "^3.4.0",
+    "@jupyterlab/launcher": "^3.4.0",
+    "@jupyterlab/ui-components": "^3.4.0",
+    "@material-ui/core": "4.12.4",
+    "@material-ui/icons": "4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@osscar/ngl": "2.0.0-dev.38",
+    "underscore": "1.13.3"
+  },
+  "devDependencies": {
+    "@jupyterlab/builder": "^3.4.0",
+    "@types/underscore": "1.11.4",
+    "@typescript-eslint/eslint-plugin": "^5.22.0",
+    "@typescript-eslint/parser": "^5.22.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
+    "rimraf": "^3.0.2",
+    "typescript": "~4.3.5"
+  },
+  "resolutions": {
+    "@types/react": "17.0.39"
+  },
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "styleModule": "style/index.js",
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "jupyterlab_mol_visualizer/labextension",
+    "_build": {
+      "load": "static/remoteEntry.bf58643abc1ede20e03a.js",
+      "extension": "./extension",
+      "style": "./style"
+    }
+  },
+  "jupyter-releaser": {
+    "hooks": {
+      "before-build-npm": [
+        "python -m pip install jupyterlab~=3.1",
+        "jlpm"
+      ]
+    }
+  }
+}
