@@ -1,0 +1,32 @@
+name: tf
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest tensorflow scikit-learn matplotlib pandas scikit-optimize
+        python -m pip install easy_mpl SeqMetrics
+    - name: Test with unittest
+      run: |
+        conda install pytest
+        pip install coverage
+        pip install codecov
+        pip install python-coveralls
+
+        coverage run -m unittest tests.test_front_page_examples
