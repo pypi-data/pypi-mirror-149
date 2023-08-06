@@ -1,0 +1,23 @@
+# $service is the service name in docker-compose.yml file.
+# If is not in arguments the CLI will use the first service with build attribute in docker-compose.yml file
+set DEFAULT_COMMAND=docker-compose
+
+armageddon={
+    'command': 'docker stop $(docker ps -q) 2> /dev/null; docker system prune -af --volumes',
+    'help': 'Delete EVERYTHING in Docker with "docker system prune -af --volumes"',
+    'exit_on_fail': False
+}
+bash=exec $service bash
+exec=exec $service
+logs=logs -f $service
+ps={'command': 'docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'}
+run=run --rm $service
+stop_all={
+    'command': 'docker stop $(docker ps -q) 2> /dev/null',
+    'help': 'Stop all containers',
+    'messages': {
+        'start': 'Stopping all containers',
+        'finish': 'All containers have been stopped'
+    }
+}
+stop_start=stop $service;up -d $service

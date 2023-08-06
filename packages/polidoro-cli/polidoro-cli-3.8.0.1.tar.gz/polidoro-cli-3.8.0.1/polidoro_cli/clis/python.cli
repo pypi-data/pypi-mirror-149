@@ -1,0 +1,15 @@
+set DEFAULT_COMMAND=$docker python
+set DJANGO=manage.py
+export DJANGO_LOG_FILE=/tmp/log
+export PYTEST_ADDOPTS="--color=yes"
+
+install,i=-m pip install -r ${arg0:requirements.txt}
+test,t={'command': '$docker pytest --lf -f'}
+test_prod={'command': 'pytest -n 8 --create-db'}
+
+send_to_pip={
+    'command': 'python3 setup.py sdist bdist_wheel; twine upload dist/*; rm dist build -rf'
+}
+
+
+
