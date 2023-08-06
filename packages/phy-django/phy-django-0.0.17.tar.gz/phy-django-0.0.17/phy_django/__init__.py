@@ -1,0 +1,5 @@
+version = '0.0.17'
+author = 'Haoyu Pan'
+author_email = 'panhaoyu.china@outlook.com'
+description = 'My personal django enhancement library.'
+url = 'https://github.com/panhaoyu/phy_django.git'
