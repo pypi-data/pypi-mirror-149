@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: django-about-ds
+Version: 0.0.1
+Summary: about part for demiansoft
+Home-page: https://www.demiansoft.com
+Author: hyungjin kim
+Author-email: hj3415@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://pypi.org/project/util-demian/
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django (>=3.2.9)
+
+django-about_ds
+==========
+
+django-about_ds is a Django app to use for demiansoft. 
+
+Quick start
+------------
+
+1. Add "about" to your INSTALLED_APPS setting like this
+```python
+INSTALLED_APPS = [
+    ...
+    'about',
+]
+```
+
+2. 코드를 넣고자 하는 위치에 다음을 추가 한다.
+```html
+{% load about_tags %}
+{% make_about %}
+```
+
+* context example
+```python
+context = {
+    "theme": "mentor_ds",
+    "about": {
+        "title": "믿음을 주는 것은 의사의 몫입니다.",
+        "subtitle": "저,환자,그리고 직원 모두 최고로 만족할 수 있는 우리들의 '인생' 치과가 되었으면 좋겠습니다.",
+        "head": "저는 경희대학교를 졸업하고 삼성서울병원에서 구강외과레지던트를 수련받고 구강외과 전문의 자격증을 취득하였습니다. 다양",
+        "contents": [
+            "<strong>과잉진료나 허위진료를 하지 않습니다.</strong><br>현재 환자분의 상태에 대해 충분히 설명하고 필요한 치료를 진행합니다.",
+            "<strong>책임을 가진 의료진이 진료합니다.</strong><br>대표원장이 주치의로서 환자분을 책임지고 진료하고 있습니다."
+        ],
+        "tail": "치과 이름과 같이 제 인생에 있어서 마지막 치과이면서 20여 년의 임상경험으로 환자분들에게 최고의 만족을 드려 ‘인생치과’가 될수 있도록 최선을 다해 다음의 약속을 치키도록 하겠습니다.",
+        "image_filename": "about.jpg",
+        "video_link": "https://www.youtube.com/watch?v=ehibwWyCyb0",
+    }
+}
+```
+
+
+

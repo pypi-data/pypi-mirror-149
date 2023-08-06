@@ -1,0 +1,29 @@
+{% extends 'about/_common.html' %}
+{% load static %}
+
+{% block about %}
+<!-- ======= About Section ======= -->
+<section id="about" class="about">
+  <div class="container">
+    <div class="row content">
+      {% autoescape off %}
+      <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
+        <h2>{{ about.title }}</h2>
+        <h3>{{ about.subtitle }}</h3>
+      </div>
+      <div class="col-lg-6 pt-4 pt-lg-0" data-aos="fade-left" data-aos-delay="200">
+        <p>{{ about.head }}</p>
+        <ul>
+          {% for li in about.contents %}
+          <li><i class="ri-check-double-line"></i> {{ li }}</li>
+          {% endfor %}
+        </ul>
+        <p class="fst-italic">
+          {{ about.tail }}
+        </p>
+      </div>
+      {% endautoescape %}
+    </div>
+  </div>
+</section><!-- End About Section -->
+{% endblock %}
