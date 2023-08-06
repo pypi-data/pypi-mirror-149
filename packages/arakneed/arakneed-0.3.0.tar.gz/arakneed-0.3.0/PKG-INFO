@@ -1,0 +1,108 @@
+Metadata-Version: 2.1
+Name: arakneed
+Version: 0.3.0
+Summary: A common use targeted concurrent crawler for any directed graph. It's designed to be easy to use.
+Home-page: https://github.com/arakneed/crawler
+Author: arakneed
+Author-email: arakneed@somarl.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.8
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Arakneed
+
+A common use targeted concurrent crawler for **any** directed graph. It's designed to be easy to use.
+
+It's an adequate practice to organize your crawler code instead of a spider library or framework.
+
+## Why this since there's scrapy .etc?
+
+Because they are not supposed to crawl my pictures on my laptop but I want to crawl them like a spider.
+
+Arakneed can be used to traverse any directed graph, including a directory on your computer to collect pictures or collecting someone's all Github Gists... And anything looks like directed graph.
+
+Though it can also be used to crawl a website like a tranditional spider.
+
+## Usage
+
+Install as dependency:
+
+```sh
+pip install -U arakneed
+```
+
+Or you can clone the repo and work right in place within file `crawler.py`:
+
+```sh
+git clone https://github.com/arakneed/crawler.git
+```
+
+## How does it work?
+
+Any vertex spotted by the spider will be scheduled as a **task**. The only thing you need to do is to define how to handle the tasks.
+
+```python
+import asyncio
+from pathlib import Path
+import re
+
+import aiohttp
+from arakneed import Crawler, Task
+
+
+async def resolver(task: Task, response: aiohttp.ClientResponse):
+
+    if task.type == 'page':
+        r = await response.text()
+
+        return [
+            Task('image', group[1])
+            for group in re.compile(r'<img.+?src=\"(.+?)\".*?>').finditer(r)
+            if group[1].endswith('.jpg') or group[1].endswith('.png') or group[1].endswith('.svg')
+        ]
+
+    if task.type == 'image':
+        image_path = Path('~/Downloads/gh-images', task.key.split('/')[-1]).expanduser()
+        if not image_path.parent.is_dir():
+            image_path.parent.mkdir()
+        image_path.touch()
+        image_path.write_bytes(await response.content.read())
+
+
+asyncio.run(Crawler().run(Task('page', 'https://github.com'), resolver))
+```
+
+This code downloads all images it founds on Github. I believe it explains what does the business code look like.
+
+## Examples
+
+- Crawl a website
+- Collect pictures in a local driver
+- Abstract Syntax Tree analyzer
+
+## MISC
+
+- Be careful with circles in the directed graph if you are customizing the scheduler/spider. The framework always checks whether all corresponding vertices are resolved recursively of every vertex to know when could it have a relax :)
+- This paradigm is not distributed. Though you can take a glance of it through Redis based vertices resolving check, but the task is locked as soon as it's resolved, you cannot resolve a task on several machines simultaneously.
+
+## Development
+
+A branch called `dev` is recommended for common development.
+
+Useful commands:
+
+- install poetry  
+  `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`  
+  `source $HOME/.poetry/env`
+- install dependencies  
+  `poetry install`
+- run tests  
+  `poetry run pytest`
+- lint  
+  `poetry run flake8 --max-line-length=120 --statistics`
+
+
