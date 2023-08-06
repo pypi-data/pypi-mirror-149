@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>ImJoy Plugin Template</title>
+   <meta name="description" content="Template for ImJoy plugin">
+   <meta name="author" content="ImJoy-Team">
+   <script src="https://cdn.jsdelivr.net/npm/imjoy-rpc@0.5.7/dist/hypha-rpc-websocket.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const config = Object.fromEntries(new URLSearchParams(window.location.search))
+        if(!config.server_url) config.server_url = window.location.origin;
+        hyphaWebsocketClient.connectToServer(config).then(async (api)=>{
+            async function setup(){
+                await api.register_service(
+                    {
+                        "id": "echo-service",
+                        "config":{
+                            "visibility": "public"
+                        },
+                        "type": "echo",
+                        echo( data ){
+                            console.log("Echo: ", data)
+                            return data
+                        }
+                    }
+                )
+            }
+            api.export({setup})
+        }).catch(console.error)
+    </script>
+</body>
+</html>
