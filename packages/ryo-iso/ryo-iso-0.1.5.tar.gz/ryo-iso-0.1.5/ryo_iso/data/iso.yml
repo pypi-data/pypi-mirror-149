@@ -1,0 +1,39 @@
+# ryo-iso config file
+################################
+
+# ISO Volume ID
+name: RYO-ISO Example
+
+# Base ISO image to rebuild
+image: ubuntu/jammy
+
+# Hardware Architecture
+arch: amd64
+
+# Base ISO Variant
+#   ['desktop', 'live-server']
+variant: desktop
+
+# APT subtasks
+apt:
+  # add-apt-repository
+  repository:
+    - universe
+
+  # apt-get install
+  install:
+    - git
+    - python3-pip
+
+# PIP subtasks
+pip:
+  # pip3 install
+  install:
+    - doit
+
+# QEMU Settings
+qemu:
+  # VM disk size
+  disk_size: 10G
+  # Additional QEMU arguments
+  args: "-device usb-host,vendorid=0x20a0,productid=0x4108"
