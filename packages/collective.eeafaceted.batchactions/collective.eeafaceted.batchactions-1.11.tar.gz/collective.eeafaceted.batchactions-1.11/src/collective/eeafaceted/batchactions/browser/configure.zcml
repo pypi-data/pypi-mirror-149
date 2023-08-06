@@ -1,0 +1,31 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:faceted="http://namespaces.zope.org/faceted"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="collective.eeafaceted.batchactions">
+
+    <browser:resourceDirectory
+        name="collective.eeafaceted.batchactions"
+        directory="static" />
+
+    <browser:viewlet
+        name="collective.eeafaceted.batchactions"
+        for="collective.eeafaceted.batchactions.interfaces.IBatchActionsMarker"
+        manager="collective.eeafaceted.z3ctable.interfaces.IBottomAboveNavManager"
+        class=".viewlets.BatchActionsViewlet"
+        permission="zope2.View" />
+
+    <!-- BATCH ACTIONS -->
+    <browser:page
+        for="collective.eeafaceted.batchactions.interfaces.IBatchActionsMarker"
+        name="transition-batch-action"
+        class=".views.TransitionBatchActionForm"
+        permission="zope2.View" />
+
+    <!--browser:page
+        for="collective.eeafaceted.batchactions.interfaces.IBatchActionsMarker"
+        name="delete-batch-action"
+        class=".views.DeleteBatchActionForm"
+        permission="zope2.View" /-->
+
+</configure>
