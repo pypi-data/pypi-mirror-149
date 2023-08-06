@@ -1,0 +1,32 @@
+[tool.black]
+exclude = '''
+(
+  /(
+      \.git         # exclude a few common directories
+    | \.direnv
+    | \.github
+    | \.pytest_cache
+    | \.venv
+    | htmlcov
+    | venv
+  )/
+)
+'''
+
+[tool.coverage.run]
+branch = true
+omit = [".direnv/*", ".venv/*"]
+source = ["jobrunner"]
+
+[tool.coverage.report]
+skip_covered = true
+
+[tool.coverage.html]
+
+[tool.isort]
+profile = "black"
+known_third_party = ["pytest", "requests", "requests_mock", "setuptools", "ruamel.yaml"]
+lines_after_imports = 2
+skip_glob = [".direnv", ".venv", "venv"]
+
+[tool.pytest.ini_options]
