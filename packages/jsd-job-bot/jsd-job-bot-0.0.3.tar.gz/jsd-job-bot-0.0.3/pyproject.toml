@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "jsd-job-bot"
+version = "0.0.3"
+description = "Jira Service Desk job tracker."
+authors = ["James Hodgkinson <james@terminaloutcomes.com>"]
+license = "MIT"
+readme="README.md"
+homepage="https://github.com/yaleman/jsd_job_bot"
+repository="https://github.com/yaleman/jsd_job_bot"
+classifiers=[
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
+        'Development Status :: 4 - Beta',
+
+        # Indicate who your project is intended for
+        'Intended Audience :: Developers',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+
+        # Pick your license as you wish (should match "license" above)
+        'License :: OSI Approved :: MIT License',
+
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+    ]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+jira = "^3.2.0"
+texttable = "^1.6.4"
+python-dateutil = "^2.8.2"
+loguru = "^0.6.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.13.8"
+pytest = "^7.1.2"
+mypy = "^0.950"
+black = "^22.3.0"
+types-python-dateutil = "^2.8.15"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+jsd_job_bot="jsd_job_bot:main"

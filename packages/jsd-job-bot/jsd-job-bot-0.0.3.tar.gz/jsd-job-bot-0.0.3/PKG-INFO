@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: jsd-job-bot
+Version: 0.0.3
+Summary: Jira Service Desk job tracker.
+Home-page: https://github.com/yaleman/jsd_job_bot
+License: MIT
+Author: James Hodgkinson
+Author-email: james@terminaloutcomes.com
+Requires-Python: >=3.9,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Requires-Dist: jira (>=3.2.0,<4.0.0)
+Requires-Dist: loguru (>=0.6.0,<0.7.0)
+Requires-Dist: python-dateutil (>=2.8.2,<3.0.0)
+Requires-Dist: texttable (>=1.6.4,<2.0.0)
+Project-URL: Repository, https://github.com/yaleman/jsd_job_bot
+Description-Content-Type: text/markdown
+
+# jsd_job_bot
+
+Shows which jobs are in my JSD queue
+
+Installation: `pip install jsd-job-bot`
+
+You need a `jsd_job_bot.ini` config file:
+
+    [DEFAULT]
+    JSD_API_KEY=<your api key>
+    JSD_HOSTNAME=<your instance>.atlassian.net
+    JSD_USERNAME=<your email address>
+
+You can also set `SHOW_ALL_JOBS` which will show everything regardless of status.
+
+The config file needs to be in one of these places:
+
+* The current working directory.
+* `~/.config`
+* `~/etc/`
+
+Run it, it'll show you what you've got assigned to you.
+
