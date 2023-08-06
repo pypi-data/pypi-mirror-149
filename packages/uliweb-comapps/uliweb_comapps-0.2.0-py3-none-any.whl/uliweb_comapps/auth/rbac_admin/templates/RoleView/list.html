@@ -1,0 +1,60 @@
+{{extend "rbac_admin_layout.html"}}
+
+{{block title}}Roles admin{{end title}}
+
+{{block sidemenu_config}}
+{{sidemenu_name,sidemenu_open,sidemenu_active='SIDEMENU',"['user_admin']","roles"}}
+{{end sidemenu_config}}
+
+{{block other_inc}}
+{{include "vue/inc_apijson_table.html"}}
+{{end other_inc}}
+
+{{block content}}
+<card>
+<h3 class="page-header">Roles</h3>
+<apijson-table :table="table" :custom_tcolumns_render_generator="custom_tcolumns_render_generator" ref="table"></apijson-table>
+</card>
+{{end content}}
+
+{{block mainapp_vue}}
+<script>
+var vm = new Vue({
+    el: '#mainapp',
+    delimiters: ['{', '}'],
+    data:function(){
+        return {
+            table: {{=table_json}},
+            custom_tcolumns_render_generator: {
+                "id": function(key) {
+                    var render_func = function(h,params){
+                        var row_id = params.row.id
+                        return h('a',{
+                                attrs:{
+                                    href:'{{=url_for("uliweb_comapps.auth.rbac_admin.views.RoleView.view")}}'+'?id='+row_id
+                                }
+                            },
+                            row_id
+                        )
+                    }
+                    return render_func
+                },
+                "name_link": function(key){
+                    var render_func = function(h,params){
+                        var row_id = params.row.id
+                        return h('a',{
+                                attrs:{
+                                    href:'{{=url_for("uliweb_comapps.auth.rbac_admin.views.RoleView.view")}}'+'?id='+row_id
+                                }
+                            },
+                            params.row.name
+                        )
+                    }
+                    return render_func
+                }
+            }
+        }
+    }
+})
+</script>
+{{end mainapp_vue}}
