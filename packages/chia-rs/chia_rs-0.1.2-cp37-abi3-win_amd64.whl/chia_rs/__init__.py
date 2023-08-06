@@ -1,0 +1,3 @@
+from .chia_rs import *
+
+__doc__ = chia_rs.__doc__
