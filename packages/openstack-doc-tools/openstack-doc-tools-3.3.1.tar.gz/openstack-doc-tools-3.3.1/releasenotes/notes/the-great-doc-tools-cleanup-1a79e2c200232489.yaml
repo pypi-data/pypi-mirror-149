@@ -1,0 +1,25 @@
+---
+upgrade:
+  - |
+    The `autogenerate_config_docs` set of tools has been removed. These were
+    always buggy and hard to maintain, and they have been superseded by the
+    ``oslo_config.sphinxext`` `Sphinx extension`__.
+
+    __ https://docs.openstack.org/oslo.config/latest/reference/sphinxext.html
+  - |
+    The ``openstack-auto-commands`` command and its helper script in
+    ``bin/doc-tools-update-cli-reference`` have been removed. These have been
+    superseded by the ``cliff.sphinxext`` `Sphinx extensions`__.
+
+    __ https://docs.openstack.org/cliff/latest/user/sphinxext.html
+  - |
+    The following scripts and tools have been removed:
+
+    - prettify.py$
+    - remove_trailing_whitespaces.sh$
+    - remove_unnecessary_spaces.py$
+    - retf$
+
+    These were all indented to cleanup docs once they were already in tree, but
+    our tooling and review process should be sufficient to catch most issues
+    and there's limited value in submitting whitespace-fixup patches.
