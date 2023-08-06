@@ -1,0 +1,67 @@
+# git pp
+
+Pyperclip CLI - cross-platform clipboard utility
+
+- [git pp](#git-pp)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [pipx](#pipx)
+    - [pip](#pip)
+  - [Usage](#usage)
+  - [Develop](#develop)
+
+## Features
+
+- Copy and paste from stdin / stdout or files
+- Cross-platform
+
+## Installation
+
+Currently only handles plaintext.
+
+On Windows, no additional modules are needed.
+
+On Mac, this module makes use of the pbcopy and pbpaste commands, which should come with the os.
+
+On Linux, this module makes use of the xclip or xsel commands, which should come with the os. Otherwise run "sudo apt-get install xclip" or "sudo apt-get install xsel" (Note: xsel does not always seem to work.)
+
+Otherwise on Linux, you will need the gtk or PyQt4 modules installed.
+
+### pipx
+
+This is the recommended installation method.
+
+```
+$ pipx install pyperclip-cli
+```
+
+### [pip](https://pypi.org/project/pyperclip-cli/)
+```
+$ pip install pyperclip-cli
+```
+
+
+## Usage
+
+```
+$ pyperclip --help
+
+usage: pyperclip [-h] [-f FILE] [-o OUT] [ACTION]
+
+Pyperclip CLI
+
+positional arguments:
+  ACTION                copy or paste (default: copy)
+
+options:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  Copy the content of the file (default: <_io.TextIOWrapper name='<stdin>' mode='r' encoding='utf-8'>)
+  -o OUT, --out OUT     Paste to file (default: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>)
+```
+
+## Develop
+```
+$ git clone https://github.com/tddschn/pyperclip-cli.git
+$ cd pyperclip-cli
+$ poetry install
+```
