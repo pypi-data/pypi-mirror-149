@@ -1,0 +1,62 @@
+{% extends "salebox/checkout/_base.html" %}
+
+{% block checkout %}
+
+{% if shipping_addresses|length > 0 %}
+<div id="salebox_shipping_invoice_address_picker">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="salebox_form_name" value="select_address" />
+
+        <h3>Pick a shipping address:</h3>
+        {% include "salebox/address/list_radio.html" with addresses=shipping_addresses field_name='shipping_address_id' %}
+        {% if request.user.is_authenticated %}
+        <hr>
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingInvoiceAddress.showAddForm(true)">add a new one</span></p>
+        {% endif %}
+
+        <hr>
+        <h3>Do you need a tax invoice?</h3>
+        <input type="checkbox" name="invoice_required"{% if invoice_required %} checked{% endif %} onchange="salebox.checkout.shippingInvoiceAddress.setInvoiceRequired(this, {{ invoice_addresses|length }})" id="salebox_shipping_invoice_address_checkbox">
+
+        <div id="salebox_shipping_invoice_address_picker_invoice"{% if not invoice_required %} style="display: none;"{% endif %}>
+            <hr>
+            <h3>Pick an invoice address:</h3>
+            {% include "salebox/address/list_radio.html" with addresses=invoice_addresses field_name='invoice_address_id' %}
+            <hr>
+            <p>Or <span class="text-primary" onclick="salebox.checkout.shippingInvoiceAddress.showAddForm(false)">add a new one</span></p>
+        </div>
+
+        <hr>
+        <input type="submit" value="go" />
+    </form>
+</div>
+{% endif %}
+
+<div id="salebox_shipping_invoice_address_addshipping"{% if shipping_addresses|length > 0 %} style="display: none;"{% endif %}>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="salebox_form_name" value="add_shipping" />
+        <h2>Add shipping address</h2>
+        {% include "salebox/address/add_form.html" with form=shipping_form form_id='addaddress' address_extras=shipping_address_extras hide_default=True %}
+    </form>
+    {% if shipping_addresses|length > 0 %}
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingInvoiceAddress.hideAddForm()">use an existing address</span></p>
+    {% endif %}
+</div>
+
+<div id="salebox_shipping_invoice_address_addinvoice" style="display: none;">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="salebox_form_name" value="add_invoice" />
+        <h2>Add invoice address</h2>
+        {% include "salebox/address/add_form.html" with form=invoice_form form_id='addinvoice' address_extras=invoice_address_extras hide_default=True %}
+    </form>
+    {% if invoice_addresses|length > 0 %}
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingInvoiceAddress.hideAddForm()">use an existing address</span></p>
+    {% else %}
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingInvoiceAddress.hideAddForm(true)">cancel</span></p>
+    {% endif %}
+</div>
+
+{% endblock %}

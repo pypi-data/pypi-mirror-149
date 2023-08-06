@@ -1,0 +1,40 @@
+{% spaceless %}
+
+{% load i18n salebox_utils %}
+
+{% if data.wishlist.qty > 0 %}
+    <table style="width: 100%">
+        {% block thead %}{% endblock %}
+        {% block pre_tbody %}{% endblock %}
+        {% block tbody %}
+            <tbody>
+                {% for item in data.wishlist.items %}
+                    <tr>
+                        <td style="background: #f8f8f8; color: #ccc; height: 50px; text-align: center; vertical-align: middle; width: 50px;">
+                            {% if item.image %}
+                                <img src="{{ item.image }}" style="height: 50px; width: 50px;" />
+                            {% else %}
+                                <span>{% trans "n/a" %}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.sale_price|sb_currency }}</td>
+                        <td style="text-align: right;">{{ item.price|sb_currency }}</td>
+                        <td style="color: blue; cursor: pointer; font-size: 12px; text-decoration: underline;">
+                            <span onclick="setWishlist({{ item.id }}, false)">{% trans "Remove" %}</span>
+                        </td>
+                        <td style="color: blue; cursor: pointer; font-size: 12px; text-decoration: underline;">
+                            <span onclick="migrateBasketWishlist({{ item.id }}, true)">{% trans "Add to basket" %}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% endblock %}
+        {% block post_tbody %}{% endblock %}
+        {% block tfoot %}{% endblock %}
+    </table>
+{% else %}
+    <div>{% trans "Your wishlist is empty" %}</div>
+{% endif %}
+
+{% endspaceless %}

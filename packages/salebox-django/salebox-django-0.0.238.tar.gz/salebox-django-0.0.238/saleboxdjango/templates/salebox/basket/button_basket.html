@@ -1,0 +1,24 @@
+{% spaceless %}
+
+{% load i18n %}
+
+<div class="product-basketbtn{% if pv.product.inventory_type == 'T' and pv.stock_total < 1 %} product-basketbtn-soldout{% endif %}">
+    {% if pv.product.inventory_type == 'T' and pv.stock_total < 1 %}
+        <div>{% trans "Sold Out" %}</div>
+    {% else %}
+        {% if pv.basket_qty > 0 %}
+            <div class="product-basketbtn-populated">
+                <button onclick="setBasket({{ pv.id }}, -1, true, this.parentNode.parentNode)"><i class="fas fa-minus"></i></button>
+                <div><i class="fas fa-shopping-cart"></i><span>x</span>{{ pv.basket_qty }}</div>
+                <button onclick="setBasket({{ pv.id }}, 1, true,this.parentNode.parentNode)"><i class="fas fa-plus"></i></button>
+            </div>
+        {% else %}
+            <button class="product-basketbtn-empty" onclick="setBasket({{ pv.id }}, 1, true, this.parentNode)">{% trans "Add to basket" %}</button>
+        {% endif %}
+        <div class="product-basketbtn-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+    {% endif %}
+</div>
+
+{% endspaceless %}

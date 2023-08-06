@@ -1,0 +1,34 @@
+{% extends "salebox/checkout/_base.html" %}
+
+{% block checkout %}
+
+{% if shipping_addresses|length > 0 %}
+<div id="salebox_shipping_invoice_address_picker">
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="salebox_form_name" value="select_address" />
+
+        <h3>Pick a shipping address:</h3>
+        {% include "salebox/address/list_radio.html" with addresses=shipping_addresses field_name='shipping_address_id' %}
+        <hr>
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingAddress.toggle(true)">add a new one</span></p>
+
+        <hr>
+        <input type="submit" value="go" />
+    </form>
+</div>
+{% endif %}
+
+<div id="salebox_shipping_invoice_address_addshipping"{% if shipping_addresses|length > 0 %} style="display: none;"{% endif %}>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="salebox_form_name" value="add_shipping" />
+        <h2>Add shipping address</h2>
+        {% include "salebox/address/add_form.html" with form=shipping_form form_id='addaddress' address_extras=shipping_address_extras hide_default=True %}
+    </form>
+    {% if shipping_addresses|length > 0 %}
+        <p>Or <span class="text-primary" onclick="salebox.checkout.shippingAddress.toggle()">use an existing address</span></p>
+    {% endif %}
+</div>
+
+{% endblock %}

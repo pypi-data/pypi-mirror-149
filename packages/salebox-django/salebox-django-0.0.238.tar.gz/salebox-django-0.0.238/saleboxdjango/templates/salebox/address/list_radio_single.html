@@ -1,0 +1,46 @@
+{% spaceless %}
+
+{% load salebox_address %}
+
+<div>
+    <input type="radio" name="{{ field_name }}" value="{{ a.id }}"{% if a.selected %} checked{% endif %} />
+
+    <div style="font-weight: bold">{{ address.full_name }}</div>
+    <div>{{ address.address_1 }}</div>
+
+    {% if address.address_2 %}
+        <div>{{ address.address_2 }}</div>
+    {% endif %}
+
+    {% if address.address_3 %}
+        <div>{{ address.address_3 }}</div>
+    {% endif %}
+
+    {% if address.address_4 %}
+        <div>{{ address.address_4 }}</div>
+    {% endif %}
+
+    {% if address.address_5 %}
+        <div>{{ address.address_5 }}</div>
+    {% endif %}
+
+    {% if address.country_state %}
+        <div>{% sb_country_state_name address.country_state %}</div>
+    {% endif %}
+
+    {% if address.country %}
+        <div>{% sb_country_name address.country %}</div>
+    {% endif %}
+
+    {% if address.postcode %}
+        <div>{{ address.postcode }}</div>
+    {% endif %}
+
+    {% if address.tax_id %}
+        <div>Tax ID: {{ address.tax_id }}</div>
+    {% endif %}
+
+    <br />
+</div>
+
+{% endspaceless %}
