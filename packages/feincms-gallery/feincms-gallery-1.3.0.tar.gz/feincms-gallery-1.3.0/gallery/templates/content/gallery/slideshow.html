@@ -1,0 +1,33 @@
+<div class="simple slideshow context">
+    {% for image in images %}
+        {% if forloop.first %}
+        <div class="active">
+            {% include 'content/gallery/image.html' %}
+        </div>
+        {% else %}
+        <div>
+            {% include 'content/gallery/image.html' %}
+        </div>
+        {% endif %}
+    {% endfor %}
+
+</div>
+
+{% comment %}
+Use this to customize the slideshow:
+For shuffling images use the randomize filter instead of the shuffle property.
+This way even the first image is random:
+
+    {% load gallery_tags %}
+    {% for image in images|randomize %}
+
+<script type="text/javascript">
+    SQ.add(function(){
+        $('#slidemood').slideshow(
+            {
+              'duration'  : 7500,
+              'shuffle' : false
+            });
+    });
+</script>
+{% endcomment %}
