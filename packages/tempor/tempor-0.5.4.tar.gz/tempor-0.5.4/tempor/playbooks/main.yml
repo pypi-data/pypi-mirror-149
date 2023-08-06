@@ -1,0 +1,12 @@
+---
+- name: VPS Hardening
+  hosts: all
+  become: true
+  roles:
+    - packages
+    - configurations
+    - firewall
+    - dev-sec.ssh-hardening 
+    - dev-sec.os-hardening 
+    - geerlingguy.docker
+    - geerlingguy.pip
