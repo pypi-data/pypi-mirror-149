@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "starknet_devnet"
+version = "0.2.0"
+description = "A local testnet for Starknet"
+authors = ["FabijanC <fabijan.corak@gmail.com>"]
+license = "ISC"
+
+readme = "README.md"
+repository = "https://github.com/Shard-Labs/starknet-devnet"
+homepage = "https://github.com/Shard-Labs/starknet-devnet"
+keywords = ["starknet", "cairo", "testnet", "local", "server"]
+
+[tool.poetry.dependencies]
+python = "^3.7.2"
+Flask = {extras = ["async"], version = "~2.0.3"}
+flask-cors = "~3.0.10"
+cairo-lang = "0.8.1"
+dill = "~0.3.4"
+meinheld = "~1.0.2"
+Werkzeug = "~2.0.3"
+
+[tool.poetry.dev-dependencies]
+pylint = "~2.12.2"
+web3 = "~5.28.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+starknet-devnet = "starknet_devnet.server:main"
+
+[tool.pytest.ini_options]
+markers = [
+    "account",
+    "call",
+    "deploy",
+    "invoke",
+    "restart",
+    "state_update",
+    "transaction_trace",
+    "general_workflow",
+    "tx_version",
+    "timestamps",
+    "web3_messaging"
+]
+junit_family="xunit1"
+asyncio_mode="strict"
