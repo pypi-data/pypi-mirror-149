@@ -1,0 +1,17 @@
+{% for choice in choices %}
+    $("#{{ choice.label_id }}").one("click", function(){
+        {% for c in choices %}
+        {% if c.label_id != choice.label_id %}
+            $("#{{ c.id }}").prop("checked", false);
+            $("#{{ c.id }}").prop("disabled", true);
+            $("#{{ c.label_id }}").addClass("disabled");
+            $("#{{ c.label_id }}").unbind("click");
+        {% else %}
+            $("#{{ c.id }}").prop("checked", true);
+            $("#{{ c.label_id }}").addClass("disabled");
+        {% endif %}
+        {% endfor %}
+
+        move("forward");
+    })
+{% endfor %}
