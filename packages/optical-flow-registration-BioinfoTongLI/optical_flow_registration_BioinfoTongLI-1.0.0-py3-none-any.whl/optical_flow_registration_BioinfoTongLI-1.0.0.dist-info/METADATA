@@ -1,0 +1,63 @@
+Metadata-Version: 2.1
+Name: optical-flow-registration-BioinfoTongLI
+Version: 1.0.0
+Summary: Optical-flow-based image registration for fluorescence microscopy images
+Author: ['Tong LI', 'Vasyl Vaskivskyi']
+License: UNKNOWN
+Project-URL: Bug Reports, https://github.com/BayraktarLab/opt_flow_reg/issues
+Project-URL: Source, https://github.com/BayraktarLab/opt_flow_reg/
+Keywords: microscope registration DAPI fluorescence microscopy slide-imaging
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Requires-Python: >=3.0.*
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: tifffile
+Requires-Dist: opencv-contrib-python
+Requires-Dist: dask
+
+[![DOI](https://zenodo.org/badge/405296622.svg)](https://zenodo.org/badge/latestdoi/405296622)
+## Optical flow based registration for immunofluorescence images
+
+These scripts perform fine registration using warping. 
+A map for warping is calculated using Farneback optical flow algorithm, by OpenCV.
+Although images are MINMAX normalized during processing, optical flow algorithms expect images to have 
+similar pixel intensities. 
+
+Currently does not support z-stacks.
+
+### Command line arguments
+
+**`-i`**  path to image stack
+
+**`-c`**  name of reference channel
+
+**`-o`**  output directory
+
+**`-n`**  multiprocessing: number of processes, default 1
+
+####Optional
+
+**`--tile_size`**  size of a square tile, default 1000, which corresponds to 1000x1000px tile
+
+**`--overlap`**  overlap between tiles, default 100
+
+**`--method`**  optical flow method: farneback, denselk, deepflow, rlof, pcaflow, default rlof
+
+### Example usage
+
+**`python opt_flow_reg.py -i /path/to/iamge/stack/out.tif -c "DAPI" -o /path/to/output/dir/ -n 3`**
+
+
+### Dependencies
+`numpy tifffile opencv-contrib-python dask`
+
+
+
