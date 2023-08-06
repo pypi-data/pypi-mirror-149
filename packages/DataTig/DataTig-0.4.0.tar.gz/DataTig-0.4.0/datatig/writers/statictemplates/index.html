@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+      </ol>
+    </nav>
+{% endblock %}
+
+{% block body %}
+
+
+
+<p>{{ site.get_description() }}</p>
+
+
+<table class="table">
+    <tr>
+        <th>id</th>
+        <th>&nbsp;</th>
+    </tr>
+    {% for type_id, type in site.get_types().items() %}
+        <tr>
+            <td>{{ type_id }}</td>
+            <td><a href="{{ url }}/type/{{ type_id }}/"><button type="button" class="btn btn-link">View</button></a></td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p class="text-right">
+    <a href="{{ url }}/errors.html"><button type="button" class="btn btn-primary">Errors ({{ datastore.get_count_site_errors() + datastore.get_count_record_errors() }})</button></a>
+    <a href="{{ url }}/database.sqlite"><button type="button" class="btn btn-primary">Download SQLite Database ({{ datastore_file_size_bytes }} bytes)</button></a>
+</p>
+
+<p class="text-right">
+    <a href="{{ url }}/api.json"><button type="button" class="btn btn-secondary">API</button></a>
+</p>
+
+{% endblock %}
+
