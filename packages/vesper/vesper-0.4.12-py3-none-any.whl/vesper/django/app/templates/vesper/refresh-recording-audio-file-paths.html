@@ -1,0 +1,53 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Refresh recording audio file paths</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Refresh recording audio file paths</h2>
+
+    <p>
+        Refreshes the recording audio file paths stored in this archive, 
+        updating any that have changed.
+    </p>
+
+    <p>
+        For each recording audio file of the archive, this command
+        attempts to locate the file by name in the archive's recording
+        directories and their subdirectories. If the file is found and
+        its path differs from that stored in the archive, the path
+        stored in the archive is updated. If the file is not found, an
+        error message is logged and the path stored for it in the archive
+        is not modified.
+    </p>
+    
+    <p>
+        The recording directories of an archive can be specified in the
+        <code>recording_directories</code> setting of the
+        <code>Archive Settings.yaml</code> file, located in the archive
+        directory. If that file is absent, or if it does not contain a
+        <code>recording_directories</code> setting, Vesper assumes that
+        recordings are located in the <code>Recordings</code> subdirectory
+        of the archive directory.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'refresh-recording-audio-file-paths' %}" method="post">
+
+        {% csrf_token %}
+        
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Refresh Paths</button>
+        
+    </form>
+
+{% endblock main %}

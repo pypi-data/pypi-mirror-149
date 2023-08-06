@@ -1,0 +1,91 @@
+<!-- Modal for setting a clip filter. -->
+
+<div id="set-clip-filter-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 id="modal-title" class="modal-title">Set clip filter</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+            
+                <form>
+            
+                    <div class="row my-4">
+                        <label class="col-sm-3 col-form-label text-end" for="set-clip-filter-modal-station-mic-select">Station/mic:</label>
+                        <div class="col-sm-6">
+                            <select id="set-clip-filter-modal-station-mic-select" class="form-select w-auto">
+                                {% for name in station_mic_names %}
+                                    {% if name == station_mic_name %}
+                                        <option selected>{{name}}</option>
+                                    {% else %}
+                                        <option>{{name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <label class="col-sm-3 col-form-label text-end" for="set-clip-filter-modal-detector-select">Detector:</label>
+                        <div class="col-sm-6">
+                            <select id="set-clip-filter-modal-detector-select" class="form-select w-auto">
+                                {% for name in detector_names %}
+                                    {% if name == detector_name %}
+                                        <option selected>{{name}}</option>
+                                    {% else %}
+                                        <option >{{name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <label class="col-sm-3 col-form-label text-end" for="set-clip-filter-modal-classification-select">Classification:</label>
+                        <div class="col-sm-6">
+                            <select id="set-clip-filter-modal-classification-select" class="form-select w-auto">
+                                {% for c in classifications %}
+                                    {% if c == classification %}
+                                        <option selected>{{c}}</option>
+                                    {% else %}
+                                        <option>{{c}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <label class="col-sm-3 col-form-label text-end" for="set-clip-filter-modal-tag-select">Tag:</label>
+                        <div class="col-sm-6">
+                            <select id="set-clip-filter-modal-tag-select" class="form-select w-auto">
+                                {% for t in tags %}
+                                    {% if t == tag %}
+                                        <option selected>{{t}}</option>
+                                    {% else %}
+                                       <option>{{t}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                </form>
+                
+            </div>
+                    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="set-clip-filter-modal-ok-button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+            
+        </div>
+
+    </div>
+
+</div>

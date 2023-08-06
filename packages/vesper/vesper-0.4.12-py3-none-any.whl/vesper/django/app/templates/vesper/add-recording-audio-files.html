@@ -1,0 +1,74 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Add recording audio files</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/add-recording-audio-files.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Add recording audio files</h2>
+
+    <p>
+        Adds audio files for recordings already in this Vesper archive.
+    </p>
+
+    <p>
+        The recordings to add audio files for are specified as a set
+        of stations and a range of dates.
+    </p>
+
+    <p>
+        This command is intended for use with Vesper web archives
+        that were populated from old Vesper desktop archives by
+        running the <code>populate_archive</code> script. Desktop
+        archives included recording metadata but not recording audio
+        files, and the <code>populate_archive</code> script did not
+        change this in the web archives it populated. This command
+        remedies that by matching recording audio files present in
+        the web archive's recording directories to recordings in
+        the archive database, and adding the audio files to the
+        database.
+    </p>
+
+    <p>
+        The command logs warning messages for any problems it finds,
+        for example if it can't find files for a recording, or if
+        the sample rate or number of channels of the files does
+        not match that of the recording. It is safe to run the
+        command repeatedly, fixing selected problems noted in the
+        logs between runs, until you are satisfied with the results
+        of the final run. Files added by one execution of the
+        command are simply passed over on subsequent runs.
+    </p>
+
+    <p>
+        If you check the <code>Dry run</code> check box, the command
+        will do everything it normally does, including writing all of
+        its normal log messages, but it will not actually modify the
+        archive database.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'add-recording-audio-files' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.stations|block_form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+        {{ form.dry_run|form_checkbox }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Add audio files</button>
+
+    </form>
+
+{% endblock main %}

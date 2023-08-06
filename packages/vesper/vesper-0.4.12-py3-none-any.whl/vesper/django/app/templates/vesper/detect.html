@@ -1,0 +1,110 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Detect</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/detect-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Detect</h2>
+
+    <p>
+        Runs one or more detectors on all channels of the specified recordings.
+    </p>
+
+    {% include "vesper/recordings-specification-message.html" %}
+
+    <p>
+        You can limit the time intervals on which this command runs
+        detectors by selecting a <code>Detection Schedule</code> preset
+        below. When you specify a schedule, the command runs detectors
+        only in the time intervals of the intersection of the recording
+        intervals and the schedule intervals.
+    </p>
+
+    <!--    
+    <p>
+        Check the <code>Create clip audio files</code> check box to create
+        a separate audio file in the archive for each detected clip, or
+        uncheck it to rely on on-the-fly clip extraction from recording
+        audio files to access clip samples.
+    </p>
+    -->
+    
+    <p>
+        Check the <code>Defer clip creation</code> check box to defer
+        clip creation to the next invocation of the
+        <code>Execute Deferred Actions</code> command.
+    </p>
+
+    <!--
+    <p>
+        Check the <code>Defer clip creation</code> check box to defer
+        clip creation to a later time. When the box is unchecked, this
+        command creates clips in the archive database as it runs. When
+        the box is checked, the command does not write any clips to the
+        database, but rather writes clip metadata to one or more
+        temporary files located in the <code>Deferred Actions</code>
+        subdirectory of the archive directory. You can then create the
+        clips in the database later by running the
+        <code>Execute Deferred Actions</code> command.
+    </p>
+
+    <p>
+        If you run only one Vesper job at a time, and do not view clip
+        albums while your jobs are running, you can safely leave the
+        <code>Defer clip creation</code> check box unchecked, and will
+        never need to run the <code>Execute Deferred Actions</code>
+        command. If your archive uses the SQLite database (the default),
+        however, and you wish to run multiple detection and/or
+        classification jobs simultaneously, and/or view clip albums
+        while one or more such jobs are running, you should check the
+        <code>Defer clip creation</code> check box.
+    </p>
+    
+    <p>
+        You can run the <code>Execute Deferred Actions</code> command
+        just once to create clips deferred from multiple detection jobs.
+        For example, you can run two or more detection jobs
+        simultaneously, deferring clip creation, and then run the
+        <code>Execute Deferred Actions</code> command once to create
+        the clips from both jobs.
+    </p>
+
+    <p>
+        Deferred clip creation is offered as a workaround to a
+        limitation of the SQLite database, which provides only limited
+        support for concurrent database access. If you run, say, two
+        detection jobs simultaneously and do not defer clip creation,
+        the two jobs may try to write to the database concurrently,
+        and if their use of the database is sufficiently heavy this
+        can cause database errors in the form of database lock timeouts.
+    </p>
+    -->
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'detect' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.detectors|block_form_element }}
+        {{ form.stations|block_form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+        {{ form.schedule|form_element }}
+        {{ form.defer_clip_creation|form_checkbox }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Detect</button>
+
+    </form>
+
+{% endblock main %}

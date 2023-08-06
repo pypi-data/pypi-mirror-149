@@ -1,0 +1,49 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Export clips to audio files</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Export clips to audio files</h2>
+
+    <p>
+        Exports the specified clips to WAVE audio files.
+    </p>
+
+    {% include "vesper/clips-specification-message.html" %}
+
+    <p>
+        This command writes one WAVE file for each exported clip to the
+        specified output directory on the server. It automatically names
+        each output file to include the station name, microphone name,
+        start time, and detector name of its contents. You can adjust
+        the padding included with each exported clip by creating an
+        appropriate <code>Clip Audio File Export Settings</code> preset
+        and selecting it below.
+    </p>
+        
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'export-clips-to-audio-files' %}" method="post">
+
+        {% csrf_token %}
+        
+        {% include "vesper/clip-set-form-elements.html" %}
+
+        {{ form.clip_audio_file_export_settings_preset|form_element }}
+        {{ form.output_dir_path|block_form_element }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Export</button>
+
+    </form>
+
+{% endblock main %}

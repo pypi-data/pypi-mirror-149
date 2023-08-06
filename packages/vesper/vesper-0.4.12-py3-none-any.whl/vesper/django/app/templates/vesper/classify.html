@@ -1,0 +1,45 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Classify</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/classify-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Classify</h2>
+
+    <p>
+        Runs one classifier on the specified clips.
+    </p>
+    
+    <p>
+        The clips are specified as a set of station/mic pairs, a range of
+        dates, a set of detectors, and an optional tag.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'classify' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.classifier|form_element }}
+        {{ form.station_mics|block_form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+        {{ form.detectors|block_form_element }}
+        {{ form.tag|form_element }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Classify</button>
+
+    </form>
+
+{% endblock main %}
