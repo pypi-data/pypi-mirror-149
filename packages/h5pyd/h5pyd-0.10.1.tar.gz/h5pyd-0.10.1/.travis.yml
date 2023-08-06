@@ -1,0 +1,113 @@
+dist: xenial   # required for Python >= 3.7
+language: python
+notifications:
+  email: false
+python:
+- '3.6'
+- '3.7'
+- '3.8'
+env:
+- H5_DRIVER=h5serv
+- H5_DRIVER=hsds
+- H5_DRIVER=h5py
+install:
+- sudo apt-get update -qq
+- pip uninstall numpy -y
+- pip install numpy>=1.17.3
+- pip install requests
+- pip install pytz
+- pip install h5py==2.9
+- if [ "${H5_DRIVER}" == "h5serv" ]; then
+    pip install tornado ;
+    pip install watchdog ;
+    git clone https://github.com/HDFGroup/hdf5-json.git ;
+    cd hdf5-json ;
+    python setup.py install ;
+    cd .. ;
+    git clone https://github.com/HDFGroup/h5serv.git ;
+  else
+    pip install aiohttp ;
+    git clone https://github.com/HDFGroup/hsds.git ;
+    cd hsds ;
+    python setup.py install ;
+    cp admin/config/passwd.default admin/config/passwd.txt ;
+    export ADMIN_PASSWORD=admin ;
+    export ROOT_DIR=${HOME}/buckets ;
+    export SN_PORT=5101 ;
+    export HSDS_ENDPOINT=http://localhost:5101 ;
+    export BUCKET_NAME=hsds.test ;
+    docker build -t hdfgroup/hsds . ;
+    if [ ! -d "$ROOT_DIR" ]; then
+      echo "mkdir $ROOT_DIR" ;
+      mkdir $ROOT_DIR ;
+    fi ;
+    if [ ! -d "${HOME}/buckets/hsds.test" ]; then
+      echo "mkdir ${HOME}/buckets/hsds.test" ;
+      mkdir ${HOME}/buckets/hsds.test ;
+    fi ;
+    ./runall.sh ;
+    echo "hsds server starting..." ;
+    cd - ;
+  fi
+- echo six version `pip freeze | grep six`
+- pip install six --upgrade
+- echo six version `pip freeze | grep six`
+- python setup.py install
+script:
+- echo h5_driver ${H5_DRIVER}
+- if [ "${H5_DRIVER}" == "h5serv" ]; then
+    echo "setting up h5serv" ;
+    cd h5serv/util/admin ;
+    python makepwd_file.py ;
+    python update_pwd.py -a -u test_user1 -p test ;
+    python update_pwd.py -a -u test_user2 -p test ;
+    cd ../.. ;
+    python h5serv >app.out &
+    sleep 5 ;
+    cd .. ;
+    export HS_ENDPOINT=http://127.0.0.1:5000 ;
+    export H5PYD_TEST_FOLDER=h5pyd_test.hdfgroup.org ;
+    export HS_PASSWORD=test ;
+    export TEST2_PASSWORD=test ;
+  elif [ "${H5_DRIVER}" == "hsds" ]; then
+    export HS_ENDPOINT=http://localhost:5101 ;
+    curl ${HS_ENDPOINT}/about ;
+    export H5PYD_TEST_FOLDER=/home/test_user1/h5pyd_test/${TRAVIS_PYTHON_VERSION}/ ;
+    export HS_USERNAME=test_user1
+    export HS_PASSWORD=test ;
+    export TEST2_PASSWORD=test ;
+  else
+    export USE_H5PY=1 ;
+  fi
+- echo endpoint ${HS_ENDPOINT}
+- echo python_version ${TRAVIS_PYTHON_VERSION}
+- echo test folder ${H5PYD_TEST_FOLDER}
+- echo user ${HS_USERNAME}
+- echo password ${HS_PASSWORD}
+- echo test2_user ${TEST2_USERNAME}
+- echo test2 password ${TEST2_PASSWORD}
+- if [ "${H5_DRIVER}" == "hsds" ] ; then
+    echo setting up HSDS folders, PWD ${PWD} ;
+    curl ${HS_ENDPOINT}/about ;
+    python h5pyd/_apps/hstouch.py -u admin -p admin /home/ ;
+    python h5pyd/_apps/hstouch.py  -u admin -p admin -o test_user1 /home/test_user1/ ;
+    python h5pyd/_apps/hstouch.py  /home/test_user1/h5pyd_test/ ;
+    python h5pyd/_apps/hstouch.py  ${H5PYD_TEST_FOLDER} ;
+  fi
+- python testall.py --hl_only
+- if [ "${H5_DRIVER}" != "hsds" ] ; then
+    echo "done" ;
+    exit ;
+  fi
+- echo first app run - cwd ${PWD}
+- python testall.py --app_only
+- echo second add run - cwd ${PWD} 
+- cd hsds 
+- echo stopping server
+- ./stopall.sh  
+- echo restarting 
+- ./runall.sh 
+- cd - 
+- echo cwd ${PWD} 
+- python testall.py --app_only 
+
