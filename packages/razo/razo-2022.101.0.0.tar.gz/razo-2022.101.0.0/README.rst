@@ -1,0 +1,179 @@
+This is razo 2022.101.0.0,codenamed 'sys_2'.
+
+
+[SOFTWARE WANTED]
+
+We want module apps that can run just by inputing it in a console.
+
+You can tell me by email if you have.
+
+My email is:vmuonline@126.com
+
+Most be used of every kind of software numbers:
+
+Games:12
+
+Desktop environment:3(BE DIFFERENT)
+
+Browser:5
+
+Office software set:2
+
+later it will be changed and extended~
+
+
+[About]
+
+Run command system by Python,can connect to the main system.
+
+We use password and numpy to keep passwords safe.
+
+To run after install,execute:
+
+.. code-block:: bash
+
+  $ py -m razo
+
+(for Windows)
+
+.. code-block:: bash
+
+  $ python3 -m razo
+
+(for Unix/Linux/MacOS)j
+
+
+[CHANGELOG]
+
+[2022.101.0.0]
+
+1:More safer.
+
+2.Fix many bugs.
+
+[2022.100.0.0]
+
+A lot of changes!
+
+1.It can get with host system console easily.
+
+2.It is safer.
+
+3.It cannot run only by importing it.(But you can run in console)
+
+And much much more...
+
+(Because lots of changes,language supports except English had deleted.But we will retranslate later.)
+
+[2022.54.0.0]
+
+1.Let release managing easier.
+
+2.Change version to half-date-based.
+
+[53.0.1]
+
+1.Fixed readme.
+
+[53.0.0]
+
+1.Community name for license.
+
+2.Added sudo module name method.
+
+3.Fix readme.
+
+[52.1.0]
+
+1.Fixed German pack.
+
+[52.0.0]
+
+1.Added support for Chinese Traditional(zh_tw),French(fr),German(de).
+
+[51.0.0]
+
+1.Added support for language Chinese Simplified(zh_cn).
+
+2.Added guide to turn language in razo folder.
+
+3.Fixed some sayings in English.
+
+[50.0.0]
+
+First version of beta.
+
+1.Seperate saying and program for next step translate.
+
+2.Added license agreement in setting.
+
+3.Gather files to make size smaller.
+
+[19.0.0]
+
+1.Fix a big bug that root password is forever a.
+
+2.Added self-make module app using mode by entering the module name(should be in PyPI).
+
+3.Fix Asian words username bug by preventing.
+
+4.Add security for root password.
+
+[18.0.0]
+
+1.Fix experience.
+
+2.Added name,more friendly.
+
+[17.0]
+
+Issues:
+
+1.May show version 16.0.
+
+Changes:
+
+1.More modules there,now and future modules in it.
+
+[16.0]
+
+1.Modulely.
+
+2.Add what day it is while time.
+
+3.Change bootlike.
+
+4.Fix bugs.
+
+[15.0]
+
+1.Add codename,SOFTWARE WANTED,and useable url.
+
+2.Add command sudo.
+
+[1.0.0a5]
+
+1.Fix readme.
+
+[1.0.0a4]
+
+1.Fix Do Error.
+
+2.Add command settings,time.
+
+3.Use time.sleep() to wait to start and shut.
+
+[1.0.0a3] 
+
+1.Fix ImportError.
+
+
+[1.0.0a2]
+
+1.Fix unimportable.
+
+
+[1.0.0a1]
+
+1.Usable.
+
