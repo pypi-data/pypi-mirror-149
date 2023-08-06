@@ -1,0 +1,91 @@
+[tool.poetry]
+name = "skranger"
+version = "0.8.0"
+description = "Python bindings for C++ ranger random forests"
+authors = ["Flynn <crf204@gmail.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.rst"
+homepage = "https://github.com/crflynn/skranger"
+repository = "https://github.com/crflynn/skranger"
+documentation = "https://github.com/crflynn/skranger"
+include = [
+    { path="skranger/ranger/**/*" },
+    { path="CHANGELOG.rst", format="sdist" },
+    { path="LICENSE.txt", format="sdist" },
+    { path="README.rst", format="sdist" },
+]
+build = "build.py"
+keywords = ["random", "forest", "ranger", "machine", "learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: C++",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8.0"
+scikit-learn = ">=1.0"
+
+[tool.poetry.dev-dependencies]
+cython = "^3.0a5"
+black = "^22.3.0"
+isort = "^5.10.1"
+pytest = "^6.2.2"
+sphinx-rtd-theme = "^0.4.3"
+pandas = "^1.0.3"
+pytest-cov = "^2.9.0"
+matplotlib = "^3.3.2"
+pytest-xdist = "^2.3.0"
+shap = {version = "^0.40.0", python = "<3.9"}  # llvm/numba doesnt work on 3.9
+cibuildwheel = "^2.4.0"
+Sphinx = "^4.5.0"
+
+[build-system]
+requires = ["poetry-core", "setuptools", "cython", "oldest-supported-numpy"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.circleci
+    | \.git
+    | \.github
+    | \.hg
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+force_single_line = true
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:divide by zero encountered in log:RuntimeWarning",
+    "ignore:Skipping check_sample_weights_invariance:sklearn.exceptions.SkipTestWarning",
+]
+
+[tool.cibuildwheel]
+build = ["cp38-*"]
+archs = ["auto64"]
