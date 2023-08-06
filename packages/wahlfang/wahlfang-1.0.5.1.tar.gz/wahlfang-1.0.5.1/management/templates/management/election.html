@@ -1,0 +1,169 @@
+{% extends 'management/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-light">
+          <h4 class="d-inline">{{ election.title }}</h4>
+          <a class="btn btn-light d-inline float-right" href="{% url "management:session"  pk=session.pk %}">Back</a>
+        </div>
+        {% if not election.started %}
+          <div class="card-body">
+
+            <div>Election has not started yet.</div>
+            <div>
+              {% if election.end_date and election.start_date %}
+                Election period: {{ election.start_date|date:"l Y-m-d H:i:s" }} -
+                {{ election.end_date|date:"l Y-m-d H:i:s" }}
+              {% elif election.start_date %}
+                Election starts {{ election.start_date|date:"l Y-m-d H:i:s" }}
+              {% else %}
+                This election needs to be started manually.
+              {% endif %}
+            </div>
+            <hr>
+            <form class="user" action="{% url 'management:election' election.pk %}" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="id_run_time">Duration:</label>
+                <div class="container row">
+                  <input dir="rtl" type="number"
+                         class="form-control form-control-user col-6 text-right"
+                         id="id_run_time"
+                         name="{{ start_election_form.run_time.name }}"
+                         min="1"
+                         value="5"
+                         required="true">
+                  <input type="hidden" name="action" value="open">
+                  <div class="col-6 my-auto">minutes</div>
+                </div>
+              </div>
+              <button type="submit" id="id_btn_start" class="btn btn-success">Start election now
+              </button>
+            </form>
+          </div>
+        {% elif not election.closed %}
+          <div class="card-body">
+            <div>Election still open.</div>
+            <div>
+              {% if election.end_date %}
+                Election period: {{ election.start_date|date:"l Y-m-d H:i:s" }} -
+                {{ election.end_date|date:"l Y-m-d H:i:s" }}
+              {% else %}
+                This election needs to be closed manually.
+              {% endif %}
+            </div>
+            <hr>
+            <form class="user" action="{% url 'management:election' election.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="close">
+              <button type="submit" id="id_btn_close" class="btn btn-danger">Close election now
+              </button>
+            </form>
+
+          </div>
+        {% endif %}
+      </div>
+      <div class="card shadow mt-4">
+        <div class="card-body">
+          {% if not election.closed %}
+            <h4>
+              {% if election.voters_self_apply %}Applicants{% else %}Options{% endif %}
+              {% if election.can_apply %}
+                <a class="btn btn-success float-right" role="button"
+                   href="{% url 'management:add_application' election.pk %}">
+                  {% if election.voters_self_apply %}Add applicant{% else %}Add option{% endif %}
+                </a>
+              {% endif %}
+            </h4>
+
+            <hr>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">{% if election.voters_self_apply %}Applicant{% else %}Option{% endif %}</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for application in applications %}
+                <tr>
+                  <th scope="row">{{ forloop.counter }}</th>
+                  <td>{{ application.get_display_name }}</td>
+                  <td>
+                    {% if election.can_apply %}
+                      <form
+                          action="{% url 'management:delete_application' pk=election.pk application_id=application.pk %}"
+                          method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="close btn btn-danger col-3 float-right" aria-label="remove remove"
+                                title="Delete">
+                          &times;
+                        </button>
+                      </form>
+                      {% if not application.voter %}
+                        <a class="myclose btn btn-warning col-3 float-right" role="button"
+                           href="{% url 'management:edit_application' pk=election.pk application_id=application.pk %}">
+                          ✎ </a>
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <h4>Result</h4>
+            {% include 'management/results.html' %}
+
+            {% if not election.result_published %}
+              <hr>
+              <form action="{% url 'management:election' election.pk %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="publish">
+                <button type="submit" class="btn btn-info">Publish Results</button>
+              </form>
+            {% endif %}
+            <hr>
+            <a href="{% url 'management:export_csv' election.pk %}" class="btn btn-primary mr-2">Export result as
+              CSV</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="card shadow mt-4">
+        <div class="card-body" id="votes">
+          <h4>Voters</h4>
+          <hr>
+          <table class="table">
+            <thead>
+            <tr>
+              <th scope="row">Voters</th>
+              <th scope="row">Cast</th>
+              <th scope="row">Open</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>{{ election.number_voters }}</td>
+              <td>{{ election.number_votes_cast }}</td>
+              <td>{{ election.number_votes_open }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer_scripts %}
+  {#  Automatic reload of the page: #}
+  {#    - if another vote was cast#}
+  <script src="{% static "js/jquery-3.5.1.min.js" %}"
+          integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="></script>
+  <script src="{% static "js/reload.js" %}"></script>
+{% endblock %}
