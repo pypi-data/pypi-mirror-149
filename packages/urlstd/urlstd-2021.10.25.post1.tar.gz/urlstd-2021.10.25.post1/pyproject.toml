@@ -1,0 +1,99 @@
+[tool.poetry]
+name = "urlstd"
+version = "2021.10.25.post1"
+description = "Python implementation of the WHATWG URL Standard"
+license = "MIT"
+authors = ["Tetsuya Miura <miute.dev@gmail.com>"]
+readme = "README.md"
+homepage = "https://miute.github.io/urlstd/"
+repository = "https://github.com/miute/urlstd"
+keywords = ["url", "url-standard", "url-parser", "url-parsing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Internet",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+icupy = ">=0.11.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-html = "^3.1.1"
+pytest-mock = "^3.6.1"
+black = "^21.12b0"
+coverage = {extras = ["toml"], version = "^6.3"}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--tb=native -ra"
+log_format = "%(asctime)s|%(levelname)s|%(name)s.%(funcName)s|%(message)s"
+log_date_format = "%H:%M:%S"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+source = [
+    "urlstd",
+]
+omit = [
+    "tests/*/conftest.py",
+]
+
+[tool.coverage.paths]
+source = [
+    "src/urlstd",
+    "*/urlstd",
+]
+
+[tool.coverage.report]
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "raise NotImplementedError",
+    "@dataclass",
+    "@overload",
+]
+
+[tool.black]
+line-length = 79
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.mypy]
+warn_unused_configs = true
+warn_return_any = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "icupy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "py.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytest.*"
+ignore_missing_imports = true
