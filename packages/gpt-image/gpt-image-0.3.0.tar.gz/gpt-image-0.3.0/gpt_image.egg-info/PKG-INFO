@@ -1,0 +1,92 @@
+Metadata-Version: 2.1
+Name: gpt-image
+Version: 0.3.0
+Summary: Build GPT Disk Images on Local Drives
+Home-page: https://github.com/swysocki/gpt-image
+Author: Scott Wysocki
+Author-email: swysocki@gmail.com
+License: MIT
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# GPT Image
+
+Create GUID Partition Table disk images on local disks.  Written in pure Python
+`gpt-image` allows GPT disk images to be _built_ on a local filesystem and
+exported to a destination device.
+
+This is useful for creating a disk image on SD Cards or embedded devices.
+
+## Quick Start
+
+```python
+
+import gpt_image
+
+# create a new, 8 MB disk, size is in bytes
+disk = gpt_image.disk.Disk("disk-image.raw")
+disk.create(8 * 1024 * 1024)
+
+# create a 2MB partition, default is a Linux partition
+partition = gpt_image.partition.Partition("partition1", 2 * 1024 * 1024, uuid.uuid4())
+
+# add the partition to disk
+disk.table.partitions.add(partition)
+disk.write()
+
+```
+
+# Changelog
+
+<!--next-version-placeholder-->
+
+## v0.3.0 (2022-05-07)
+### Feature
+* Read existing disk ([#14](https://github.com/swysocki/gpt-image/issues/14)) ([`ed83cb0`](https://github.com/swysocki/gpt-image/commit/ed83cb06efcdcdad2eee6be6930c8027565823b0))
+
+## v0.2.2 (2022-04-03)
+### Fix
+* Adjust pmbr partition size ([#13](https://github.com/swysocki/gpt-image/issues/13)) ([`379d615`](https://github.com/swysocki/gpt-image/commit/379d615093451783643a7ec665c98f12ff907927))
+
+## v0.2.1 (2022-02-27)
+### Fix
+* Add partition tests ([#9](https://github.com/swysocki/gpt-image/issues/9)) ([`da41ad2`](https://github.com/swysocki/gpt-image/commit/da41ad271ea56a2c0bfb53937ddac4f40599509f))
+
+## v0.2.0 (2022-02-26)
+### Feature
+* Add semantic release ([#10](https://github.com/swysocki/gpt-image/issues/10)) ([`95177b2`](https://github.com/swysocki/gpt-image/commit/95177b21d1d45cb8bde0b736e332fb6452d3ddae))
+
+### Fix
+* Set version ([`a4262c1`](https://github.com/swysocki/gpt-image/commit/a4262c100acd4cbdf9f04177700a650710c8a757))
+* Use setup.py for package version ([`3d69f94`](https://github.com/swysocki/gpt-image/commit/3d69f945fb22286ba6623e87f607ddb6c5dd7990))
+* Remove partition wrapper ([`1f491ad`](https://github.com/swysocki/gpt-image/commit/1f491ad72c05c56094c7ea84b0888d34ffd3a546))
+* Move logic to Disk object ([`4ab2211`](https://github.com/swysocki/gpt-image/commit/4ab2211a55beb23ce0f148a1a52387efe11fbd9d))
+
+### Documentation
+* Update comments ([`73e7052`](https://github.com/swysocki/gpt-image/commit/73e705213b4fb1144bb8ce92c6d895e7e7be6d4a))
+
+MIT License
+
+Copyright (c) 2021 Scott Wysocki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
