@@ -1,0 +1,69 @@
+from logging import DEBUG, Formatter, StreamHandler, getLogger
+
+__all__ = ['get_logger']
+
+
+class MyHandler(StreamHandler):
+
+    def __init__(self, ):
+        super().__init__()
+
+
+def get_logger():
+    logger = getLogger('active_learning')
+
+    cond = True
+    for handler in logger.handlers:
+        if isinstance(handler, MyHandler):
+            cond = False
+
+    if cond:
+        # stream handler
+        logger.setLevel(DEBUG)
+        fmr = _ColoredFormatter('%(filename)s:%(lineno)s '
+                                '- %(levelname)s:  %(message)s')
+        ch = MyHandler()
+        ch.setLevel(DEBUG)
+        ch.setFormatter(fmr)
+        logger.addHandler(ch)
+
+    return logger
+
+
+BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
+# The background is set with 40 plus the number of the color,
+# and the foreground with 30
+
+# These are the sequences need to get colored ouput
+RESET_SEQ = "\033[0m"
+COLOR_SEQ = "\033[;%dm"
+BOLD_COLOR_SEQ = "\033[1;%dm"
+
+_COLORS = {
+    'WARNING': YELLOW,
+    'INFO': GREEN,
+    'DEBUG': BLUE,
+    'CRITICAL': YELLOW,
+    'ERROR': RED
+}
+
+
+class _ColoredFormatter(Formatter):
+    def __init__(self, msg, use_color=True):
+        Formatter.__init__(self, msg)
+        self.use_color = use_color
+
+    def format(self, record):
+        levelname = record.levelname
+        if self.use_color and levelname in _COLORS:
+            levelname_color = COLOR_SEQ % (
+                    30 + _COLORS[levelname]) + levelname + RESET_SEQ
+            record.levelname = levelname_color
+
+        # name
+        filename = record.filename
+        if self.use_color:
+            name_color = BOLD_COLOR_SEQ % (30 + RED) + filename + RESET_SEQ
+            record.filename = name_color
+
+        return Formatter.format(self, record)
