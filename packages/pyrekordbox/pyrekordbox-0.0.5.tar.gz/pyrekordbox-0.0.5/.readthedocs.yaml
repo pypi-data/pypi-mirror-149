@@ -1,0 +1,19 @@
+version: 2
+
+build:
+    image: latest
+    apt_packages:
+      - graphviz
+
+
+python:
+  version: 3.8
+  install:
+    - requirements: docs/source/requirements.txt
+    - requirements: requirements.txt
+    - method: setuptools
+      path: .
+
+formats:
+  - htmlzip
+  - pdf
