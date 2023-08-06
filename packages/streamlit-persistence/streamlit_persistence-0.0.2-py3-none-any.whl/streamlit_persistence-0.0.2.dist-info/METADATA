@@ -1,0 +1,80 @@
+Metadata-Version: 2.1
+Name: streamlit-persistence
+Version: 0.0.2
+Summary: Allows for persistence of class/instance attributes when using Streamlit in Python
+Home-page: https://github.com/yaphott/streamlit-persistence
+Author: yaphott
+Author-email: yaphott@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: streamlit (>=1.8.1)
+
+# streamlit-persistence
+
+Allows for persistence of class/instance attributes when using Streamlit in Python
+
+## Getting started
+
+### Installing
+
+```bash
+git clone https://github.com/yaphott/streamlit-persistence.git
+cd streamlit-persistence
+python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install .
+```
+
+### Using the module
+
+1. Use `PersistentObject` as the parent class
+2. Assign the Streamlit `session_state` to a class attribute named `session_state`
+3. Assign class/instance attributes as you would normally
+   - Still need to implement a proper way to handle the `__init__` method
+   - Until then you can simply check an instantiated class for the instance attribute using `hasattr` before it is referenced
+
+```python
+import streamlit as st
+from streamlit_persistence import PersistentObject
+
+
+pizza_choices = [None, "veggie", "pepperoni"]
+
+
+class Test(PersistentObject):
+    session_state = st.session_state
+
+    def run(self):
+        if not hasattr(self, "pizza"):
+            self.pizza = None
+
+        # Default to the index of previously selected
+        pizza = st.selectbox(
+            "Select a pizza",
+            pizza_choices,
+            index=pizza_choices.index(self.pizza),
+        )
+
+        # Update instance attribute if user changes their selection
+        if pizza != self.pizza:
+            self.pizza = pizza
+            st.experimental_rerun()
+
+        st.success(f"You have selected the pizza: {self.pizza}")
+
+
+def main():
+    Test().run()
+
+
+if __name__ == "__main__":
+    main()
+```
+
+
