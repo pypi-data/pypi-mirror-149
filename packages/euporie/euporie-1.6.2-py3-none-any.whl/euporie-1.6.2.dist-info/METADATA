@@ -1,0 +1,181 @@
+Metadata-Version: 2.1
+Name: euporie
+Version: 1.6.2
+Summary: Euporie is a text-based user interface for running and editing Jupyter notebooks
+Home-page: https://github.com/joouha/euporie
+License: MIT
+Keywords: jupyter,ipython,markdown,terminal,notebook
+Author: Josiah Outram Halstead
+Author-email: josiah@halstead.email
+Requires-Python: >=3.8,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Framework :: Jupyter
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering
+Provides-Extra: all
+Provides-Extra: formatters
+Provides-Extra: html-mtable
+Provides-Extra: hub
+Provides-Extra: images-img2unicode
+Provides-Extra: latex-sympy
+Provides-Extra: svg-cairosvg
+Requires-Dist: CairoSVG (>=2.5,<3.0); extra == "all" or extra == "svg-cairosvg"
+Requires-Dist: Pillow (>=9.0,<10.0)
+Requires-Dist: Pygments (>=2.11.2,<3.0.0)
+Requires-Dist: aenum (>=3.1,<4.0)
+Requires-Dist: antlr4-python3-runtime (>=4.9,<5.0); extra == "latex-sympy"
+Requires-Dist: appdirs (>=1.4,<2.0)
+Requires-Dist: asyncssh[hub] (>=2.10.1,<3.0.0); extra == "all" or extra == "hub"
+Requires-Dist: black (>=19.3b0); extra == "all" or extra == "formatters"
+Requires-Dist: flatlatex (>=0.15,<0.16)
+Requires-Dist: html2text (>=2020.1.16,<2021.0.0)
+Requires-Dist: html5lib (>=1.1,<2.0); extra == "html-mtable"
+Requires-Dist: imagesize (>=1.3.0,<2.0.0)
+Requires-Dist: img2unicode (>=0.1a8,<0.2); extra == "images-img2unicode"
+Requires-Dist: isort (>=5.10.1,<6.0.0); extra == "all" or extra == "formatters"
+Requires-Dist: jsonschema (>=4.4,<5.0)
+Requires-Dist: jupyter-client (>=7.1,<8.0)
+Requires-Dist: linkify (>=1.4,<2.0)
+Requires-Dist: markdown-it-py[linkify] (>=2.0.1,<3.0.0)
+Requires-Dist: mdit-py-plugins (>=0.3.0,<0.4.0)
+Requires-Dist: mtable (>=0.1,<0.2); extra == "html-mtable"
+Requires-Dist: nbformat (>=5,<6)
+Requires-Dist: prompt-toolkit (>=3.0.27,<4.0.0)
+Requires-Dist: pyperclip (>=1.8,<2.0)
+Requires-Dist: ssort (>=0.11.4,<0.12.0); extra == "all" or extra == "formatters"
+Requires-Dist: sympy (>=1.9,<2.0); extra == "latex-sympy"
+Requires-Dist: timg (>=1.1,<2.0)
+Project-URL: Bug Tracker, https://github.com/joouha/euporie/issues
+Project-URL: Changelog, https://euporie.readthedocs.io/en/latest/pages/changelog.html
+Project-URL: Documentation, https://euporie.readthedocs.io/en/latest
+Description-Content-Type: text/x-rst
+
+|logo|
+
+.. |logo| image:: https://user-images.githubusercontent.com/12154190/160670889-c6fc4cd8-413d-49f0-b105-9c0e03117032.svg
+   :alt: <Logo>
+
+#######
+euporie
+#######
+
+|PyPI| |RTD| |PyVer| |License| |Binder| |Stars|
+
+.. content_start
+
+**Euporie is a terminal app for running and editing Jupyter notebooks.**
+
+The text-based interface is inspired by JupyterLab / Jupyter Notebook, and runs entirely in the terminal.
+
+.. figure:: https://user-images.githubusercontent.com/12154190/165388661-44153d99-a44b-4a4a-98b8-7007158c3fa3.png
+   :target: https://user-images.githubusercontent.com/12154190/165388661-44153d99-a44b-4a4a-98b8-7007158c3fa3.png
+
+   `View more screenshots here <https://euporie.readthedocs.io/en/latest/pages/gallery.html>`_
+
+----
+
+*******
+Install
+*******
+
+You can install euporie with `pipx <https://pipxproject.github.io/>`_ (recommended) or ``pip``:
+
+.. code-block:: console
+
+   $ pipx install euporie
+   $ # OR
+   $ python -m pip install --user euporie
+
+You can also try euporie online `here <https://mybinder.org/v2/gh/joouha/euporie-binder/HEAD?urlpath=%2Feuporie%2F>`_.
+
+*****
+Usage
+*****
+
+Open a notebook using the ``edit`` subcommand and passing the notebook's file path as a command line argument:
+
+.. code-block:: console
+
+   $ euporie edit notebook.ipynb
+
+Alternatively, launch ``euporie`` and open a notebook file by selecting "Open" from the file menu (*Ctrl+o*).
+
+To print a notebook to the terminal, use the ``preview`` subcommand:
+
+.. code-block:: console
+
+   $ euporie preview notebook.ipynb
+
+To view a notebook in the system pager, use the ``--page`` flag:
+
+.. code-block:: console
+
+   $ euporie preview --page notebook.ipynb
+
+For more information about the available subcommands and command line flags, run:
+
+.. code-block:: console
+
+   $ euporie --help
+
+
+*************
+Documentation
+*************
+
+View the online documentation at: `https://euporie.readthedocs.io/ <https://euporie.readthedocs.io/>`_
+
+The code is available on GitHub at: `https://github.com/joouha/euporie <https://github.com/joouha/euporie>`_
+
+********
+Features
+********
+
+* Edit and run notebooks in the terminal
+* Displays rich cell outputs, including markdown, tables, images, LaTeX, HTML, SVG, & PDF
+* Print formatted notebooks to the terminal or pager
+* Open multiple notebooks and display them stacked or tiled
+* Code completion
+* Line completions from history
+* Contextual help
+* Automatic code formatting
+* Highly configurable
+
+
+*************
+Compatibility
+*************
+
+Euporie requires Python 3.8 or later. It works on Linux, Windows and MacOS
+
+
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/euporie.svg
+    :target: https://pypi.python.org/project/euporie/
+    :alt: Latest Version
+
+.. |RTD| image:: https://readthedocs.org/projects/euporie/badge/
+    :target: https://euporie.readthedocs.io/en/latest/
+    :alt: Documentation
+
+.. |PyVer| image:: https://img.shields.io/pypi/pyversions/euporie
+    :target: https://pypi.python.org/project/euporie/
+    :alt: Supported Python versions
+
+.. |Binder| image:: https://mybinder.org/badge_logo.svg
+   :target: https://mybinder.org/v2/gh/joouha/euporie-binder/HEAD?urlpath=%2Feuporie%2F
+   :alt: Launch with Binder
+
+.. |License| image:: https://img.shields.io/github/license/joouha/euporie.svg
+    :target: https://github.com/joouha/euporie/blob/main/LICENSE
+    :alt: View license
+
+.. |Stars| image:: https://img.shields.io/github/stars/joouha/euporie
+    :target: https://github.com/joouha/euporie/stargazers
+    :alt: ⭐
+
