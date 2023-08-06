@@ -1,0 +1,69 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:profilehook="http://namespaces.zope.org/profilehook"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="ftw.simplelayout">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include file="permissions.zcml" />
+    <include package=".browser" />
+    <include package=".contents" />
+    <include file="lawgiver.zcml" zcml:condition="installed ftw.lawgiver" />
+    <include file="resources.zcml" zcml:condition="installed ftw.theming" />
+
+    <genericsetup:registerProfile
+        zcml:condition="not-have plone-5"
+        name="default"
+        title="ftw.simplelayout mapblock default"
+        directory="profiles/default"
+        description="Simlelayout map block type"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="have plone-5"
+        name="default"
+        title="ftw.simplelayout mapblock default"
+        directory="profiles/default_plone5"
+        description="Simlelayout map block type"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        name="uninstall"
+        title="Uninstall ftw.simplelayout.mapblock"
+        directory="profiles/uninstall"
+        description="Uninstalls the ftw.simplelayout.mapblock package."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        />
+
+    <include package="ftw.upgrade" file="meta.zcml" />
+
+    <upgrade-step:directory
+        profile="ftw.simplelayout.mapblock:default"
+        directory="./upgrades"
+        />
+
+
+    <include package="plone.behavior" file="meta.zcml" />
+    <plone:behavior
+        title="Collective Geo Maps"
+        description="This behaviour will make a content geo referenceable"
+        provides=".behavior.IBlockCoordinates"
+        marker="collective.geo.geographer.interfaces.IGeoreferenceable"
+        factory="collective.geo.behaviour.behaviour.Coordinates"
+        />
+
+    <profilehook:hook
+        profile="ftw.simplelayout.mapblock:uninstall"
+        handler=".hooks.profile_uninstalled"
+        />
+
+</configure>

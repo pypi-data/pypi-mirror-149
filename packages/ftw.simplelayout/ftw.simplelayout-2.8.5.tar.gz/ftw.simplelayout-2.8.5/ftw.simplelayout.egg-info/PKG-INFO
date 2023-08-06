@@ -1,0 +1,1826 @@
+Metadata-Version: 2.1
+Name: ftw.simplelayout
+Version: 2.8.5
+Summary: SimpleLayout provides block based content pages
+Home-page: https://github.com/4teamwork/ftw.simplelayout
+Author: 4teamwork AG
+Author-email: mailto:info@4teamwork.ch
+Maintainer: Mathias Leimgruber
+License: GPL2
+Description: 
+        
+        .. contents:: Table of Contents
+        
+        
+        
+        
+        Introduction
+        ============
+        
+        
+        SimpleLayout provides an intuitive way of adding and arranging the different
+        elements of a page such as paragraphs, images, files and links using
+        drag-and-drop functionality.
+        These elements are implemented as addable and easily arrangeable "blocks".
+        Because of the restricted dimensions of text, images and other content elements,
+        the general result is content with a uniform look and feel throughout the site.
+        
+        
+        Compatibility
+        -------------
+        
+        **Plone 4.3.x**
+        
+        .. image:: https://jenkins.4teamwork.ch/job/ftw.simplelayout-master-test-plone-4.3.x.cfg/badge/icon
+           :target: https://jenkins.4teamwork.ch/job/ftw.simplelayout-master-test-plone-4.3.x.cfg
+        
+        
+        Please use the `plone4` extra on Plone 4 Installations in order to have the right dependencies.
+        
+        
+        **Plone 5.1.x**
+        
+        Features dropped for Plone 5.1.x:
+        
+        - Anchor extraction from Blocks for anchors on a page.
+        - Upgrade step, which removes the plone.app.referenceablebehavior.referenceable.IReferenceable from all sl content types.
+        
+        
+        **Themes**
+        
+        For consistent styling of the Simplelayout UI we recommend using `plonetheme.blueberry <https://github.com/4teamwork/plonetheme.blueberry/>`_.
+        
+        
+        **Upgrade from Plone 4.3.x to Plone 5.1.x**
+        
+        TODO: Needs to be implemented and tested.
+        
+        
+        **Trash**
+        
+        ``ftw.simplelayout`` integrates automatically with `ftw.trash`_ when both are installed.
+        
+        Installation
+        ============
+        
+        - Add the package to your buildout configuration:
+        
+        ::
+        
+            [instance]
+            eggs +=
+                ...
+                ftw.simplelayout[mapblock]
+        
+        
+        - With ftw.simplelayout 2.0.0 we introduced Plone 5 support. But Plone 4 has different dependencies. In order to use ftw.simplelayout 2.0.0 with Plone 4 also install the plone4 extra
+        
+        ::
+        
+            [instance]
+            eggs +=
+                ...
+                ftw.simplelayout[mapblock, plone4]
+        
+        
+        Then you have several profiles to choose from:
+        
+        - ``ftw.simplelayout`` **lib** profile - Just the basics without any ContentTypes. This profile is also available for Plone 5
+        
+        - ``ftw.simplelayout`` **default** profile - Installs Simplelayout with default ContentTypes and everything you need to create content the Simplelayout way.
+        
+        - Overlays for manipulating blocks, such as adding, deleting and modifying.
+        - Saving the current Simplelayout state.
+        - Loading the configuration of a simplelayout page.
+        - Reloading blocks with additional parameters, view, or data attributes.
+        
+        
+        
+        Usage
+        =====
+        
+        First steps
+        -----------
+        
+        It's a good idea to install the default profile, which ships some basic contenttypes, such as ContentPage and TextBlock.
+        
+        Simply add a new ContentPage instead of a Plone Document. A Toolbox appears on the right, which allows you to create content on/in your ContentPage with Simplelayout.
+        
+        By default you can choose between a 1 column, 2 Column or 4 Column layout.
+        Simplelayout adds an empty 1 column layout for you by default, so you can directly start adding a Block.
+        
+        Just drag the Block of your choice, for example a TextBlock, into the layout. Enter title, body text and/or an image. Then click save.
+        
+        As you can see, you never have to leave the ContentPage, all actions with Simplelayout are asynchronous.
+        This means adding, deleting and editing always opens an overlay, where you can make the modifications.
+        
+        
+        RESTAPI
+        =======
+        
+        Simplelayout supports the plone.restapi (read only).
+        The simplelayout page state is accessable with the key "simplelayout".
+        The key "slblocks" stores a UID -> Block Json mapping, which is handy to access the blocks via the page state.
+        The block configuration is accessable per block via the key "block-configuration"
+        
+        The key "blocks" was already in use by Plone.
+        
+        
+        Load the restapi extras by adding the following to your buildout config
+        
+        ::
+        
+            [instance]
+            eggs +=
+                ...
+                ftw.simplelayout[contenttypes, restapi]
+        
+        
+        
+        Contenttypes
+        ------------
+        
+        Simplelayout ships by default with two content types.
+        One folderish type, the `ContentPage` and one block type, the `TextBlock`.
+        
+        
+        **ContentPage**
+        
+        The ContentPage is a simple folderish dexterity based contenttype, which
+        does nearly nothing, but has the ``@@simplelayout-view`` view configured by default.
+        It's possible to add a ContentPage within a ContentPage
+        
+        **TextBlock**
+        
+        The TextBlock provides the following fields:
+        
+        - ``Title`` (Well, this will be the title of the block, rendered as **h2**).
+        - Show title? (Decide if the title will be displayed or not).
+        - Text
+        - Image
+        
+        Title, or Text, or the image is needed to successfully add a new block
+        
+        The ``TextBlock`` configuration allows you to use this block to show text
+        only or images only, or of course both. There's no need of a single block for
+        images and a single block for text.
+        
+        .. figure:: ./docs/_static/add_textblock.png
+           :align: center
+           :alt: Add TextBlock
+        
+           Add TextBlock
+        
+        Extra Blocks
+        ************
+        
+        **AliasBlock**
+        
+        The AliasBlock can be installed with an extra ``aliasblock``. The block uses the
+        SCSS variable ``$color-primary`` for its styling which can be overwritten by
+        a custom design. The ``dropzonewrapper`` class is set to ``display: none;`` to
+        avoid errors trying to upload content on the AliasBlock. There is also a link
+        provided to jump to the original content.
+        
+        All Blocks within this package, ftw.addressblock and ftw.sliderblock are supported.
+        Other Blocks from different packages or policies won't work because the list of
+        aliasable blocks is hardcoded. This list of blocks is available via
+        ``ftw.simplelayout.aliasblock.contents.aliasblock.get_selectable_blocks``.
+        
+        It's also possible to select a whole ContentPage to render within the AliasBlock.
+        It's not possible however to select a ContentPage which already contains an AliasBlock
+        or the ContentPage an AliasBlock is being created on to prevent recursion.
+        
+        
+        Behaviors
+        ---------
+        
+        - The Teaser behavior is enabled by default on `TextBlock`. It allows you to add an
+          internal or external link to the block.
+        
+        - The `show_title` behavior is disabled by default. It can be enabled to add a checkbox
+          to the configuration of contentpages. With this checkbox, the title can be hidden.
+        
+        
+        Portlets
+        --------
+        
+        ``ftw.simplelayout`` provides a ``Simplelayout Portlet`` which alows you to move Blocks into the right, or left column.
+        You simply have to assign the portlet on a specific context, or type.
+        
+        Example (How to assign the portlet by default to all Simplelayout ContentPages).
+        
+        portlets.xml:
+        
+        .. code-block:: xml
+        
+            <?xml version="1.0"?>
+            <portlets>
+                <assignment
+                  manager="plone.rightcolumn"
+                  category="content_type"
+                  key="ftw.simplelayout.ContentPage"
+                  type="ftw.simplelayout.portlet"
+                  insert-before="*">
+                </assignment>
+            </portlets>
+        
+        
+        
+        
+        Simplelayout your site
+        ----------------------
+        
+        **Yes it's simple:**
+        
+        - Add layouts by Drag'n'Drop
+        - Add Blocks by Drag'n'Drop
+        - Upload images directly by Drag'n'Drop [Comming soon]
+        - Change representation of blocks directly on the Block itself
+        - Responsive by default
+        - Create multiple column pages with ease.
+        - Uninstall profile
+        
+        
+        Development
+        ===========
+        
+        **Python:**
+        
+        1. Fork this repo
+        2. Clone your fork
+        3. Shell: ``ln -s development.cfg buidlout.cfg``
+        4. Shell: ``python boostrap.py``
+        5. Shell: ``bin/buildout``
+        
+        Run ``bin/test`` to test your changes.
+        
+        Or start an instance by running ``bin/instance fg``.
+        
+        
+        Creating a new Block
+        --------------------
+        
+        Make your content 'blockish', needs only two steps.
+        
+        
+        1. The only difference between a block and other DX content types is the ``SimplelayoutBlockBehavior``. You can simply add the Block behavior to your content by adding the following line to FTI:
+        
+        .. code-block:: xml
+        
+            <property name="behaviors">
+                <element value="ftw.simplelayout.interfaces.ISimplelayoutBlock" />
+            </property>
+        
+        2. In order for your block to know how to represent itself on a simplelayout page you need to register a ``block_view`` for your Block.
+        
+        Register view with zcml:
+        
+        .. code-block:: xml
+        
+            <browser:page
+                for="my.package.content.IMyBlock"
+                name="block_view"
+                permission="zope2.View"
+                class=".myblock.MyBlockView"
+                template="templates/myblockview.pt"
+                />
+        
+        Corresponding template:
+        
+        .. code-block:: html
+        
+              <h2 tal:content="context/Title">Title of block</h2>
+        
+              <!-- Assume you got a text field on your content -->
+              <div tal:replace="structure here/text/output | nothing" />
+        
+        
+        Basically that's it :-) You just created a new block!!
+        
+        
+        Create custom actions for Blocks
+        --------------------------------
+        
+        
+        Global Simplelayout configuration
+        ---------------------------------
+        
+        
+        Create new Block representations
+        --------------------------------
+        
+        Directly edit items in a folderish block
+        ----------------------------------------
+        
+        To implement this, you just need to place a link in the rendered block.
+        Assume you want to edit a file in a listing block: you need a link, which is pointing to ``./sl-ajax-inner-edit-view``,
+        has the css class ``inneredit`` and a data attribute named ``uid`` containing the uid of the content.
+        
+        .. code-block:: xml
+        
+            <a href="./sl-ajax-inner-edit-view"
+               class="inneredit"
+               tal:attributes="data-uid file_object/UID">EDIT</a>
+        
+        
+        After editing the content, the view automatically reloads the block.
+        
+        Additional plone.restapi methods
+        --------------------------------
+        
+        After creating blocks in a simplelayout content page they should be synchronized with the pages config. Otherwise
+        the order in the frontend might be wrong. It also removes objects which are in the pages config but not in the page itself.
+        
+        To do this, you can simply send a RestAPI Post (more information about
+        `plone.restapi <https://github.com/plone/plone.restapi>`_ ) request to the path of your page, appended with
+        ``@sl-synchronize-page-config-with-blocks``. A dict with ``added`` and ``removed`` block UIDs is returned.
+        
+        
+        Staging
+        -------
+        
+        Simplelayout provides integration level tools for setting up a staging solution for content pages.
+        An ``IStaging`` adapter provides the functionality for making working copies and applying the
+        changed content of the working copy onto the baseline.
+        Simplelayout does not provide an integration; the integration must be implemented on project level.
+        
+        Simple usage example:
+        
+        .. code-block:: python
+        
+            from Acquisition import aq_inner
+            from Acquisition import aq_parent
+            from ftw.simplelayout.staging.interfaces import IStaging
+        
+            # Make a working copy of "baseline" in the folder "target"
+            target = aq_parent(aq_inner(baseline))
+            working_copy = IStaging(baseline).create_working_copy(target)
+        
+            # Apply the working copy content to the baseline:
+            IStaging(working_copy).apply_working_copy()
+        
+            # Or discard the working copy:
+            IStaging(working_copy).discard_working_copy()
+        
+        Although the staging can be integrated in various ways (actions, events, etc.),
+        it is usually integrated in the workflow.
+        Since ``ftw.lawgiver >= 1.15.0``, it supports [intercepting transitions](https://github.com/4teamwork/ftw.lawgiver/blob/master/README.rst#intercept-and-customize-transitions),
+        which can be used for integrating a staging solution.
+        
+        When the working copy is created, only simplelayout block children are copied from the baseline
+        to the working copy. This has the advantage that a root page of a large structure can be
+        revised and copied without a performance problem because of many subpages.
+        
+        When the working copy is applied back, the content of its children are copied back to the
+        baseline. The simplelayout state and relations are updated accordingly.
+        
+        
+        
+        Run custom JS code
+        ==================
+        
+        Some Blocks need to run some JS code after rendering or for the widget itself while adding/editing. For this use case you can simply listen to the jquerytools overlay events.
+        
+        Run JS after adding and editing a Block
+        ---------------------------------------
+        
+        This example has been taken from the MapBlock.
+        It uses the ``onBeforeClose`` event of jquerytools Overlay to load the collectivegeo map.
+        
+        .. code-block:: Javascript
+        
+            $(function(){
+              $(document).on('onBeforeClose', '.overlay', function(){
+                if ($.fn.collectivegeo) {
+                  $('.widget-cgmap').filter(':visible').collectivegeo();
+                }
+              });
+            });
+        
+        
+        Run JS after the overlay has been displayed
+        -------------------------------------------
+        
+        This example has been taken from the MapBlock.
+        It uses the ``onLoad`` event of jquerytools Overlay to load the collectivegeo map in edit mode.
+        
+        .. code-block:: Javascript
+        
+            $(function(){
+              $(document).on('onLoad', '.overlay', function(){
+                if ($.fn.collectivegeo) {
+                  var maps = $('.widget-cgmap').filter(':visible');
+                  var map_widgets = $('.map-widget .widget-cgmap').filter(':visible');
+                  maps.collectivegeo();
+                  map_widgets.collectivegeo('add_edit_layer');
+                  map_widgets.collectivegeo('add_geocoder');
+                }
+              });
+            });
+        
+        
+        More JS events
+        --------------
+        
+        jQueryTools Overlay provides two more events:
+        
+        - onBeforeLoad
+        - onClose
+        
+        Check `jQueryTools Overlay Documentation <http://jquerytools.github.io/documentation/overlay>`_
+        
+        
+        Modify the Simplelayout configuration
+        -------------------------------------
+        
+        The simplelayout JS lib can be modified by  the `data-sl-settings` on the simplelayout container. Currently supported settings:
+        
+        - layouts
+        - canChangeLayouts
+        
+        1. You're able to modify those settings globally through the Simplelayout control panel. For example:
+        
+        
+        .. code-block:: JSON
+        
+            {"layouts": [1]}
+        
+        All Simplelayout sites are configured to have only 1 column Layouts
+        
+        2. Using a ISimplelayoutContainerConfig Adapter, which adapts a `context` and `request`, which means you can have different settings for different Simplelayout enabled types.
+        
+        Example:
+        
+        .. code-block:: Python
+        
+            from ftw.simplelayout.contenttypes.contents.interfaces import IContentPage
+            from ftw.simplelayout.interfaces import ISimplelayoutContainerConfig
+        
+        
+            class ContenPageConfigAdapter(object):
+                implements(ISimplelayoutContainerConfig)
+        
+                def __init__(self, context, request):
+                    pass
+        
+                def __call__(self, settings):
+                    settings['layouts'] = [1]
+        
+                def default_page_layout():
+                    return None
+        
+            provideAdapter(ContenPageConfigAdapter,
+                           adapts=(IContentPage, Interface))
+        
+        Note 1: The adapter gets called with the settings Dictionary, so you don't have to return it.
+        
+        Note 2: With the ``default_page_layout`` method you can also define default layouts, which are pre-rendered on a empty page.
+        
+        
+        
+        3. Using the View itself, by overwrite the ``update_simplelayout_settings`` method.
+        
+        .. code-block:: Python
+        
+            from ftw.simplelayout.browser.simplelayout import SimplelayoutView
+        
+        
+            class CustomSimplelayoutView(SimplelayoutView):
+        
+                def update_simplelayout_settings(self, settings):
+                    settings['layouts'] = [1, 4]
+        
+        
+        4. By default the ``canChangeLayouts`` option is injected by the Simplelayout provider. It checks if the current logged in user has the ``ftw.simplelayout: Change Layouts`` permission.
+        
+        
+        OpenGraph support
+        -----------------
+        Simplelayouts provides a basic `OpenGraph <http://ogp.me/>`_ integration.
+        You can disable (Simplelayout Settings - Control Panel) Opengraph for the plone root as you wish, because it's enabled by default.
+        On Simplelayout sites itself the OpenGraph meta tags can be controlled by the `OpenGraph marker behavior`.
+        
+        
+        Migration from ftw.contentpage
+        ==============================
+        
+        This package is the successor of
+        `ftw.contentpage <https://github.com/4teamwork/ftw.contentpage>`_.
+        In order to migrate from `ftw.contentpage` types to `ftw.simplelayout` types,
+        take a look at the preconfigured inplace migrators in the `migration.py` module of
+        `ftw.simplelayout`.
+        
+        Client Library
+        ==============
+        
+        Building
+        --------
+        
+        Rebuilding the library (resources/ftw.simplelayout.js):
+        
+        .. code-block:: bash
+        
+            yarn build
+        
+        To watch for changes and rebuild the bundle automatically:
+        
+        .. code-block:: bash
+        
+            yarn watch
+        
+        You can get an expanded version of the compiled js, by disabling the uglifying
+        with the additional option ``optimize: "none"`` in the ``Gruntfile.js``.
+        
+        Testing
+        -------
+        
+        Running all test:
+        
+        .. code-block:: bash
+        
+            npm test
+        
+        or
+        
+        .. code-block:: bash
+        
+            grunt test
+        
+        Running a specific test:
+        
+        .. code-block:: bash
+        
+            grunt test --grep="Name of your test"
+        
+        Getting started
+        ---------------
+        
+        Toolbox
+        -------
+        
+        Provide a toolbox instance for the simplelayout.
+        
+        .. code-block:: javascript
+        
+            var toolbox = new Toolbox({
+              layouts: [1, 2, 4],
+              canChangeLayout: true, // Decides if toolbox get rendered
+              blocks: [
+                { title: "Textblock", contentType: "textblock", formUrl: "URL",
+                  actions: {
+                    edit: {
+                      class="edit",
+                      description: "Edit this block",
+                      someCustomAttribute: "someCustomValue"
+                    },
+                    move: {
+                      class: "move",
+                      description: "Move this block"
+                    }
+                  }
+                },
+                { title: "Listingblock", contentType: "listingblock", formUrl: "URL" }
+              ],
+              layoutActions: {
+                actions: {
+                  move: {
+                    class: "iconmove move",
+                    title: "Move this layout arround."
+                  },
+                  delete: {
+                    class: "icondelete delete",
+                    title: "Delete this layout."
+                  }
+                }
+              },
+              labels: {
+                labelColumnPostfix: "Column(s)" // Used for label in toolbox
+              }
+            });
+        
+        Blocks
+        ------
+        
+        +-------------+-------------+------------------------------------+
+        | key         | is required | description                        |
+        +-------------+-------------+------------------------------------+
+        | title       |             | Title in the toolbox               |
+        +-------------+-------------+------------------------------------+
+        | description |             | Used for titleattribute            |
+        +-------------+-------------+------------------------------------+
+        | contentType | yes         | Represents the type for each block |
+        +-------------+-------------+------------------------------------+
+        | actions     | yes         | Describes the actions              |
+        +-------------+-------------+------------------------------------+
+        
+        Actions
+        -------
+        
+        +-------------+-------------+------------------------------------+
+        | key         | is required | description                        |
+        +-------------+-------------+------------------------------------+
+        | key         | yes         | Name for the action                |
+        +-------------+-------------+------------------------------------+
+        | class       |             | Classattribute for the action      |
+        +-------------+-------------+------------------------------------+
+        | description |             | Used for title attribute           |
+        +-------------+-------------+------------------------------------+
+        | custom      |             | Will be provided as data attribute |
+        +-------------+-------------+------------------------------------+
+        
+        Simplelayout
+        ------------
+        
+        Use toolbox instance for initializing a simplelayout.
+        
+        .. code-block:: javascript
+        
+            var simplelayout = new Simplelayout({toolbox: toolbox});
+        
+        Deserialize
+        -----------
+        
+        Use existing markup for deserializing the simplelayout state.
+        
+        Provided HTML Structure
+        
+        .. code-block:: html
+        
+            <div class="sl-simplelayout" id="slot1">
+              <div class="sl-layout">
+                <div class="sl-column">
+                  <div class="sl-block" data-type="textblock">
+                    <div class="sl-block-content"></div>
+                  </div>
+                </div>
+                <div class="sl-column">
+                  <div class="sl-block" data-type="textblock">
+                    <div class="sl-block-content"></div>
+                  </div>
+                </div>
+                <div class="sl-column">
+                  <div class="sl-block" data-type="textblock">
+                    <div class="sl-block-content">
+                      <p>I am a textblock</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="sl-column"></div>
+              </div>
+            </div>
+        
+        Make sure that each datatype in the structure is covered in the toolbox.
+        
+        Events
+        ------
+        
+        Attach events using the singleton instance of eventEmitter.
+        
+        .. code-block:: javascript
+        
+            var simplelayout = new Simplelayout({toolbox: toolbox});
+            simplelayout.on(eventType, callback);
+        
+        Eventtypes
+        ----------
+        
+        blockInserted(block)
+        
+        block-committed(block)
+        
+        block-rollbacked(block)
+        
+        beforeBlockMoved(block)
+        
+        blockMoved(block)
+        
+        blockDeleted(block)
+        
+        layoutInserted(layout)
+        
+        layout-committed(layout)
+        
+        layout-rollbacked(layout)
+        
+        layoutMoved(layout)
+        
+        layoutDeleted(layout)
+        
+        DOM properties
+        --------------
+        
+        Each block and layout is represented in the DOM through an ID.
+        
+        Each DOM element provides the following properties:
+        
+        - object --> object representation in simplelayout
+        - parent --> parent object representation in simplelayout
+        - id --> generated UUID for this element
+        - represents --> representer from origin (empty if object only exists locally)
+        
+        These properties can get extracted as a jQueryElement:
+        
+        .. code-block:: javascript
+        
+            var block = $(".sl-block").first();
+            var blockObj = block.data().object;
+        
+        
+        TODO
+        ====
+        - Update/Finish examples.
+        - Update/Add images (animated gifs).
+        - Improve Plone 5 support (probably with plone 5 contentttypes).
+        - Archetypes block integration (for legacy packages).
+        
+        Links
+        =====
+        
+        - Github: https://github.com/4teamwork/ftw.simplelayout
+        - Issues: https://github.com/4teamwork/ftw.simplelayout/issues
+        - Pypi: http://pypi.python.org/pypi/ftw.simplelayout
+        - Continuous integration: https://jenkins.4teamwork.ch/search?q=ftw.simplelayout
+        
+        Copyright
+        =========
+        
+        This package is copyright by `4teamwork <http://www.4teamwork.ch/>`_.
+        
+        ``ftw.simplelayout`` is licensed under GNU General Public License, version 2.
+        
+        .. _ftw.trash: https://github.com/4teamwork/ftw.trash
+        
+        Changelog
+        =========
+        
+        2.8.5 (2022-05-04)
+        ------------------
+        
+        - Add twitter:image meta tag to opengraph metga tags. [mathias.leimgruber]
+        
+        - Use LOGO endpoint of ftw.logo in order to make sure to serve a PNG, not a SVG. [mathias.leimgruber]
+        
+        
+        2.8.4 (2021-10-04)
+        ------------------
+        
+        - Re-add french translations for FileListingBlock clumns.
+        
+        
+        2.8.3 (2021-08-09)
+        ------------------
+        
+        - Make sure there are no harmful css classes withing the content of a TextBlock. [mathias.leimgruber]
+        
+        
+        2.8.2 (2021-07-20)
+        ------------------
+        
+        - Only apply 20200929161226_fix_contenttype_jquery_dependency on Plone 5.x sites. [mathias.leimgruber]
+        
+        
+        2.8.1 (2021-04-02)
+        ------------------
+        
+        - Make sure geo settings doe not have to be available at all. [mathias.leimgruber]
+        
+        
+        2.8.0 (2021-04-02)
+        ------------------
+        
+        - Implement simplelayout in plone.restapi responses. [mathias.leimgruber]
+        
+          - The "simpleayout" key contains the simplelayout page state.
+          - The "slblocks" key contains all blocks accessable via their UID.
+          - Simplelayout data is only available on ISimplelayout
+          - The 'block-configuration' key contains the block configuration stored on ISimplelayoutBlock.
+        
+        - Add height field to videoblock in order to set a fixed height for vimeo/youtube nocookie block. [mathias.leimgruber]
+        
+        - Make rendering the aliasblock add/edit form viewlet more safe. [mathias.leimgruber]
+        
+        
+        2.7.18 (2021-03-18)
+        -------------------
+        
+        - Make aliasblock Title more robust, since the content might be created via script. [mathias.leimgruber]
+        
+        
+        2.7.17 (2021-03-01)
+        -------------------
+        
+        - Aliasblock Remove explicit dependency on sl contenttypes. [mathias.leimgruber]
+        - Check all incoming references upon block deletion. This includes AliasBlocks. [mathias.leimgruber]
+        
+        
+        2.7.16 (2020-12-10)
+        -------------------
+        
+        - Fix Videoblock YouTube integration [Nachtalb]
+        
+        
+        2.7.15 (2020-11-10)
+        -------------------
+        
+        - Implement error handling for dropzone upload. [mathias.leimgruber]
+        
+        
+        2.7.14 (2020-10-15)
+        -------------------
+        
+        - Fix compatibility with plone.formwidget.namedfile 2.0.10+ (included in Plone 5.1.7+) [Nachtalb]
+        - Fix broken page configuration on copy paste for child pages [Nachtalb]
+        - Aliasblock: Show hint to target block/page if you can edit the current aliasblock. [mathias.leimgruber]
+        - Aliasblock: Access to_object/isBroken only if there is a RelationValue. [mathias.leimgruber]
+        - Staging: Move instead of copy blocks, which were created in the working copy, in
+          order to preserve the UID. Otherwise internal links within the working copy no longer work. [mathias.leimgruber]
+        
+        
+        2.7.13 (2020-10-01)
+        -------------------
+        
+        - Remove non behavior interface from FTI. [djowett-ftw]
+        - Fix loading jquery 2 times and with this creating conflicts [Nachtalb]
+        
+        
+        2.7.12 (2020-09-08)
+        -------------------
+        
+        - Remove left and right margin from 100% wide sl-image on small screens (< 480px)
+          [djowett-ftw]
+        
+        
+        2.7.11 (2020-09-08)
+        -------------------
+        
+        - Escape special chars for opengraph title and description. [mathias.leimgruber]
+        - Fix link integrity check on Plone 5 [Nachtalb]
+        
+        
+        2.7.10 (2020-08-20)
+        -------------------
+        
+        - Hansle start/t querysting for youtube videos. [mathias.leimgruber]
+        
+        
+        2.7.9 (2020-08-05)
+        ------------------
+        
+        - Fix column in aliasblock results in failure [Nachtalb]
+        
+        
+        2.7.8 (2020-08-05)
+        ------------------
+        
+        - Fix typo in aliasblock. [busykoala]
+        - Fix state saving error when aliasblock linked to a page is used [Nachtalb]
+        
+        
+        2.7.7 (2020-07-27)
+        ------------------
+        
+        - Fix tinymce prependToUrl value, in order to make internal links work on plone root. [mathias.leimgruber]
+        
+        
+        2.7.6 (2020-07-01)
+        ------------------
+        
+        - Update aliasblock integration JS for full multi columns/layouts contentpage support. [mathias.leimgruber]
+        - Aliasblock only show link to referenced page if you are able to modify the aliasblock. [mathias.leimgruber]
+        
+        
+        2.7.5 (2020-06-22)
+        ------------------
+        
+        - Fix ftw.logo opengraph integration [Nachtalb]
+        
+        
+        2.7.4 (2020-06-19)
+        ------------------
+        
+        - Add ftw.logo support for plone root opengraph integration. [mathias.leimgruber]
+        
+        
+        2.7.3 (2020-06-15)
+        ------------------
+        
+        - Fix link to referenced object [Nachtalb]
+        - Remove ``aliasblock`` and ``contenttypes`` conditions because empty extras cannot be checked [Nachtalb]
+        
+        
+        2.7.2 (2020-06-12)
+        ------------------
+        
+        - Add missing translation of the AliasBlock for the plone domain [Nachtalb]
+        
+        
+        2.7.1 (2020-06-12)
+        ------------------
+        
+        - Show linked page title on aliasblock. [mathias.leimgruber]
+        - Do not allow to reference the ContentPage you are creating the AliasBlock on to prevent recursion [Nachtalb]
+        - Fix AliasBlock text for link to referenced ContentPage [Nachtalb]
+        
+        
+        2.7.0 (2020-06-10)
+        ------------------
+        
+        - Add viewletmanager for block add/edit form in order to load custom code. [mathias.leimgruber]
+        - ContentPage support for AliasBlock. [mathias.leimgruber]
+        
+        
+        2.6.1 (2020-06-02)
+        ------------------
+        
+        - Add collective.quickupload in plone4. [busykoala]
+        
+        
+        2.6.0 (2020-06-02)
+        ------------------
+        
+        - Add new block (AliasBlock) which renders the content of other blocks.
+          The extra "aliasblock" is required to install this block. [busykoala]
+        
+        
+        2.5.14 (2020-05-28)
+        -------------------
+        
+        - Add vimeo video iframe wrapper for better styling possibility. [busykoala]
+        
+        
+        2.5.13 (2020-04-24)
+        -------------------
+        
+        - Always load videoblock js, not only when logged in [Nachtalb]
+        
+        
+        2.5.12 (2020-04-24)
+        -------------------
+        
+        - Fix 'upload files here' dropzone not working except just after galleryblock creation. [djowett-ftw]
+        - Upgrade ftw.colorbox to resolve galleryblock overlay issue and make our initializeColorbox work in
+          Plone5. [djowett-ftw]
+        
+        
+        2.5.11 (2020-03-24)
+        -------------------
+        
+        - Fix deletion of blocks if parent is not simplelayoutish. [mbaechtold]
+        
+        
+        2.5.10 (2020-03-24)
+        -------------------
+        
+        - Make migration more robust. [mbaechtold]
+        
+        - Fix youtube player integration [mathias.leimgruber]
+        
+        
+        2.5.9 (2020-01-21)
+        ------------------
+        
+        - Allow a description to be added when files are uploaded via
+          listingblock or galleryblock. [djowett-ftw]
+        
+        
+        2.5.8 (2020-01-15)
+        ------------------
+        
+        - Add a 'Remove file' icon to Dropzone's file previews
+          (This includes starting to use a previewTemplate for Dropzone). [djowett-ftw]
+        
+        
+        2.5.7 (2020-01-09)
+        ------------------
+        
+        - Add ftw.simplelayout portal_types translations to plone domain. [tinagerber]
+        
+        
+        2.5.6 (2020-01-07)
+        ------------------
+        
+        - Repair overlay styles. [djowett-ftw]
+        - To create a file, get the correct file type from the schema. [tinagerber]
+        
+        
+        2.5.5 (2019-12-20)
+        ------------------
+        
+        - Fix translation for 'Upload files here'. [djowett-ftw]
+        - Fix potential error after migrating to plone5 in filelisting-block. [busykoala]
+        
+        
+        2.5.4 (2019-12-18)
+        ------------------
+        
+        - Fix js module name clash [Nachtalb]
+        - Fix error when file is uploaded as ZPublisher.HTTPRequest.FileUpload in plone 4 [Nachtalb]
+        
+        
+        2.5.3 (2019-12-18)
+        ------------------
+        
+        - Provide precompile bundle. [buchi, jone]
+        
+        
+        2.5.2 (2019-12-05)
+        ------------------
+        
+        - Old versions of ftw.sliderblock depended on this product to require collective.upload, which
+          is no longer done after version 2.0.  We raise ImportError on startup to make this clear. [djowett-ftw]
+        - Fix tests not opening files in binary mode (necessary to work with the latest release of ftw.testbrowser). [busykoala]
+        - Remove unittest2 because of deprecation. [busykoala]
+        
+        
+        2.5.1 (2019-11-29)
+        ------------------
+        
+        - Fix upgrade step. [tinagerber]
+        
+        
+        2.5.0 (2019-11-27)
+        ------------------
+        
+        - Change event binding on tab from onClick to just click in order to trigger the function on plone 5 too. [mathias.leimgruber]
+        
+        - No longer accidentally load google maps api js twice. [mathias.leimgruber]
+        
+        - Add ftw.simplelayout.contenttypes profile when mapblock is added by default. [busykoala]
+        
+        - Remove (AT) LinkBuilder in favour of the one in ftw.builder. [djowett-ftw]
+        
+        
+        2.4.1 (2019-11-14)
+        ------------------
+        
+        - Improve English in README.rst. [djowett-ftw]
+        - Make the upload widget in FileListingBlock choose the content type it creates
+          based on it's `allowed_content_types`. [djowett-ftw]
+        
+        
+        2.4.0 (2019-11-14)
+        ------------------
+        
+        - Leadimage: support changing the scale direction in the view call. [jone]
+        
+        
+        2.3.0 (2019-11-11)
+        ------------------
+        
+        - Add ftw.theming:default (upgrade step not provided). [busykoala]
+        - Unify "Save" translation across content types and plone versions [Nachtalb]
+        - Improve linking between baseline and working copy [Nachtalb]
+        
+        
+        2.2.0 (2019-10-30)
+        ------------------
+        
+        - Fix galleryblock on click no big image available [Nachtalb]
+        - Fix typo in settings description. [jone]
+        - Install contenttypes extras by default and deprecate the extra itself [Nachtalb]
+        - Save files uploaded via dropzone as blobs [Nachtalb]
+        - Fix image rotation for images uploaded via dropzone [Nachtalb]
+        - Remove collective.quickupload as a dependency for plone 4 (replaced by dropzone.js in 2.0.0) [Nachtalb]
+        
+        
+        2.1.2 (2019-08-29)
+        ------------------
+        
+        - Fix plone.app.events EventBasic timezone conflict when applying working copies [Nachtalb]
+        
+        
+        2.1.1 (2019-08-27)
+        ------------------
+        
+        - Fix mapblock.js compatibility with plone5 [Nachtalb]
+        
+        - Move contenttypes js to resource bundles. [busykoala]
+        
+        - Fix html entities in data-googlejs url [mathias.leimgruber]
+        
+        - Fix contenttypes and mapblock js resources. [mathias.leimgruber]
+        
+        - Preserve childrens children order when applying working copies [Nachtalb]
+        
+        
+        2.1.0 (2019-05-21)
+        ------------------
+        
+        - Add macros and slots to block views for easy customization. [jone]
+        - Include map preferences behaviours in mapblock.js [Nachtalb]
+        
+        
+        2.0.2 (2019-05-17)
+        ------------------
+        
+        - Fix JavaScript of the map block. [mbaechtold]
+        
+        - Revert: Commit abc8 mistakenly removed IReferencable [busykoala]
+        
+        - Staging: remove auto generated children when creating a working copy. [jone]
+        
+        - In order to trigger the plone transform chain, we need to maintain the mimeType of the RichTextValue. [mathias.leimgruber]
+        
+        - Staging: Add link to working copies in warning message. [mathias.leimgruber]
+        
+        - Fix plone 4 build by pinning collective.z3cform.datagridfield to 1.4.0. [mathias.leimgruber]
+        
+        
+        2.0.1 (2019-03-08)
+        ------------------
+        
+        - Update Readme with some plone 4/5 installation hints [mathias.leimgruber]
+        
+        - Update package metadata. [mathias.leimgruber]
+        
+        - Add collective.quickupload as dependency for the plone4 extra.
+        
+        
+        2.0.0 (2019-03-06)
+        ------------------
+        
+        - Add Plone 5.1 compatibility [jone, mbaechtold, mathas.leimgruber]
+        
+        - Remove development GS profile because it did not work. [jone]
+        
+        - Reimplement file uploading by replacing quickupload with Dropzone.js. [mathias.leimgruber, jone]
+        
+        - Make mapblock plone 5.1 compatible. Mainly by updating to a good known set of c.geo packages [mathias.leimgruber]
+        
+        
+        1.23.5 (2018-12-18)
+        -------------------
+        
+        - Add zcml:condition="have ftw.simplelayout:trash" to trash related handlers. [mathias.leimgruber]
+        
+        
+        1.23.4 (2018-12-13)
+        -------------------
+        
+        - Trash: No longer index trashed blocks. [mathias.leimgruber]
+        
+        
+        1.23.3 (2018-11-20)
+        -------------------
+        
+        - Staging: fix an error which broke staging when having a link to a sub page. [jone]
+        
+        
+        1.23.2 (2018-11-16)
+        -------------------
+        
+        - Set last modifier for parent object, when sl block is edited if collective.lastmodifier is installed
+          This feature is a available for ``collective.lastmodifier`` version ``1.1.3`` and above [Nachtalb]
+        
+        
+        1.23.1 (2018-11-12)
+        -------------------
+        
+        - Implement unrestricted_uuidToObject to get the infos for the staging viewlet, regardless of the workflow. [mathias.leimgruber]
+        
+        - Add support for www.youtube-nocookie.com video urls. [mathias.leimgruber]
+        
+        
+        1.23.0 (2018-10-08)
+        -------------------
+        
+        - Add tooling for creating a staging solution. [jone]
+        
+        
+        1.22.3 (2018-10-03)
+        -------------------
+        
+        - Add missing_value attribute to the `image_limits` and `image_cropping_aspect_ratios`
+          interfaces to prevent the form @@simplelayout-controlpanel from saving `None`
+          if no values are given. [elioschmutz]
+        
+        
+        1.22.2 (2018-09-26)
+        -------------------
+        
+        - Fix a caching issue where the cropping overlay have showed the old image after uploading a new one. [elioschmutz]
+        
+        
+        1.22.1 (2018-09-25)
+        -------------------
+        
+        - Fix image cropper styling with blueberry marketing theme. [elioschmutz]
+        
+        
+        1.22.0 (2018-09-25)
+        -------------------
+        
+        - Add imagecropping with configurable aspect-ratios for textblock-images. [elioschmutz]
+        - Add configurable hard and soft image limits for textblocks. [elioschmutz]
+        - Add plone.restapi endpoint for synchronizing blocks with the page config [Nachtalb]
+        - Add additional opengraph tags og:description fb:app_id fb:admins [Nachtalb]
+        
+        1.21.1 (2018-07-06)
+        -------------------
+        
+        - Support Plone 4.3.17 (Quick fix for getting the base-url still from the base tag). [mathias.leimgruber]
+        
+        - Fix JS error in FF by actually passing the event object as parameter. [mathias.leimgruber]
+        
+        
+        1.21.0 (2018-07-05)
+        -------------------
+        
+        - Add optional support for ``ftw.trash``. [jone]
+        
+        1.20.3 (2018-07-05)
+        -------------------
+        
+        - Set default value for image cropping in slider block migration [raphael-s]
+        
+        - Set simplelayout slot for teaser block migration [raphael-s]
+        
+        
+        1.20.2 (2018-03-26)
+        -------------------
+        
+        - Scale images for colorbox overlay view to fix edge case cashing of images. [raphael-s]
+        
+        
+        1.20.1 (2018-03-01)
+        -------------------
+        
+        - Move title and show_title field into the coordinates schemata on MapBlock. [mathias.leimgruber]
+        
+        - Fix loading google / geo maps in overlays within a tab. [mathias.leimgruber]
+        
+        
+        1.20.0 (2018-01-26)
+        -------------------
+        
+        - Add support for "ftw.gopip". [jone, mbaechtold]
+        
+        - Optionally render a title of the mapblock. [mbaechtold]
+        
+        - Content page builder only synchronises page config if the
+          page contains blocks. [mbaechtold]
+        
+        - Implement more specific MapLayers factory to prevent adding the same layers multiple times. [mathias.leimgruber]
+        
+        - Implement persisten map layer and zoom value.
+          Both can be chosen in the edit widget and will be reused on the display widget. [mathias.leimgruber]
+        
+        
+        1.19.0 (2017-11-01)
+        -------------------
+        
+        - The browser does no longer jump to the top when opening an overlay. [Kevin Bieri]
+        
+        - Handle view names in unicode strings. [mbaechtold]
+        
+        - New Feature: Asymmetric layouts. [Kevin Bieri, mathias.leimgruber]
+        
+          - Introduced layout configurations (classes on layouts)
+          - By default we have golden ratio-, 1-2-1-, 3-1, 1-1-2-layouts
+          - This change introduces two now wrappers (div-tag), while render the simplelayout content.
+            Please be aware that those new wrappers may break your CSS selectors.
+        
+        
+        1.18.5 (2017-07-25)
+        -------------------
+        
+        - Handle view names in unicode strings. [mbaechtold]
+        
+        - Add anchor to new created blocks. [Kevin Bieri]
+        
+        - The galleryblock now renders a fallback image when the image to be displayed is truncated. [mbaechtold]
+        
+        - Make iframe fixes compatible with ftw.iframefix 2.0. [Kevin Bieri]
+        
+        - Use a static vocabulary for the sort options of the gallery block. [mbaechtold]
+        
+        - Install ftw.iframefix
+          [Kevin Bieri]
+        
+        
+        1.18.4 (2017-06-15)
+        -------------------
+        
+        - Add more sorting options (position in parent, id) to the gallery block. [mbaechtold]
+        
+        - Move print styles accidentally defined in plonetheme.blueberry. [Kevin Bieri]
+        
+        - Migration: Handle different simplelayout layouts. [lknoepfel]
+        
+        - Disable kss spinner. [Kevin Bieri]
+        
+        
+        1.18.3 (2017-04-06)
+        -------------------
+        
+        - Fix ordering error on Plone site root. [jone]
+        
+        
+        1.18.2 (2017-03-30)
+        -------------------
+        
+        - Fix UnboundLocalError in the simplelayout portlet. [mbaechtold]
+        
+        - Make anchor extraction more robust. [mbaechtold]
+        
+        - Remove unused "addable_block_types" method from simplelayout view. [jone]
+        
+        
+        1.18.1 (2017-03-23)
+        -------------------
+        
+        - Fix copy/paste bug with p.a.referenceablebehavior. [jone]
+        
+        - Make sure plone.app.referenceablebehavior is installed. [jone]
+        
+        
+        1.18.0 (2017-03-23)
+        -------------------
+        
+        - Improve anchor extraction. [mbaechtold]
+        
+        - Synchronize simplelayout block order to Plone's ordered container. [jone]
+        
+        - Improve support for hidden blocks introduced in 1.2.1. [mbaechtold]
+        
+        
+        1.17.2 (2017-03-07)
+        -------------------
+        
+        - Make MapBlock addable on plone site per default [raphael-s]
+        
+        
+        1.17.1 (2017-02-28)
+        -------------------
+        
+        - Include theme compatibility hint in readme.
+          [Kevin Bieri]
+        
+        - Prevent plone ajax spinner from being shown. [Kevin Bieri]
+        
+        - Restore slot defaults when removing last layout. [jone]
+        
+        
+        1.17.0 (2017-01-26)
+        -------------------
+        
+        - Conditionally display move action on toolbar on the layout
+          [Kevin Bieri]
+        
+        - Include handlebars in distributed library.
+          [Kevin Bieri]
+        
+        - Fix map block not showing the Google maps.
+          [mbaechtold]
+        
+        - Use browserify as javascript bundler
+        
+          - Update tests using karma
+          - Add support for ES6 using babeljs
+        
+          [Kevin Bieri]
+        
+        
+        1.16.0 (2017-01-23)
+        -------------------
+        
+        - Extend the textblock with the "data-caption" attribute which can hold
+          the caption rendered in the colorbox (requires "ftw.colorbox" 1.2.4).
+          [mbaechtold]
+        
+        
+        1.15.1 (2017-01-17)
+        -------------------
+        
+        - Do render the simplelayout portlet on non-simplelayout
+          content types. [mbaechtold]
+        
+        
+        1.15.0 (2017-01-16)
+        -------------------
+        
+        - TinyMCE: Disable "anchor"-Tab when creating a link. [jone]
+        
+        - TinyMCE: configure content page to contain anchors. [jone]
+        
+        - Change primary field of text block from "image" to "text" field
+          in order to support anchors. [jone]
+        
+        - Implement a simplelayout renderer object. This allows us to render
+          simplelayoutish structures without the simplelayout provider expression.
+          Further it's now possible to render only one layout of slot.
+          [mathias.leimgruber]
+        
+        - Log traceback too when a block cannot be rendered. [jone]
+        
+        
+        1.14.0 (2017-01-04)
+        -------------------
+        
+        - Move option to hide a block to a behavior so it can be used on other blocks too.
+          [mbaechtold]
+        
+        - Move ``ftw.referencewidget`` dependency to ``contenttypes`` extras. [jone]
+        
+        - Drop ``plone.formwidget.contenttree`` dependency. [jone]
+        
+        
+        1.13.0 (2016-12-06)
+        -------------------
+        
+        - Prevent gallery block from failing when it contains image objects having
+          umlauts in their title.
+          [mbaechtold]
+        
+        - Disable inline validation of the Plone forms in the overlay.
+          [mbaechtold]
+        
+        - Hide toolbox on small devices.
+          [Kevin Bieri]
+        
+        - Highlight active layout.
+          [Kevin Bieri]
+        
+        - Fix toolbar zindex.
+          [Kevin Bieri]
+        
+        - Fix layout delete button when block has been moved.
+          [Kevin Bieri]
+        
+        
+        1.12.2 (2016-11-11)
+        -------------------
+        
+        - Don't allow all non-folderish types to be selectable as default page.
+          Without this types like the TextBlock can be selected and would break the site.
+          [lknoepfel]
+        
+        
+        1.12.1 (2016-11-01)
+        -------------------
+        
+        - Enable mapblock.js for anonymous users.
+          [mathias.leimgruber]
+        
+        
+        1.12.0 (2016-10-21)
+        -------------------
+        
+        - Implement a inner_edit.json view, which allows us to edit an item in a
+          folderish block. For example edit a file directly in a FilelistingBlock.
+          This view works almost like the block edit view, the difference is, that
+          the inner_edit.json view returns the rendered html of its parent (the Block).
+          [mathias.leimgruber]
+        
+        
+        1.11.1 (2016-10-13)
+        -------------------
+        
+        - Make youtube-videoblocks auto-resize to the max space available.
+          [raphael-s]
+        
+        - Fix SCSS linting errors
+        
+            - This requires ftw.theming>=1.7.0
+        
+        
+        1.11.0 (2016-10-05)
+        -------------------
+        
+        - Remove debugger statement :pig:. [Kevin Bieri]
+        
+        - Support Chameleon caching. [jone]
+        
+        
+        1.10.0 (2016-09-30)
+        -------------------
+        
+        - Open external links in new tab on block creation.
+          [Kevin Bieri]
+        
+        
+        1.9.0 (2016-09-26)
+        ------------------
+        
+        - Drop support for standard plone theme (sunburst)
+          [Kevin Bieri]
+        
+        - Extend inplace migrator to create listing blocks of ftw.news and ftw.events. [jone]
+        
+        
+        1.8.3 (2016-09-16)
+        ------------------
+        
+        - Use ftw.referencewidget instead of plone.formwidget.contenttree.
+          [tschanzt]
+        
+        - Protect new show/hide title behavior.
+          [mathias.leimgruber]
+        
+        
+        1.8.2 (2016-09-14)
+        ------------------
+        
+        - Add field description for 'Image alternative text' and 'Open image in overlay'.
+          [raphael-s]
+        
+        - Fix Icon position. It is now postitioned to the image not the container.
+          [tschanzt]
+        
+        - Add optional title to the video block (disabled by default).
+          [mbaechtold]
+        
+        
+        1.8.1 (2016-09-06)
+        ------------------
+        
+        - Add optional behavior to add a checkbox to show/hide the title of a contentpage.
+          [raphael-s]
+        
+        
+        1.8.0 (2016-09-05)
+        ------------------
+        
+        - Fix drop animation backgroundcolor
+          [Kevin Bieri]
+        
+        - Make leadimages "has_image" and "get_scale" usable. [jone]
+        
+        - BugFix: Copyied event is called recursively. Check if the block is actually part of the current page.
+          [mathias.leimgruber]
+        
+        - Fix image overlay in textblocks
+          [Kevin Bieri]
+        
+        - Set permission for change layout, site admin & manager now have permission to change the layout.
+          [raphael-s]
+        
+        - Implement inplace migrators for migration from ftw.contentpage. [jone]
+        
+        
+        1.7.4 (2016-08-16)
+        ------------------
+        
+        - Display mapblock in 2/3 ratio.
+          [mathias.leimgruber]
+        
+        - Implement a really hackish way to support IE11.
+          Native c.geo implementation always implements the map api twice and has caching issues.
+          [mathias.leimgruber]
+        
+        
+        1.7.3 (2016-08-12)
+        ------------------
+        
+        - Fix 1.7.2 broken simplelayout.js build release.
+          [mathias.leimgruber]
+        
+        
+        1.7.2 (2016-08-11)
+        ------------------
+        
+        - Fix layout state, while moving layouts between containers.
+          [mathias.leimgruber]
+        
+        - Disable iframe fix after stop/receving a layout.
+          [mathias.leimgruber]
+        
+        - Move layouts like blocks.
+          [mathias.leimgruber]
+        
+        - Fix moveing layouts between containers. The usability is still no the best.
+          [mathias.leimgruber]
+        
+        - Add an icon to mark an colorbox image.
+          [tschanzt]
+        
+        
+        1.7.1 (2016-08-05)
+        ------------------
+        
+        - Fix word breaks in listingblock table.
+          [Kevin Bieri]
+        
+        
+        1.7.0 (2016-08-05)
+        ------------------
+        
+        - Implement new block coordinate behavior, which uses it's own widget
+          for JS compatibility (it handles the google map api integration).
+          [mathias.leimgruber]
+        
+        - Fix toolbox label zindex
+          [Kevin Bieri]
+        
+        - Add IE11 fix for InAndOutWidget Javascript.
+          In IE11 it's not possible to manipulate a select (multiple) after
+          modifying the text of a option.
+          [mathias.leimgruber]
+        
+        - Add uninstall profile for ftw.simplelayout.contenttypes.
+          [elioschmutz]
+        
+        - Add uninstall profile for ftw.simplelayout.mapblock.
+          [elioschmutz]
+        
+        
+        1.6.0 (2016-07-18)
+        ------------------
+        
+        - Fix missing toolbar on videoblocks
+          [Kevin Bieri]
+        
+        - Use zindex system from ftw.theming
+          Fix iframeblock boundaries
+          [Kevin Bieri]
+        
+        - Display default youtube player controls
+          [Kevin Bieri]
+        
+        - Translate quickupload title in overlay for filelistings and galleryblocks.
+          [elioschmutz]
+        
+        - Fix floating images on mobile view.
+          [Kevin Bieri]
+        
+        - Make simplelayout events globally available.
+          [raphael-s]
+        
+        - Add min-height to empty Simplelyout portlet.
+          This fixes a issue, when it was no longer possible to re-add a layout after deleting the last one.
+          [mathias.leimgruber]
+        
+        - Add sort-options to image gallery block.
+          [raphael-s]
+        
+        
+        1.5.2 (2016-05-26)
+        ------------------
+        
+        - Do not show spinner when loading toolbox. [jone]
+        
+        
+        1.5.1 (2016-05-26)
+        ------------------
+        
+        - Fix IE11 issues on succeding edits with TinyMCE by foucusing first input field. [jone]
+        
+        
+        1.5.0 (2016-05-26)
+        ------------------
+        
+        - Implement request tracker.
+          [Kevin Bieri]
+        
+        - Block Views: Check for extisting viewname before setting the view_name value.
+          [mathias.leimgruber]
+        
+        - Make getting the og:image url more robust by checking for the scale.
+          [mathias.leimgruber]
+        
+        
+        1.4.2 (2016-05-25)
+        ------------------
+        
+        - BugFix for IE11 VideoBlock: Prevent iframe from stopping event bubbling in IE
+          [Kevin Bieri]
+        
+        
+        1.4.1 (2016-05-24)
+        ------------------
+        
+        - Fix editing issues in IE 11. [jone]
+        
+        
+        1.4.0 (2016-05-24)
+        ------------------
+        
+        - Add css class to simplelayout container if the user is permitted to edit the content.
+          [Kevin Bieri]
+        
+        - Implement statekeeter to track DOM changes.
+          [Kevin Bieri]
+        
+        
+        1.3.0 (2016-05-20)
+        ------------------
+        
+        - Update z3c.form to 2.9.3.
+          Fixes error when adding a filelisting-block in IE11.
+          [Kevin Bieri]
+        
+        - Remove block bottom margin from textblocks containing only a title.
+          [mathias.leimgruber]
+        
+        - Do not show empty block warning on textblock if there is only a title.
+          [mathias.leimgruber]
+        
+        - GalleryBlock: Show 4 images in a row for 1 col, 2 in a row for 2 col and 1 a row for 4 col.
+          [mathias.leimgruber]
+        
+        - Add min-height to SimplelayoutBlock empty columns.
+          [mathias.leimgruber]
+        
+        - Fix mouse pointer position according to openlayers pointer.
+          [mathias.leimgruber]
+        
+        - Add image caption field to textblock.
+          [mathias.leimgruber]
+        
+        - Hide main scrollbar when overlay is opened. [jone]
+        
+        - Lead-Image: support all slots. [jone]
+        
+        - Lead-Image: support gallery blocks. [jone]
+        
+        - Remove "Review State" column from file listing block.
+          It is usually not in use, since files has no workflow on simplelayout sites.
+          [mathias.leimgruber]
+        
+        
+        1.2.1 (2016-04-14)
+        ------------------
+        
+        - Reset default scale behavior for textblock images.
+          [Kevin Bieri]
+        
+        - Some blocks can be hidden now. Users allowed to edit the block will see
+          the block anyway.
+          [mbaechtold]
+        
+        
+        1.2.0 (2016-03-30)
+        ------------------
+        
+        - Match the image scaling dimensions on media breakpoints from ftw.theming.
+          [Kevin Bieri]
+        
+        - Use crop scale for textblock images.
+          [Kevin Bieri]
+        
+        - Make textblock images full with for medium screen.
+          [Kevin Bieri]
+        
+        - Extend documentation with class diagram.
+          [Kevin Bieri]
+        
+        
+        1.1.0 (2016-03-03)
+        ------------------
+        
+        - Configure TinyMCE resource types. [jone]
+        
+        - Respect disable_border key in request and do not load simplelayout if present.
+          [mathias.leimgruber]
+        
+        - Remove leadimage cache key. [jone]
+        
+        - Show hint on empty listing and galeryblock.
+          [mathias.leimgruber]
+        
+        - Implement better image alt text for galleryblock and textblock.
+          Improves Accessibility.
+          [mathias.leimgruber]
+        
+        - Right column overlapps the toolbar, apply fixed z-index.
+          [Kevin Bieri]
+        
+        - Move styling from client library to ftw.theming integration using
+          base variables from ftw.theming.
+          [Kevin Bieri]
+        
+        - Fix simplelayout dynamic scss resource, so it does not return invalid code
+          if the selector is empty.
+          [mathias.leimgruber]
+        
+        - Use default table listing for the listingblock styles.
+          Also implement some sane default withs for columns.
+          [mathias.leimgruber]
+        
+        - Add Simlelayout view as possible front page layout + addable types on the plone site.
+          This change provides no upgrade step, since it may break the configuration.
+          [mathias.leimgruber]
+        
+        
+        1.0a1 (2015-12-04)
+        ------------------
+        
+        - Init Release
+        
+Keywords: ftw plone simplelayout block contentpage
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Framework :: Plone :: 4.3
+Classifier: Framework :: Plone :: 5.1
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides-Extra: tests
+Provides-Extra: test
+Provides-Extra: contenttypes
+Provides-Extra: mapblock
+Provides-Extra: plone4
+Provides-Extra: trash
+Provides-Extra: restapi

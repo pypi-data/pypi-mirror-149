@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<registry>
+  <records interface="Products.CMFPlone.interfaces.controlpanel.IImagingSchema"
+           prefix="plone">
+    <value key="allowed_sizes" purge="false">
+      <element>simplelayout_galleryblock 480:480</element>
+      <element>sl_galleryblock_4k 3840:2160</element>
+      <element>sl_textblock_small 480:480</element>
+      <element>sl_textblock_middle 800:800</element>
+      <element>sl_textblock_large 1280:1280</element>
+    </value>
+  </records>
+
+  <records interface="Products.CMFPlone.interfaces.controlpanel.ISearchSchema"
+           prefix="plone">
+    <value key="types_not_searched" purge="false">
+      <element>ftw.simplelayout.TextBlock</element>
+      <element>ftw.simplelayout.FileListingBlock</element>
+      <element>ftw.simplelayout.VideoBlock</element>
+      <element>ftw.simplelayout.GalleryBlock</element>
+    </value>
+  </records>
+
+  <records interface="Products.CMFPlone.interfaces.controlpanel.ITypesSchema"
+           prefix="plone">
+    <value key="default_page_types" purge="false">
+      <element>ftw.simplelayout.ContentPage</element>
+    </value>
+  </records>
+
+  <records interface="Products.CMFPlone.interfaces.controlpanel.ITinyMCESchema"
+           prefix="plone">
+    <value key="contains_objects" purge="false">
+      <element>ftw.simplelayout.ContentPage</element>
+      <element>ftw.simplelayout.FileListingBlock</element>
+      <element>ftw.simplelayout.GalleryBlock</element>
+    </value>
+  </records>
+
+  <record name="plone.displayed_types">
+    <value purge="false">
+      <element>ftw.simplelayout.ContentPage</element>
+    </value>
+  </record>
+
+  <records prefix="plone.bundles/ftw-simplelayout-contenttype"
+           interface='Products.CMFPlone.interfaces.IBundleRegistry'>
+    <value key="enabled">True</value>
+    <value key="depends">plone</value>
+    <value key="stub_js_modules">jquery</value>
+    <value key="compile">False</value>
+    <value key="jscompilation">++plone++ftw.simplelayout/simplelayout-contenttype-compiled.js</value>
+    <value key="last_compilation">2020-03-30 15:25:00</value>
+    <value key="merge_with">default</value>
+  </records>
+</registry>

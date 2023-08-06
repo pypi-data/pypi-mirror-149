@@ -1,0 +1,28 @@
+<tal:map define="cgmap view/get_address_map;
+                 geosettings python:context.restrictedTraverse('@@geosettings-view');
+                 mapwidgets view/@@collectivegeo-maps/mapwidgets;
+                 cgmap python:cgmap or mapwidgets[0];
+                 mapid cgmap/mapid | string:map;
+                 map_defaults cgmap/map_defaults">
+
+  <h2 tal:content="view/block_title" tal:condition="view/block_title">Title</h2>
+
+  <div id="map" class="blockwidget-cgmap"
+       tal:attributes="id mapid;
+          style context/@@collectivegeo-macros/map_inline_css;
+          data-googlejs python:geosettings.google_maps_js;
+          data-cgeolatitude map_defaults/latitude|nothing;
+          data-cgeolongitude map_defaults/longitude|nothing;
+          data-cgeozoom map_defaults/zoom|nothing;
+          data-cgeolang map_defaults/lang|nothing;
+          data-geocoderurl map_defaults/geocoderurl|nothing;
+          data-maplayer map_defaults/maplayer|nothing;">
+    <!-- openlayers map -->
+  </div>
+
+  <script type="text/javascript"
+          tal:content="structure cgmap/layers/js | nothing"></script>
+  <script type="text/javascript"
+          tal:condition="cgmap/js|nothing"
+          tal:content="structure cgmap/js"><!-- additional javascript --></script>
+</tal:map>

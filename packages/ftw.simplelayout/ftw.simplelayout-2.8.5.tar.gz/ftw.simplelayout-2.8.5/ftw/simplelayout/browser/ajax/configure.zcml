@@ -1,0 +1,83 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="ftw.simplelayout">
+
+    <browser:page
+        for="*"
+        name="sl-ajax-reload-block-view"
+        class=".reloadblockview.ReloadBlockView"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="ftw.simplelayout.interfaces.ISimplelayout"
+        name="sl-ajax-reload-layout-view"
+        class=".reloadlayoutview.ReloadLayoutView"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="*"
+        name="sl-toolbox-view"
+        class=".toolbox_view.SimplelayoutToolbox"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="*"
+        name="sl-ajax-delete-blocks-view"
+        class=".delete_blocks.DeleteBlocks"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <adapter
+        name="add_block"
+        factory=".add.AddViewTraverser"
+        />
+
+    <browser:page
+        for="*"
+        name="sl-ajax-edit-block-view"
+        class=".edit_block.BlockEditRedirector"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="*"
+        name="sl-ajax-inner-edit-view"
+        class=".edit_block.InnerEditRedirector"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock"
+        name="edit.json"
+        class=".edit_block.EditForm"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="*"
+        name="inner_edit.json"
+        class=".edit_block.InnerEditForm"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:page
+        for="*"
+        name="sl-ajax-crop-image"
+        class=".crop_image.CropImageRedirector"
+        permission="cmf.ModifyPortalContent"
+        />
+
+    <browser:viewletManager
+        name="ftw.simplelayout.forms.manager"
+        provides="ftw.simplelayout.interfaces.ISimplelayoutBlockFormManager"
+        class="plone.app.viewletmanager.manager.OrderedViewletManager"
+        layer="ftw.simplelayout.interfaces.ISimplelayoutLayer"
+        permission="zope2.View"
+        template="templates/viewletmanager.pt"
+        />
+
+</configure>

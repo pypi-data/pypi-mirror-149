@@ -1,0 +1,85 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:profilehook="http://namespaces.zope.org/profilehook"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="ftw.simplelayout">
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package="plone.behavior" file="meta.zcml" />
+
+    <include file="lawgiver.zcml" zcml:condition="installed ftw.lawgiver" />
+    <include file="permissions.zcml" />
+    <include package=".browser" />
+    <include package=".contents" />
+    <include package="ftw.upgrade" file="meta.zcml" />
+
+    <plone:behavior
+        title="Simplelayout teaser behavior"
+        description="Extends a content by two fields internal and external link"
+        provides="ftw.simplelayout.contenttypes.behaviors.ITeaser"
+        factory="plone.behavior.AnnotationStorage"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="not-have plone-5"
+        name="default"
+        title="ftw.simplelayout.contenttypes default"
+        directory="profiles/default"
+        description="Simlelayout default content types"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="have plone-5"
+        name="default"
+        title="ftw.simplelayout.contenttypes default"
+        directory="profiles/default_plone5"
+        description="Simlelayout default content types"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="not-have plone-5"
+        name="uninstall"
+        title="Uninstall ftw.simplelayout.contenttypes"
+        directory="profiles/uninstall"
+        description="Uninstalls the ftw.simplelayout.contenttypes package."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        />
+
+    <genericsetup:registerProfile
+        zcml:condition="have plone-5"
+        name="uninstall"
+        title="Uninstall ftw.simplelayout.contenttypes"
+        directory="profiles/uninstall_plone5"
+        description="Uninstalls the ftw.simplelayout.contenttypes package."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        />
+
+    <profilehook:hook
+        zcml:condition="have plone-5"
+        profile="ftw.simplelayout.contenttypes:uninstall"
+        handler=".hooks.profile_uninstalled"
+        />
+
+    <upgrade-step:directory
+        profile="ftw.simplelayout.contenttypes:default"
+        directory="./upgrades"
+        />
+
+  <include package="plone.app.contentmenu" />
+  <browser:menuItem
+      for="ftw.simplelayout.interfaces.ISimplelayout"
+      menu="plone_displayviews"
+      title="Simplelayout View"
+      action="@@simplelayout-view" />
+
+</configure>

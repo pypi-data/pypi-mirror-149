@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="ftw.simplelayout">
+
+    <adapter
+        factory=".filelistingblock.ListingBlockDefaultColumns"
+        />
+
+    <adapter
+        factory=".textblock.TextBlockModifier"
+        for="ftw.simplelayout.contenttypes.contents.interfaces.ITextBlock
+             *"
+        />
+
+    <adapter
+        factory=".filelistingblock.ListingBlockActions"
+        name="ftw-simplelayout-filelistingblock-actions"
+        for="*
+             *"
+        />
+
+    <adapter
+        factory=".galleryblock.GalleryBlockActions"
+        name="ftw-simplelayout-galleryblock-actions"
+        for="*
+             *"
+        />
+
+    <!-- Name of the adapter needs to be the normalized portal type. With actions suffix-->
+    <adapter
+        factory=".textblock.TextBlockActions"
+        name="ftw-simplelayout-textblock-actions"
+        for="*
+             *"
+        />
+
+    <adapter factory="ftw.simplelayout.contenttypes.contents.textblock.TextBlockImageLimitValidator" />
+
+</configure>

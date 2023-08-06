@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      i18n:domain="collective.z3cform.mapwidget"
+      tal:omit-tag="">
+  <div class="map-widget"
+    tal:define="cgmap view/cgmap;
+                mapid cgmap/mapid;
+                geosettings python:context.restrictedTraverse('@@geosettings-view');"
+        tal:attributes="data-googlejs geosettings/google_maps_js">
+
+    <metal:use use-macro="context/@@collectivegeo-macros/geocoding"/>
+
+    <tal:map define="cgmap nocall:cgmap | nothing;
+                     geosettings python:context.restrictedTraverse('@@geosettings-view');
+                     mapwidgets view/@@collectivegeo-maps/mapwidgets;
+                     cgmap python:cgmap or mapwidgets[0];
+                     mapid cgmap/mapid | string:map;
+                     map_defaults cgmap/map_defaults">
+      <div id="map" class="blockwidget-cgmap"
+           tal:attributes="id mapid;
+              style context/@@collectivegeo-macros/map_inline_css;
+              data-googlejs geosettings/google_maps_js;
+              data-cgeolatitude map_defaults/latitude|nothing;
+              data-cgeolongitude map_defaults/longitude|nothing;
+              data-cgeozoom map_defaults/zoom|nothing;
+              data-cgeolang map_defaults/lang|nothing;
+              data-geocoderurl map_defaults/geocoderurl|nothing;
+              data-maplayer map_defaults/maplayer|nothing;">
+        <!-- openlayers map -->
+      </div>
+
+      <script type="text/javascript"
+              tal:content="structure cgmap/layers/js | nothing"></script>
+      <script type="text/javascript"
+              tal:condition="cgmap/js|nothing"
+              tal:content="structure cgmap/js"><!-- additional javascript --></script>
+    </tal:map>
+
+
+
+    <div class="row horizontal">
+      <dl class="collapsible collapsedOnLoad">
+        <dt class="collapsibleHeader"
+          i18n:translate="">Manual coordinates</dt>
+        <dd class="collapsibleContent">
+        <div>
+          <span class="formHelp"
+            i18n:translate="wkt_help">
+            In the input below you can insert the coordinates in WKT format. See <a href="http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects">WKT page on wikipedia</a> for more information.
+           </span>
+        </div>
+      <textarea
+         id="" name="" class="" cols="" rows=""
+         tabindex="" disabled="" readonly="" accesskey=""
+         tal:attributes="id string:${view/id}-wkt;
+                         name view/name;
+                         class view/klass;
+                         style view/style;
+                         title view/title;
+                         lang view/lang;
+                         onclick view/onclick;
+                         ondblclick view/ondblclick;
+                         onmousedown view/onmousedown;
+                         onmouseup view/onmouseup;
+                         onmouseover view/onmouseover;
+                         onmousemove view/onmousemove;
+                         onmouseout view/onmouseout;
+                         onkeypress view/onkeypress;
+                         onkeydown view/onkeydown;
+                         onkeyup view/onkeyup;
+                         disabled view/disabled;
+                         tabindex view/tabindex;
+                         onfocus view/onfocus;
+                         onblur view/onblur;
+                         onchange view/onchange;
+                         cols view/cols;
+                         rows view/rows;
+                         readonly view/readonly;
+                         accesskey view/accesskey;
+                         onselect view/onselect"
+         tal:content="view/value" />
+        </dd>
+      </dl>
+    </div>
+
+  </div>
+
+</html>

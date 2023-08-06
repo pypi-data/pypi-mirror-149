@@ -1,0 +1,130 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:autofeature="http://namespaces.zope.org/autofeature"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:upgrade-step="http://namespaces.zope.org/ftw.upgrade"
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    i18n_domain="ftw.simplelayout">
+
+    <include package="ftw.autofeature" file="meta.zcml" />
+    <autofeature:extras />
+
+    <include package="ftw.upgrade" file="meta.zcml" />
+
+    <five:registerPackage package="." initialize=".initialize" />
+    <i18n:registerTranslations directory="locales" />
+
+    <include file="permissions.zcml" />
+    <include package=".browser" />
+    <include package=".images" />
+    <include package=".opengraph" />
+    <include package=".portlets" />
+    <include package=".staging" />
+    <include file="behaviors.zcml" />
+    <include file="lawgiver.zcml" zcml:condition="installed ftw.lawgiver" />
+    <include file="resources.zcml" zcml:condition="installed ftw.theming" />
+
+    <include package=".contenttypes" />
+    <include package=".mapblock" zcml:condition="have ftw.simplelayout:mapblock" />
+    <include package=".aliasblock" />
+    <include package=".restapi" zcml:condition="installed plone.restapi" />
+
+    <cmf:registerDirectory
+            name="ftw.simplelayout"
+            directory="skins"
+            recursive="True" />
+
+    <adapter
+        factory="ftw.simplelayout.properties.MultiViewBlockProperties"
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             *"
+        />
+
+    <!-- Plone root may be a simplelayout page -->
+    <class class="Products.CMFPlone.Portal.PloneSite">
+        <implements interface="ftw.simplelayout.interfaces.ISimplelayout" />
+    </class>
+
+    <configure zcml:condition="not-have plone-5">
+        <genericsetup:registerProfile
+            name="lib"
+            title="ftw.simplelayout js library"
+            directory="profiles/lib"
+            description="Simlelayout js library"
+            provides="Products.GenericSetup.interfaces.EXTENSION"
+            />
+
+        <upgrade-step:directory
+            profile="ftw.simplelayout:lib"
+            directory="./upgrades"
+            />
+
+    </configure>
+
+    <configure zcml:condition="have plone-5">
+        <genericsetup:registerProfile
+            name="lib"
+            title="ftw.simplelayout js library"
+            directory="profiles/lib-plone5"
+            description="Simlelayout js library"
+            provides="Products.GenericSetup.interfaces.EXTENSION"
+            />
+
+        <upgrade-step:directory
+            profile="ftw.simplelayout:lib"
+            directory="./upgrades"
+            />
+
+    </configure>
+
+    <adapter
+        zcml:condition="have ftw.simplelayout:trash"
+        factory=".trash.is_restoring_bock_allowed"
+        />
+
+    <adapter
+        for="ftw.simplelayout.interfaces.ISimplelayout"
+        factory=".configuration.PageConfiguration"
+        />
+
+    <adapter
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock"
+        factory=".configuration.BlockConfiguration"
+        />
+
+    <subscriber
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             zope.lifecycleevent.IObjectCopiedEvent"
+        handler=".handlers.update_page_state_on_copy_paste_block"
+        />
+
+    <subscriber
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             zope.lifecycleevent.interfaces.IObjectRemovedEvent"
+        handler=".handlers.update_page_state_on_block_remove"
+        />
+
+    <subscriber
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+        handler=".handlers.modify_parent_on_block_edit"
+        />
+
+    <subscriber
+        zcml:condition="have ftw.simplelayout:trash"
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             ftw.trash.interfaces.IObjectTrashedEvent"
+        handler=".handlers.handle_trashed_and_restored_blocks"
+        />
+
+    <subscriber
+        zcml:condition="have ftw.simplelayout:trash"
+        for="ftw.simplelayout.interfaces.ISimplelayoutBlock
+             ftw.trash.interfaces.IObjectRestoredEvent"
+        handler=".handlers.handle_trashed_and_restored_blocks"
+        />
+
+</configure>
