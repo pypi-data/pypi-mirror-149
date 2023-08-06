@@ -1,0 +1,74 @@
+Metadata-Version: 2.1
+Name: pysimhash
+Version: 1.1.1
+Summary: a simhash module in cpp for python
+Home-page: https://github.com/skiloop/simhash
+Author: Skiloop
+Author-email: skiloop@gmail.com
+License: MIT
+Description: 
+        # simhash
+        ![https://pypi.python.org/pypi/pysimhash](https://img.shields.io/pypi/v/pysimhash.svg)
+        ![https://pypi.python.org/pypi/pysimhash](https://img.shields.io/pypi/pyversions/pysimhash.svg)
+        ![https://github.com/skiloop/simhash/actions?query=workflow%3ACodeQL](https://github.com/skiloop/simhash/workflows/CodeQL/badge.svg)
+        
+        simhash cpp module for python, a cpp implement of [simhash](https://github.com/leonsim/simhash), support for large
+        dimesion such as 128bit
+        
+        # install
+        
+        ```shell
+        pip install pysimhash
+        ```
+        
+        or install from github.com
+        
+        ```shell
+        git clone https://github.com/skiloop/simhash
+        cd simhash
+        python setup.py install
+        ```
+        
+        # requirements
+        
+        - boost-python
+        
+        
+        # how to use
+        
+        example: 
+        ```python
+        import pysimhash
+        import hashlib
+        document = "google.com hybridtheory.com youtube.com reddit.com"
+        tokens = [hashlib.md5(s.encode('utf-8')).hexdigest() for s in document.split(" ")]
+        s2 = pysimhash.SimHash(128, 16) # f=128, hash_bit=16
+        s2.build(tokens, base=16)
+        print(s2.hex())
+        ```
+        
+        # benchmark
+        
+        With 10000 creating and 100,000 comparing(using [benchmark.py](./benchmark.py)) on the same linux, results
+        go as follow
+        
+        | implement   | build time | comparison time |
+        |-------------|------------|-----------------|
+        | pure python | 1.73s      | 222.99s         |
+        | pysimhash   | 0.14s      | 49.89s          |
+        
+Platform: UNKNOWN
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: POSIX :: Linux
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Utilities
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Description-Content-Type: text/markdown
