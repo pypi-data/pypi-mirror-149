@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: django-hero_ds
+Version: 1.0.0
+Summary: hero part for demiansoft
+Home-page: https://www.demiansoft.com
+Author: hyungjin kim
+Author-email: hj3415@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://pypi.org/project/util-demian/
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+django-hero_ds
+==========
+
+django-hero_ds is a Django app to use for demiansoft. 
+
+Quick start
+------------
+
+1. Add "hero" to your INSTALLED_APPS setting like this
+```python
+INSTALLED_APPS = [
+    ...
+    'hero',
+]
+```
+
+2. 코드를 넣고자 하는 위치에 다음을 추가 한다.
+```html
+{% load hero_tags %}
+{% make_hero %}
+```
+
+* context example
+```python
+context = {
+    "theme": "mentor_ds",
+    "hero": {
+        "bg": "bg1",
+        "title": "Say Tell Speak Talk",
+        "slogan": "Global connection starts with improving your speaking skills<br>Let’s get to talking!",
+        "btn": {"title": "Classes", "link": "#classes"}
+    }
+}
+```
+
+
