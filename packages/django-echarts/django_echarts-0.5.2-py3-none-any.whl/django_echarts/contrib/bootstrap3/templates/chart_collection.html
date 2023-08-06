@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load echarts %}
+
+{% block main_content %}
+    {% dw_widget widget_collection %}
+{% endblock %}
+
+{% block extra_script %}
+    {% echarts_js_dependencies widget_collection %}
+    {% echarts_js_content widget_collection %}
+{% endblock %}

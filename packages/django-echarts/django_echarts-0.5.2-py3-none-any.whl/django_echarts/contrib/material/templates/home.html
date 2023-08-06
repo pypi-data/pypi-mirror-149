@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load echarts %}
+{% block main_content %}
+
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+            {% dw_widget jumbotron %}
+            {% if home_values_panel %}
+                {% dw_widget home_values_panel %}
+            {% endif %}
+            {% if top_chart_info_list %}
+                {% include layout_tpl with chart_info_list=top_chart_info_list only %}
+            {% endif %}
+        </div>
+
+    </div>
+
+
+{% endblock %}
