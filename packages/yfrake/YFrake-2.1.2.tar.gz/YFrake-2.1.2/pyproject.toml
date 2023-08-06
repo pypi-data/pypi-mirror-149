@@ -1,0 +1,72 @@
+# ==================================================================================== #
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+# ==================================================================================== #
+[tool.poetry]
+name = "YFrake"
+version = "2.1.2"
+description = "A fast and flexible stock market, forex and cryptocurrencies data provider."
+readme = "README.md"
+license = "MIT License"
+authors = [
+    "Mattias Aabmets <mattias.aabmets@gmail.com>"
+]
+keywords = ["yahoo", "finance", "api", "server", "scraper"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent"
+]
+packages = [
+    {include = "yfrake"}
+]
+include = [
+    "yfrake",
+    "yfrake.*",
+    "yfrake.*.*"
+]
+
+
+# ==================================================================================== #
+[tool.poetry.urls]
+"Repository" = "https://github.com/aspenforest/yfrake"
+"Documentation" = "https://yfrake.readthedocs.io"
+
+
+# ==================================================================================== #
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "~3.8"
+aiohttp-swagger3 = "~0.7"
+aiohttp-cors = "~0.7"
+psutil = "~5.9"
+tomli = "~2.0"
+pyyaml = "~6.0"
+
+
+# ==================================================================================== #
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-asyncio = "*"
+coverage = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
+
+
+# ==================================================================================== #
+[tool.poetry.scripts]
+gen-spec = "yfrake.openapi.generator:generate_openapi_spec"
+
+
+# ==================================================================================== #
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
