@@ -1,0 +1,109 @@
+trame-html: Internal implementation of trame for its client side
+===========================================================================
+
+This package is not supposed to be used by iteself but rather should come as a dependency of **trame**.
+For any specificity, please refer to `the trame documentation <https://kitware.github.io/trame/>`_.
+
+This package is under the same MIT License as the `Vue.js <https://github.com/vuejs/vue/blob/dev/LICENSE>`_ library that it mainly depends on.
+
+
+Community
+-----------------------------------------------------------
+
+* `WebSite <https://kitware.github.io/trame/>`_
+* `Discussions <https://github.com/Kitware/trame/discussions>`_
+* `Issues <https://github.com/Kitware/trame/issues>`_
+* `RoadMap <https://github.com/Kitware/trame/projects/1>`_
+* `Contact Us <https://www.kitware.com/contact-us/>`_
+* .. image:: https://zenodo.org/badge/410108340.svg
+    :target: https://zenodo.org/badge/latestdoi/410108340
+
+
+Vue Components
+-----------------------------------------------------------
+
+.. code-block:: html
+
+    <trame-connect name="TrameConnect" :config="{}" :exclude="[]" use-url forward-errors>
+        <trame-server-template template-name="main" />
+
+        <!-- advanced -->
+        <trame-client-state-change
+            :value="varName"
+            @change="..."
+        />
+
+        <trame-client-trigger
+            @created="..."
+            @mounted="..."
+            @beforeDestroy="..."
+            @beforeUnmount="..."
+
+            @custom_trigger_1="..."
+            @custom_trigger_2="..."
+            @custom_trigger_n="..."
+        />
+
+        <trame-life-cycle-monitor
+            name="My name"
+            type="log"
+            :value="varNameToMonitorUpdated"
+            :events="['created', 'beforeMount', 'mounted', 'beforeUpdate', 'updated', 'beforeDestroy', 'destroyed']"
+        />
+
+        <trame-loading message="welcome" />
+
+        <trame-mouse-trap
+            :mapping="[{ keys: ['ctrl+s', 'mod+s'], stop: 1, event: 'Save' }]"
+            @Save="..."
+        />
+
+        <trame-state-resolver :names="['a', 'b', 'c']" v-slot="{a, b, c, set, trame}">
+            <div>
+                <div>
+                    A: {{ a }}
+                </div>
+                <div>
+                    B: {{ b }}
+                </div>
+                <div>
+                    C: {{ c }}
+                </div>
+                <br>
+                <button @click="trame.state.set('a', a + 1)">A+</button>
+                <br>
+                <button @click="set('a', a - 1)">A-</button>
+                <br>
+                <button>B</button>
+                <br>
+                <button>C</button>
+            </div>
+        </trame-state-resolver>
+    </trame-connect>
+
+Development
+-----------------------------------------------------------
+
+Build and install the client side.
+
+.. code-block:: console
+
+    cd vue-app
+    npm i
+    npm run build            # build trame client application
+    npm run build:components # build trame components for integration purpose
+    cd -
+
+Publish the trame-components to npm
+
+.. code-block:: console
+
+    cd vue-app
+    # ... publish
+
+
+Publish the trame-client to PyPI
+
+.. code-block:: console
+
+    # a, b, c...
