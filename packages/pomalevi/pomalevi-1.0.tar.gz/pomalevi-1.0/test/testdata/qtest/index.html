@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>qtest</title>
+        <link rel="stylesheet" href="pomalevi.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta charset="UTF-8">
+  </head>
+  <body>
+
+    <h1 class="pmlv-title">qtest</h1>
+
+    <video id="pomalevi-video" class="pmlv-video"
+           height=540 controls
+           data-setup='{ "playbackRates": [0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.4, 1.7, 2.0] }'>>
+       Your browser does not support the video tag.
+    </video>
+
+    <br>
+    <button class="pmlv-button" onclick="pmlv_skip(pmlv_video, -10)">-10s</button>
+    <button class="pmlv-button" onclick="pmlv_skip(pmlv_video, 10)">+10s</button>
+    --
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 0.6)">0.6x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 0.7)">0.7x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 0.85)">0.85x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 1.0)">1.0x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 1.2)">1.2x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 1.4)">1.4x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 1.7)">1.7x</button>
+    <button class="pmlv-button" onclick="pmlv_speed(pmlv_video, 2.0)">2.0x</button>
+
+    <table class="pmlv-table">
+      
+      <tr class='pmlv-tablerow' onclick='pmlv_switch_to(1)'><td class='pmlv-numcell'>1</td><td>part 1</td></tr>
+      <tr class='pmlv-tablerow' onclick='pmlv_switch_to(2)'><td class='pmlv-numcell'>2</td><td>part 2</td></tr>
+    </table>
+
+    <footer class="pmlv-footer">
+      <p>Generated 2022-05-03 
+         by <a href="https://github.com/prechelt/pomalevi">pomalevi</a> &mdash;
+         Powerpoint-based maintainable lecture videos.
+      </p>
+    </footer>
+
+    
+    <script>
+      var pmlv_video = document.getElementById("pomalevi-video")
+      var pmlv_video_idx = 1
+      var pmlv_stoptimes = [[2.01], []]  // list of list of floats: stop times in seconds
+
+      function pmlv_pause_at_stoptimes() {
+          for (var t of pmlv_stoptimes[pmlv_video_idx-1]) {
+            if(pmlv_video.currentTime >= t && pmlv_video.currentTime <= t+0.6) {
+              // 0.6s suffices even for Firefox at 2.0x speed. 0.5s does not.
+              pmlv_video.pause()
+              pmlv_video.currentTime += 0.6
+            }
+          }
+      }
+
+      function pmlv_skip(obj, secs) {
+        obj.currentTime += secs
+      }
+
+      function pmlv_speed(obj, factor) {
+        obj.playbackRate = factor
+      }
+
+      function pmlv_switch_to(i, play=true) {
+        pmlv_video.src = "v" + i + ".mp4"
+        pmlv_video_idx = i  // select the relevant stoptimes
+        pmlv_video.load()
+        if (play) {
+          pmlv_video.play()
+        }
+      }
+
+      pmlv_video.addEventListener("timeupdate", pmlv_pause_at_stoptimes)
+      pmlv_switch_to(1, false)
+
+    </script>
+
+
+  </body>
+
+</html>
