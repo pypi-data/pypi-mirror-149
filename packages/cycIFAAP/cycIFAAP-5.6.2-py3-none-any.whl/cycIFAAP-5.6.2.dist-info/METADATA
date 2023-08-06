@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: cycIFAAP
+Version: 5.6.2
+Summary: Cyclic ImmunoFluoresence (cycIF) Automatic Analysis Pipeline
+Home-page: https://www.thibault.biz/Research/cycIFAAP/cycIFAAP.html
+Download-URL: https://www.thibault.biz/Doc/cycIFAAP/cycIFAAP-5.6.2.tar.gz
+Author: Guillaume THIBAULT, Erik Burlingame, Young Hwan Chang
+Author-email: thibaulg@ohsu.edu, chanyo@ohsu.edu
+Maintainer: Guillaume THIBAULT
+Maintainer-email: thibaulg@ohsu.edu
+License: MIT
+Keywords: cyclic Immunofluorescence,cycif,immunofluorescence,registration,segmentation,features,features extraction,restore,napari,nuclei,nucleus,cells,cell,cell analysis,cell type
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Environment :: GPU
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 10.2
+Classifier: Environment :: Other Environment
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Java
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Image Processing
+Classifier: Topic :: Scientific/Engineering :: Image Recognition
+Requires-Python: >=3.8,<3.10
+Requires-Dist: FiReTiTiPyLib (>=1.4.1)
+Requires-Dist: numpy (>=1.20)
+
+# Cyclic ImmunoFluorescence Automatic Analysis Pipeline
+
+This pipeline takes as input a set of cyclic immunofluorescence (cycIF) images and performs the following operations:
+ - Registration
+ - Nuclei segmentation (using CellPose or own trained Mask R-CNN model)
+ - Background subtraction
+ - Compute each marker exclusiveness to be used with Restore
+ - Use Restore when possible for automatic gating (optionnal)
+ - Features extraction
+ - Cell type computation
+ - Automatic visualization using Napari
+ - Quality control (tissue loss and Restore based)
+
+
+For installation, more information/details and full examples with code and data, visit:
+https://www.thibault.biz/Research/cycIFAAP/cycIFAAP.html
+
+
