@@ -1,0 +1,47 @@
+# -*- coding: utf-8 -*-
+from setuptools import setup
+
+package_dir = \
+{'': 'src'}
+
+packages = \
+['f451_comms', 'f451_comms.providers']
+
+package_data = \
+{'': ['*']}
+
+install_requires = \
+['Faker>=13.7.0,<14.0.0',
+ 'argparse>=1.4.0,<2.0.0',
+ 'konsole>=0.6.0,<0.7.0',
+ 'nox>=2022.1.7,<2023.0.0',
+ 'rich>=12.2.0,<13.0.0',
+ 'sendgrid>=6.9.7,<7.0.0',
+ 'slack-bolt>=1.11.1,<2.0.0',
+ 'tweepy>=4.9.0,<5.0.0',
+ 'twilio>=7.9.0,<8.0.0',
+ 'types-requests>=2.27.16,<3.0.0']
+
+entry_points = \
+{'console_scripts': ['f451-comms = f451_comms.__main__:main']}
+
+setup_kwargs = {
+    'name': 'f451-comms',
+    'version': '0.1.1',
+    'description': 'f451 Communications Module',
+    'long_description': 'f451 Communications module\n==========================\n\n|PyPI| |Status| |Python Version| |License|\n\n|Read the Docs| |Tests| |Codecov|\n\n|pre-commit| |Black|\n\n.. |PyPI| image:: https://img.shields.io/pypi/v/f451-comms.svg\n   :target: https://pypi.org/project/f451-comms/\n   :alt: PyPI\n.. |Status| image:: https://img.shields.io/pypi/status/f451-comms.svg\n   :target: https://pypi.org/project/f451-comms/\n   :alt: Status\n.. |Python Version| image:: https://img.shields.io/pypi/pyversions/f451-comms\n   :target: https://pypi.org/project/f451-comms\n   :alt: Python Version\n.. |License| image:: https://img.shields.io/pypi/l/f451-comms\n   :target: https://opensource.org/licenses/MIT\n   :alt: License\n.. |Read the Docs| image:: https://img.shields.io/readthedocs/f451-comms/latest.svg?label=Read%20the%20Docs\n   :target: https://f451-comms.readthedocs.io/\n   :alt: Read the documentation at https://f451-comms.readthedocs.io/\n.. |Tests| image:: https://github.com/mlanser/f451-comms/workflows/Tests/badge.svg\n   :target: https://github.com/mlanser/f451-comms/actions?workflow=Tests\n   :alt: Tests\n.. |Codecov| image:: https://codecov.io/gh/mlanser/f451-comms/branch/main/graph/badge.svg\n   :target: https://codecov.io/gh/mlanser/f451-comms\n   :alt: Codecov\n.. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white\n   :target: https://github.com/pre-commit/pre-commit\n   :alt: pre-commit\n.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg\n   :target: https://github.com/psf/black\n   :alt: Black\n\n\nTL;DR\n-----\n.. tldr-start\n\nThis module provides a universal interface for various communications systems and services (e.g. email, Slack, SMS, etc.) and makes it possible to send the same message to several services with a single method call. The same call structure is used regardless of which services are enabled.\n\n.. tldr-end\n\n\nInstallation\n------------\n\n**WARNING:** This module is in early alpha stage. And while the code works (and passes all the tests), **use at your own risk 🤓**\n\n.. install-start\n\nYou can install the *f451 Communications* module via `pip <https://pip.pypa.io/en/stable/#>`__ from `PyPi <https://pypi.org/>`__:\n\n.. code:: console\n\n   $ pip install f451-comms\n\n.. install-end\n\nPlease see the section "`Installation`_" in the `main documentation <https://f451-comms.readthedocs.io/>`__ for more information.\n\n\nQuickstart\n----------\n\n.. qs-start\n\nA common use case for the *f451 Communications* module is in applications that send (usually programmatically generated) messages via one or more channels. The module assumes that you provide all necessary keys and secrets required to verify your credentials with the services linked to the channels that you want to use.\n\nIt is recommended that you store these keys and secrets in a separate file (e.g. ``secrets.ini``). However, it is also possible to submit them -- for example during testing -- in the form of a so-called ``dict`` structure.\n\n.. code-block::\n\n    from configparser import ConfigParser, ExtendedInterpolation\n    from f451_comms.comms import Comms\n\n    secrets = ConfigParser(interpolation=ExtendedInterpolation())\n    secrets.read("_PATH_TO_YOUR_SECRETS_FILE_")\n\n    comms = Comms(secrets)\n    comms.send_message("Hello world!", "all")\n\nThe basic sequence is to first initialize the ``Comms`` object with the keys and secrets required to authenticate with the services that you want to use. After that you can send messages to one or more channels with a single method call to the ``Comms`` object.\n\nThe ``send_message()`` method also has a 3rd argument that allows you to include additional attributes using a ``dict`` structure. These attributes can contain a wide variety of items. For example, you can include the HTML version of an email, or Slack blocks for more complex Slack messages. You can also include references to images to be included with the message, or files to be attached to emails, and so on.\n\n.. qs-end\n\nPlease see the section "`Getting started`_" in the `main documentation <https://f451-comms.readthedocs.io/>`__ for more information.\n\n\nRun a demo of this module\n-------------------------\n\n.. demo-start\n\nThis module comes with a demo that allows you to experiment with sending messages to the various channels. Of course, you must first ensure that you have accounts with the services that you want to experiment with. You must also provide the appropriate credentials when starting the demo or it will simply fail to authenticate with the services you\'re trying to use.\n\n.. demo-end\n\nPlease see the section "`Run demo`_" in the `main documentation <https://f451-comms.readthedocs.io/>`__ for more information.\n\n\nBackground\n----------\n\n.. bkgrnd-start\n\nThis module was originally created to "scratch an itch" -- or, as we say in marketing parlance: to solve a particular use case. 😉 -- I had several single-purpose applications running on different devices (e.g. `Raspberry Pi <https://www.raspberrypi.org/>`_) configured to support specific hardware configurations (i.e. sensors and displays, etc.), services, or functions. And all applications were designed to notify me via different channels that certain events had occurred and so on.\n\nUsing a standardized communications library made it easy to have the main application on each device communicate results to the same channels without writing duplicate code for each application for a given device. Instead, I can now import this library, and most/all per-application customization can be handled by updating config files on each device.\n\nFor example, I have several devices that continuously collect data from sensors and perform various processing tasks on that data. Then, at regular intervals, when specific tasks are completed or certain events are triggered, I get notified via SMS, some fancy Slack message, or even get a nice HTML-based email with a status update, etc. And in some cases, the devices also notify the world via Twitter that whatever status was updated.\n\nBut most importantly, I\'m able to call a simple ``send_message()`` method, which works the same way regardless of which services are enabled for a given device. And if I add a new communications channel, I can enable it quickly on my devices without updating the core applications. Simply adding the new channel to a configuration file is enough 😎\n\n**Current support:**\n\n- `Email via Mailgun <https://mailgun.com>`__ -- plain text and HTML, with attachments and inline images\n- `Slack <https://slack.com>`__ -- plain text and Slack blocks\n- `SMS via Twilio <https://twilio.com/sms/>`__ -- SMS with images\n- `Twitter <https://twitter.com>`__ -- status updates and DMs\n\n**Future support:**\n\n- Other - *I know, this is really specific ... but there will be more* 😜\n\n.. bkgrnd-end\n\nDocumentation\n-------------\n\nPlease refer to the `documentation <https://f451-comms.readthedocs.io/>`__ for more information.\n\n.. misc-start\n\nContributing\n------------\n\nContributions are very welcome. To learn more, see the `Contributor Guide`_.\n\n\nLicense\n-------\n\nDistributed under the terms of the `MIT license`_, the *f451 Communications* module is free and open source software.\n\n\nIssues\n------\n\nIf you encounter any problems, please `file an issue`_ along with a detailed description.\n\n\nCredits\n-------\n\nThis project was generated from `@cjolowicz`_\'s `Hypermodern Python Cookiecutter`_ template.\n\n.. _@cjolowicz: https://github.com/cjolowicz\n.. _Cookiecutter: https://github.com/audreyr/cookiecutter\n.. _MIT license: https://opensource.org/licenses/MIT\n.. _PyPI: https://pypi.org/\n.. _Hypermodern Python Cookiecutter: https://github.com/cjolowicz/cookiecutter-hypermodern-python\n.. _file an issue: https://github.com/mlanser/f451-comms/issues\n.. _pip: https://pip.pypa.io/\n.. github-only\n.. _Contributor Guide: CONTRIBUTING.rst\n.. _Usage: https://f451-comms.readthedocs.io/en/latest/usage.html\n.. _Configuration files: https://f451-comms.readthedocs.io/en/latest/config_files.html\n.. _Installation: https://f451-comms.readthedocs.io/en/latest/installation.html\n.. _Getting started: https://f451-comms.readthedocs.io/en/latest/quickstart.html\n.. _Run demo: https://f451-comms.readthedocs.io/en/latest/demo.html\n',
+    'author': 'Martin Lanser',
+    'author_email': 'martinlanser@gmail.com',
+    'maintainer': None,
+    'maintainer_email': None,
+    'url': 'https://github.com/mlanser/f451-comms',
+    'package_dir': package_dir,
+    'packages': packages,
+    'package_data': package_data,
+    'install_requires': install_requires,
+    'entry_points': entry_points,
+    'python_requires': '>=3.8,<4.0',
+}
+
+
+setup(**setup_kwargs)
