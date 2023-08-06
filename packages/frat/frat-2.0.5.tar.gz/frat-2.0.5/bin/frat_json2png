@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+
+import fargv
+import json
+from PIL import Image
+import numpy as np
+import frat
+
+
+p = {
+    "jsons": [set([]),"The json filenames of the annotation, images are expeted to also reside in the format to ifer image size."],
+    "output_postfix": [".segm.png", "This will be "],
+    "multiclass":True,
+    "rgb_output":True,
+    "color_palette": False
+}
+
+
+if __name__ == "__main__":
+    p, _ = fargv.fargv(p)
+    assert not p.multiclass or not p.color_palette #  p.multiclass and p.color_palette are incompatible
+    assert (not p.color_palette) or p.color_palette and p.rgb_output  # color_palette => rgb_output
+    for json_name in p.jsons:
+        assert json_name.lower().endswith(".json")
+        gt = json.load(open(json_name,"r"))
+        img = Image.open(json_name[:-5])
+        rectangles, classids, class_colors = gt["rect_LTRB"], gt["rect_classes"], gt["class_colors"]
+        if not p.color_palette:
+            class_colors = []
+        assert len(gt["class_names"])
+        if p.rgb_output:
+            img = frat.rectangles_to_rgb(rectangles, classids, img.size, p.multiclass, class_colors)
+        else:
+            img = frat.rectangles_to_(rectangles, classids, img.size, p.multiclass, class_colors)
+        print(img.shape, img.dtype)
+        img = Image.fromarray(img).save(json_name[:-5]+p.output_postfix)

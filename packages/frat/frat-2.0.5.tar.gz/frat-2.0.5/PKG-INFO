@@ -1,0 +1,36 @@
+Metadata-Version: 2.1
+Name: frat
+Version: 2.0.5
+Summary: Fast Rectangle Annotation Tool
+Home-page: https://github.com/anguelos/frat
+Author: Anguelos Nicolaou
+Author-email: anguelos.nicolaou@gmail.com
+License: GPLv3
+Description: Relevant Resources:
+        [Multifont OCR-D](https://ocr-d.de/en/gt-guidelines/trans/lySchriftarten.html)
+        
+        
+        #### Windows Deployment
+        FRAT can run in windows under docker.
+        1. Install [Docker Desktop](https://docs.docker.com/desktop/windows/install/) [download](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) 
+        2. [Install Windows Linux package](https://docs.microsoft.com/de-de/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package) specifically download and run the MSI file.
+        
+        3. Run docker by binding the current windows directory to where frat looks for images
+        Powershell:
+        ```bash
+        docker  run --network host -v ${pwd}/sample_data:/opt/frat/sample_data anguelos/frat frat -images /opt/frat/sample_data/*
+        ```
+        
+        cmd:
+        ```bash
+        docker  run --network host -v  %cd%/sample_data:/opt/frat/sample_data anguelos/frat
+        ```
+        
+Keywords: documents,groudtruthing,webbased
+Platform: UNKNOWN
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Scientific/Engineering
+Description-Content-Type: text/markdown
