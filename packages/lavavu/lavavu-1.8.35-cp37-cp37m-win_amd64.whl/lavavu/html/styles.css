@@ -1,0 +1,58 @@
+/* General webgl control stylesheet */
+
+/*
+.lvctrl {
+  font-family: sans-serif;
+  font-size: 9pt !important;
+  line-height: 20px !important;
+}
+*/
+.message {font-family: monospace; font-size: 9pt;}
+
+/* Popup div */
+.popup {
+  position:fixed;
+  width:200px; height:100px;
+  top: 50%; left:50%;
+  margin:-50px 0 0 -100px; /* [-(height/2)px 0 0 -(width/2)px] */
+  display:none; z-index: 30; border: none; 
+  padding: 5px; overflow: hidden;
+  background: #ffe;
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 3px 3px 2px #333;
+}
+.popclose {float: right; cursor: pointer; color: #333; margin: 0px 3px; font-weight: bold}
+
+/*
+ * These somehow break scrollbars in jupyter notebook, should be scoped if still needed
+.lvctrl input, select {
+  margin: 1px 0px;
+  font-size: 9pt;
+}
+
+.lvctrl input[type="text"] {width: 200px; }
+.lvctrl input[type="range"] {width: 148px; }
+*/
+
+/* Colour select */
+.colourbg {margin:0px; width: 100px; height: 20px; border: 1px dotted #999; }
+.colour {display: inline-block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: none;}
+
+.checkerboard {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAIElEQVQ4jWP4TwAcOHAAL2YYNWBYGEBIASEwasCwMAAALvidroqDalkAAAAASUVORK5CYII=");}
+
+.palette { margin: 3px 0px; border:1px solid #999;}
+
+/* Hacky select element styling, fixes selects in dat.gui, but also apply to other inline select elements */
+select:not([multiple]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-position: right 50%;
+    background-repeat: no-repeat;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAMCAYAAABSgIzaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDZFNDEwNjlGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDZFNDEwNkFGNzFEMTFFMkJEQ0VDRTM1N0RCMzMyMkIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0NkU0MTA2N0Y3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0NkU0MTA2OEY3MUQxMUUyQkRDRUNFMzU3REIzMzIyQiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PuGsgwQAAAA5SURBVHjaYvz//z8DOYCJgUxAf42MQIzTk0D/M+KzkRGPoQSdykiKJrBGpOhgJFYTWNEIiEeAAAMAzNENEOH+do8AAAAASUVORK5CYII=);
+    padding-right: 1.0em;
+    border: 1px solid #888;
+    border-radius: 0
+}
+
+
+
