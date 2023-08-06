@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: django-gallery_ds
+Version: 1.0.0
+Summary: gallery part for demiansoft
+Home-page: https://www.demiansoft.com
+Author: hyungjin kim
+Author-email: hj3415@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://pypi.org/project/util-demian/
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+django-gallery_ds
+==========
+
+django-gallery_ds is a Django app to use for demiansoft. 
+
+Quick start
+------------
+
+1. Add "gallery" to your INSTALLED_APPS setting like this
+```python
+INSTALLED_APPS = [
+    ...
+    'gallery',
+]
+```
+
+2. 코드를 넣고자 하는 위치에 다음을 추가 한다.
+```html
+{% load gallery_tags %}
+{% make_gallery %}
+```
+
+* context - 특별한 추가내용은 필요없다
+```python
+context = {
+    "theme": "mentor_ds",
+    "gallery": {
+            "title": "Gallery",
+            "desc": "Photos from Our Clinic",
+        }
+}
+```
+
+* static - img/gallery/ 폴더내에 동일한 크기(800x600, 세로사진은 안됨)의 jpg 파일을 인식하여 보여줌
+* 지원 템플릿 - bethany_ds, medilab_ds
+
