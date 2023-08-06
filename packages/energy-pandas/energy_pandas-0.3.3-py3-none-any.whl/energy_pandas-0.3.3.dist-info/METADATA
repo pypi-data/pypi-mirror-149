@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: energy-pandas
+Version: 0.3.3
+Summary: Building Energy pandas extension
+Home-page: https://github.com/samuelduchesne/energy-pandas
+Author: Samuel Letellier-Duchesne
+Author-email: samuel.letellier-duchesne@polymtl.ca
+License: MIT
+Keywords: pandas time-series extension
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: outdated (~=0.2.1)
+Requires-Dist: pint (~=0.19)
+Requires-Dist: tabulate (~=0.8.9)
+Requires-Dist: numpy
+Requires-Dist: matplotlib (>=3.2)
+Requires-Dist: scikit-learn (~=1.0.2)
+Requires-Dist: tsam (~=2.0.1)
+Requires-Dist: pandas (>=1.4)
+Provides-Extra: dev
+Requires-Dist: pytest (==7.1.2) ; extra == 'dev'
+Requires-Dist: pytest-cov (==3.0.0) ; extra == 'dev'
+Requires-Dist: coverage (==6.3.2) ; extra == 'dev'
+Requires-Dist: coveralls (==3.3.1) ; extra == 'dev'
+Requires-Dist: sphinx (>=2.1) ; extra == 'dev'
+Requires-Dist: recommonmark (==0.7.1) ; extra == 'dev'
+Requires-Dist: sphinx-rtd-theme (==1.0.0) ; extra == 'dev'
+
+[![PyPI version fury.io](https://badge.fury.io/py/energy-pandas.svg)](https://pypi.python.org/pypi/energy-pandas/)
+[![codecov](https://codecov.io/gh/samuelduchesne/energy-pandas/branch/master/graph/badge.svg?token=kY9pzjlDZJ)](https://codecov.io/gh/samuelduchesne/energy-pandas)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/energy-pandas.svg)](https://pypi.python.org/pypi/energy-pandas/)
+
+# energy-pandas
+
+An extension of pandas to deal with building related time series such as temperature, load and energy.
+
+## Installation
+
+```python
+pip install energy-pandas
+```
+
+## Usage
+
+```python
+from energy_pandas import EnergyDataFrame, EnergySeries
+
+edf = EnergyDataFrame(
+    {
+        "temp": EnergySeries(range(0,100), units="degC"),
+        "q_heat": EnergySeries(range(0,100), units="W"), 
+        "q_cool": EnergySeries(range(0,100), units="W")
+    },
+    name="Zone 1"
+)
+edf.units
+{'temp': <Unit('degree_Celsius')>, 'q_heat': <Unit('watt')>, 'q_cool': <Unit('watt')>}
+```
+
+
