@@ -1,0 +1,48 @@
+import uuid
+from typing import Optional
+
+import click
+
+from globus_cli.login_manager import LoginManager
+from globus_cli.parsing import IdentityType, ParsedIdentity, command
+from globus_cli.termio import formatted_print
+
+from ._common import build_invite_actions, get_invite_formatter
+
+
+@command("decline", short_help="Decline an invitation")
+@click.argument("group_id", type=click.UUID)
+@click.option(
+    "--identity",
+    type=IdentityType(),
+    help="Only decline invitations for a specific identity",
+)
+@LoginManager.requires_login(LoginManager.GROUPS_RS)
+def invite_decline(
+    *,
+    group_id: uuid.UUID,
+    identity: Optional[ParsedIdentity],
+    login_manager: LoginManager
+):
+    """
+    Decline an invitation to a group
+
+    By default, all invitations to the group are declined. To restrict this action to
+    only specific invitations when there are multiple, use the `--identity` flag.
+    """
+    auth_client = login_manager.get_auth_client()
+    groups_client = login_manager.get_groups_client()
+
+    actions = build_invite_actions(
+        auth_client, groups_client, "decline", group_id, identity
+    )
+    response = groups_client.batch_membership_action(group_id, actions)
+
+    # if this failed to return at least one accepted user, figure out an error to show
+    if not response.get("decline", None):
+        try:
+            raise ValueError(response["errors"]["decline"][0]["detail"])
+        except LookupError:
+            raise ValueError("Could not decline invite")
+
+    formatted_print(response, text_format=get_invite_formatter("decline"))
