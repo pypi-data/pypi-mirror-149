@@ -1,0 +1,114 @@
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+omit = ["mira/thirdparty/*"]
+
+[tool.poetry]
+authors = ["Fausto Morales <faustomorales@gmail.com>"]
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+description = "A package for simplifying object detection"
+homepage = "https://github.com/faustomorales/mira"
+license = "MIT"
+name = "mira"
+readme = "README.md"
+repository = "https://github.com/faustomorales/mira"
+# Placeholder for poetry-dynamic-versioning
+version = "0.6.1"
+
+# See https://python-poetry.org/docs/versions/ for allowed version specification formats
+[tool.poetry.dependencies]
+python = ">=3.7.10,<3.10"
+pandas = "*"
+protobuf = "*"
+albumentations = ">=1.1.0"
+numpy = "*"
+tqdm = "*"
+matplotlib = "*"
+validators = "*"
+segmentation-models-pytorch = {version = ">=0.2.0", optional = true}
+timm = {version = "*", optional = true}
+omegaconf = {version = "*", optional = true}
+torchvision = {version = "*", optional = true}
+
+[tool.poetry.dev-dependencies]
+black = "*"
+coverage = {version = "*", extras = ["toml"]}
+mypy = "*"
+pytest = "*"
+pylint = "*"
+pytest-cov = "*"
+types-pkg-resources = "*"
+types-six = "*"
+torch = "*"
+torchserve = "*"
+jupyterlab = "*"
+torch-model-archiver = "*"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+vcs = "git"
+style = "semver"
+
+[tool.poetry.extras]
+detectors = ["timm", "omegaconf", "torchvision", "segmentation-models-pytorch"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=mira --cov-report=term-missing"
+filterwarnings = [
+    "ignore:the imp module is deprecated in favour of importlib;:DeprecationWarning",
+    "ignore:Could not import the lzma module. Your installed Python is incomplete.:UserWarning",
+    "ignore:`layer.updates` will be removed in a future version.:UserWarning",
+    "ignore:Named tensors and all their associated APIs are an experimental feature and subject to change.:UserWarning"
+]
+
+[tool.pylint.master]
+init-hook="import mira.pylint; mira.pylint.patch(['mira/thirdparty'])"
+
+[tool.pylint.similarities]
+min-similarity-lines=10
+
+[tool.pylint.messages_control]
+disable = [
+    "line-too-long",
+    "missing-module-docstring",
+    "invalid-name",
+    "attribute-defined-outside-init",
+    "too-many-locals",
+    "too-many-arguments",
+    "too-many-branches",
+    "too-many-statements",
+    "duplicate-code",
+    "protected-access",
+    "wrong-import-position"
+]
+extension-pkg-whitelist = [
+    "cv2"
+]
+[tool.pylint.typecheck]
+generated-members = ["torch.*"]
+
+[tool.mypy]
+exclude = [
+  'mira/thirdparty',
+  'mira/core/protos'
+]
+ignore_missing_imports = true
+check_untyped_defs = true
+
+[tool.black]
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | mira/thirdparty
+  | mira/core/protos
+)/
+'''
