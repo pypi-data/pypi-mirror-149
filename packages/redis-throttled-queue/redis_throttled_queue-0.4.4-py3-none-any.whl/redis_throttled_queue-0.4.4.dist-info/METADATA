@@ -1,0 +1,145 @@
+Metadata-Version: 2.1
+Name: redis-throttled-queue
+Version: 0.4.4
+Summary: Queue system with key-based throttling implemented over Redis.
+Home-page: https://github.com/ionelmc/python-redis-throttled-queue
+Author: Ionel Cristian Mărieș
+Author-email: contact@ionelmc.ro
+License: BSD-2-Clause
+Project-URL: Documentation, https://python-redis-throttled-queue.readthedocs.io/
+Project-URL: Changelog, https://python-redis-throttled-queue.readthedocs.io/en/latest/changelog.html
+Project-URL: Issue Tracker, https://github.com/ionelmc/python-redis-throttled-queue/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6
+License-File: LICENSE
+License-File: AUTHORS.rst
+Requires-Dist: packaging
+
+========
+Overview
+========
+
+
+
+Queue system with key-based throttling implemented over Redis.
+
+* Free software: BSD 2-Clause License
+
+Installation
+============
+
+::
+
+    pip install redis-throttled-queue
+
+You can also install the in-development version with::
+
+    pip install https://github.com/ionelmc/python-redis-throttled-queue/archive/main.zip
+
+
+Documentation
+=============
+
+
+https://python-redis-throttled-queue.readthedocs.io/
+
+
+Development
+===========
+
+To run all the tests run::
+
+    tox
+
+Note, to combine the coverage data from all the tox environments run:
+
+.. list-table::
+    :widths: 10 90
+    :stub-columns: 1
+
+    - - Windows
+      - ::
+
+            set PYTEST_ADDOPTS=--cov-append
+            tox
+
+    - - Other
+      - ::
+
+            PYTEST_ADDOPTS=--cov-append tox
+
+
+Changelog
+=========
+
+0.4.4 (2022-05-09)
+------------------
+
+* Fixed missing usage key expiration when some queues are empty.
+
+0.4.3 (2022-04-09)
+------------------
+
+* Fixed buggy counts when duplicate values are pushed.
+  For now the highest priority will be used when two identical
+  values would be pushed.
+
+
+0.4.2 (2022-04-02)
+------------------
+
+* Refactored some duplicated code in the `pop` script.
+
+0.4.1 (2022-03-31)
+------------------
+
+* Fixed bogus error in ``cleanup()`` when db is completely empty.
+
+0.4.0 (2022-03-31)
+------------------
+
+* Added ``last_activity`` and ``idle_seconds`` attributes.
+* Added a ``cleanup()`` method.
+
+0.3.1 (2022-03-31)
+------------------
+
+* Renamed attributes (should be safe to mess with):
+
+  - ``_limit`` becomes ``limit``.
+  - ``_resolution`` becomes ``resolution``.
+
+0.3.0 (2022-03-31)
+------------------
+
+* Allowed ``pop(window)`` using any window value (str/bytes/int recommended tho).
+
+
+0.2.0 (2022-03-31)
+------------------
+
+* Fixed ``__len__`` (was returning a string).
+
+0.1.0 (2022-03-30)
+------------------
+
+* First release on PyPI.
+
+
