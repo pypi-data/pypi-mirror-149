@@ -1,0 +1,84 @@
+[tool.black]
+line_length = 100
+skip_string_normalization = true
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+source = ["bitmap_fonts"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_empty = true
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+doctest_encoding = "UTF-8"
+empty_parameter_set_mark = "xfail"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+minversion = "6.0"
+norecursedirs = ["build", "dist", "tmp*"]
+testpaths = ["tests"]
+xfail_strict = true
+
+[tool.poetry]
+name = "bitmap-fonts"
+version = "0.3.1"
+authors = ["Simune Team <devops@simuneatomistics.com>"]
+description = "Creation of bitmap fonts useful in OpenGL context."
+license = "MIT"
+readme = "README.md"
+homepage = "https://www.simuneatomistics.com/"
+repository = "https://gitlab.com/simune/components/bitmap-fonts"
+keywords = ["Bitmap fonts", "OpenGL", "textures"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+packages = [
+    { include = "bitmap_fonts", from = "src" },
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.10"
+pillow = "^9.1.0"
+click = "<9.0.0,>=7.0.0"
+
+
+[tool.poetry.dev-dependencies]
+black = "^22.0"
+bump2version = "^1.0.1"
+coverage = {extras = ["toml"], version = "^6.3.0"}
+darglint = "^1.8.0"
+flake8 = "^4.0.1"
+flake8-annotations = "^2.8"
+flake8-bandit = "^3.0"
+flake8-black = "^0.3"
+flake8-bugbear = "^22.3"
+flake8-docstrings = "^1.6"
+flake8-import-order = "^0.18"
+mypy = ">=0.940"
+pre-commit = "^2.17"
+pytest = "^7.0.0"
+pytest-cov = "^3.0"
+pytest-mock = "^3.6"
+pytest-picked = "^0.4"
+pytest-timeout = "^2.0"
+safety = "^1.10"
+sphinx = "^4.5"
+sphinx-autodoc-typehints = "^1.17"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+create-font-texture = "bitmap_fonts.create_font_texture:main"
