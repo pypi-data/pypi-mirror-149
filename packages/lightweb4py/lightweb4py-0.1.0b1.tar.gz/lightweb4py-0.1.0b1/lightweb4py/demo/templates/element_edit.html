@@ -1,0 +1,48 @@
+{% extends base_view_template %}
+<!-- Parameters: class_name - name of the class being edited
+                 element - the element class instance
+                 is_new - new element flag
+                 element_title - element class name
+                 editor_fields - form fields to edit the class attributes of the element - loaded as an include
+-->
+{% block baseview_body %}
+    <p><a href="/">Домой</a></p>
+
+    {% if is_new %}
+    <h1>{{element_title}} - cоздание</h1>
+    <p>Заполните поля,<br>
+        нажмите <b>"Сохранить"</b>, чтобы сохранить новую запись, или<br>
+        <b>"Отменить"</b>, чтобы отменить создание записи.
+    </p>
+    <br>
+    {% else %}
+    <h1>{{element_title}} - редактирование</h1>
+    <p>Измените поля,<br>
+        нажмите <b>"Сохранить"</b>, чтобы сохранить изменения,<br>
+        <b>"Сохранить в новой записи"</b>, чтобы сохранить внесенные изменения как новую запись, или<br>
+        <b>"Отменить"</b>, чтобы отменить изменения.<br>
+        Нажмите <b>"Удалить"</b>, чтобы удалить текущую запись.
+    </p>
+    <br>
+    {% endif %}
+
+
+    <!-- Форма с аргументами запроса для метода GET -->
+    <form action="" method="post">
+        <table>
+            {% include editor_fields ignore missing %}
+            <tr><td colspan="2" style="text-align:left;padding-top:20px">* - обязательное поле</td></tr>
+            <tr><td colspan="2" style="text-align:center;padding-top:20px">
+                {% if is_new %}
+                <button style="font-size:medium" name="button" value="save_new">Сохранить</button>
+                <button style="font-size:medium" name="button" value="cancel" formnovalidate>Отменить</button>
+                {% else %}
+                <button style="font-size:medium" name="button" value="save"><b>Сохранить</b></button>
+                <button style="font-size:medium" name="button" value="save_new"><b>Сохранить в новой записи</b></button>
+                <button style="font-size:medium" name="button" value="cancel" formnovalidate><b>Отменить</b></button>
+                <button style="font-size:medium" name="button" value="delete"><b>Удалить</b></button>
+                {% endif %}
+            </td></tr>
+        </table>
+    </form>
+{% endblock baseview_body %}

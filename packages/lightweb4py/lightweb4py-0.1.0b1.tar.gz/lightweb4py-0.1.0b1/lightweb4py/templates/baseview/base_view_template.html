@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            background-color: lightGray;
+            font-family: sans-serif;
+        }
+        td.body {
+            background-color: white;
+            word-wrap: break-word;
+            overflow-wrap : break-word;
+            padding: 10px 10px 10px 10px;
+        }
+        td.header {
+            background-color: lightGray;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        td.footer {
+            background-color: lightGray;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        td.left_sidebar {
+            background-color: lightGray;
+            white-space: nowrap;
+            overflow-wrap : break-word;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        td.right_sidebar {
+            background-color: lightGray;
+            white-space: nowrap;
+            overflow-wrap : break-word;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    </style>
+
+</head>
+<body>
+
+<table width="100%">
+    <tr>
+        <td class="header" colspan="3">{% include header_template ignore missing %}{{header_html_include}}</td>
+    </tr>
+    <tr>
+        <td class="left_sidebar">{% include left_sidebar_template ignore missing %}{{left_sidebar_html_include}}</td>
+        <td class="body" width="100%">
+            {% block baseview_body scoped %} There should be user app body here. {% endblock baseview_body %}
+        </td>
+        <td class="right_sidebar">{% include right_sidebar_template ignore missing %}{{right_sidebar_html_include}}</td>
+    </tr>
+    <tr>
+        <td class="footer" colspan="3">{% include footer_template ignore missing %}{{footer_html_include}}</td>
+    </tr>
+</table>
+
+</body>
+</html>

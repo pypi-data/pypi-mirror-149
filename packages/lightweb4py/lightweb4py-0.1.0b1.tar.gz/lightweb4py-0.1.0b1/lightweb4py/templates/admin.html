@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- param: title - заголовок страницы
+            params - словарь с параметрами запроса (REQUEST_METHOD и т.д.)
+            query_params - словарь с аргументами запроса (a=1 и т.д.)
+-->
+<html lang="ru">
+<head>
+
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+
+</head>
+<body>
+    <p><a href="/">Домой</a></p>
+
+    <h1>{{title}}</h1>
+
+    <!-- Форма с аргументами запроса для метода GET -->
+    <form action="" method="get">
+        <table style="border: 1px solid black">
+            <caption style="background:Black;color:White">Тест запроса методом GET</caption>
+            <tr><td>
+                <label for="param1">Параметр 1</label>
+                <input name="param1" id="param1" value="GET тест 1">
+                <label for="param2">Параметр 2</label>
+                <input name="param2" id="param2" value="GET тест 2">
+                <button>Отправить</button>
+            </td></tr>
+        </table>
+    </form>
+
+    <!-- Форма с аргументами запроса для метода POST -->
+    <form action="" method="post">
+        <table style="border: 1px solid black">
+            <caption style="background:Black;color:White">Тест запроса методом POST</caption>
+            <tr><td>
+                <label for="param3">Параметр 1</label>
+                <input name="param1" id="param3" value="POST тест 1">
+                <label for="param4">Параметр 2</label>
+                <input name="param2" id="param4" value="POST тест 2">
+                <button>Отправить</button>
+            </td></tr>
+        </table>
+    </form>
+
+    <p> Нажмите на элементе списка, чтобы увидеть его содержимое </p>
+
+    <table><tr>
+
+        <td width="65%" valign="top">
+    <!-- Таблица с параметрами запроса (REQUEST_METHOD и т.д.) -->
+    <table style="border: 1px solid black" width="65%">
+        <caption style="background:Black;color:White">Параметры HTTP запроса</caption>
+
+        <!-- Задаем заголовки -->
+        <thead>
+        <tr><th style="text-align:right">Параметр</th><th style="text-align:left">Значение</th></tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+
+        <!-- Выводим данные -->
+        {% for key, value in params.items() %}
+            <!-- Цвет строк будет меняться -->
+            {% if loop.index is divisibleby 2 %}
+                {% set rowColor = "White" %}
+            {% else %}
+                {% set rowColor = "LightGray" %}
+            {% endif %}
+
+            {# фильтр `|e` - экранирует HTML #}
+            <tr style="background:{{ rowColor }}">
+                <td style="text-align:right"><a href="{{ params['PATH_INFO'] }}/{{ key|e }}"> {{ key|e }} </a></td>
+                <td style="text-align:left"> {{ value|e }} </td>
+            </tr>
+        {% endfor %}
+    </table>
+        </td>
+
+        <td width="30%" valign="top">
+    <!-- Таблица с аргументами запроса (a=1 и т.д.) -->
+    <table style="border: 1px solid black" width="30%">
+        <caption style="background:Black;color:White">Аргументы</caption>
+
+        <!-- Задаем заголовки -->
+        <thead>
+        <tr><th style="text-align:right">Аргумент</th><th style="text-align:left">Значение</th></tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+
+        <!-- Выводим данные -->
+        {% for key, value in query_params.items() %}
+            <!-- Цвет строк будет меняться -->
+            {% if loop.index is divisibleby 2 %}
+                {% set rowColor = "White" %}
+            {% else %}
+                {% set rowColor = "LightGray" %}
+            {% endif %}
+
+            {# фильтр `|e` - экранирует HTML #}
+            <tr style="background:{{ rowColor }}">
+                <td style="text-align:right"> {{ key|e }} </td>
+                <td style="text-align:left"> {{ value|e }} </td>
+            </tr>
+        {% endfor %}
+    </table>
+        </td>
+
+    </tr></table>
+
+</body>
+</html>

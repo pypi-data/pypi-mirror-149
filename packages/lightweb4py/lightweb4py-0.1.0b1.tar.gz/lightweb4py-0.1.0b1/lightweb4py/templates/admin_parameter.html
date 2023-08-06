@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- param: title - заголовок страницы
+            params - словарь с контентом, который надо вывести
+            param - параметр, по которому надо дать детализацию
+-->
+<html lang="ru">
+<head>
+
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+
+</head>
+<body>
+
+    <p><a href="{{ params['HTTP_REFERER'] }}">Назад</a></p>
+
+    <h1>{{title}}</h1>
+
+    <h3>
+        <p>Параметр: <bold>{{ param }} </bold> </p>
+        <p>Значение: <bold>{{ params[param] }} </bold> </p>
+    </h3>
+    <br>
+
+    <table style="border: 1px solid black" width="70%">
+        <caption style="background:Black;color:White">Полный список параметров запроса</caption>
+
+        <!-- Задаем заголовки -->
+        <thead>
+        <tr><th style="text-align:right">Параметр</th><th style="text-align:left">Значение</th></tr>
+        </thead>
+        <tfoot>
+        </tfoot>
+
+        <!-- Выводим данные -->
+        {% for key, value in params.items() %}
+            <!-- Цвет строк будет меняться -->
+            {% if loop.index is divisibleby 2 %}
+                {% set rowColor = "White" %}
+            {% else %}
+                {% set rowColor = "LightGray" %}
+            {% endif %}
+
+            {# фильтр `|e` - экранирует HTML #}
+            <tr style="background:{{ rowColor }}">
+                <td style="text-align:right"> {{ key|e }} </td>
+                <td style="text-align:left"> {{ value|e }} </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>
