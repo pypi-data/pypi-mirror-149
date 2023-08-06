@@ -1,0 +1,36 @@
+name: Notebook tests
+
+on: [push, pull_request]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    name: Test notebooks with nbmake
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup ipfs
+        uses: ibnesayeed/setup-ipfs@master
+        with:
+          ipfs_version: ^0.12
+      - name: Cache ipfs testing data locally
+        shell: bash
+        run: |
+          cid=$(grep 'IPFS_CID =' test/test_spatial_image_multiscale.py | cut -d ' ' -f 3 | tr -d '"')
+          ipfs get -o ./test/data -- $cid
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'zulu'
+      - name: Install test dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -e ".[test]"
+          python3 -m pip install pyimagej
+          python3 -c "import imagej; ij = imagej.init('2.5.0'); print(ij.getVersion())"
+      - name: Test notebooks
+        run: |
+          pytest --nbmake --nbmake-timeout=3000  examples/*ipynb
