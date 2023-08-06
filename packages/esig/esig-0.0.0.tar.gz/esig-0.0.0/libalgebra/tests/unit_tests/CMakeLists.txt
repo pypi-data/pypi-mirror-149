@@ -1,0 +1,11 @@
+
+add_subdirectory(basis)
+add_subdirectory(algebra)
+add_subdirectory(lie)
+add_subdirectory(tensor)
+add_subdirectory(utils)
+add_subdirectory(vector)
+add_subdirectory(hall_set)
+add_subdirectory(serialization)
+add_subdirectory(operators)
+add_subdirectory(shuffle-tensor-tests)
