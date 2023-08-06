@@ -1,0 +1,85 @@
+## NROBOT
+
+NROBOT is a Python library for NROBOT API Made By Nasir Ali.
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install NROBOT.
+
+```bash
+pip install NROBOT
+```
+
+## Usage
+
+```python
+from NROBOT import *
+
+# Initialize Robot 
+robot = NROBOT('ws://192.168.4.1:81/')
+
+# Move Function
+robot.move('F')
+robot.move('B')
+robot.move('L')
+robot.move('R')
+
+# Stop Robot
+robot.stop()
+
+# Turn Robot Led On/Off
+robot.led(1)
+robot.led(0)
+
+# Set Robot Speed  0-255
+robot.speed(150)
+
+# Set Robot Step Size Based on Time ms
+robot.step_delay(100)
+
+# Set Robot Mode 
+
+ {
+  '0':'STEP_MODE',                     
+  '1':'SMOOTH_MODE',  
+  '2':'CONTINOUS_MODE'
+ }
+ 
+robot.mode(0)
+robot.mode(1)
+robot.mode(2)
+
+# Enable/Disable Object Avoidance Mode
+robot.object_avoidance_mode()
+
+# Get Distance to Object infront of Robot
+robot.object_distance()
+
+# Get Robot Battery Voltage & Level
+robot.get_battery()
+
+# Command Line Live Remote Mode
+robot.cmd_control()
+
+
+```
+
+## Command Line Interface
+```
+/* TYPE FOLLOWING IN LINUX TERMINAL */
+$ nrobot
+```
+
+## Contact
+```
+Github : https://github.com/nasirxo
+Facebook : https://fb.com/nasir.xo
+```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
