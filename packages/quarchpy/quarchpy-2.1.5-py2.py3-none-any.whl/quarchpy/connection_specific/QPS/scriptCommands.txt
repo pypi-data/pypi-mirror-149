@@ -1,0 +1,105 @@
+
+List of commands supported by the QPS script interface.
+Any command which does not start with '$' will be passed directly to the currently connected device.
+
+$qis status
+	Returns QIS connection status
+	
+$list
+	Returns a list of devices discovered on the most recent scan
+	
+$scan
+	Starts a QIS scan
+	
+$annotate
+	Creates an annotation in the currently open dataset:
+	$annotate timeSpecifier(1) text to display at this annotation point
+	see also the advanced XML syntax.
+	
+$shutdown
+	Closes QPS, will also close QIS if it was launched by this copy of QPS
+	$shutdown
+	
+$connect
+	Connects QPS to the specified device:
+	$connect usb::QTL1999-02-999
+	
+$connected
+	Returns the connected device:
+	$connected
+	usb::QTL1999-02-999
+	
+$disconnect
+	Disconnect the current device
+	
+$start stream recordingDirectoryPath
+	Starts a stream
+	
+$stop stream
+	Stops a stream
+	
+$stream state
+	Returns the current streaming state:
+	$stream state
+	Recording
+	
+$channels
+	Returns a list of the current channels:
+	$channels
+	Status status NA
+	5V voltage mV
+	5V current uA
+	12V voltage mV
+	12V current uA
+	5V power uW
+	12V power uW
+	Avg Test B/s
+	bw Test B/s
+
+$create channel
+	Creates a sparse data channel as part of the current recording:
+	$create channel channelName channelGroup baseUnits usePrefix[yes/no]
+
+	channelName		: String
+	channelGroup	: String
+	baseUnits		: String, if metric prefix is enabled the baseUnits string should not itself include a metric prefix
+	yes/no			: text as specified
+
+	Examples
+		Temperature does not use metric prefix
+		$create channel T1 Temp C no
+
+		IOPS may use a metric prefix and should be specified without prefix
+		Correct:
+		$create channel Wr Pref IOPS yes/no
+		Incorrect:
+		$create channel Wr Pref kIOPS yes/no
+	
+$log
+	Logs a value at the specified timeSpecifier(1). Once logged the data cannot be changed:
+	$log channelName channelGroup timeSpecifier(1) value:
+	$log T1 Temp 1528370532877 23.4
+	
+	A 'gap' may be created in the logged data by issuing a $log with value of endSeq:
+	$log T1 Temp 1528370532878 endSeq
+	
+
+$save csv
+	Saves current data to csv file or set of files:
+	$save csv "file path/file name" -l[ALL|Max lines per file] -c[yes/no] -s[","|"\t"|";"|" "]
+		Defaults:
+		Max Lines Per File  -l : ALL
+		Line End -c: CR/LF
+		Separator -s: ","		
+
+(1)
+	timeSpecifier is expressed as either UNIX time or as elapsed time since the start of
+	the dataset:
+		UNIX time eg: 1528370532877
+		elapsed time, exxxDxxx:xxx:xxx.xxxx eg: 
+			e12D13:14:15.167 specifies 12 days, 13 hours, 14 minutes, 15.167 seconds
+			e600.777 specifies 600.77 seconds
+			e120:30.40 specifies 120 minutes, 30.40 seconds
+
+
+	
