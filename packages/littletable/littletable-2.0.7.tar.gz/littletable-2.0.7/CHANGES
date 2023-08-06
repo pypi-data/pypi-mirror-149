@@ -1,0 +1,790 @@
+Change History
+==============
+
+Version 2.0.7
+-------------
+- Added support for sliced indexing into `Table` indexes, as a simple
+  form of range selection and filtering.
+
+        # employees.where(salary=Table.ge(50000))
+        employees.create_index("salary")
+        employees.by.salary[50000:]
+
+  Unlike Python list slices, `Table` index slices can use non-integer data
+  types (as long as they support `>=` and `<` comparison operations):
+
+        jan_01 = datetime.date(2000, 1, 1)
+        apr_01 = datetime.date(2000, 4, 1)
+
+        # first_qtr_sales = sales.where(date=Table.in_range(jan_01, apr_01))
+        sales.create_index("date")
+        first_qtr_sales = sales.by.date[jan_01: apr_01]
+
+  Slices with a step field (as in `[start : stop : step]`) are not supported.
+
+  See full example code in examples/sliced_indexing.py.
+
+- Added new transform methods for importing timestamps as part of
+  CSV's.
+
+  - Table.parse_datetime(pattern, empty, on_error)
+  - Table.parse_date(pattern, empty, on_error)
+  - Table.parse_timedelta(pattern, reference_time, empty, on_error)
+
+  Each takes a pattern as would be used for `datetime.strptime()``, plus
+  optional values for empty inputs (default='') or error inputs
+  (default=None). `parse_timedelta` also takes a reference_time argument
+  to compute the resulting timedelta - default is 00:00:00.
+
+  See full example code in examples/time_conversions.py.
+
+- `as_html()` now accepts an optional dict argument `table_properties`, to add HTML
+  `<table>`-level attributes to generated HTML:
+
+        tbl = lt.Table().csv_import("""\
+            a,b,c
+            1,2,3
+            4,5,6
+            """)
+        html = tbl.as_html(fields="a b c", table_properties={"border": 1, "cellpadding": 5}
+
+- Workaround issue when running `Table.present()` in a terminal environment that does not support `isatty()`:
+
+     AttributeError: 'OutputCtxManager' object has no attribute 'isatty'
+
+
+Version 2.0.6
+-------------
+- Simplified `Table.where()` when a filtering method takes a single
+  value as found in a record attribute.
+
+  For example, to find the odd `a` values in a Table, you would
+  previously write:
+
+      tbl.where(lambda rec: is_odd(rec.a))
+
+  Now you can write:
+
+      tbl.where(a=is_odd)
+
+- The `Table.re_match` comparator is deprecated, and can be replaced with
+  this form:
+
+    word_str = "DOT"
+
+    # test if word_str is in field 'name' - DEPRECATED
+    tbl.where(name=lt.Table.re_match(rf".*?\b{word_str}\b"))
+
+    # test if word_str is in field 'name'
+    contains_word = re.compile(rf"\b{word_str}\b").search
+    tbl.where(name=contains_word)
+
+  See the `explore_unicode.py` example (line 185).
+
+  `Table.re_match` will be removed in a future release.
+
+- Added helper method `Table.convert_numeric` to simplify converting
+  imported CSV values from str to int or float, or to replace empty
+  values with placeholders such as "n/a". Use as a transform in the
+  `transforms` dict argument of `Table.csv_import`.
+
+- Added example `nfkc_normalization.py`, to show Unicode characters
+  that normalize to ASCII in Python scripts.
+
+- Fixed internal bugs if using `groupby` when calling `Table.as_html()`.
+
+- Added tests when using `__slots__` defined using a dict (feature
+  added in Python 3.8 to attach docstrings to attributes defined
+  using `__slots__`).
+
+
+Version 2.0.5
+-------------
+- Added support for import/export to local Excel .xlsx spreadsheets.
+
+     tbl = Table().excel_import("data_table.xlsx")
+
+  Requires installation of openpyxl to do the spreadsheet handling.
+  PR submitted by Brunno Vanelli, very nice work, thanks!
+
+  A simple example script examples/excel_data_types.py has been added
+  to show how the data types of values are preserved or converted to
+  standard Python types when importing from Excel.
+
+- Fixed count(), index(), remove(), and remove_many() to accept dict
+  objects. Identified while addressing issue #3.
+
+- Fixed default of pop() to be -1.
+
+- Added test cases for storing objects created using typing.NamedTuple.
+
+
+Version 2.0.4
+-------------
+- Added grouping support in Table.present(), Table.as_html() and
+  Table.as_markdown(). Pass `groupby` parameter to indicate grouping
+  field.
+
+    tbl.present(groupby="ColumnA")
+
+  will display the table with repeated consecutive values for ColumnA
+  suppressed.
+
+  Multiple fields can be specified for grouping using a space-delimited
+  string. If multiple fields are given, they will be grouped hierarchically;
+  that is, the second field will group only if already grouping on the first
+  field, the third field will group only if already grouping on the second
+  field, etc. (For best grouping output, sort the records first.)
+
+    tbl = lt.Table("Academy Awards").csv_import("""\
+    year,award,movie,recipient
+    1960,Best Picture,Ben-Hur,
+    1960,Best Actor,Ben-Hur,Charlton Heston
+    1960,Best Actress,The Heiress,Simone Signoret
+    1960,Best Director,Ben-Hur,William Wyler
+    ...
+    """)
+
+    tbl.present(groupby="year")
+
+                                    Academy Awards
+      Year   Award           Movie                   Recipient
+     ────────────────────────────────────────────────────────────────────────────
+      1960   Best Picture    Ben-Hur
+             Best Actor      Ben-Hur                 Charlton Heston
+             Best Actress    The Heiress             Simone Signoret
+             Best Director   Ben-Hur                 William Wyler
+      1961   Best Picture    The Apartment
+             Best Actor      Elmer Gantry            Burt Lancaster
+             Best Actress    Butterfield 8           Elizabeth Taylor
+             Best Director   The Apartment           Billy Wilder
+      1962   Best Picture    West Side Story
+             Best Actor      Judgment at Nuremberg   Maximilian Schell
+             Best Actress    Two Women               Sophia Loren
+             Best Director   West Side Story         Willian Wise/Jerome Robbins
+
+- Modified the table created by stats() to include a 'missing' column,
+  and reordered the columns so that when presented, the most likely interesting
+  stat (mean) is listed first.
+
+- Added attributes to Table to record import source and type for csv_import,
+  tsv_import, and json_import. For imports from files or web urls, the
+  filename or url will be added as the table's default title.
+
+- Added support and test cases for storing objects using the HasTraits
+  classes from the traits and traitlets packages. (Working with HasTraits
+  objects in a littletable.Table requires that they add littletable.HasTraitsMixin
+  to their inheritance classes).
+
+- Added test cases for storing objects created using the attrs package.
+
+
+Version 2.0.3
+-------------
+- Fixed bug introduced when adding support for auto-centering, if data
+  is not numeric or str but has no __len__ method.
+
+- Cleaned up how_to_use_littletable.md docs to reflect recent changes and
+  new features.
+
+
+Version 2.0.2
+-------------
+- Added unit tests to support using pydantic.BaseModel as Table contents.
+
+- All xxx_import and _export methods will now accept a pathlib.Path to
+  reference the source or destination file.
+
+- Fixed internally-reported version number (2.0.1 erroneously reported
+  its version as 2.0.0).
+
+
+Version 2.0.1
+-------------
+- Fixed setup.py and setup.cfg to generate Py3-only wheel.
+
+
+Version 2.0.0
+-------------
+- Discontinued support for Python 2.x, and Python 3 versions earlier than
+  Python 3.6.
+
+- Added new comparators:
+
+    is_none - attribute value is None
+    is_not_none - attribute value is not None
+    is_null - attribute value is None, "", or not defined
+    is_not_null - attribute value is defined, and is not None or ""
+    startswith - attribute value starts with a given string
+    endswith - attribute value ends with a given string
+    re_match - attribute value matches a regular expression
+
+    Examples:
+    # get customers whose address includes an apartment number
+    has_apt = customers.where(address_apt_no=Table.is_not_null())
+
+    # get employees whose first name starts with "X"
+    x_names = employees.where(name=Table.startswith("X"))
+
+    # get log records that match a regex (any word starts with
+    # "warn" in the log description)
+    # (re_match will accept re flags argument)
+    warnings = log.where(description = Table.re_match(r".*\bwarn", flags=re.I)
+
+- Added type annotations for public API methods.
+
+- New examples:
+  - explore_unicode.py - code for exploring subset of the Unicode database,
+    showing several interesting symbol groups
+  - dune_casts.py - joining 3 tables to create a table showing the casts of
+    the 3 studio productions of Dune
+
+- Nicer present() output - auto-center columns where all values
+  are single characters (centers "X", "Y", "N", etc. values).
+
+
+Version 1.5.0
+-------------
+- Table.insert_many() now accepts a sequence of Python dicts for objects
+  to insert into a table (and Table.insert() will accept a single dict).
+  They get stored as SimpleNamespace objects to support all attribute
+  accesses.
+
+- Added Table.as_markdown() to generate a string representing the
+  table using Markdown syntax.
+
+- Added Table.splitby() - takes a predicate function (takes a table
+  record and returns True or False) and returns two tables: a table with
+  all the rows that returned False and a table with all the rows that
+  returned True. Will also accept a string indicating a particular field
+  name, and uses `bool(getattr(rec, field_name))` for the predicate
+  function.
+
+      is_odd = lambda x: bool(x % 2)
+      evens, odds = tbl.splitby(lambda rec: is_odd(rec.value))
+      nulls, not_nulls = tbl.splitby("optional_data_field")
+
+
+Version 1.4.1
+-------------
+- Fixed bug when present() failed if a Table contained a field named 'default'
+  (would also have failed with a field named 'table'). Issue #1 (!!!) reported
+  by edp-penso, thanks!
+
+- Add optional 'force' argument to create_search_index to regenerate a search
+  index if the contents of a searchable attribute changed.
+
+- Some small optimizations to `Table.remove_many` and additional unit tests.
+
+
+Version 1.4.0 -
+---------------
+- Added `Table.create_search_index()' and `Table.search.<attribute>` for full text
+  searching in a text attribute. Search terms may be prefixed with
+  '+' and '-' flags, to qualify the required or excluded nature of matching
+  for that term:
+
+    . + strong preference
+    . - strong anti-preference
+    . ++ required
+    . -- excluded
+
+  Example::
+
+        recipe_data = textwrap.dedent("""\
+            title,ingredients
+            Tuna casserole,tuna noodles cream of mushroom soup
+            Hawaiian pizza,pizza dough pineapple ham tomato sauce
+            BLT,bread bacon lettuce tomato mayonnaise
+            Bacon cheeseburger,ground beef bun lettuce ketchup mustard pickle cheese bacon
+            """)
+        recipes = lt.Table().csv_import(recipe_data)
+
+        recipes.create_search_index("ingredients")
+        matches = recipes.search.ingredients("+bacon tomato --pineapple")
+
+  The search index is valid only so long as no items are added or removed from the
+  table, and if the indexed attribute values stay unchanged; if a search is run on a
+  modified table, `littletable.SearchIndexInconsistentError` exception is raised.
+
+
+Version 1.3.0 -
+---------------
+_(Sorry, it looks like I rushed the Table.join() changes for outer
+joins in 1.2.0!)_
+
+- Reworked the API for `Table.join()`, this is now just for inner
+  joins. Outer joins are now performed using `Table.outer_join`,
+  with the leading `join_type` argument of `Table.RIGHT_OUTER_JOIN`,
+  `Table.LEFT_OUTER_JOIN`, or `Table.FULL_OUTER_JOIN`.
+
+  As part of this rework, also cleaned up some leftover debugging
+  print() statements and a bug in the outer join logic, and spruced
+  up the docs. Outer joins are still slow, but at least with this
+  version they are giving proper results.
+
+
+Version 1.2.0 -
+---------------
+- Import directly from simple .zip, .gz, or .xz/.lzma archives,
+  such as `data.csv.gz` or `data.csv.zip`. (For zip archives, the zip
+  file name must be the same as the compressed file with ".zip" added.)
+
+- Add `join` argument to `Table.join()` to indicate whether an
+  "inner" join or "outer" join is to be performed. Accepted values
+  are "inner", "left outer", "right outer", "full outer", and "outer"
+  (synonym for "right outer"). Default join type is "inner".
+
+- Fixed bug preventing joining on more than one field.
+
+- Added `filters` argument to csv_import, to screen records as they
+  are read from the input file *before* they are added to the table. Can
+  be useful when dealing with large input files, to pre-screen data
+  before it is added to the table.
+
+- Added tsv_export, analogous to csv_export, but using <TAB> character
+  as a value separator.
+
+- Added comparators `Table.is_in` and `Table.not_in` to support filtering
+  by presence in or absence from a given collection of values. (For best
+  performance, if there are more than 4 values to be tested, convert the
+  collection to a Python `set` to optimize "in" testing.)
+
+- For Python versions that support it, `types.SimpleNamespace` is now used
+  as the default row_class for dynamically created tables, instead of
+  `littletable.DataObject`. (This gives a significant performance boost.)
+
+- Converted HowToUseLittletable.txt to Markdown how_to_use_littletable.md.
+
+
+Version 1.1.0 -
+---------------
+- Added the `Table.present()` method, using the `rich` module to format
+  table contents into a clean tabular format. Also added notes in the
+  "How to Use Littletable.txt" file on creating nice tabular output with
+  `rich`, Jupyter Notebook, and `tabulate`. (Note: `rich` only supports
+  Python versions 3.6 and later.)
+
+- Added `head(n)` and `tail(n)` methods for easy slicing of the first
+  or last `n` items in a Table (`n` defaults to 10).
+
+- Added `Table.clear()` method to clear all contents of a Table, but
+  leaving any index definitions intact.
+
+- Added comparators `Table.between(a, b)`, `Table.within(a, b)`, and
+  `Table.in_range(a, b)` for easy range testing:
+
+     `Table.between(a, b)` matches `a < x < b` exclusive match
+     `Table.within(a, b)`  matches `a <= x <= b` inclusive match
+     `Table.in_range(a, b)` matches `a <= x < b`, range check, similar
+           to testing `x in range(a, b)` in Python
+
+- Updated `Table.stats()` to use the Python statistics module for those
+  versions of Python that support it. The Tables returned from this
+  method now also include unique indexes to support `.by.name[field_name]`
+  access to the stats for a particular field, or `.by.stat[stat_name]`
+  access to a particular stat for all fields, if `Table.stats` is called
+  with `by_field=False`.
+
+- Fixed `Table.stats()`` to return `None` for `min` and `max` values if
+  source table is empty. `Table.stats()` also defaults to using all
+  field names if a list is not given, and guards against non-numeric
+  data. If `stats()` is called on an empty Table, an empty Table of
+  statistics is returned.
+
+- Removed sorting of field names in `table.info()["fields"]` so that
+  attribute names are kept in default order for tabular output.
+
+- Proper definition of `table.all.x` iterators so that `iter(table.all.x)`
+  returns self. (Necessary for modules like statistics that check
+  if an iterator is passed by testing `if iter(data) is data`.)
+
+- Added support for a `formats` named argument to `Table.as_html()`.
+  `formats` takes a dict that maps field names or field data types to
+  string formats or callables. If a string format, the string should
+  be of the form used to format a placeholder in the str.format method
+  (such as "{:5.2f}" for a real value formatted to two decimal places).
+  If a callable is passed, it should take a single value argument and
+  return a str.
+
+- Fixed unit tests that fail under Python versions pre-3.6 that do not
+  preserve dict insertion order. (This was a bug in the unit test, not in
+  the littletable core code.)
+
+
+Version 1.0.1 -
+---------------
+- Add support for optional .unique modifier for .all.<attr> value accessor.
+
+    for postal_code in customers.all.postal_code.unique:
+        ...
+
+- Added .all optimization when getting values for an indexed attribute.
+
+- Added **kwargs support for csv_export, to permit passing arguments through
+  to the csv.DictWriter (such as `dialect`).
+
+- Implemented `limit` named argument in csv_import.
+
+- Closed issues when importing/exporting empty tables.
+
+
+Version 1.0.0 -
+----------------
+- Add import directly from an HTTP/HTTPS url.
+
+- Add Table.stats() method to return a table of common statistics for
+  selected numeric fields.
+
+- Added methods Table.le, Table.lt, Table.ge, Table.gt, Table,ne, and
+  Table.eq as helpers for calling Table.where:
+
+      ret = table.where(lambda rec: rec.x > 100)
+
+  can now be written:
+
+      ret = table.where(x=Table.gt(100))
+
+- Fixed bug when chaining multiple ".by" accesses:
+
+      data = lt.Table()
+      data.create_index("email", unique=True)
+      data.create_index("name")
+      data.create_index("city")
+      data.create_index("state")
+
+      for user in data.by.city['Springfield'].by.state['MO']:
+          print(user)
+
+  would formerly complain that the table has no index 'state'.
+
+- `dir(table.by)` will now include the index names that can be used
+  as "by" attributes.
+
+- Added unit tests to support using dataclasses as Table contents.
+
+
+Version 0.13.2 -
+----------------
+- Fixed bug when deleting a slice containing None values from a table.
+  Special thanks to Chat Room 6 on StackOverflow.
+
+- Fixed bug in insert_many when validating unique index keys.
+
+- Fixed bugs in csv_import and tsv_import when named args were not
+  passed through to the internal csv DictReader.
+
+- Fixed bug in csv_export where blank lines were included in the
+  exported CSV.
+
+- Added Table.shuffle(), for randomizing the items in a table in place.
+  Can be useful for some games or simulations, also in internal testing.
+
+- Fixed bug in Table.sort() when sorting on multiple attributes.
+
+
+Version 0.13.1 -
+---------------
+- Modified all Table import methods to directly accept a string containing
+  the data to be imported. If the input is a multiline string, then it
+  is assumed to contain the actual data to be imported. If the input is a
+  string with no newlines, then it is treated as a filename, and the file
+  is opened for reading. The input can also still be specified as a
+  file-like object, such as would be the case if reading a file with
+  an encoding other than the default 'UTF-8'. This capability further
+  simplifies notebook integration and test and experimentation.
+
+- Renamed format() to formatted_table().
+
+- Introduced new format() method to generate a list of strings, one per
+  row in the table. format() is called passing a single string as an
+  argument, to be used as a str.format() template for converting each
+  row to a string.
+
+
+Version 0.12.0 -
+---------------
+- Modified Table.select() to accept '*' and '-xxx'-style names, to
+  indicate '*' as 'all fields', and '-xxx' as "not including xxx". This
+  simplifies selecting "all fields except xxx".
+
+- PivotTable.summary_counts() is renamed to as_table(). summary_counts()
+  is deprecated and will be dropped in a future release.
+
+- Added Table.as_html() and PivotTable.as_table().as_html() methods
+  to support integration with Jupyter Notebook. Also included sample ipynb
+  file. as_html() takes a list of fields to be included in the table,
+  following the same syntax as Table.select(). This API is still
+  experimental, and may change before 1.0.0 release.
+
+- Added Table.all.xxx attribute accessor, to yield out all the values of a
+  particular attribute in the table as a sequence.
+
+- Added FixedWidthReader class to simplify import of data from files with
+  fixed width columns. See examples in HowToUseLittleTable.txt.
+
+- Fixed bug where dict.iteritems() was used in some cases, all
+  now converted to using items().
+
+- Updated xxx_import methods to return self, so that tables can be
+  declared and loaded in a single statement:
+  
+        data_table = Table().csv_import('data_file.csv')
+
+- Added optional row_class argument argument to all xxx_import methods
+  to designate a user class to use when constructing the rows to be imported
+  to the table. The default is DataObject, but any class that supports 
+  `Class(**attributes)` construction (including namedtuples and 
+  SimpleNamespace) can be given. If the desired class does not support
+  this kind of initialization, a factory method can be given instead.
+
+- Deleted deprecated Table.run() and Table.addfield methods. run()
+  did nothing more than return self; addfield has been replaced by
+  add_field.
+
+- Also deleted deprecated attribute access to table indexes. Indexed
+  access is now done as:
+  
+        employee = emp_data.by.emp_id['12345']
+        qa_dept_employees = emp_data.by.department_name['QA']
+
+
+Version 0.11 -
+--------------
+- Performance enhancement in insert(), also speeds up pivot() and other
+  related methods.
+  
+- Fixed bug in fetching keys if keys evaluate to a falsey value (such as 0).
+  Would also manifest as omitting columns from pivot tables for falsey 
+  key values.
+
+
+Version 0.10 - 
+-------------
+- Deprecated access to indexed fields using '<tablename>.<fieldname>', as
+  this obscures the fact that the fields are attributes of the table's objects,
+  not of the table itself. Instead, index access will be done using the 'by'
+  index accessor, introduced in version 0.6 (see comments below in notes
+  for release 0.9). Indexes-as-table-attributes will be completely removed 
+  in release 1.0.
+
+- Deprecated Table.run(). Will be removed in release 1.0.
+
+- Added Table.info() method, to give summary information about a table's
+  name, columns, indexes, size, etc.
+
+- Extended interface to Table.csv_import, to accept passthru of 
+  additional named arguments (such as 'delimiter' or 'fieldnames') to the
+  DictReader constructor used to read the import data.
+
+- Extended interface to Table.csv_export and json_export, to support
+  addition of 'encoding' argument (default='UTF-8') for the output file.
+  (Python 3 only)
+
+- Added set item support to DataObject, to support "obj['a'] = 100" style
+  assignments. Note that DataObjects are only semi-mutable: a given key or 
+  attribute can only be assigned once, not overwritten.
+
+- Added more list-like access to Table, including del table[index], 
+  del table[start:end:step] and pop().
+
+- Added 'key' argument to Table.unique, to support passing a callable to 
+  unique for special cases for defining what makes an object 'unique'. 
+  Default is the prior behavior, which is a tuple of all of the values of
+  the object.
+
+- Added exceptions to DataObject when attempting to modify an existing
+  attribute. New attributes are still supported, but existing attributes
+  cannot be overwritten. (Applies to both attribute and indexed assignments.)
+  Formerly, these assignments would simply fail silently.
+
+- Using OrderedDict when supported, to preserve field order in JSON output.
+
+- Miscellaneous documentation cleanup.
+
+Version 0.9 - 
+-------------
+- Python 3 compatibility.
+
+- (feature previously released in version 0.6 but not documented)
+  Added 'by' index accessor on tables, to help distinguish that the index 
+  attributes are not attributes of the table itself, but of the objects 
+  in the table:
+
+    # using unique index 'sku' on catalog table:
+    print(catalog.by.sku["ANVIL-001"].descr)
+    
+    # using non-unique index 'state' on stations table:
+    stations.create_index("state")
+    for az_stn in stations.by.state['AZ']:
+        print(az_stn)
+
+  Updated inline examples to use '<table>.by.<index_name>' syntax.
+
+Version 0.8 -
+-------------
+- Added json_import and json_export methods to Table, with same interface
+  as csv_import and csv_export. The import file should contain a JSON
+  object string per row, or a succession of JSON objects (can be pretty-
+  printed), but *not* a single JSON list of objects.
+
+- Included pivot_demo.py as part of the source distribution.
+
+Version 0.7 -
+-------------
+- Added support for '+=' operator, for in-place union. Unlike '+', does
+  not return a new Table, but instead updates the LHS table in place.
+  
+- Renamed addfield to add_field to be consistent with other two-word 
+  method names in the Table interface.  addfield is still retained for
+  compatibility (just calls add_field with called args); but is deprecated
+  and will be removed in a future version.
+
+- Added unique() method on Table, to return a new Table with duplicate
+  entries removed. To support comparison of DataObjects that might be in
+  the table, DataObjects now support __eq__ and hash methods.
+
+- Changed interface to Table.select(). Formerly was called as
+
+    table.select('field1','field2','field3')
+
+  But now the fields are specified as either a single space-delimited
+  string or a list of strings.
+
+    table.select('field1 field2 field3')
+
+- The special '_orderby' argument to Table.where() is deprecated, since
+  following the where() call with sort() is so straightforward.
+
+- The special '_unique' argument to Table.select() is deprecated, since
+  following the select() call with unique() is so straightforward.
+
+
+Version 0.6 -
+-------------
+- Modified __getitem__ so that retrievals of slices return new Tables
+  instead of just lists of objects (essentially adding sliced indexing
+  as another chained accessor).
+
+- Added count_fn to the dump_counts method of PivotTable, so that a
+  summarizing function other than mere counting can be used for each cell
+  in the pivot table.  Here is an example of summarizing population by
+  state and elevation, where each record has attributes state, elevation
+  (reduced to nearest 1000'), and population:
+  
+    piv = places.pivot('state elevation')
+    piv.dump_counts(count_fn=lambda recs:sum(r.population for r in recs))
+
+- Added sort(), initial version contributed by Adam Sah. sort will take
+  a key function, or a string containing comma-separated attribute names.
+  Attributes can be qualified with "desc" to indicated sort to be done
+  in descending order.
+
+- Modified insert() and compute() to return self, for chaining support.
+
+- Renamed maxrecs parameters to 'limit', to be more similar to the same
+  concept in SQL.
+  
+- Merged query and where into a single consolidated function named 'where'
+  for selecting matching records from a table.
+
+- Add union function to add records of two tables. '+' between two tables
+  will perform union; '+' between join terms, or a table and a join term,
+  will perform join. Returns a new Table.
+
+- join() verifies that all named attributes exist in one of the source
+  tables
+
+- join() will automatically create indexes for join columns if indexes
+  do not already exist
+
+
+Version 0.5 - 
+-------------
+- Added groupby() method to Table (thanks, Adam Sah!) to generate tables 
+  of computed values keyed by an existing or computed attribute.
+
+- Added optional name fields to clone and copy_template.
+
+- Modified create_index and insert_many to return self, so that a 
+  simple table creation and indexing could be done in a single chained 
+  statement (also suggested by Adam Sah, thanks!)
+
+- Fixed possible bug in PivotTable.values - now values are returned
+  in the order of matching keys returned by keys().
+
+- Fixed bugs in Table.pivot(), see pivot_demo.py
+
+
+Version 0.4 -
+-------------
+- Added compute() method to Table to support global update of all objects 
+  in the table, to add or modify a given attribute on each object.  compute()
+  takes a function that computes the new or modified attribute value, taking 
+  the entire object as its single input argument.  Can override DataObject's 
+  write-only functionality (for example, when converting attributes entered 
+  as a string to an int or float).  Also accepts a default value to use, in 
+  case the computing function raises an exception.  Useful when creating a 
+  new attribute that would be computed based on other values in the object.
+  
+- Added transforms argument to csv_import, to simplify the conversion of 
+  string data values to int, float, or other non-string type.  The transforms 
+  argument is a dict mapping attribute names to conversion functions, each 
+  function taking the as-imported string value and return a new transformed 
+  value.
+  
+
+Version 0.3 -
+(renamed project from dulce to littletable)
+-------------
+- Improved exception message when duplicate or None value is given for a 
+  unique index attribute.
+  
+- Support for namedtuples and __slots__-defining objects supplied by Colin 
+  McPhail, thanks!
+
+- Added Table.pivot() method, to return a pivot table on one or more 
+  attributes.  New PivotTable class includes methods for extracting data in 
+  both Table and tabular formats.
+
+- Added more details to the docstring for Table.join, to more completely 
+  describe the sequence of steps to join 2 or more Tables, using join(), or 
+  join_to and '+'. Also, removed table_name argument in Table.join, to 
+  simplify this call (the resulting table can be easily renamed using Table 
+  call form).
+
+- Python 3 compatibility changes, importing simplejson or json, as 
+  appropriate - thanks again to Colin for the Python compatibility testing.
+
+- Renamed _TableJoin to JoinTerm, and added documentation on how it is used 
+  to build up table joins using '+' addition notation.
+
+
+Version 0.2 -
+-------------
+- Fixed typo in module docstring, "wishlists" should be "wishitems" (as shown 
+  correctly in dulce_demo.py). Also fixed typo in docs for Table.create_index, 
+  caused by my lack of epydoc-fu.  Plus some general cleanup of the 
+  docstrings.  Thanks, Colin McPhail for reporting these!
+
+- Changed _orderby and _orderbydesc flags to just _orderby, taking a single 
+  string containing a comma-separated list of attribute names (this is 
+  necessary since **kwargs does not preserve arguments order).
+  
+- Changed Table attribute "name" to "table_name", so as not to collide with 
+  a user-defined index on an attribute named "name".
+
+- Added support for unique indexes to allow or disallow null key values.  If 
+  null keys are allowed, then all records with a null key are stored in an 
+  internal list.
+
+- Added some join performance pickup, using the table with the smaller number 
+  of keys as the outer loop in finding matching records.
+  
+- Added query performance pickup, when using multiple indexed attributes in 
+  query.
+
+
+Version 0.1 - 16 October 2010
+-----------------------------
+Initial prototype release
