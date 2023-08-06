@@ -1,0 +1,156 @@
+<tal:block tal:define="dummy python:request.set('disable_border', True)"/><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<head>
+  <metal:js fill-slot="javascript_head_slot">
+  <script type="text/javascript"
+          tal:content="string:var order_amount = ${view/cart/subtotal};">
+  </script>
+  <script type="text/javascript">
+    var format_currency = function(x) {
+      return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+    jQuery(function($) {
+        var portal_url = window.portal_url || $('body').data('portal-url');
+        var _authenticator = $('[name="_authenticator"]').val();
+        var refresh_cart = function() {
+            $.get(portal_url + '/shopping-cart', {}, function(data) {
+              $('#cartWrapper').replaceWith(data)
+              $('#cartWrapper').addClass('deactivated');
+            }, 'html');
+        }
+        var update_order_totals = function() {
+          var subtotal = parseFloat($('#total_order_amount').val());
+          order_amount = subtotal;
+          var new_order_total = subtotal;
+          subtotal = format_currency(subtotal);
+          var discount = parseFloat($('#total_order_discount').val());
+          new_order_total = new_order_total + discount;
+          $('#subtotal-amount').text(subtotal);
+          $('#discount-amount').text(format_currency(discount));
+          $('#total-amount').text(format_currency(new_order_total));
+          if ($('tr.item').length || new_order_total) {
+            $('#checkout-button').show();
+          } else {
+            $('#checkout-button').hide();
+          }
+        }
+        var bind_cart_actions = function() {
+          $('.jaz-shop-quantity').on('change', function() {
+              $.post(portal_url + '/update-cart',
+                {'change': $(this).attr('rel'),
+                 'quantity': $(this).val(),
+                 _authenticator: _authenticator}, function(data) {
+                $('#cartFormWrapper').replaceWith(data);
+                update_order_totals();
+                bind_cart_actions();
+                refresh_cart();
+              }, 'html');
+          });
+          $('.jaz-shop-incr').unbind('click').click(function(e) {
+              e.stopPropagation();
+              $.post(portal_url + '/update-cart',
+                {'add': $(this).attr('rel'),
+                 _authenticator: _authenticator}, function(data) {
+                $('#cartFormWrapper').replaceWith(data);
+                update_order_totals();
+                bind_cart_actions();
+                refresh_cart();
+              }, 'html');
+          });
+          $('.jaz-shop-decr').unbind('click').click(function() {
+              $.post(portal_url + '/update-cart',
+                {'del': $(this).attr('rel'),
+                 _authenticator: _authenticator}, function(data) {
+                $('#cartFormWrapper').replaceWith(data);
+                update_order_totals();
+                bind_cart_actions();
+                refresh_cart();
+              }, 'html');
+          });
+          $('.jaz-shop-remove').unbind('click').click(function() {
+              $.post(portal_url + '/update-cart',
+                {'remove': $(this).attr('rel'),
+                 _authenticator: _authenticator}, function(data) {
+                $('#cartFormWrapper').replaceWith(data);
+                update_order_totals();
+                bind_cart_actions();
+                refresh_cart();
+              }, 'html');
+          });
+        };
+        bind_cart_actions();
+    });
+  </script>
+  </metal:js>
+</head>
+
+<body>
+
+<metal:main fill-slot="main">
+    <h1 class="documentFirstHeading">Your Shopping Cart</h1>
+
+    <tal:block tal:replace="structure view/cart_template" />
+    <p class="subtotal">
+      <big>
+        Your purchases subtotal:
+        <strong>$<span id="subtotal-amount" tal:content="python:'{:,.2f}'.format(view.cart.orig_subtotal)"></span></strong>
+      </big>
+    </p>
+
+    <form class="jaz-shop-half-form"
+          method="post" tal:attributes="action string:${portal_state/navigation_root_url}/review-cart">
+        <label>Promo Code</label>
+        <p>
+          <input class="jaz-shop-coupon" type="text" tal:attributes="value string:${request/form/coupon|nothing}" />
+          <input class="jaz-shop-apply-coupon" type="submit" value="Apply" />
+        </p>
+        <div>
+          <div tal:repeat="coupon view/coupons">
+            <span tal:content="string:Promo: ${coupon/id}"></span>
+            <span class="coupon-amount" tal:content="string:(${coupon/discount} off)"></span>
+            <a tal:condition="coupon/can_remove" title="Remove this promo"
+               tal:attributes="href string:${portal_state/navigation_root_url}/review-cart?remove_coupon=${coupon/id}"
+               class="coupon_remove"></a>
+          </div>
+        </div>
+        <div class="coupons-total" tal:condition="view/cart/discount">
+          <strong>Total discount</strong>
+           $<span id="discount-amount" tal:content="python:'{:,.2f}'.format(view.cart.discount)"></span>
+        </div>
+    </form>
+
+    <form method="post" tal:attributes="action string:${portal_state/navigation_root_url}/review-cart">
+      <input name="submitted" type="hidden" value="1" />
+      <input type="hidden" name="_authenticator" tal:attributes="value context/@@authenticator/token|nothing" />
+      <div id="order-total">
+        <p>
+          <big>
+            Your total:
+            <strong>$<span id="total-amount" tal:content="python:'{:,.2f}'.format(view.cart.subtotal)"></span></strong>
+          </big>
+        </p>
+        <p>Note that any shipping charges or sales tax for physical items will be added later in the checkout process.</p>
+      </div>
+
+      <div class="jaz-shop-buttons">
+       <a class="continue-exploring"
+           tal:define="came_from request/came_from|request/HTTP_REFERER|portal_state/navigation_root_url;
+                       came_from python:came_from if not came_from.endswith('/review-cart') else portal_state.navigation_root_url"
+           tal:attributes="href string:${came_from}">
+           <button type="button">Continue Shopping</button>
+        </a>
+        <input type="submit" value="Proceed to Checkout" class="context"
+               tal:attributes="style python:'display: none' if not view.cart else ''" />
+      </div>
+
+    </form>
+    <tal:recommended tal:replace="structure context/@@recommended-products">
+</metal:main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="jaz-shop-cart-wrapper">
+  <a href="#" class="jaz-shop-cart-trigger" title="My Cart"
+     data-toggle="collapse" data-target=".jaz-shop-cart">
+    <span class="jaz-shop-cart-trigger-label">My Cart</span>
+    <div class="items"
+         tal:define="itemcount view/cart/itemcount">
+      <tal:noitems tal:condition="not:itemcount">
+        <strong>0</strong> items
+      </tal:noitems>
+      <tal:items tal:condition="itemcount">
+          <strong tal:content="itemcount" />
+          item<span tal:replace="python:'s' if itemcount > 1 else ''" />
+      </tal:items>
+    </div>
+  </a>
+  <div class="jaz-shop-cart"
+      tal:define="cart view/cart/items">
+    <div class="cart-items" tal:condition="not:cart">
+      You have no items in your cart.
+    </div>
+    <tal:block condition="cart">
+      <div class="jaz-shop-items">
+        <div class="jaz-shop-item"
+             tal:repeat="item view/cart/items">
+          <span class="jaz-shop-quantity" tal:content="item/quantity" />
+          <span class="jaz-shop-name" tal:content="item/name" />
+          <span class="jaz-shop-total" tal:content="python: '${:,.2f}'.format(item.subtotal)" />
+        </div>
+      </div>
+      <a tal:attributes="href string:${context/@@plone_portal_state/navigation_root_url}/review-cart"><button>Checkout</button></a>
+    </tal:block>
+  </div>
+</div>

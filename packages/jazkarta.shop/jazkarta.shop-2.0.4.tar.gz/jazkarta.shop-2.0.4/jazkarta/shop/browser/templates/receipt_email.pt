@@ -1,0 +1,15 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+<body tal:define="cart view/old_cart">
+
+<p tal:content="string:${view/receipt_intro}"></p>
+
+<tal:block tal:replace="structure view/order_template" />
+
+<br /><br />
+
+<p tal:replace="structure cart/thankyou_message" />
+
+</body>
+</html>
