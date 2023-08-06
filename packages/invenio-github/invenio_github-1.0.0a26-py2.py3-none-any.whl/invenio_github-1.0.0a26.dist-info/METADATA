@@ -1,0 +1,169 @@
+Metadata-Version: 2.1
+Name: invenio-github
+Version: 1.0.0a26
+Summary: Invenio module that adds GitHub integration to the platform.
+Home-page: https://github.com/inveniosoftware/invenio-github
+Author: CERN
+Author-email: info@inveniosoftware.org
+License: GPLv2
+Keywords: invenio github
+Platform: any
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v2 (GPLv2)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Development Status :: 3 - Alpha
+Requires-Dist: Flask-BabelEx (>=0.9.3)
+Requires-Dist: Flask-Breadcrumbs (>=0.4.0)
+Requires-Dist: Flask-Menu (>=0.5.0)
+Requires-Dist: Flask (>=1.0.4)
+Requires-Dist: WTForms-Alchemy (<0.17,>=0.15.0)
+Requires-Dist: email-validator (>=1.0.5)
+Requires-Dist: github3.py (==1.0.0a4)
+Requires-Dist: humanize (>=0.5.1)
+Requires-Dist: invenio-assets (>=1.0.0)
+Requires-Dist: invenio-accounts (<1.2.0,>=1.1.1)
+Requires-Dist: invenio-celery (>=1.0.1)
+Requires-Dist: invenio-db (>=1.0.4)
+Requires-Dist: invenio-deposit (>=1.0.0a11)
+Requires-Dist: invenio-formatter[badges] (>=1.0.1)
+Requires-Dist: invenio-oauth2server (<1.1.0,>=1.0.3)
+Requires-Dist: invenio-oauthclient (<1.2.0,>=1.1.2)
+Requires-Dist: invenio-pidstore (>=1.0.0)
+Requires-Dist: invenio-records-rest (<1.7.0,>=1.6.2)
+Requires-Dist: invenio-records (>=1.3.0)
+Requires-Dist: invenio-rest (<1.2.0,>=1.1.2)
+Requires-Dist: invenio-webhooks (>=1.0.0a4)
+Requires-Dist: jsonresolver (<0.3.0,>=0.2.1)
+Requires-Dist: mistune (>=0.7.2)
+Requires-Dist: six (>=1.12.0)
+Requires-Dist: sqlalchemy-utils (<0.36,>=0.33.11)
+Requires-Dist: uritemplate.py (<2.0,>=0.2.0)
+Requires-Dist: urllib3 (<1.25,>=1.21.1)
+Requires-Dist: idna (<2.8,>=2.5)
+Requires-Dist: werkzeug (<1.0.0,>=0.15.0)
+Requires-Dist: invenio-indexer (<1.2.0,>=1.0.2)
+Requires-Dist: PyYAML (>=5.4.1)
+Provides-Extra: all
+Requires-Dist: Sphinx (>=1.4.2) ; extra == 'all'
+Requires-Dist: check-manifest (>=0.25) ; extra == 'all'
+Requires-Dist: coverage (>=4.0) ; extra == 'all'
+Requires-Dist: httpretty (>=0.8.14) ; extra == 'all'
+Requires-Dist: invenio-files-rest (<1.2.0,>=1.0.0a12) ; extra == 'all'
+Requires-Dist: isort (>=4.2.2) ; extra == 'all'
+Requires-Dist: mock (>=2.0.0) ; extra == 'all'
+Requires-Dist: pydocstyle (>=1.0.0) ; extra == 'all'
+Requires-Dist: pytest-cache (>=1.0) ; extra == 'all'
+Requires-Dist: pytest-cov (>=1.8.0) ; extra == 'all'
+Requires-Dist: pytest-pep8 (>=1.0.6) ; extra == 'all'
+Requires-Dist: pytest (>=4.6.0) ; extra == 'all'
+Requires-Dist: pluggy (<1.0,>=0.12) ; extra == 'all'
+Requires-Dist: invenio-search[elasticsearch7] (>=1.2.3) ; extra == 'all'
+Provides-Extra: docs
+Requires-Dist: Sphinx (>=1.4.2) ; extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: check-manifest (>=0.25) ; extra == 'tests'
+Requires-Dist: coverage (>=4.0) ; extra == 'tests'
+Requires-Dist: httpretty (>=0.8.14) ; extra == 'tests'
+Requires-Dist: invenio-files-rest (<1.2.0,>=1.0.0a12) ; extra == 'tests'
+Requires-Dist: isort (>=4.2.2) ; extra == 'tests'
+Requires-Dist: mock (>=2.0.0) ; extra == 'tests'
+Requires-Dist: pydocstyle (>=1.0.0) ; extra == 'tests'
+Requires-Dist: pytest-cache (>=1.0) ; extra == 'tests'
+Requires-Dist: pytest-cov (>=1.8.0) ; extra == 'tests'
+Requires-Dist: pytest-pep8 (>=1.0.6) ; extra == 'tests'
+Requires-Dist: pytest (>=4.6.0) ; extra == 'tests'
+Requires-Dist: pluggy (<1.0,>=0.12) ; extra == 'tests'
+Requires-Dist: invenio-search[elasticsearch7] (>=1.2.3) ; extra == 'tests'
+
+..
+    This file is part of Invenio.
+    Copyright (C) 2016 CERN.
+
+    Invenio is free software; you can redistribute it
+    and/or modify it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    Invenio is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Invenio; if not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA 02111-1307, USA.
+
+    In applying this license, CERN does not
+    waive the privileges and immunities granted to it by virtue of its status
+    as an Intergovernmental Organization or submit itself to any jurisdiction.
+
+================
+ Invenio-GitHub
+================
+
+.. image:: https://img.shields.io/travis/inveniosoftware/invenio-github.svg
+        :target: https://travis-ci.org/inveniosoftware/invenio-github
+
+.. image:: https://img.shields.io/coveralls/inveniosoftware/invenio-github.svg
+        :target: https://coveralls.io/r/inveniosoftware/invenio-github
+
+.. image:: https://img.shields.io/github/tag/inveniosoftware/invenio-github.svg
+        :target: https://github.com/inveniosoftware/invenio-github/releases
+
+.. image:: https://img.shields.io/pypi/dm/invenio-github.svg
+        :target: https://pypi.python.org/pypi/invenio-github
+
+.. image:: https://img.shields.io/github/license/inveniosoftware/invenio-github.svg
+        :target: https://github.com/inveniosoftware/invenio-github/blob/master/LICENSE
+
+
+Invenio module that adds GitHub integration to the platform.
+
+*This is an experimental developer preview release.*
+
+* Free software: GPLv2 license
+* Documentation: https://invenio-github.readthedocs.io/
+
+
+..
+    This file is part of Invenio.
+    Copyright (C) 2016-2022 CERN.
+
+    Invenio is free software; you can redistribute it
+    and/or modify it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    Invenio is distributed in the hope that it will be
+    useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Invenio; if not, write to the
+    Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA 02111-1307, USA.
+
+    In applying this license, CERN does not
+    waive the privileges and immunities granted to it by virtue of its status
+    as an Intergovernmental Organization or submit itself to any jurisdiction.
+
+
+Changes
+=======
+
+Version v1.0.0a26 (released 2022-05-04)
+
+- Initial public release.
+
+
