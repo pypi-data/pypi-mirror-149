@@ -1,0 +1,136 @@
+Metadata-Version: 2.1
+Name: DI-toolkit
+Version: 0.0.1
+Summary: A simple tool for automatic parameter tuning.
+Home-page: https://gitlab.bj.sensetime.com/open-XLab/cell/di-toolkit
+Author: HansBug
+Author-email: zhangshaoang@sensetime.com
+License: Apache License, Version 2.0
+Keywords: A simple tool for automatic parameter tuning.
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: hbutils (<1,>=0.5.0)
+Requires-Dist: rich (>=12.2.0)
+Requires-Dist: tabulate (>=0.8.9)
+Requires-Dist: inflection (>=0.5.1)
+Provides-Extra: doc
+Requires-Dist: Jinja2 (~=3.0.0) ; extra == 'doc'
+Requires-Dist: sphinx (~=3.2.0) ; extra == 'doc'
+Requires-Dist: sphinx-rtd-theme (~=0.4.3) ; extra == 'doc'
+Requires-Dist: enum-tools ; extra == 'doc'
+Requires-Dist: sphinx-toolbox ; extra == 'doc'
+Requires-Dist: plantumlcli (>=0.0.2) ; extra == 'doc'
+Requires-Dist: packaging ; extra == 'doc'
+Requires-Dist: sphinx-multiversion (~=0.2.4) ; extra == 'doc'
+Requires-Dist: where (~=1.0.2) ; extra == 'doc'
+Requires-Dist: easydict (<2,>=1.7) ; extra == 'doc'
+Requires-Dist: numpy (<2,>=1.19) ; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: coverage (>=5) ; extra == 'test'
+Requires-Dist: mock (>=4.0.3) ; extra == 'test'
+Requires-Dist: flake8 (~=3.5) ; extra == 'test'
+Requires-Dist: testfixtures (>=6.18.5) ; extra == 'test'
+Requires-Dist: pytest (~=6.2.5) ; extra == 'test'
+Requires-Dist: pytest-cov (~=3.0.0) ; extra == 'test'
+Requires-Dist: pytest-mock (~=3.6.1) ; extra == 'test'
+Requires-Dist: pytest-xdist (>=1.34.0) ; extra == 'test'
+Requires-Dist: pytest-rerunfailures (~=10.2) ; extra == 'test'
+Requires-Dist: pytest-timeout (~=2.0.2) ; extra == 'test'
+Requires-Dist: pytest-benchmark (~=3.4.0) ; extra == 'test'
+Requires-Dist: easydict (<2,>=1.7) ; extra == 'test'
+Requires-Dist: testtools (>=2) ; extra == 'test'
+Requires-Dist: numpy (<2,>=1.19) ; extra == 'test'
+Requires-Dist: where (>=1.0.2) ; extra == 'test'
+
+# DI-toolkit
+
+
+[![pipeline status](https://gitlab.bj.sensetime.com/open-XLab/cell/di-toolkit/badges/main/pipeline.svg)](https://gitlab.bj.sensetime.com/open-XLab/cell/di-toolkit/-/commits/main)
+[![coverage report](https://gitlab.bj.sensetime.com/open-XLab/cell/di-toolkit/badges/main/coverage.svg)](https://gitlab.bj.sensetime.com/open-XLab/cell/di-toolkit/-/commits/main)
+
+A simple tool for automatic parameter tuning.
+
+
+## Installation
+
+You can simply install it with `pip` command line from the official PyPI site.
+
+```shell
+pip install DI-toolkit
+```
+
+For more information about installation, you can refer to [Installation](http://open-xlab.pages.gitlab.bj.sensetime.com/cell/di-toolkit/main/tutorials/installation/index.html).
+
+## Quick Start for HPO
+
+Here is a simple example
+
+```python
+import random
+import sys
+import time
+
+from ditk.hpo import hpo, R, M, choice, uniform, randint
+
+
+@hpo
+def opt_func(v):  # this function is still usable after decorating
+    x, y = v['x'], v['y']
+    time.sleep(0.1)
+    print("This [u]time's[/] config:", v)  # stdout will be captured
+    print("This is print line in stderr", file=sys.stderr)  # stderr will be captured
+    if random.random() < 0.5:  # randomly raise exception
+        raise ValueError('Fxxk this shxt')  # retry is supported
+
+    return {
+        'result': x * y,
+        'sum': x + y,
+    }
+
+
+if __name__ == '__main__':
+    print(opt_func.random()  # random algorithm
+          .max_steps(30)  # max steps
+          .minimize(R['result'])  # the maximize/minimize target you need to optimize,
+          .concern(M['time'], 'time_cost')  # extra concerned values (from metrics)
+          .concern(R['sum'], 'sum')  # extra concerned values (from return value of function)
+          .stop_when(R['result'] <= -800)  # conditional stop is supported
+          .spaces(  # search spaces
+        {
+            'x': uniform(-10, 110),  # continuous space
+            'y': randint(-10, 20),  # integer based space
+            'z': {
+                't': choice(['a', 'b', 'c', 'd', 'e']),  # enumerate space
+            },
+        }
+    ).run())
+
+```
+
+
+
+
+## Contributing
+
+We appreciate all contributions to improve `DI-toolkit`, both logic and system designs. Please refer to CONTRIBUTING.md for more guides.
+
+
+## License
+
+`DI-toolkit` released under the Apache 2.0 license.
+
+
+
