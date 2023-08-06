@@ -1,0 +1,117 @@
+
+welcome_banner:
+  picture: images/welcome_banner.jpg
+  text:
+    ru: |
+      Бот <b>Илоны Перель</b> приветствует вас!
+      Чтобы присоединиться наберите /register
+      На любом этапе можно отменить регистрацию набрав /cancel
+    he: |
+      שלום לך מבוט של אילונה פרל
+      כדי להצתרף תקלידו register/
+      בכול שלב תקליד /cancel לביתול
+    uk: |
+      Бот Ілони Перель вітає вас!
+      Щоб приєднатися, наберіть /register
+      На будь-якому етапі можна скасувати реєстрацію набравши /cancel
+    en: |
+      Welcome to Volunteer bot of Ilona Perel
+      For join type /register
+      For cancel type /cancel
+
+role_translator: &role_translator
+  volunteer:
+    - волонтёр
+    - מתנדב
+    - волонтер
+  candidate:
+    - Кандидат
+    - זקוק באזרה
+
+phone_formatter: &phone_formatter
+    - regex: '^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$'
+      error_text: |
+        Phone number allowed in following formats:
+        - 0546667788
+        - 972050123456
+        - +972050123456
+        - +(972) 050123456
+        - +(972)-050-123456
+
+email_formatter: &email_formatter
+  - regex: ^[a-zA-Z0-9_\-]+@[a-zA-Z]+\.[a-zA-Z]{2,3}
+    error_text: e-mail must have <name>@<domain>.<zone> (person@gmail.com)
+
+
+flows:
+  register:
+    - name: role
+      translator: *role_translator
+      language:
+        ru: |
+          Здравствуйте <b>{Message.from_user.full_name}</b>
+          Бот Илоны Перель приветствует вас!
+          Пожалуйста определите цель обращения:
+            /Volunteer
+            /Candidate (на помощь)
+        uk: |
+          Бот Ілони Перель вітає вас <b>{Message.from_user.full_name}</b>!
+          Будь ласка, визначте мету звернення:
+            /Volunteer
+            /Candidate (на допомогу)
+        en: |
+          Hi <b>{Message.from_user.full_name}</b> Welcome to Volunteer bot of Ilona Perel
+          Please send us your role
+            /Volunteer
+            /Candidate for support
+    - name: first_name
+      language:
+        ru: Ваше имя?
+        he: שם שלך?
+        uk: Ваше ім'я?
+        en: First name?
+    - name: last_name
+      language:
+        ru: Ваша фамилия?
+        he: שם משפחה שלך?
+        uk: Ваше прізвище?
+        en: Last name?
+    - name: contact_email
+      formatter: *email_formatter
+      language:
+        ru: Электронная почта?
+        he: דואר אלקטרוני?
+        uk: Електронна пошта?
+        en: Your e-mail?
+    - name: contact_phone
+      formatter: *phone_formatter
+      language:
+        ru: Телефон для связи?
+        he: מספר טלפון לתיקשורת?
+        uk: Телефон для зв'язку?
+        en: Your contact phone?
+    - name: comments
+      language:
+        ru: Немного о себе
+        he: תספר לנו אל אצמך
+        uk: Розкажіть трошки про себе
+        en: Tell us something about you
+  complete:
+    - name: complete
+      language:
+        ru: |
+          Регистрация <b>{Message.from_user.full_name}</b> завершена
+          Наберитесь терпения, с вами свяжутся
+        uk: |
+          Реєстрація <b>{Message.from_user.full_name}</b> завершена
+          Наберіться терпіння, з вами зв'яжуться
+        en: |
+          User <b>{Message.from_user.full_name}</b> registration completed
+          Keep paition, we will back to you
+  cancel:
+    - name: cancel
+      language:
+        ru: Регистрация <b>{Message.from_user.full_name}</b> отменена
+        he: <b>{Message.from_user.full_name}</b>תאליך רישום בוטל ל
+        uk: Реєстрація <b>{Message.from_user.full_name}</b> скасовано
+        en: User <b>{Message.from_user.full_name}</b> registration canceled
