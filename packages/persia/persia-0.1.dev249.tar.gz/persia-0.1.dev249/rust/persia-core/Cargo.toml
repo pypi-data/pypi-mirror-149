@@ -1,0 +1,44 @@
+[package]
+authors = ["Kuaishou AI Platform PersiaML Team <admin@mail.xrlian.com>"]
+edition = "2018"
+license = "MIT"
+name = "persia-core"
+publish = ["private"]
+version = "0.1.0"
+
+[lib]
+crate-type = ["cdylib"]
+name = "persia_core"
+path = "src/lib.rs"
+
+[dependencies]
+arr_macro = {version = "0.1", optional = true}
+cuda-runtime-sys = {version = "0.3.0-alpha.1", optional = true}
+numpy = "0.15"
+persia-common = {path = "../persia-common"}
+persia-embedding-config = {path = "../persia-embedding-config"}
+persia-embedding-holder = {path = "../persia-embedding-holder"}
+persia-embedding-server = {path = "../persia-embedding-server"}
+persia-libs = {path = "../persia-libs"}
+persia-metrics = {path = "../persia-metrics"}
+persia-model-manager = {path = "../persia-model-manager"}
+persia-nats-client = {path = "../others/persia-nats-client"}
+persia-nats-marcos = {path = "../others/persia-nats-marcos"}
+persia-rpc = {path = "../others/persia-rpc"}
+persia-rpc-macro = {path = "../others/persia-rpc-macro"}
+persia-speedy = {path = "../persia-speedy"}
+persia-storage = {path = "../persia-storage"}
+shadow-rs = "0.8.1"
+
+[features]
+default = []
+
+cuda = ["cuda-runtime-sys", "arr_macro"]
+
+[dependencies.pyo3]
+default-features = false
+features = ["macros", "multiple-pymethods"]
+version = "0.15.1"
+
+[build-dependencies]
+shadow-rs = "0.8.1"

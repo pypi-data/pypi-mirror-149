@@ -1,0 +1,42 @@
+[package]
+authors = ["Kuaishou AI Platform PersiaML Team <admin@mail.xrlian.com>"]
+edition = "2018"
+license = "MIT"
+name = "persia-embedding-server"
+version = "0.1.0"
+
+[dependencies]
+crossbeam = "0.8"
+farmhash = "1"
+persia-common = {path = "../persia-common", default-features = false}
+persia-embedding-config = {path = "../persia-embedding-config"}
+persia-embedding-holder = {path = "../persia-embedding-holder"}
+persia-incremental-update-manager = {path = "../persia-incremental-update-manager"}
+persia-libs = {path = "../persia-libs"}
+persia-metrics = {path = "../persia-metrics"}
+persia-model-manager = {path = "../persia-model-manager"}
+persia-nats-client = {path = "../others/persia-nats-client"}
+persia-nats-marcos = {path = "../others/persia-nats-marcos"}
+persia-rpc = {path = "../others/persia-rpc"}
+persia-rpc-macro = {path = "../others/persia-rpc-macro"}
+persia-simd = {path = "../persia-simd"}
+persia-speedy = {path = "../persia-speedy"}
+shadow-rs = "0.8"
+snafu = "0.6"
+structopt = "0.3"
+tokio = {version = "1.13", features = ["full"]}
+tracing = "0.1"
+
+[dev-dependencies]
+rand = "0.8"
+
+[[bin]]
+name = "persia-embedding-parameter-server"
+path = "src/bin/persia-embedding-parameter-server.rs"
+
+[[bin]]
+name = "persia-embedding-worker"
+path = "src/bin/persia-embedding-worker.rs"
+
+[build-dependencies]
+shadow-rs = "0.8"

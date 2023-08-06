@@ -1,0 +1,61 @@
+steps:
+  - label: "Build docker ci image for latest persiaml framework(CPU)"
+    command: IMAGE_TAG=$BUILDKITE_PIPELINE_ID make build_cuda_runtime_image -e
+
+  - label: "Build docker ci image for latest persiaml framework(GPU)"
+    command: IMAGE_TAG=$BUILDKITE_PIPELINE_ID make build_cpu_runtime_image -e
+
+  - wait
+
+  - label: "launch e2e gpu test"
+    key: "e2e-gpu-test"
+    env:
+      IMAGE_TYPE: "cuda"
+    plugins:
+      - docker-compose#v3.8.0:
+          config: ".buildkite/e2e/docker-compose.train.yml"
+          run: nn_worker
+          graceful-shutdown: true
+      - docker-compose#v3.8.0:
+          config: ".buildkite/e2e/docker-compose.infer.yml"
+          run: torch_serve
+          graceful-shutdown: true
+
+  - label: "launch e2e cpu test"
+    key: "e2e-cpu-test"
+    env:
+      IMAGE_TYPE: "cpu"
+    plugins:
+      - docker-compose#v3.8.0:
+          config: ".buildkite/e2e/docker-compose.train.yml"
+          run: nn_worker
+          graceful-shutdown: true
+      - docker-compose#v3.8.0:
+          config: ".buildkite/e2e/docker-compose.infer.yml"
+          run: torch_serve
+          graceful-shutdown: true
+
+  - label: "pytest"
+    command: 
+      - cd /test/ && pytest . -o log_cli=true
+    plugins:
+      - docker#v3.9.0:
+          image: "persia-cuda-runtime:${BUILDKITE_PIPELINE_ID}"
+          volumes:
+            - ./test/:/test
+
+  - label: "launch k8s e2e test"
+    command: .buildkite/script/k8s_system_test.sh
+
+  - wait
+
+  - label: "upload docker image"
+    branches: "main"
+    command:
+      - docker login -u $$DOCKER_USER -p $$DOCKER_TOKEN
+      - .buildkite/script/docker_image_process.sh upload
+
+  - wait
+
+  - label: "remove docker image"
+    command: .buildkite/script/docker_image_process.sh remove
