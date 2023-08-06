@@ -1,0 +1,170 @@
+0.14.2
+ - fix: keep a reference of the reference data for the QLSI
+   series file format, which enables qpretrieve 0.2.10 to make
+   use of its caching feature
+0.14.1
+ - fix: support "logs" key in QLSI and OAH HDF5 file formats
+0.14.0
+ - feat: support QLSI data with `qlsi_pitch_term` metadata
+ - tests: cleanup
+ - setup: bump h5py from 2.7.0 to 3.5.0 (no timestamps written)
+ - setup: bump qpimage from 0.8.5 to 0.9.1 (QLSI processing)
+0.13.2
+ - setup: bump qpimage from 0.8.3 to 0.8.5
+0.13.1
+ - ref: deprecate get_time in favor of get_metadata
+0.13.0
+ - BREAKING CHANGE: renamed all file format classes
+ - feat: add file format class for QLSI data
+ - feat: support series files in SeriesFolder format
+ - setup: bump qpimage from 0.7.7 to 0.8.3
+ - ref: simplify submodule structure and detection of file formats
+ - ref: deprecate `holo_kw`
+0.12.1
+ - maintenance release
+0.12.0
+ - feat: implement reader for new HDF5-based raw off-axis hologram
+   file format
+ - fix: support optional meta data keys from qpimage
+ - setup: drop support for all Python versions below 3.9
+ - setup: migrate from qpimage 0.7.4 to 0.7.7
+0.11.0
+ - feat: implement FDTD/Meep reader for data from ODTbrain paper
+ - fix: remove call to deprecated Element.getchildren
+ - setup: bump qpimage from 0.6.2 to 0.7.4 (new metadata keys)
+0.10.9
+ - ref: minor code cleanup
+ - setup: remove unneccessary requirements from setup.py
+0.10.8
+ - fix: wavelength could not be extracted for some phasics files
+   (section name "analyse data" vs "analyse data v1")
+ - fix: time could not be parsed due to comma instead of dot
+   in phasics meta data
+0.10.7
+ - ci: migrate to GHA
+ - docs: fix sphinx build
+ - setup: setup.py test is deprecated
+0.10.6
+ - maintenance release
+0.10.5
+ - setup: bump qpimage from 0.6.1 to 0.6.2
+ - setup: change dependency of scikit-image to tifffile 2020.5.25
+ - ref: make code work with latest version of tifffile
+0.10.4
+ - setup: bump qpimage from 0.5.0 to 0.6.1
+0.10.3
+ - fix: missing keyword argument `idx` in `SingleTifHolo.get_time`
+ - fix: correctly pass precision to phasics and hologram zip file
+   formats
+ - fix: add file size to dataset identifier hashing process
+ - example: add conversion script to hdf5 qpimage data
+0.10.2
+ - fix: SeriesFolder did not pass on holo_kw when loading hologram data
+0.10.1
+ - fix: SeriesHdf5Qpimage did not correctly load meta data "time"
+0.10.0
+ - feat: allow to specify a time interval or a series slice in
+   SeriesData.saveh5
+ - fix: seek to zero before computing a data identifier for an
+   io.IOBase object
+ - fix: only write series identifier in SeriesData.saveh5 if
+   the keyword arguments for slice extraction are not set
+ - ref: fix deprecated `.value` (h5py)
+ - tests: fix date extraction from zip file
+0.9.0
+ - feat: allow to specify a slice in SeriesData.saveh5 (useful
+   when only a specific region needs to be extracted)
+0.8.0
+ - feat: allow tracking the progress of SeriesData.saveh5 using
+   multiprocessing.Value objects
+0.7.1
+ - docs: fix missing changelog files
+0.7.0
+ - feat: added command-line entry point "qpinfo"
+ - feat: support subjoined QPSeries file format
+ - docs: minor update
+0.6.4
+ - fix: ignore None or nan values in given meta data
+0.6.3
+ - enh: introduce BadFileFormatError
+0.6.2
+ - maintenance release
+0.6.1
+ - tests: fix bad identification of data types
+0.6.0
+ - BREAKING CHANGE: SeriesFolder file format does not load data files
+   recursively anymore
+0.5.1
+ - fix: falsely detected datasets in SeriesFolder file format
+0.5.0
+ - feat: use file modification time as fallback for TIFF files when
+   the file format does not implement `get_time`
+ - fix: return "nan" instead of "0" when the time is not defined for
+   a measurement
+0.4.4
+ - fix: SeriesFolder file format should not support folders containing
+   no usable data
+ - fix: verify file format given by user
+0.4.3
+ - fix: "identifier" not always set for generated instances of QPImage
+0.4.2
+ - fix: implement `get_name` method for SeriesFolder format
+ - enh: start identifier/name indexing at 1 instead of 0
+0.4.1
+ - fix: do not allow intensity values less than zero for SingleTifPhasics
+0.4.0
+ - feat: extract meta data from QPSeries/QPImage data files
+0.3.5
+ - fix: single_tif_phaiscs (SID4Bio) contains two phase images, the second
+   of which is recorded at a different time point than the intensity
+   image. The first image is recorded in wavelengths and not in
+   nanometers and thus is converted using phasics metadata first.
+   If this metadata is not available, the second image is used.
+0.3.4
+ - fix: qpimage file formats: override identifiers (clean solution)
+ - fix: add check for valid meta_data keys
+ - docs: document attributes of SeriesData
+0.3.3
+ - fix: qpimage file formats: identifiers were not unique, but simply
+   copied from the input hdf5 file
+0.3.2
+ - setup: add qpimage version dependency
+0.3.1
+ - ci: automate PyPI release with travis-ci
+0.3.0
+ - docs: automatically document all file format classes
+ - docs: add introduction and file format overview
+ - tests: improve coverage
+0.2.1
+ - fix: regression when loading data from zip file
+0.2.0
+ - drop support for Python 3.5
+ - fix: SeriesHdf5Qpimage blocked hdf5 file for reading
+ - fix: background datasets did not get hologram keyword arguments
+ - feat: allow to cast input data type (qpimage version 0.2.0)
+0.1.6
+ - code cleanup
+0.1.5
+ - fix: raw phasics tif files were not ignored in `SeriesFolder` (#3)
+ - feat: reduce length of dataset hashes to six chars for user convenience
+ - feat: switch order of name and index in identifier for user convenience
+0.1.4
+ - feat: new file format for zipped hologram tif files
+ - feat: add "storage_type" property describing which type of data
+   is stored originally in a dataset
+ - feat: add hologram file formats: HyperSpy and tif-based 
+ - fix: use hologram keyword arguments to generate dataset identifer
+0.1.3
+ - feat: save memory by hard-linking background image data in QPSeries
+ - fix: format series and single hdf5: override raw meta data
+ - fix: include background data in determination of data set identifiers
+0.1.2
+ - feat: change API for SingleData ("idx=0" for user convenience)
+ - feat: implement SeriesData.saveh5 (export as qpimage.QPSeries) (#2)
+ - feat: add unique part of file name to SeriesFolder image identifiers (#2)
+ - feat: extract identifiers from hdf5 files
+0.1.1
+ - feat: support pathlib
+ - feat: add SeriesData.identifier
+0.1.0
+ - initial release
