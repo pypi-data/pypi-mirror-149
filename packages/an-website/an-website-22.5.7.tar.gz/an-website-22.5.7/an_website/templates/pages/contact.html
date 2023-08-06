@@ -1,0 +1,34 @@
+{% whitespace oneline %}
+{% extends "../base.html" %}
+
+{% block body %}
+    <form method="post">
+        <label>Name<input type="text" name="name"></label>
+
+        <label>E-Mail-Adresse<input type="email" name="addresse" autocomplete="email"></label>
+
+        <label>
+            Betreff
+            {% if subject %}
+                <input type="text" name="subjekt" value="{{subject}}">
+            {% else %}
+                <input type="text" name="subjekt">
+            {% end %}
+        </label>
+
+        {% comment 🍯 %}
+        <input id="message-input" type="text" class="hidden-input" name="message">
+
+        <label>
+            Nachricht (erforderlich)
+            <textarea name="nachricht"></textarea>
+        </label>
+
+        <button type="submit">Absenden</button>
+    </form>
+{% end %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css"
+          href="{{fix_static('style/form.css')}}">
+{% end %}
