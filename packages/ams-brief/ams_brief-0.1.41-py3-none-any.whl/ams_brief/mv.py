@@ -1,0 +1,25 @@
+import os
+from pathlib import Path
+from datetime import date
+
+projpath = "X:/1652_BTN_ZUI"
+
+
+def create_mv_folder(projectpath: str, verbose: bool):
+    p = Path(projectpath)
+    mv_probe = p.joinpath("MV")
+    print(f"Probing {mv_probe}...") if verbose else None
+    mv_subfolders = []
+    for x in [x for x in Path(mv_probe).iterdir() if x.is_dir()]:
+        if str(x.stem[0:2]).isdigit():
+            mv_subfolders.append(str(x.stem[0:2]))
+
+    newfolder = str(int(max(mv_subfolders))+1).zfill(2)
+    projectcode = str(projectpath)[8:15]
+    foldername = f"{newfolder}_{date.today().strftime('%Y%m%d')}_{projectcode}_{os.getlogin()}_Briefing"
+    newdir = os.mkdir(mv_probe.joinpath(foldername))
+    return newdir
+
+
+folder = create_mv_folder(projpath, verbose=True)
+print(folder)
