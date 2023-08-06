@@ -1,0 +1,24 @@
+# Object To Class
+## a simple python script to convert dict into a class instance 
+
+> example 
+
+```python
+# import the package 
+from objecttoclass import ObjectToClass as OTC
+# or : from objecttoclass import OTC (Variable holding the ObjectToClass instance )
+
+# set the data you want to convert 
+data = {
+    "name":"Hussein Naim"
+}
+
+# new OTC instance
+instance = OTC(data)
+
+# print out the name attr
+print(instance.name)
+
+# output: Hussein Naim
+
+```
