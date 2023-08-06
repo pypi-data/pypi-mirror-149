@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "py3status-github-notifications"
+version = "0.1.4"
+description = "py3status module to show your Github notifications"
+authors = ["mcgillij <mcgillivray.jason@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/mcgillij/py3status-github-notifications"
+repository = "https://github.com/mcgillij/py3status-github-notifications"
+documentation = "https://github.com/mcgillij/py3status-github-notifications"
+keywords = ["github", "notifications", "py3status", "i3", "git"]
+include = [ "LICENSE", ]
+
+classifiers = [
+    "Environment :: X11 Applications",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Desktop Environment :: Window Managers",
+    "Topic :: System :: Monitoring",
+    "Topic :: Software Development :: Version Control :: Git",
+]
+
+[tool.poetry.plugins."py3status"]
+module = "py3status_github_notifications.github_notifications"
+
+[tool.poetry.dependencies]
+python = "^3.9 || ^3.10"
+PyGithub = "^1.55"
+py3status = "^3.36"
+PyJWT = "2.2.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^20.8b1"
+flake8 = "^3.8.4"
+pylint = "^2.7.2"
+neovim = "^0.3.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
