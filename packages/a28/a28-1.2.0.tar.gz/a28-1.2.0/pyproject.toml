@@ -1,0 +1,143 @@
+[project]
+name = "a28"
+version = "1.2.0"
+description = "A set of resources and tools to help developers create packages for the Area28 application."
+readme = "README.md"
+keywords = ["documentation", "pep621", "sphinx", "toml"]
+dynamic = ["requires-python", "classifiers", "dependencies"]
+
+[[project.authors]]
+name = "Area28 Technologies"
+email = "dev@area28.io"
+
+[tool.poetry]
+name = "a28"
+version = "1.2.0"
+description = "A set of resources and tools to help developers create packages for the Area28 application."
+authors = ["Area28 Technologies <dev@area28.io>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://area28.io"
+include = ["CHANGELOG.md", "LICENSE", "README.md", "docs", "tests"]
+packages = [{ include = "a28", from = "src" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Environment :: Console :: Curses",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: Developers"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7, <4"
+requests = "^2.23.0"
+coloredlogs = { version = ">=14.0", extras = ["color"] }
+certifi = "^2021.10.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+pytest-cov = "^2.12.1"
+MarkupSafe = "^1.1.1"
+gitlint = "^0.15.1"
+responses = "^0.15.0"
+coverage = { version = "^6.1.1", extras = ["toml"] }
+flake8-isort = "^4.1.1"
+flake8-bugbear = "^22.3.23"
+flake8-docstrings = "^1.6.0"
+flake8-bandit = "^3.0.0"
+flake8-pytest-style = "^1.6.0"
+poetry-dynamic-versioning = "^0.14.1"
+auto-changelog = "^0.5.3"
+invoke = "^1.7.0"
+flake9 = "^3.8.3"
+Sphinx = "^4.5.0"
+sphinx-rtd-theme = "^1.0.0"
+recommonmark = "^0.7.1"
+myst-parser = "^0.17.2"
+sphinx-pyproject = "^0.1.0"
+sphinx-argparse = "^0.3.1"
+
+[tool.poetry.extras]
+docs = [
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "recommonmark",
+    "myst-parser",
+    "sphinx-pyproject",
+    "sphinx-argparse"
+]
+
+[tool.poetry.scripts]
+a28 = "a28.cli:main"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+metadata = false
+latest-tag = true
+bump = true
+style = "pep440"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["src/a28/__init__.py"]
+
+[tool.flake8]
+max-line-length = 79
+max-doc-length = 72
+max-complexity = 6
+docstring-convention = "pep257"
+show-source = true
+select = "B,B904,C,I,E,F,W,C"
+exclude = [
+    ".git",
+    ".github",
+    "__pycache__",
+    "docs",
+    "build",
+    "dist",
+    ".venv",
+    ".pytest_cache",
+    "htmlcov"
+]
+
+[tool.pylint."MESSAGES CONTROL"]
+enable = "all"
+
+[tool.isort]
+line_length = 79
+include_trailing_comma = false
+multi_line_output = 2
+color_output = true
+
+[build-system]
+requires = ["poetry-core>=1.0.4", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.sphinx-pyproject]
+language = "en"
+master_doc = "index"
+html_theme = "sphinx_rtd_theme"
+html_logo = "assets/logo.svg"
+package_root = "src/a28"
+html_static_path = ["_static"]
+copyright = "2022 Area28 Technologies"
+extensions = ["myst_parser", "sphinx.ext.napoleon", "sphinxarg.ext"]
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist"
+]
