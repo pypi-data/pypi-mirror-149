@@ -1,0 +1,13 @@
+parameters:
+  pysparkbundle:
+    filesystem: dummy_filesystem
+
+services:
+  pysparkbundle.test.DummySparkFactory:
+
+  pyspark.sql.session.SparkSession:
+    factory: ['@pysparkbundle.test.DummySparkFactory', 'create']
+
+  pysparkbundle.filesystem.DummyFilesystem:
+    tags:
+      - {name: 'pysparkbundle.filesystem', alias: dummy_filesystem}

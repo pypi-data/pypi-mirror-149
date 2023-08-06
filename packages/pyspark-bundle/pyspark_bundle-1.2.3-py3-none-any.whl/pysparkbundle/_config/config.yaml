@@ -1,0 +1,32 @@
+parameters:
+  pysparkbundle:
+    filesystem:
+
+    dataframe:
+      show_method: # Default is None, is set based on running environment
+
+services:
+  pysparkbundle.logger: '@daipecore.logger'
+
+  pysparkbundle.lineage.argument.ArgumentMapping:
+    tags:
+      - 'lineage.decorator.function.argument_mapping'
+
+  pysparkbundle.dataframe.DataFrameShowMethod:
+    tags:
+      - {name: 'pysparkbundle.dataframe.show_method', alias: dataframe_show}
+
+  pysparkbundle.dataframe.show_method:
+    factory: ['@pysparkbundle.dataframe.DataFrameShowMethodInjector', 'get']
+
+  pysparkbundle.dataframe.DataFrameShowMethodInjector:
+    arguments:
+      - !tagged_aliased ['pysparkbundle.dataframe.show_method', '%pysparkbundle.dataframe.show_method%']
+
+  pysparkbundle.filesystem:
+    class: pysparkbundle.filesystem.FilesystemInterface
+    factory: ['@pysparkbundle.filesystem.FilesystemInjector', 'get']
+
+  pysparkbundle.filesystem.FilesystemInjector:
+    arguments:
+      - !tagged_aliased ['pysparkbundle.filesystem', '%pysparkbundle.filesystem%']
