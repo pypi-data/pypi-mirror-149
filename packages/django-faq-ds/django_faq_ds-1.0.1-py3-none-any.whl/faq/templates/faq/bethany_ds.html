@@ -1,0 +1,41 @@
+{% extends 'faq/_common.html' %}
+
+{% block faq %}
+<!-- ======= Frequently Asked Questions Section ======= -->
+  <section id="faq" class="faq section-bg">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>Frequently Asked Questions</h2>
+      </div>
+
+      <div class="faq-list">
+        <ul>
+          {% for item in faq %}
+            <li data-aos="fade-up" data-aos-delay="{% cycle '0' '100' '200' '300' '400' '500' '600' '700' '800' '900' %}">
+              <i class="bx bx-help-circle icon-help"></i>
+              {% if forloop.first %}
+                <a data-bs-toggle="collapse" class="collapse" data-bs-target="#faq-list-{{ forloop.counter }}">
+                  {{ item.q }}<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i>
+                </a>
+                <div id="faq-list-{{ forloop.counter }}" class="collapse show" data-bs-parent=".faq-list">
+              {% else %}
+                <a data-bs-toggle="collapse" class="collapsed" data-bs-target="#faq-list-{{ forloop.counter }}">
+                  {{ item.q }}<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i>
+                </a>
+                <div id="faq-list-{{ forloop.counter }}" class="collapse" data-bs-parent=".faq-list">
+              {% endif %}
+                <p>
+                  {% autoescape off %}
+                  {{ item.a }}
+                  {% endautoescape %}
+                </p>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+<!-- End Frequently Asked Questions Section -->
+{% endblock %}
