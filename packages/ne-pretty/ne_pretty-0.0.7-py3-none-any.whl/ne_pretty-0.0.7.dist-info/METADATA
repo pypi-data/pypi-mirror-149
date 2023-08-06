@@ -1,0 +1,87 @@
+Metadata-Version: 2.1
+Name: ne-pretty
+Version: 0.0.7
+Summary: ne_pretty rule find entity
+Home-page: https://github.com/ssbuild/ne_pretty
+Author: ssbuild
+Author-email: 9727464@qq.com
+License: Apache 2.0
+Keywords: ne_pretty,ne_pretty,ne finder,namespace entity finder
+Platform: win32_AMD64
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3, <4
+Description-Content-Type: text/markdown
+
+ne_pretty rule find entity
+
+```py
+# -*- coding: utf-8 -*-
+# @Time    : 2022/3/17 14:39
+# @Author  : wyw
+
+#增加实体
+from ne_pretty import e_add_context
+#正则添加实体
+from ne_pretty import e_add_rule_context
+#连接相邻实体
+from ne_pretty import e_do_connect
+#连接交叉实体，保留最大
+from ne_pretty import e_cross_do_connect
+#扩展前缀
+from ne_pretty import e_extend_prefix
+#扩展后缀
+from ne_pretty import e_extend_suffix
+#删除前缀
+from ne_pretty import e_remove_prefix
+#删除后缀
+from ne_pretty import e_remove_suffix
+
+#删除实体包含
+from ne_pretty import e_remove_contain
+#删除指定实体
+from ne_pretty import e_remove_eq
+#去重
+from ne_pretty import e_remove_dup
+#比较不同
+from ne_pretty import entity_diff
+
+
+filename = r'C:\Users\acer\Desktop\demo\text.txt'
+
+e_add_rule_context(filename,filename,'地点','(北京)')
+
+#e_add_context(filename,filename,'地点','北京')
+
+
+#e_remove_eq(filename,filename,'地点','北京')
+
+
+#e_remove_suffix(filename,filename,'地点','北京')
+
+#e_remove_prefix(filename,filename,'地点','北京')
+
+
+#e_remove_contain(filename,filename,'作案手段')
+
+#e_remove_dup(filename,filename)
+
+```
+
+
