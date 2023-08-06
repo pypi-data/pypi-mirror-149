@@ -1,0 +1,42 @@
+include LICENSE
+include setup.py
+include setup.cfg
+include CHANGE.md
+include conftest.py
+include pyproject.toml
+recursive-include benchopt *.py
+
+# Include html templates and css for plotting
+recursive-include benchopt/plotting *.html
+recursive-include benchopt/plotting *.css
+recursive-include benchopt/plotting *.js
+
+
+# Include doc generation files
+include doc/_static/style.css
+include doc/_templates/search.html
+recursive-include doc *.py
+recursive-include doc *.rst
+recursive-include doc *.txt
+recursive-include doc *.inc
+recursive-include doc *.png
+recursive-include doc Makefile
+prune doc/_build
+prune doc/generated
+prune doc/auto_examples
+
+# Include examples
+recursive-include examples *.py
+recursive-include examples *.txt
+
+# Include dummy benchmark for test
+recursive-include benchopt/tests/test_benchmarks *.R
+recursive-include benchopt/tests/test_benchmarks *.jl
+recursive-include benchopt/tests/test_benchmarks *.py
+include benchopt/datasets/tests/test_dataset_simulated.py
+
+# Exclude joblib folders in dummy_benchmark
+prune benchopt/tests/test_benchmarks/dummy_benchmark/joblib
+prune benchopt/tests/test_benchmarks/dummy_benchmark/__cache__
+
+exclude .mailmap
