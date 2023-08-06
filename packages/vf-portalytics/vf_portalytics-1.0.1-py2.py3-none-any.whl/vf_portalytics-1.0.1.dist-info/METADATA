@@ -1,0 +1,96 @@
+Metadata-Version: 2.1
+Name: vf-portalytics
+Version: 1.0.1
+Summary: A portable analytics framework for Python
+Home-page: https://github.com/visualfabriq/portalytics
+Author: Carst Vaartjes
+Author-email: cvaartjes@visualfabriq.com
+License: GPLv3
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Requires-Python: >=2.7
+License-File: LICENSE
+Requires-Dist: pip (>=19.3.1)
+Requires-Dist: setuptools (>=41.6.0)
+Requires-Dist: category-encoders (==2.2.2)
+Requires-Dist: pytest-cov (>=2.8.1)
+Requires-Dist: joblib (==0.13.2) ; (python_version <= '2.7')
+Requires-Dist: numpy (==1.16.6) ; (python_version <= '2.7')
+Requires-Dist: pandas (==0.24.2) ; (python_version <= '2.7')
+Requires-Dist: numexpr (==2.7.3) ; (python_version <= '2.7')
+Requires-Dist: scipy (==1.2.3) ; (python_version <= '2.7')
+Requires-Dist: matplotlib (<=2.2.5) ; (python_version <= '2.7')
+Requires-Dist: seaborn (==0.9.1) ; (python_version <= '2.7')
+Requires-Dist: scikit-learn (==0.20.4) ; (python_version <= '2.7')
+Requires-Dist: xgboost (==0.82) ; (python_version <= '2.7')
+Requires-Dist: statsmodels (==0.10.2) ; (python_version <= '2.7')
+Requires-Dist: ipython (==5.8.0) ; (python_version <= '2.7')
+Requires-Dist: pytest (==4.6.11) ; (python_version <= '2.7')
+Requires-Dist: joblib (>=0.16.0) ; (python_version > '3.3')
+Requires-Dist: numpy (>=1.19.1) ; (python_version > '3.3')
+Requires-Dist: pandas (>=1.1.0) ; (python_version > '3.3')
+Requires-Dist: numexpr (>=2.7.1) ; (python_version > '3.3')
+Requires-Dist: scipy (>=1.5.2) ; (python_version > '3.3')
+Requires-Dist: matplotlib (>=3.1.2) ; (python_version > '3.3')
+Requires-Dist: seaborn (>=0.10.1) ; (python_version > '3.3')
+Requires-Dist: scikit-learn (==0.20.4) ; (python_version > '3.3')
+Requires-Dist: xgboost (==0.82) ; (python_version > '3.3')
+Requires-Dist: statsmodels (>=0.12.0) ; (python_version > '3.3')
+Requires-Dist: ipython (>=7.11.1) ; (python_version > '3.3')
+Requires-Dist: pytest (>=5.3.5) ; (python_version > '3.3')
+
+# portalytics
+Portable Jupyter Setup for Machine Learning.
+
+A consistent interface for creating Machine Learning Models compatible with VisualFabriq environment.
+
+Build models using our portalytics module.
+The module is available as [pip package](https://pypi.org/project/vf-portalytics/), install simply by:
+```
+pip install vf-portalytics
+```
+Pay attention to the requirements because it is important for the model to be built with the ones that we support. 
+
+There are [examples](https://github.com/visualfabriq/portalytics/blob/master/example_notebooks/feature_subset_example.ipynb) of how you can use portalytics. Examples for a simple model or more complex models like MultiModel.
+
+Make sure that after saving the model using portalyctis, its possible that the model can be loaded and still contains all the important information (eg. the loaded model is able to perform a prediction?)
+
+
+## [MultiModel and MultiTransformer](./vf_portalytics/multi_model.py) 
+MultiModel is a custom sklearn model that contains one model for each group of training data. 
+It is valuable in cases that our dataset vary a lot, but we still need to manage one model because the problem is the same.
+    
+* Define the groups using input parameter `clusters` which is a list of all possible groups 
+  and `group_col` which is a string that indicates in which feature the groups can be found.
+      
+* `selected_features` give the ability of using different features for each group.
+
+* `params` give the ability of using different model and categorical-feature transformer for each group.
+    
+The Jupyter notebook [multimodel_example.ipynb](example_notebooks/multimodel_example.ipynb) contains an 
+end-to-end example of how MultiModel can be trained and saved using vf_portalytics Model wrapper.
+
+MultiModel can support every sklearn based model, the only thing that is need to be done is to extend 
+[`POTENTIAL_MODELS`](./vf_portalytics/ml_helpers.py) dictionary. Feel free to raise a PR. 
+
+MultiTransformer is the transformer that is being used inside MultiModel to transform categorical features into numbers.
+It is a custom sklearn transformer that contains one transformer for each group of training data.
+
+* Can be used also separately, in the same way as MultiModel. Check [example](./tests/test_multi_model.py)
+
+MultiTransformer can support every sklearn based transformer, the only thing that is need to be done is to extend 
+[`POTENTIAL_TRANSFORMER`](./vf_portalytics/ml_helpers.py) dictionary. Feel free to raise a PR.
+
+
+
