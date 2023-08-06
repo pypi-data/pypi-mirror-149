@@ -1,0 +1,68 @@
+#  Deployment Pipeline - Version MLOPS_VERSION
+#
+#  User notes
+#    - Branch name determine pipeline behavior. See description for master 
+#        branch and those after. 
+
+
+image: python:3.8.5
+
+clone:
+  lfs: true
+
+pipelines:
+  branches:
+    'mlops/*': 
+      - parallel:
+        - step: &deploy-test-training-service
+            name: Deploy training service to test
+            deployment: test-training
+            caches:
+              - pip
+            script: 
+              - pip install "akerbp.mlops==MLOPS_VERSION"
+              - source install_gc_sdk.sh
+              - bash deploy_training_service.sh
+        - step: &deploy-test-prediction-service
+            name: Deploy prediction service to test
+            deployment: test-prediction
+            caches:
+              - pip
+            script: 
+              - pip install "akerbp.mlops==MLOPS_VERSION"
+              - source install_gc_sdk.sh
+              - bash deploy_prediction_service.sh
+      - parallel:
+        - step: &deploy-production-training-service
+            <<: *deploy-test-training-service
+            name: Deploy training service to prod
+            deployment: production-training
+            trigger: manual
+        - step: &deploy-production-prediction-service
+            <<: *deploy-test-prediction-service
+            name: Deploy prediction service to prod
+            deployment: production-prediction
+            trigger: manual
+    # Use master branch to develop model projects with prediction services only.
+    master: &master-branch
+      - step: *deploy-test-prediction-service
+      - step: *deploy-production-prediction-service
+    # "main" is used instead of "master" lately
+    main: *master-branch
+    # Branches with this prefix behave as master (useful if a model project 
+    # needs to deploy after each commit)
+    deploy/*: *master-branch
+    # Branches with this prefix run tests only (i.e. do not deploy)
+    feature/*:
+      - step:
+          name: Test prediction service
+          deployment: test-prediction
+          caches:
+            - pip
+          script: 
+            - pip install "akerbp.mlops==MLOPS_VERSION"
+            - source install_gc_sdk.sh
+            - LOCAL_DEPLOYMENT=True bash deploy_prediction_service.sh
+
+          
+
