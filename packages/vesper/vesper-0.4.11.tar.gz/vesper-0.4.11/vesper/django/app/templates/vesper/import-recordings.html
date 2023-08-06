@@ -1,0 +1,72 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Import recordings</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+    <script src="{% static 'vesper/view/import-metadata.js' %}"></script>
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Import recordings</h2>
+
+    <p>
+        Imports one or more recordings into this Vesper archive.
+    </p>
+
+    <p>
+        Each recording comprises one or more .wav files in one of the
+        archive's recording directories on the server. The files are
+        automatically grouped into continuous multi-file recordings
+        when appropriate, according to their start times and
+        durations. The files are not copied: instead their paths
+        relative to the archive's recording directories are remembered.
+        Note that if the paths of the files later change, they can be
+        updated in the Vesper archive via the <code> Refresh recording
+        audio file paths</code> command. Only new recordings are
+        imported: no action is taken for recordings that have already
+        imported.
+    </p>
+
+    <p>
+        An archive's recording directories can be specified via the
+        <code>recording_directories</code> setting in the archive's
+        <code>Archive Settings.yaml</code> file. If that setting is not
+        specified, it defaults to a single path, that of the
+        <code>Recordings</code> subdirectory of the archive directory.
+    </p>
+
+    <p>
+        If the <code>Recursive</code> check box is not checked below, the
+        import will include recordings present in the specified directories,
+        but not recordings in any of their subdirectories. If the
+        <code>Recursive</code> check box is checked, the import
+        will include recordings present in the specified directories, their
+        subdirectories, subdirectories of those subdirectories, and so on.
+    </p>
+
+    <p>
+        Default values for the input elements of this form can be
+        specified in the archive's <code>Preferences.yaml</code> file.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'import-recordings' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.paths|block_form_element }}
+        {{ form.recursive|form_checkbox }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Import</button>
+
+    </form>
+
+{% endblock main %}

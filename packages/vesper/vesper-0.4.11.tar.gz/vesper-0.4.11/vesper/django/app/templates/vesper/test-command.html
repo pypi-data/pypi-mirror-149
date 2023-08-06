@@ -1,0 +1,19 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+    <title>Test command</title>
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Test Command</h2>
+
+    <form action="{% url 'test-command' %}" method="post">
+
+        {% csrf_token %}
+        
+        <input type="submit" value="Test">
+        
+    </form>
+
+{% endblock main %}
