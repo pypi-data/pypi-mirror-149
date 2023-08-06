@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans 'Arch' %} #{{ arch.id }}: {{ arch.name }}</h2>
+
+<h3>{% trans 'Details' %}</h3>
+<table class="details">
+  <tr>
+    <th>{% trans "ID" %}</th>
+    <td>{{ arch.id }}</td>
+  </tr>
+  <tr>
+    <th>{% trans "Name" %}</th>
+    <td>{{ arch.name }}</td>
+  </tr>
+</table>
+
+<h3>{% trans 'Workers' %}</h3>
+{% include "worker/list_include.html" %}
+
+{% endblock %}

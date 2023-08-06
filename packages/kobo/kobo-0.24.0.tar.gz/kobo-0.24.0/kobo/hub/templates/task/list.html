@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Tasks" %}</h2>
+
+<form method="GET" target="" style="float: left;">
+    {{ form.search }}
+    <input type="submit" value="{% trans "Search" %}" />
+    {% if user.is_authenticated %}<br />{{ form.my }} <label for="id_my">{% trans "Show only my tasks" %}</label>{% endif %}
+</form>
+
+<br />
+{% include "pagination.html" %}
+{% include "task/list_include.html" %}
+{% include "pagination.html" %}
+
+{% endblock %}
