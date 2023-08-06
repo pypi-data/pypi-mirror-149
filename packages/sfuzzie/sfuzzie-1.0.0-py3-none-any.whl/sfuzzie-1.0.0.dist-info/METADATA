@@ -1,0 +1,43 @@
+Metadata-Version: 2.1
+Name: sfuzzie
+Version: 1.0.0
+Summary: simple fuzz functionality for python
+Author: dsal3389
+Author-email: dsal3389@foo.com
+Requires-Python: >=3.6,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+
+
+# sfuzzie
+sfuzzie is a simple fuzz tree algorithem, provide fuzzing for words
+
+## example
+
+```py
+from sfuzzie import fuzz
+
+fuzzer = fuzz([
+    "hello world",
+    "fuzzing",
+    "fuling"
+])
+
+print(fuzzer.suggest("hel fu w"))
+```
+
+### output:
+```
+[['hello'], ['fuzzing', 'fuling'], ['world']]
+```
+
+## install
+```
+python3 -m pip3 install sfuzzie
+```
+
