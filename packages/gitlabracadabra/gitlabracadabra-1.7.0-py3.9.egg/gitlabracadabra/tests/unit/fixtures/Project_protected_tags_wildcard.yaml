@@ -1,0 +1,237 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.21.0
+    method: GET
+    uri: http://localhost/api/v4/projects/test%2Fprotected_tags
+  response:
+    body:
+      string: '{"id":19,"description":"","name":"protected_tags","name_with_namespace":"test
+        / protected_tags","path":"protected_tags","path_with_namespace":"test/protected_tags","created_at":"2019-05-03T10:43:05.352Z","default_branch":"master","tag_list":[],"ssh_url_to_repo":"git@gitlab.example.com:test/protected_tags.git","http_url_to_repo":"http://gitlab.example.com/test/protected_tags.git","web_url":"http://gitlab.example.com/test/protected_tags","readme_url":"http://gitlab.example.com/test/protected_tags/blob/master/README.md","avatar_url":null,"star_count":0,"forks_count":0,"last_activity_at":"2019-05-03T10:43:05.352Z","namespace":{"id":3,"name":"test","path":"test","kind":"group","full_path":"test","parent_id":null},"_links":{"self":"http://gitlab.example.com/api/v4/projects/19","issues":"http://gitlab.example.com/api/v4/projects/19/issues","merge_requests":"http://gitlab.example.com/api/v4/projects/19/merge_requests","repo_branches":"http://gitlab.example.com/api/v4/projects/19/repository/branches","labels":"http://gitlab.example.com/api/v4/projects/19/labels","events":"http://gitlab.example.com/api/v4/projects/19/events","members":"http://gitlab.example.com/api/v4/projects/19/members"},"archived":false,"visibility":"private","resolve_outdated_diff_discussions":false,"container_registry_enabled":true,"issues_enabled":true,"merge_requests_enabled":true,"wiki_enabled":true,"jobs_enabled":true,"snippets_enabled":true,"shared_runners_enabled":true,"lfs_enabled":true,"creator_id":1,"import_status":"none","import_error":null,"open_issues_count":0,"runners_token":"kSayhQdUxJVux9sFKGb-","public_jobs":true,"ci_config_path":null,"shared_with_groups":[],"only_allow_merge_if_pipeline_succeeds":false,"request_access_enabled":false,"only_allow_merge_if_all_discussions_are_resolved":false,"printing_merge_request_link_enabled":true,"merge_method":"merge","permissions":{"project_access":null,"group_access":{"access_level":50,"notification_level":3}}}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1960'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 03 May 2019 10:45:07 GMT
+      Etag:
+      - W/"6288876d53d08c6b465248fc702520ec"
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - 5fvbIefCVr7
+      X-Runtime:
+      - '0.082787'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.21.0
+    method: GET
+    uri: http://localhost/api/v4/projects/19/protected_tags
+  response:
+    body:
+      string: '[]'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 03 May 2019 10:45:07 GMT
+      Etag:
+      - W/"4f53cda18c2baa0c0354bb5f9a3ecbe5"
+      Link:
+      - <http://gitlab.example.com/api/v4/projects/19/protected_tags?id=19&page=1&per_page=20>;
+        rel="first", <http://gitlab.example.com/api/v4/projects/19/protected_tags?id=19&page=1&per_page=20>;
+        rel="last"
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Next-Page:
+      - ''
+      X-Page:
+      - '1'
+      X-Per-Page:
+      - '20'
+      X-Prev-Page:
+      - ''
+      X-Request-Id:
+      - Uarl4iwpNy2
+      X-Runtime:
+      - '0.019350'
+      X-Total:
+      - '0'
+      X-Total-Pages:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "v*", "create_access_level": 40}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '41'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.21.0
+    method: POST
+    uri: http://localhost/api/v4/projects/19/protected_tags
+  response:
+    body:
+      string: '{"name":"v*","create_access_levels":[{"access_level":40,"access_level_description":"Maintainers"}]}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '99'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 03 May 2019 10:45:07 GMT
+      Etag:
+      - W/"4185a4fc9b1cf0a9e69279e5001bff3a"
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - evlibvxvWZ9
+      X-Runtime:
+      - '0.065669'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.21.0
+    method: GET
+    uri: http://localhost/api/v4/projects/19/protected_tags
+  response:
+    body:
+      string: '[{"name":"v*","create_access_levels":[{"access_level":40,"access_level_description":"Maintainers"}]}]'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '101'
+      Content-Type:
+      - application/json
+      Date:
+      - Fri, 03 May 2019 10:45:07 GMT
+      Etag:
+      - W/"10a47251484680466ed213db20aa6005"
+      Link:
+      - <http://gitlab.example.com/api/v4/projects/19/protected_tags?id=19&page=1&per_page=20>;
+        rel="first", <http://gitlab.example.com/api/v4/projects/19/protected_tags?id=19&page=1&per_page=20>;
+        rel="last"
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Next-Page:
+      - ''
+      X-Page:
+      - '1'
+      X-Per-Page:
+      - '20'
+      X-Prev-Page:
+      - ''
+      X-Request-Id:
+      - qVqkEn32jP
+      X-Runtime:
+      - '0.026095'
+      X-Total:
+      - '1'
+      X-Total-Pages:
+      - '1'
+    status:
+      code: 200
+      message: OK
+version: 1

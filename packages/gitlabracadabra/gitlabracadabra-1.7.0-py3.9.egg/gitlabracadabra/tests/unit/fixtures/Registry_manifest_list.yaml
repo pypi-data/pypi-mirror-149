@@ -1,0 +1,131 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+    method: GET
+    uri: https://registry-1.docker.io/v2/
+  response:
+    body:
+      string: '{"errors":[{"code":"UNAUTHORIZED","message":"authentication required","detail":null}]}
+
+        '
+    headers:
+      Content-Length:
+      - '87'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 24 Feb 2021 13:04:30 GMT
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+      Strict-Transport-Security:
+      - max-age=31536000
+      Www-Authenticate:
+      - Bearer realm="https://auth.docker.io/token",service="registry.docker.io"
+    status:
+      code: 401
+      message: Unauthorized
+- request:
+    body: null
+    headers:
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+    method: GET
+    uri: https://auth.docker.io/token?service=registry.docker.io&scope=repository%3Alibrary%2Fdebian%3Apull
+  response:
+    body:
+      string: '{"token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1YyI6WyJNSUlDK1RDQ0FwK2dBd0lCQWdJQkFEQUtCZ2dxaGtqT1BRUURBakJHTVVRd1FnWURWUVFERXp0U1RVbEdPbEZNUmpRNlEwZFFNenBSTWtWYU9sRklSRUk2VkVkRlZUcFZTRlZNT2taTVZqUTZSMGRXV2pwQk5WUkhPbFJMTkZNNlVVeElTVEFlRncweU1UQXhNalV5TXpFMU1EQmFGdzB5TWpBeE1qVXlNekUxTURCYU1FWXhSREJDQmdOVkJBTVRPMVZQU1ZJNlJFMUpWVHBZVlZKUk9rdFdRVXc2U2twTFZ6cExORkpGT2tWT1RFczZRMWRGVERwRVNrOUlPbEpYTjFjNlRrUktWRHBWV0U1WU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbnZBeVpFK09sZHgrY3hRS0RBWUtmTHJJYk5rK2hnaEg3Ti9mTFpMVDhEYXVPMXRoTWdoamxjcGhFVkNuYTFlMEZpOHVsUlZ4WG1HdWpZVDNXbnFsZ2ZpM2ZYTUQvQlBRTmlkWHZkeWprbDFZS3dPTkl3TkFWMnRXbExxaXFsdGhSWkFnTFdvWWZZMXZQMHFKTFZBbWt5bUkrOXRBcEMxNldNZ1ZFcHJGdE1rNnV0NDlMcDlUR1J0aDJQbHVWc3RSQ1hVUGp4bjI0d3NnYlUwVStjWTJSNEpyZmVJdzN0T1ZKbXNESkNaYW5SNmVheFYyVFZFUkxoZnNGVTlsSHAzcldCZ1RuNVRCSHlMRDNRdGVFLzJ3L3MvcUxZcmdIK1hCMmZBazJPd1NIRG5YWDg4WWVJd0EyVGJJMDdYNS8xQnVsaUwrUDduOWVBT1RmbDkxVlZwNER3SURBUUFCbzRHeU1JR3ZNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVBCZ05WSFNVRUNEQUdCZ1JWSFNVQU1FUUdBMVVkRGdROUJEdFZUMGxTT2tSTlNWVTZXRlZTVVRwTFZrRk1Pa3BLUzFjNlN6UlNSVHBGVGt4TE9rTlhSVXc2UkVwUFNEcFNWemRYT2s1RVNsUTZWVmhPV0RCR0JnTlZIU01FUHpBOWdEdFNUVWxHT2xGTVJqUTZRMGRRTXpwUk1rVmFPbEZJUkVJNlZFZEZWVHBWU0ZWTU9rWk1WalE2UjBkV1dqcEJOVlJIT2xSTE5GTTZVVXhJU1RBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTBkN3l1azQrWElabmtQb3RJVkdCeHBRSndpMzQwdExSb3R3Qzl4NkJpdWNDSUhFSmIyWGg0QzhtYVZic1Exd3ZUSCthRGV0VXhBS21lYkdXa3F6Z1J1Z1QiXX0.eyJhY2Nlc3MiOlt7InR5cGUiOiJyZXBvc2l0b3J5IiwibmFtZSI6ImxpYnJhcnkvZGViaWFuIiwiYWN0aW9ucyI6WyJwdWxsIl0sInBhcmFtZXRlcnMiOnsicHVsbF9saW1pdCI6IjEwMCIsInB1bGxfbGltaXRfaW50ZXJ2YWwiOiIyMTYwMCJ9fV0sImF1ZCI6InJlZ2lzdHJ5LmRvY2tlci5pbyIsImV4cCI6MTYxNDE3MjE3MSwiaWF0IjoxNjE0MTcxODcxLCJpc3MiOiJhdXRoLmRvY2tlci5pbyIsImp0aSI6Iklha2FKSXhCaDI4UjRPcGsxUk1UIiwibmJmIjoxNjE0MTcxNTcxLCJzdWIiOiIifQ.j0SFB1iOCGxAQjjvMpDF11rQw5DAfz81QJhZI7fvgoF-NsPqVuJsltlNY6i-Q-k2G3sqGxUjVe9VZnjDq23E6IvGsGh6UbwO30AT_oIpQxosARsR_XPij6xBzIZZWeyT-Z8ipoMMwglGhoeXID-GoyY4vlu4OttfyjF22Kq2YRF8Ms6DclIcfp0Oks9HcbZxO_B3Nkm8jVCVlD8eXCgtec55UldZiIpmtCA9ki1QybCzpODRQd2SDGwZdDbDWPCJXrgYaT7aaQF3FL9XKMwiu1Deck-Ee4vS3Nh55uabE9cgrVXfD-owiKhW9-AtaENstg2cgtRa-mhCtN1IHBxBBw","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1YyI6WyJNSUlDK1RDQ0FwK2dBd0lCQWdJQkFEQUtCZ2dxaGtqT1BRUURBakJHTVVRd1FnWURWUVFERXp0U1RVbEdPbEZNUmpRNlEwZFFNenBSTWtWYU9sRklSRUk2VkVkRlZUcFZTRlZNT2taTVZqUTZSMGRXV2pwQk5WUkhPbFJMTkZNNlVVeElTVEFlRncweU1UQXhNalV5TXpFMU1EQmFGdzB5TWpBeE1qVXlNekUxTURCYU1FWXhSREJDQmdOVkJBTVRPMVZQU1ZJNlJFMUpWVHBZVlZKUk9rdFdRVXc2U2twTFZ6cExORkpGT2tWT1RFczZRMWRGVERwRVNrOUlPbEpYTjFjNlRrUktWRHBWV0U1WU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbnZBeVpFK09sZHgrY3hRS0RBWUtmTHJJYk5rK2hnaEg3Ti9mTFpMVDhEYXVPMXRoTWdoamxjcGhFVkNuYTFlMEZpOHVsUlZ4WG1HdWpZVDNXbnFsZ2ZpM2ZYTUQvQlBRTmlkWHZkeWprbDFZS3dPTkl3TkFWMnRXbExxaXFsdGhSWkFnTFdvWWZZMXZQMHFKTFZBbWt5bUkrOXRBcEMxNldNZ1ZFcHJGdE1rNnV0NDlMcDlUR1J0aDJQbHVWc3RSQ1hVUGp4bjI0d3NnYlUwVStjWTJSNEpyZmVJdzN0T1ZKbXNESkNaYW5SNmVheFYyVFZFUkxoZnNGVTlsSHAzcldCZ1RuNVRCSHlMRDNRdGVFLzJ3L3MvcUxZcmdIK1hCMmZBazJPd1NIRG5YWDg4WWVJd0EyVGJJMDdYNS8xQnVsaUwrUDduOWVBT1RmbDkxVlZwNER3SURBUUFCbzRHeU1JR3ZNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVBCZ05WSFNVRUNEQUdCZ1JWSFNVQU1FUUdBMVVkRGdROUJEdFZUMGxTT2tSTlNWVTZXRlZTVVRwTFZrRk1Pa3BLUzFjNlN6UlNSVHBGVGt4TE9rTlhSVXc2UkVwUFNEcFNWemRYT2s1RVNsUTZWVmhPV0RCR0JnTlZIU01FUHpBOWdEdFNUVWxHT2xGTVJqUTZRMGRRTXpwUk1rVmFPbEZJUkVJNlZFZEZWVHBWU0ZWTU9rWk1WalE2UjBkV1dqcEJOVlJIT2xSTE5GTTZVVXhJU1RBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTBkN3l1azQrWElabmtQb3RJVkdCeHBRSndpMzQwdExSb3R3Qzl4NkJpdWNDSUhFSmIyWGg0QzhtYVZic1Exd3ZUSCthRGV0VXhBS21lYkdXa3F6Z1J1Z1QiXX0.eyJhY2Nlc3MiOlt7InR5cGUiOiJyZXBvc2l0b3J5IiwibmFtZSI6ImxpYnJhcnkvZGViaWFuIiwiYWN0aW9ucyI6WyJwdWxsIl0sInBhcmFtZXRlcnMiOnsicHVsbF9saW1pdCI6IjEwMCIsInB1bGxfbGltaXRfaW50ZXJ2YWwiOiIyMTYwMCJ9fV0sImF1ZCI6InJlZ2lzdHJ5LmRvY2tlci5pbyIsImV4cCI6MTYxNDE3MjE3MSwiaWF0IjoxNjE0MTcxODcxLCJpc3MiOiJhdXRoLmRvY2tlci5pbyIsImp0aSI6Iklha2FKSXhCaDI4UjRPcGsxUk1UIiwibmJmIjoxNjE0MTcxNTcxLCJzdWIiOiIifQ.j0SFB1iOCGxAQjjvMpDF11rQw5DAfz81QJhZI7fvgoF-NsPqVuJsltlNY6i-Q-k2G3sqGxUjVe9VZnjDq23E6IvGsGh6UbwO30AT_oIpQxosARsR_XPij6xBzIZZWeyT-Z8ipoMMwglGhoeXID-GoyY4vlu4OttfyjF22Kq2YRF8Ms6DclIcfp0Oks9HcbZxO_B3Nkm8jVCVlD8eXCgtec55UldZiIpmtCA9ki1QybCzpODRQd2SDGwZdDbDWPCJXrgYaT7aaQF3FL9XKMwiu1Deck-Ee4vS3Nh55uabE9cgrVXfD-owiKhW9-AtaENstg2cgtRa-mhCtN1IHBxBBw","expires_in":300,"issued_at":"2021-02-24T13:04:31.408316213Z"}
+
+        '
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 24 Feb 2021 13:04:31 GMT
+      Strict-Transport-Security:
+      - max-age=31536000
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json
+      Authorization:
+      - Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1YyI6WyJNSUlDK1RDQ0FwK2dBd0lCQWdJQkFEQUtCZ2dxaGtqT1BRUURBakJHTVVRd1FnWURWUVFERXp0U1RVbEdPbEZNUmpRNlEwZFFNenBSTWtWYU9sRklSRUk2VkVkRlZUcFZTRlZNT2taTVZqUTZSMGRXV2pwQk5WUkhPbFJMTkZNNlVVeElTVEFlRncweU1UQXhNalV5TXpFMU1EQmFGdzB5TWpBeE1qVXlNekUxTURCYU1FWXhSREJDQmdOVkJBTVRPMVZQU1ZJNlJFMUpWVHBZVlZKUk9rdFdRVXc2U2twTFZ6cExORkpGT2tWT1RFczZRMWRGVERwRVNrOUlPbEpYTjFjNlRrUktWRHBWV0U1WU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbnZBeVpFK09sZHgrY3hRS0RBWUtmTHJJYk5rK2hnaEg3Ti9mTFpMVDhEYXVPMXRoTWdoamxjcGhFVkNuYTFlMEZpOHVsUlZ4WG1HdWpZVDNXbnFsZ2ZpM2ZYTUQvQlBRTmlkWHZkeWprbDFZS3dPTkl3TkFWMnRXbExxaXFsdGhSWkFnTFdvWWZZMXZQMHFKTFZBbWt5bUkrOXRBcEMxNldNZ1ZFcHJGdE1rNnV0NDlMcDlUR1J0aDJQbHVWc3RSQ1hVUGp4bjI0d3NnYlUwVStjWTJSNEpyZmVJdzN0T1ZKbXNESkNaYW5SNmVheFYyVFZFUkxoZnNGVTlsSHAzcldCZ1RuNVRCSHlMRDNRdGVFLzJ3L3MvcUxZcmdIK1hCMmZBazJPd1NIRG5YWDg4WWVJd0EyVGJJMDdYNS8xQnVsaUwrUDduOWVBT1RmbDkxVlZwNER3SURBUUFCbzRHeU1JR3ZNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVBCZ05WSFNVRUNEQUdCZ1JWSFNVQU1FUUdBMVVkRGdROUJEdFZUMGxTT2tSTlNWVTZXRlZTVVRwTFZrRk1Pa3BLUzFjNlN6UlNSVHBGVGt4TE9rTlhSVXc2UkVwUFNEcFNWemRYT2s1RVNsUTZWVmhPV0RCR0JnTlZIU01FUHpBOWdEdFNUVWxHT2xGTVJqUTZRMGRRTXpwUk1rVmFPbEZJUkVJNlZFZEZWVHBWU0ZWTU9rWk1WalE2UjBkV1dqcEJOVlJIT2xSTE5GTTZVVXhJU1RBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTBkN3l1azQrWElabmtQb3RJVkdCeHBRSndpMzQwdExSb3R3Qzl4NkJpdWNDSUhFSmIyWGg0QzhtYVZic1Exd3ZUSCthRGV0VXhBS21lYkdXa3F6Z1J1Z1QiXX0.eyJhY2Nlc3MiOlt7InR5cGUiOiJyZXBvc2l0b3J5IiwibmFtZSI6ImxpYnJhcnkvZGViaWFuIiwiYWN0aW9ucyI6WyJwdWxsIl0sInBhcmFtZXRlcnMiOnsicHVsbF9saW1pdCI6IjEwMCIsInB1bGxfbGltaXRfaW50ZXJ2YWwiOiIyMTYwMCJ9fV0sImF1ZCI6InJlZ2lzdHJ5LmRvY2tlci5pbyIsImV4cCI6MTYxNDE3MjE3MSwiaWF0IjoxNjE0MTcxODcxLCJpc3MiOiJhdXRoLmRvY2tlci5pbyIsImp0aSI6Iklha2FKSXhCaDI4UjRPcGsxUk1UIiwibmJmIjoxNjE0MTcxNTcxLCJzdWIiOiIifQ.j0SFB1iOCGxAQjjvMpDF11rQw5DAfz81QJhZI7fvgoF-NsPqVuJsltlNY6i-Q-k2G3sqGxUjVe9VZnjDq23E6IvGsGh6UbwO30AT_oIpQxosARsR_XPij6xBzIZZWeyT-Z8ipoMMwglGhoeXID-GoyY4vlu4OttfyjF22Kq2YRF8Ms6DclIcfp0Oks9HcbZxO_B3Nkm8jVCVlD8eXCgtec55UldZiIpmtCA9ki1QybCzpODRQd2SDGwZdDbDWPCJXrgYaT7aaQF3FL9XKMwiu1Deck-Ee4vS3Nh55uabE9cgrVXfD-owiKhW9-AtaENstg2cgtRa-mhCtN1IHBxBBw
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+    method: GET
+    uri: https://registry-1.docker.io/v2/library/debian/manifests/latest
+  response:
+    body:
+      string: '{"manifests":[{"digest":"sha256:102ab2db1ad671545c0ace25463c4e3c45f9b15e319d3a00a1b2b085293c27fb","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"amd64","os":"linux"},"size":529},{"digest":"sha256:690e6029ff996ac8d031d249a08e166429a577bbf45ae28d96d34387fdd845b6","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"arm","os":"linux","variant":"v5"},"size":529},{"digest":"sha256:0db436c027eb321e2634fa43462126fd7aa6ac206b3591cf051c2324613597b2","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"arm","os":"linux","variant":"v7"},"size":529},{"digest":"sha256:330cbf028662c0c41ff94c23dc1e37d1cd52703e79e795e275d5f6c86022a8e3","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"arm64","os":"linux","variant":"v8"},"size":529},{"digest":"sha256:6fef38ad42d54a678ae2d8cbbaf1aa999775a56bfca8582844ceb214b837a49b","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"386","os":"linux"},"size":529},{"digest":"sha256:a96126e23bbe32b311c95e2ef5044d93138aaddca685765d500498c9bc314f53","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"mips64le","os":"linux"},"size":529},{"digest":"sha256:b3f06be4e5aea9386cccc9d13a5561585765ee7d8168b378c1498752b1177519","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"ppc64le","os":"linux"},"size":529},{"digest":"sha256:f3f6ec162b83d29614c01226ea605246bb0145f8acee893d539b545df7028593","mediaType":"application\/vnd.docker.distribution.manifest.v2+json","platform":{"architecture":"s390x","os":"linux"},"size":529}],"mediaType":"application\/vnd.docker.distribution.manifest.list.v2+json","schemaVersion":2}'
+    headers:
+      Content-Length:
+      - '1854'
+      Content-Type:
+      - application/vnd.docker.distribution.manifest.list.v2+json
+      Date:
+      - Wed, 24 Feb 2021 13:04:32 GMT
+      Docker-Content-Digest:
+      - sha256:1092695e843ad975267131f27a2b523128c4e03d2d96574bbdd7cf949ed51475
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+      Etag:
+      - '"sha256:1092695e843ad975267131f27a2b523128c4e03d2d96574bbdd7cf949ed51475"'
+      RateLimit-Limit:
+      - 100;w=21600
+      RateLimit-Remaining:
+      - 91;w=21600
+      Strict-Transport-Security:
+      - max-age=31536000
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json
+      Authorization:
+      - Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsIng1YyI6WyJNSUlDK1RDQ0FwK2dBd0lCQWdJQkFEQUtCZ2dxaGtqT1BRUURBakJHTVVRd1FnWURWUVFERXp0U1RVbEdPbEZNUmpRNlEwZFFNenBSTWtWYU9sRklSRUk2VkVkRlZUcFZTRlZNT2taTVZqUTZSMGRXV2pwQk5WUkhPbFJMTkZNNlVVeElTVEFlRncweU1UQXhNalV5TXpFMU1EQmFGdzB5TWpBeE1qVXlNekUxTURCYU1FWXhSREJDQmdOVkJBTVRPMVZQU1ZJNlJFMUpWVHBZVlZKUk9rdFdRVXc2U2twTFZ6cExORkpGT2tWT1RFczZRMWRGVERwRVNrOUlPbEpYTjFjNlRrUktWRHBWV0U1WU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbnZBeVpFK09sZHgrY3hRS0RBWUtmTHJJYk5rK2hnaEg3Ti9mTFpMVDhEYXVPMXRoTWdoamxjcGhFVkNuYTFlMEZpOHVsUlZ4WG1HdWpZVDNXbnFsZ2ZpM2ZYTUQvQlBRTmlkWHZkeWprbDFZS3dPTkl3TkFWMnRXbExxaXFsdGhSWkFnTFdvWWZZMXZQMHFKTFZBbWt5bUkrOXRBcEMxNldNZ1ZFcHJGdE1rNnV0NDlMcDlUR1J0aDJQbHVWc3RSQ1hVUGp4bjI0d3NnYlUwVStjWTJSNEpyZmVJdzN0T1ZKbXNESkNaYW5SNmVheFYyVFZFUkxoZnNGVTlsSHAzcldCZ1RuNVRCSHlMRDNRdGVFLzJ3L3MvcUxZcmdIK1hCMmZBazJPd1NIRG5YWDg4WWVJd0EyVGJJMDdYNS8xQnVsaUwrUDduOWVBT1RmbDkxVlZwNER3SURBUUFCbzRHeU1JR3ZNQTRHQTFVZER3RUIvd1FFQXdJSGdEQVBCZ05WSFNVRUNEQUdCZ1JWSFNVQU1FUUdBMVVkRGdROUJEdFZUMGxTT2tSTlNWVTZXRlZTVVRwTFZrRk1Pa3BLUzFjNlN6UlNSVHBGVGt4TE9rTlhSVXc2UkVwUFNEcFNWemRYT2s1RVNsUTZWVmhPV0RCR0JnTlZIU01FUHpBOWdEdFNUVWxHT2xGTVJqUTZRMGRRTXpwUk1rVmFPbEZJUkVJNlZFZEZWVHBWU0ZWTU9rWk1WalE2UjBkV1dqcEJOVlJIT2xSTE5GTTZVVXhJU1RBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQTBkN3l1azQrWElabmtQb3RJVkdCeHBRSndpMzQwdExSb3R3Qzl4NkJpdWNDSUhFSmIyWGg0QzhtYVZic1Exd3ZUSCthRGV0VXhBS21lYkdXa3F6Z1J1Z1QiXX0.eyJhY2Nlc3MiOlt7InR5cGUiOiJyZXBvc2l0b3J5IiwibmFtZSI6ImxpYnJhcnkvZGViaWFuIiwiYWN0aW9ucyI6WyJwdWxsIl0sInBhcmFtZXRlcnMiOnsicHVsbF9saW1pdCI6IjEwMCIsInB1bGxfbGltaXRfaW50ZXJ2YWwiOiIyMTYwMCJ9fV0sImF1ZCI6InJlZ2lzdHJ5LmRvY2tlci5pbyIsImV4cCI6MTYxNDE3MjE3MSwiaWF0IjoxNjE0MTcxODcxLCJpc3MiOiJhdXRoLmRvY2tlci5pbyIsImp0aSI6Iklha2FKSXhCaDI4UjRPcGsxUk1UIiwibmJmIjoxNjE0MTcxNTcxLCJzdWIiOiIifQ.j0SFB1iOCGxAQjjvMpDF11rQw5DAfz81QJhZI7fvgoF-NsPqVuJsltlNY6i-Q-k2G3sqGxUjVe9VZnjDq23E6IvGsGh6UbwO30AT_oIpQxosARsR_XPij6xBzIZZWeyT-Z8ipoMMwglGhoeXID-GoyY4vlu4OttfyjF22Kq2YRF8Ms6DclIcfp0Oks9HcbZxO_B3Nkm8jVCVlD8eXCgtec55UldZiIpmtCA9ki1QybCzpODRQd2SDGwZdDbDWPCJXrgYaT7aaQF3FL9XKMwiu1Deck-Ee4vS3Nh55uabE9cgrVXfD-owiKhW9-AtaENstg2cgtRa-mhCtN1IHBxBBw
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+    method: GET
+    uri: https://registry-1.docker.io/v2/library/debian/manifests/sha256:102ab2db1ad671545c0ace25463c4e3c45f9b15e319d3a00a1b2b085293c27fb
+  response:
+    body:
+      string: "{\n   \"schemaVersion\": 2,\n   \"mediaType\": \"application/vnd.docker.distribution.manifest.v2+json\",\n
+        \  \"config\": {\n      \"mediaType\": \"application/vnd.docker.container.image.v1+json\",\n
+        \     \"size\": 1459,\n      \"digest\": \"sha256:5890f8ba95f680c87fcf89e51190098641b4f646102ce7ca906e7f83c84874dc\"\n
+        \  },\n   \"layers\": [\n      {\n         \"mediaType\": \"application/vnd.docker.image.rootfs.diff.tar.gzip\",\n
+        \        \"size\": 50400198,\n         \"digest\": \"sha256:0ecb575e629cd60aa802266a3bc6847dcf4073aa2a6d7d43f717dd61e7b90e0b\"\n
+        \     }\n   ]\n}"
+    headers:
+      Content-Length:
+      - '529'
+      Content-Type:
+      - application/vnd.docker.distribution.manifest.v2+json
+      Date:
+      - Wed, 24 Feb 2021 13:04:32 GMT
+      Docker-Content-Digest:
+      - sha256:102ab2db1ad671545c0ace25463c4e3c45f9b15e319d3a00a1b2b085293c27fb
+      Docker-Distribution-Api-Version:
+      - registry/2.0
+      Etag:
+      - '"sha256:102ab2db1ad671545c0ace25463c4e3c45f9b15e319d3a00a1b2b085293c27fb"'
+      RateLimit-Limit:
+      - 100;w=21600
+      RateLimit-Remaining:
+      - 91;w=21600
+      Strict-Transport-Security:
+      - max-age=31536000
+    status:
+      code: 200
+      message: OK
+version: 1

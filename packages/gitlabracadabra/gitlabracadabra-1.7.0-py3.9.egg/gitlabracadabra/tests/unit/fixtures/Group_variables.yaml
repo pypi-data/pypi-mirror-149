@@ -1,0 +1,448 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/groups/test%2Fgroup_variables
+  response:
+    body:
+      string: '{"id":22,"web_url":"http://gitlab.example.com/groups/test/group_variables","name":"group_variables","path":"group_variables","description":"","visibility":"private","lfs_enabled":true,"avatar_url":null,"request_access_enabled":false,"full_name":"test
+        / group_variables","full_path":"test/group_variables","parent_id":3,"projects":[],"shared_projects":[]}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '354'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:25 GMT
+      Etag:
+      - W/"b7cac033305ba1d7351de1283dbc49b9"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - 98rauqOw5A
+      X-Runtime:
+      - '0.030862'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/groups/22/variables
+  response:
+    body:
+      string: '[{"variable_type":"env_var","key":"change_me","value":"oldvalue","protected":true,"masked":true}]'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:25 GMT
+      Etag:
+      - W/"7bcb84ec4a85bece126bf40bef4d3eed"
+      Link:
+      - <http://gitlab.example.com/api/v4/groups/22/variables?id=22&page=1&per_page=20>;
+        rel="first", <http://gitlab.example.com/api/v4/groups/22/variables?id=22&page=1&per_page=20>;
+        rel="last"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Next-Page:
+      - ''
+      X-Page:
+      - '1'
+      X-Per-Page:
+      - '20'
+      X-Prev-Page:
+      - ''
+      X-Request-Id:
+      - TzGtrVzl1pa
+      X-Runtime:
+      - '0.025972'
+      X-Total:
+      - '1'
+      X-Total-Pages:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/22/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":true,"masked":true}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '96'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:25 GMT
+      Etag:
+      - W/"6819b23ab59f360dc3acab495ef29ab4"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - dU8AnEVtyJ2
+      X-Runtime:
+      - '0.087664'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "masked": false}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '59'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/22/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":true,"masked":true}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '96'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:26 GMT
+      Etag:
+      - W/"6819b23ab59f360dc3acab495ef29ab4"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - T6a0FZV5GP2
+      X-Runtime:
+      - '0.062530'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "protected": false}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/22/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":false,"masked":true}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:26 GMT
+      Etag:
+      - W/"73752b10fcaa4fad770e194579f24b2d"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - rY1Tsa7YbQ9
+      X-Runtime:
+      - '0.043000'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "variable_type": "file"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/22/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"file","key":"change_me","value":"new_value","protected":false,"masked":true}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '94'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:26 GMT
+      Etag:
+      - W/"ad4b43bc9b6720d65cec59887c7ddb50"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - Pc3xwJcnxq6
+      X-Runtime:
+      - '0.056805'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "file_variable", "value": "BEGIN CERTIFICATE", "variable_type":
+      "file"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '79'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://localhost/api/v4/groups/22/variables
+  response:
+    body:
+      string: '{"variable_type":"file","key":"file_variable","value":"BEGIN CERTIFICATE","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '107'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:26 GMT
+      Etag:
+      - W/"40eeb01c0e449420c14e207c23c3b33a"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - W2YZoUas8v5
+      X-Runtime:
+      - '0.048403'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"key": "simple_var", "value": "simple_value"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '46'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://localhost/api/v4/groups/22/variables
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"simple_var","value":"simple_value","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '102'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:32:26 GMT
+      Etag:
+      - W/"4e69669bdcc999a0ce87688febd8767e"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - adkmBOvXNy5
+      X-Runtime:
+      - '0.032959'
+    status:
+      code: 201
+      message: Created
+version: 1
