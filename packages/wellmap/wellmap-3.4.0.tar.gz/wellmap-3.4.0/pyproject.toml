@@ -1,0 +1,62 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "wellmap"
+authors = [
+  {name = "Kale Kundert", email = "kale@thekunderts.net"},
+]
+readme = "README.rst"
+dynamic = ["version", "description"]
+requires-python = "~=3.6"
+dependencies = [
+  'pandas',
+  'toml>=0.10',
+  'inform>=1.15',
+  'docopt',      # gui
+  'matplotlib',  # gui
+  'colorcet',    # gui
+]
+
+[project.optional-dependencies]
+tests = [
+  'pytest',
+  'pytest-cov',
+  'pytest-unordered',
+  'pytest-subtests',
+  'parametrize_from_file',
+  'hypothesis',
+  'coveralls',
+  'attrs',
+]
+docs = [
+  'sphinxcontrib-programoutput',
+  'sphinx_rtd_theme',
+  'myst-parser',
+]
+
+[project.scripts]
+wellmap = "wellmap.plot:main"
+
+[project.urls]
+'Documentation' = 'https://wellmap.readthedocs.io/en/latest/'
+'Version Control' = 'https://github.com/kalekundert/wellmap'
+'Bug Tracker' = 'https://github.com/kalekundert/wellmap/issues'
+'Continuous Integration' = 'https://travis-ci.org/kalekundert/wellmap'
+'Test Coverage' = 'https://coveralls.io/github/kalekundert/wellmap'
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    'ignore::DeprecationWarning',
+    'ignore:A private pytest class or function was used.:pytest.PytestDeprecationWarning',
+]
+addopts = "--doctest-glob='*.rst'"
+
+[tool.semantic_release]
+build_command = 'python -m pip install flit && flit build'
+version_variable = 'wellmap/__init__.py:__version__'
+version_pattern = [
+    'wellmapr/DESCRIPTION:Version: {version}',
+    'wellmapr/DESCRIPTION:list\(package = "wellmap", version = "{version}"'
+]
