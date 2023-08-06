@@ -1,0 +1,12 @@
+{% extends base_view_template %}
+<!-- param: feedback - list of feedback messages
+-->
+{% block baseview_body %}
+    <h1>Сообщения обратной связи</h1>
+    <br>
+    {% for message in feedback %}
+        <p> {{ message.date|e }} {{ message.name|e }} ({{ message.email|e }}): {{ message.title|e }}<br>
+            {{ message.msg|e }}
+        </p>
+    {% endfor %}
+{% endblock %}

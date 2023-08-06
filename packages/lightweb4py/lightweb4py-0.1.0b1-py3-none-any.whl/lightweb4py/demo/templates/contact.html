@@ -1,0 +1,33 @@
+{% extends base_view_template %}
+<!-- Параметр processing_url - URL, куда отправлять содержимое формы методом POST -->
+{% block baseview_body %}
+    <p><a href="/">Домой</a></p>
+
+    <h1>Страница обратной связи</h1>
+
+    <p>Чтобы связаться с нами или просто оставить отзыв, заполните поля ниже и нажмите "Отправить"</p>
+
+    <!-- Форма с аргументами запроса для метода GET -->
+    <form action="{{ processing_url }}" method="post">
+        <table style="border: 1px solid black">
+            <caption style="background:Black;color:White">ЗАПОЛНИТЕ ФОРМУ</caption>
+            <tr><td style="text-align:right"><label for="name">Имя *</label></td>
+                <td style="text-align:left">
+                    <input size="60" name="name" id="name" value="Феодосий Петрович" required>
+                </td></tr>
+            <tr><td style="text-align:right"><label for="email">Email *</label></td>
+                <td style="text-align:left">
+                    <input type="email" name="email" id="email" value="feo@sao.la" required>
+                </td></tr>
+            <tr><td style="text-align:right"><label for="title">Тема</label></td>
+                <td style="text-align:left"><input size="60" name="title" id="title" value="Тук тук"></td></tr>
+            <tr><td style="text-align:right"><label for="msg">Сообщение *</label></td>
+                <td style="text-align:left"><textarea cols="60" rows="10" name="msg" id="msg" required>
+                    Ну шо?
+                </textarea></td>
+            </tr>
+            <tr><td colspan="2" style="text-align:left">* - обязательное поле</td></tr>
+            <tr><td colspan="2" style="text-align:center"><button>Отправить</button></td></tr>
+        </table>
+    </form>
+{% endblock %}
