@@ -1,0 +1,46 @@
+name: Testing
+on: 
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6,3.7,3.8]
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pandas
+          pip install astropy
+          pip install pytest-cov
+          pip install coveralls
+      - name: Install sqlutilpy
+        run: |
+          pip install .        
+      - name: Start Postgres
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
+      - name: PG setup
+        run: |
+          sudo -u postgres psql -c "create role testuser with login password 'testpassword';" postgres
+      - name: Test sqlutilpy
+        run: |
+          export SQLUTIL_TEST_PG_DB='postgres'
+          export SQLUTIL_TEST_PG_HOST='localhost'
+          export SQLUTIL_TEST_PG_USER='testuser'
+          export SQLUTIL_TEST_PG_PASS='testpassword'
+          py.test --cov=sqlutilpy
+      - name: Coveralls
+        if: ${{ success() }}
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
