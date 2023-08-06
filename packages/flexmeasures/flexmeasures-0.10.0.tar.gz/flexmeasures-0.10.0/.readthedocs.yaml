@@ -1,0 +1,27 @@
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
+version: 2
+
+sphinx:
+  configuration: documentation/conf.py
+
+# Optionally build your docs in additional formats such as PDF
+formats:
+  - pdf
+
+build:
+  os: ubuntu-20.04
+  tools:
+    python: "3.9"
+
+python: 
+  install:
+    - requirements: requirements/app.txt
+    - requirements: requirements/docs.txt
+    - method: pip
+      path: .
+
+sphinx:
+  fail_on_warning: true
