@@ -1,0 +1,131 @@
+![016af05cdfc247a801214168e1c955](https://ryan-1307030779.cos.ap-nanjing.myqcloud.com/vscode-md016af05cdfc247a801214168e1c955.jpg)
+scrapyer
+=========
+Scrapyer A library that encapsulates components based on the scrapy framework
+
+- Package many pipeline files
+
+- Package the Item pipeline files involved in PDF processing
+
+- A Spidermiddleware file is packaged to handle item requests 
+
+scrapyer 基于scrapy框架,封装部分组件的库
+
+主要：
+
+- 打包了诸多pipeline管道文件
+
+- 打包处理了涉及pdf处理的item管道文件
+
+- 打包处理了关于item请求的spidermiddleware文件
+
+
+[ContactProjectTeam](https://github.com/buliqioqiolibusdo)
+
+
+Usage：
+========
+#### 1.卸载scrapy,卸载前视个人情况备份修改过的scrapy项目文件
+#### 2.安装scrapyer项目
+#### 3.检查是否安装成功,版本号是否一致
+```
+pip uninstall scrapy 
+pip install scrapyer
+scrapy shell
+```
+
+#### 4.项目文件中找到uploadpackages\updatescrapy\cp_settings,执行efficientpak.sh导入到templates下settings模版文件
+```
+bash efficientpak.sh
+```
+#### 5.在项目中引用表结构字段类
+'''
+from scrapy.xcc_items.factoryitems import FactoryMaterialItem 
+'''
+#### 6.在settings中配置开启管道,并配置相关参数
+```
+ITEM_PIPELINES = {
+   # 'scrapy.xcc_pipelines.ossfiles.OssFilesPipeline': 300,
+   # 'scrapy.xcc_pipelines.ossfiles.OssFilesPipelineBak': 301,
+   # 'scrapy.xcc_pipelines.ossfiles.OssFilesPipelineBakBak': 302,
+
+   # 'scrapy.xcc_pipelines.ossfiles.OssImagesPipeline': 303,
+   # 'scrapy.xcc_pipelines.ossfiles.OssImagesPipelineBak': 304,
+
+   # 'scrapy.xcc_pipelines.sqlspipelines.SQLSPipeline':400,
+   # 'scrapy.xcc_pipelines.mysqlpipelines.MySQLPipeline':401,
+   # 'scrapy.xcc_pipelines.mongopipelines.mongodbPipeline':402,
+}
+```
+#### 或者中间件,并配置相关参数
+```
+DOWNLOADER_MIDDLEWARES = {
+   'scrapy.xcc_downloadermiddlewares.randuamiddleware.RandomUserAgent': 543,
+   'scrapy.xcc_downloadermiddlewares.proxymiddleware.ProxyMiddleware': 888,
+}
+```
+
+相关Docker相关镜像：
+========
+scrapyerd替代scrapyd
+```
+docker pull buliqioqiolibusdo:scrapyerd:1.5.6
+docker run -d -v /etc/localtime:/etc/localtime --rm -p 0.0.0.0:6800:6800/tcp buliqioqiolibusdo:scrapyerd:1.5.6
+```
+注:1.4.1版本支持scrapy-redis分布式
+注:1.4.1版本不支持rabbitmq分布式
+
+版本:
+========
+2021/11/13 更新 1.4.3 
+- mongoitem管道中DuplicateKeyError除重处理异常问题
+
+- items文件增加FactoryMaterialItemMongo类用于存储在mongo的物料管道
+
+2021/11/13 更新 1.4.4 
+- 解决 python-magic 库在win和linux不兼容问题
+
+2021/11/16 更新 1.4.6
+- 修改 items文件增加FactoryMaterialItem 增加raw_img_url字段,raw_pdf_url字段
+- 修改 items文件增加FactoryMaterialItemMongo 类用于存储在mongo的物料管道
+- 解决 python-magic 在docker中版本选择的问题
+
+2021/11/25 更新 1.4.8
+- 解决 oss 管道文件中 拿到空item处理成 类似:{'pdf_url':''}
+
+2021/11/26 更新 1.4.9.1
+- 处理资源链接中带空格以及特殊字符问题
+- 解决 urllib库导入quote误写等问题
+
+2021/11/30 更新 1.4.10
+- 保护资源链接/&?:不被编码
+
+2021/12/1 更新 1.4.12
+- 修改资源链接中空格编码部分
+- 爬虫文件中item赋值属性_header可以传入资源请求头
+- 爬虫文件中item赋值属性_refer可以传入资源请求头
+- 爬虫文件中item赋值属性_set_cookies可以传入资源请求头
+- 请求头设置优先等级 settings文件中设置 > spider文件中item给_header/_refer属性 > 从上层请求中拿头 
+
+2021/12/9 更新 1.5.0
+- 增加http2协议请求模块,在settings中设置
+   DOWNLOAD_HANDLERS = {
+      'https': 'scrapy.core.downloader.handlers.http2.H2DownloadHandler',
+   }  
+- 增加mongo和mysql数据类型条件保护,title/brand_name/source等除重字段左右去空格
+
+2021/12/16 更新 1.5.1
+- debug随机ua中间件中,替换已设置ua或headers的情况
+- 增加参数FILTER_INVALID_FILE_PATH失效文件的路径,表示判断遇到这样一模一样的文件,将返回结果字段如pdf_url为空
+
+2021/12/21 更新 1.5.2
+- 指定依赖库版本号
+
+2021/12/23 更新 1.5.3
+- 新增功能:文件下载管道中判断pdf文件是否损坏,增加重试功能 
+
+2022/1/4 更新 1.5.5
+- debug:文件下载管道中判断pdf文件是否损坏,增加重试功能 
+
+2022/1/20 更新 1.5.6
+- add: 新增爬虫influxdb状态监控管道

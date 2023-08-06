@@ -1,0 +1,1 @@
+python cookiespool.py && scrapy crawl zz_rohmcrawl -o ../demo.csv
