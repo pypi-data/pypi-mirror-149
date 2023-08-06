@@ -1,0 +1,64 @@
+# Setup and install configuration
+
+[dev-dependencies]
+black = "22.1.0"
+pre-commit = ">= 2.7"
+pytest = ">= 6"
+pytest-xdist = ">= 2"
+coverage = ">= 5"
+pytest-cov = ">= 2.10.1"
+flake8 = "4.0.1"
+
+[build-system]
+requires = ["setuptools>=50",
+            "wheel",
+            "toml",
+            "setuptools_scm[toml]>=3.4",
+            "setuptools_scm_git_archive"]
+
+[tool.setuptools_scm]
+write_to = "netket/_version.py"
+
+
+# Development tools
+
+[tool.black]
+line-length = 88
+target-version = ['py37', 'py38', 'py39']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.coverage.run]
+branch = true
+parallel = true
+concurrency = ["multiprocessing"]
+command_line = "-m pytest --verbose test"
+source = ["netket"]
+
+[tool.pytest.ini_options]
+addopts = "--color=yes --verbose --durations=100 -n auto --tb=short"
+doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL NUMBER"
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore:No GPU/TPU found, falling back to CPU.:UserWarning",
+    "ignore:the imp module is deprecated in favour of importlib.*:DeprecationWarning",
+    "ignore:`np.long`",
+    "ignore:`np.int` is a deprecated alias for the builtin `int`",
+    "ignore::DeprecationWarning:tensorboardX",
+]
+testpaths = [
+    "test",
+]
