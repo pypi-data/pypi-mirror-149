@@ -1,0 +1,150 @@
+Metadata-Version: 2.1
+Name: pyjamas-rfglab
+Version: 2022.5.0
+Summary: PyJAMAS is Just A More Awesome SIESTA
+Home-page: https://bitbucket.org/rfg_lab/pyjamas
+Author: Rodrigo Fernandez-Gonzalez
+Author-email: rodrigo.fernandez.gonzalez@utoronto.ca
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.8
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: ipywidgets (>=7.6.5)
+Requires-Dist: joblib (>=1.1.0)
+Requires-Dist: lxml (>=4.7.1)
+Requires-Dist: matplotlib (>=3.5.0)
+Requires-Dist: nbformat (>=5.1.3)
+Requires-Dist: networkx (==2.6.3)
+Requires-Dist: numpy (>=1.19.5)
+Requires-Dist: opencv-python-headless (>=4.5.1)
+Requires-Dist: pandas (>=1.3.5)
+Requires-Dist: pyqt5 (>=5.15.2)
+Requires-Dist: scikit-image (>=0.18.3)
+Requires-Dist: scikit-learn (>=1.0.2)
+Requires-Dist: scipy (>=1.7.1)
+Requires-Dist: seaborn (>=0.11.2)
+Requires-Dist: setuptools (>=58.0.4)
+Requires-Dist: shapely (>=1.7.1)
+Requires-Dist: tensorflow (>=2.6.0)
+
+![Logo](./docs/images/paperfigure_v6.png)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/GPL-3.0)
+
+# PyJAMAS
+
+[**Py**JAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) is **J**ust **A** **M**ore **A**wesome **S**iesta.
+
+## Documentation
+
+You can find the official [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) documentation, with detailed
+installation instructions, [**here**](https://pyjamas.readthedocs.io).
+
+## Installing PyJAMAS
+
+The easiest way to install [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) is
+using [PyPi](https://pypi.org/project/pyjamas-rfglab/).
+
+Note that for MacOS, there is also an *experimental* [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) app
+that you can download [**here**](https://www.quantmorph.ca/software/pyjamas-python).
+
+### A note on the *Python interpreter*
+
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) requires that you
+have [Python](https://www.python.org/downloads/) installed.
+
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) has been extensively tested
+with [Python 3.8 and 3.9](https://www.python.org/downloads/).
+
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) does **NOT** work with Python 2.
+
+### MacOS and Linux
+
+Open a terminal. If you had previously installed [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/), we
+recommend uninstalling the previous version:
+
+To install [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/), type:  
+
+    $ python3 -m pip install --no-cache-dir -U pyjamas-rfglab
+
+To run [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/), type:  
+
+    $ pyjamas
+
+at the user prompt.
+
+If the executable fails to run, you can also try to execute [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) by opening a terminal and typing:
+
+    $ python3 -m pyjamas.pjscore
+
+### Apple M1
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) can take advantage of the new Apple M1 processors and their GPU capabilities. However, this requires a different installation process using [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+First, install [miniconda](https://docs.conda.io/en/latest/miniconda.html). In contrast to pip, [miniconda](https://docs.conda.io/en/latest/miniconda.html) can install packages running natively on the M1 architecture.
+
+Install Tensorflow:
+
+    $ conda install -c apple tensorflow
+
+Then install Jupyter:
+
+    $ conda install -c conda-forge jupyter jupyterlab
+
+And finally install the rest of packages necessary for [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) to run:
+
+    $ conda install openblas pyqt joblib lxml pandas scikit-image scikit-learn seaborn shapely opencv
+
+The last step is to install [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/):
+
+    $ python -m pip install --no-deps pyjamas-rfglab
+
+### GPU support on the Apple M1
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) supports the use of the GPU on the M1 chip. To do this, install tensorflow-metal (version 0.2 if you are on Big Sur - OSX 11, version 0.3 if you are on Monterey - OSX 12). For example, on Big Sur:
+
+    $ python -m pip install tensorflow-metal==0.2
+
+### Windows
+Before installing [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/), you will need to install  [Shapely](https://pypi.org/project/Shapely/), a package used in [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) to represent geometric objects such as points or polygons. Under Windows, [Shapely](https://pypi.org/project/Shapely/) fails to install with the [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) [PyPi](https://pypi.org/project/pyjamas-rfglab/) package. It is recommended to start by manually installing [Shapely](https://pypi.org/project/Shapely/). To that end, download the appropriate Shapely version from [this link](https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely). For example, use  Shapely‑1.6.4.post2‑cp37‑cp37m‑win_amd64.whl for a 64-bit machine running Python 3.7. Open a command prompt and navigate to the folder that contains the downloaded .whl file using the **cd** command. Complete the installation of [Shapely](https://pypi.org/project/Shapely/) by typing:
+
+    $ python -m pip install Shapely‑1.6.4.post2‑cp37‑cp37m‑win_amd64.whl
+
+substituting the downloaded file name. Note that, depending on your [Python](https://www.python.org/downloads/) installation, the executable for the [Python](https://www.python.org/downloads/) interpreter might be *py*. 
+
+Once [Shapely](https://pypi.org/project/Shapely/), has been set up, you can proceed with a regular [PyPi](https://pypi.org/project/pyjamas-rfglab/) installation of [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/). Open a command prompt and type:  
+
+    $ python -m pip install --no-cache-dir -U pyjamas-rfglab
+
+To run [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) type:  
+
+    $ pyjamas
+
+at the user prompt.  
+
+If the executable fails to run, you can also try to execute [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) by opening a command prompt and typing:
+
+    $ python -m pyjamas.pjscore
+
+#### GPU support under Windows
+[PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) supports the use of [CUDA](https://developer.nvidia.com/cuda-toolkit-archive/) -based GPUs in Windows. Please, check [here](https://tensorflow/install/gpu) for instructions on how to configure your system. Briefly:
+
+1. Download and install the [NVIDIA GPU drivers](https://www.nvidia.com/drivers).
+
+2. Download and install the [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit-archive).
+
+3. Download and install the cuDNN SDK (https://developer.nvidia.com/cudnn and https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html).
+
+**Known problems**: CUDA and cuDNN are picky with the version of each other that they talk to. If [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/) displays an error that cusolver64_10.dll is not found:
+
+1. Go to the folder C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\V11.2\bin (replacing V11.2 by whichever version you installed).
+
+2. Create a copy of the file cusolver64_11.dll.
+
+3. Rename the copy as cusolver64_10.dll.
+
+#### Citing PyJAMAS
+If you use [PyJAMAS](https://bitbucket.org/rfg_lab/pyjamas/src/master/), please cite:
+
+Fernandez-Gonzalez R, Balaghi N, Wang K, Hawkins R, Rothenberg K, McFaul C, Schimmer C, Ly M, do Carmo A, Scepanovic G, Erdemci-Tandogan G, Castle V. **PyJAMAS: open-source, multimodal segmentation and analysis of microscopy images**. *Bioinformatics*. 2021 Aug 13:btab589. doi: 10.1093/bioinformatics/btab589.
+
