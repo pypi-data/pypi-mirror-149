@@ -1,0 +1,873 @@
+import asyncio
+from typing import Any, Dict, List, Optional
+
+from nautilus_trader.core.correctness import PyCondition
+
+from nacre.adapters.zb.common import format_endpoint
+from nacre.adapters.zb.common import format_symbol
+from nacre.adapters.zb.http.client import ZbHttpClient
+
+
+class ZbFutureAccountHttpAPI:
+
+    BASE_ENDPOINT = "/{quote}/Server/api/v2/"
+    FUTURE_ACCOUNT_TYPES = (1, 2)
+
+    def __init__(self, client: ZbHttpClient):
+        """
+        Initialize a new instance of the ``ZbFutureAccountHttpAPI`` class.
+
+        Parameters
+        ----------
+        client : ZbHttpClient
+            The Binance REST API client.
+
+        """
+        PyCondition.not_none(client, "client")
+
+        self.client = client
+
+    async def new_order(
+        self,
+        symbol: str,
+        side: int,
+        amount: float,
+        price: Optional[float] = None,
+        action: Optional[int] = None,
+        client_order_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Submit a new order.
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        side : int
+            The order side
+            1 open long (dual side position mode)
+            2 open short (dual side position mode)
+            3 close long (dual side position mode)
+            4 close short (dual side position mode)
+            5 buy (one side position mode)
+            6 sell (one side position mode)
+            0 reduce only
+        amount : str
+            The order quantity in base asset units for the request.
+        price : str, optional
+            The order price for the request, optional if action in [11, 12, 31, 52, 52]
+        client_order_id : str, optional
+            The client order ID for the request. A unique ID among open orders.
+            Automatically generated if not provided.
+        action : int, optional
+            Order Type
+            1 limit
+            3 IOC
+            4 maker only
+            5 FOK
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol), "side": side, "amount": amount}
+        if price is not None:
+            payload["price"] = price
+        if action is not None:
+            payload["action"] = action
+        if client_order_id is not None:
+            payload["clientOrderId"] = client_order_id
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/order",
+            payload=payload,
+        )
+
+    async def new_batch_order(  # noqa: C901
+        self,
+        orders: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """
+        Submit orders in batch
+
+        Parameters
+        ----------
+        orders: List[Dict]
+            Each order dict as follow
+            symbol : str
+                The symbol for the request.
+            side : int
+                The order side
+                1 open long (dual side position mode)
+                2 open short (dual side position mode)
+                3 close long (dual side position mode)
+                4 close short (dual side position mode)
+                5 buy (one side position mode)
+                6 sell (one side position mode)
+                0 reduce only
+            amount : str
+                The order quantity in base asset units for the request.
+            price : str, optional
+                The order price for the request, optional if action in [11, 12, 31, 52, 52]
+            orderCode: str
+                The client order ID for the request. A unique ID among open orders.
+                Automatically generated if not provided.
+            action : int, optional
+                Order Type
+                1 limit
+                3 IOC
+                4 maker only
+                5 FOK
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        first_symbol = orders[0]["symbol"]
+        for order in orders:
+            order["symbol"] = format_symbol(order["symbol"])
+
+        payload: Dict[str, Any] = {"orderDatas": orders}
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=first_symbol) + "trade/batchOrder",
+            payload=payload,
+        )
+
+    async def cancel_order(
+        self,
+        symbol: str,
+        order_id: Optional[str] = None,
+        client_order_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Cancel specified orders on a symbol.
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        order_id: str, optional
+            OrderId return from exchange. optional if client_order_id set
+        client_order_id: str, optional
+            ClientOrderId generated by client. optional if order_id set
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if order_id is not None:
+            payload["orderId"] = order_id
+        elif client_order_id is not None:
+            payload["clientOrderId"] = client_order_id
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/cancelOrder",
+            payload=payload,
+        )
+
+    async def cancel_batch_order(
+        self,
+        symbol: str,
+        order_ids: Optional[List[str]] = None,
+        client_order_ids: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Cancel specified orders on a symbol.
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        order_ids: List[str], optional
+            OrderId list return from exchange. optional if client_order_id set
+        client_order_ids: List[str], optional
+            ClientOrderId list generated by client. optional if order_id set
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if order_ids is not None:
+            payload["orderIds"] = order_ids
+        elif client_order_ids is not None:
+            payload["clientOrderIds"] = client_order_ids
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/batchCancelOrder",
+            payload=payload,
+        )
+
+    async def cancel_open_orders(self, symbol: str) -> Dict[str, Any]:
+        """
+        Cancel all active orders on a symbol.
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/cancelAllOrders",
+            payload=payload,
+        )
+
+    async def get_open_orders(
+        self,
+        symbol: str,
+        page_num: Optional[int] = None,
+        page_size: Optional[int] = None,
+        type: Optional[int] = 0,
+        side: Optional[int] = None,
+        action: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Get all orders on a symbol.
+
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        type : int, optional
+            -1 sell; 1 buy, 0 all
+        side : int, optional
+            The order side
+            1 open long (dual side position mode)
+            2 open short (dual side position mode)
+            3 close long (dual side position mode)
+            4 close short (dual side position mode)
+            5 buy (one side position mode)
+            6 sell (one side position mode)
+            0 reduce only
+        action : int, optional
+            Order Type
+            1 limit
+            3 IOC
+            4 maker only
+            5 FOK
+        page_num : int, optional
+            page number
+        page_size : int, optional
+            page size
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if type is not None:
+            payload["type"] = type
+        if side is not None:
+            payload["side"] = side
+        if action is not None:
+            payload["action"] = action
+        if page_num is not None:
+            payload["pageNum"] = page_num
+        if page_size is not None:
+            payload["pageSize"] = page_size
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/getUndoneOrders",
+            payload=payload,
+        )
+
+    async def get_all_orders(
+        self,
+        symbol: str,
+        type: Optional[int] = None,
+        side: Optional[int] = None,
+        date_range: Optional[int] = None,
+        action: Optional[int] = None,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None,
+        page_num: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Get all orders on a symbol.
+
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        type : int, optional
+            -1 sell; 1 buy, 0 all
+        side : int, optional
+            The order side
+            1 open long (dual side position mode)
+            2 open short (dual side position mode)
+            3 close long (dual side position mode)
+            4 close short (dual side position mode)
+            5 buy (one side position mode)
+            6 sell (one side position mode)
+            0 reduce only
+        date_range : int, optional
+            0 recent; 1 more
+        action : int, optional
+            Order Type
+            1 limit
+            3 IOC
+            4 maker only
+            5 FOK
+        start_time : int, optional
+            Start time
+        end_time : int, optional
+            End time
+        page_num : int, optional
+            page number
+        page_size : int, optional
+            page size
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if type is not None:
+            payload["type"] = type
+        if side is not None:
+            payload["side"] = side
+        if action is not None:
+            payload["action"] = action
+        if date_range is not None:
+            payload["dateRange"] = date_range
+        if start_time is not None:
+            payload["startTime"] = start_time
+        if end_time is not None:
+            payload["endTime"] = end_time
+        if page_num is not None:
+            payload["pageNum"] = page_num
+        if page_size is not None:
+            payload["pageSize"] = page_size
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/getAllOrders",
+            payload=payload,
+        )
+
+    async def get_order(
+        self,
+        symbol: str,
+        order_id: Optional[str] = None,
+        client_order_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Get specified orders.
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        order_id: str, optional
+            OrderId return from exchange. optional if client_order_id set
+        client_order_id: str, optional
+            ClientOrderId generated by client. optional if order_id set
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if order_id is not None:
+            payload["orderId"] = order_id
+        elif client_order_id is not None:
+            payload["clientOrderId"] = client_order_id
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/getOrder",
+            payload=payload,
+        )
+
+    async def get_trades(
+        self,
+        symbol: str,
+        order_id: str,
+        page_num: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> Dict[str, Any]:
+
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol), "orderId": order_id}
+        if page_num is not None:
+            payload["pageNum"] = page_num
+        if page_size is not None:
+            payload["pageSize"] = page_size
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/getTradeList",
+            payload=payload,
+        )
+
+    async def get_history_trades(
+        self,
+        symbol: str,
+        side: Optional[int] = None,
+        date_range: Optional[int] = None,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None,
+        page_num: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Get all orders on a symbol.
+
+
+        Parameters
+        ----------
+        symbol : str
+            The symbol for the request.
+        type : int, optional
+            -1 sell; 1 buy, 0 all
+        side : int, optional
+            OrderSide 0 all; 1 open long; 2 open short; 3 close long; 4 close short
+        date_range : int, optional
+            0 recent; 1 more
+        action : int, optional
+            Order Type
+            1 limit
+            3 IOC
+            4 maker only
+            5 FOK
+        start_time : int, optional
+            Start time
+        end_time : int, optional
+            End time
+        page_num : int, optional
+            page number
+        page_size : int, optional
+            page size
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"symbol": format_symbol(symbol)}
+        if side is not None:
+            payload["side"] = side
+        if date_range is not None:
+            payload["dateRange"] = date_range
+        if start_time is not None:
+            payload["startTime"] = start_time
+        if end_time is not None:
+            payload["endTime"] = end_time
+        if page_num is not None:
+            payload["pageNum"] = page_num
+        if page_size is not None:
+            payload["pageSize"] = page_size
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "trade/tradeHistory",
+            payload=payload,
+        )
+
+    # TODO: add Algo order api
+
+    async def get_bill(
+        self,
+        future_account_type: int = 1,
+        currency_id: Optional[int] = None,
+        currency_name: Optional[str] = None,
+        type: Optional[int] = None,
+        start_time: Optional[int] = None,
+        end_time: Optional[int] = None,
+        page_num: Optional[int] = None,
+        page_size: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {"futuresAccountType": future_account_type}
+        if currency_id is not None:
+            payload["currencyId"] = currency_id
+        if currency_name is not None:
+            payload["currencyName"] = currency_name
+        if type is not None:
+            payload["type"] = type
+        if start_time is not None:
+            payload["startTime"] = start_time
+        if end_time is not None:
+            payload["endTime"] = end_time
+        if page_num is not None:
+            payload["pageNum"] = page_num
+        if page_size is not None:
+            payload["pageSize"] = page_size
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Fund/getBill",
+            payload=payload,
+        )
+
+    async def get_account(
+        self, future_account_type: Optional[int] = None, convert_unit: Optional[str] = None
+    ) -> Dict[str, Any]:
+        if future_account_type is None:
+            reply: Dict[str, Any] = {"data": {"accounts": [], "assets": []}}
+            aws = [self._get_account(future_account_type=ft) for ft in self.FUTURE_ACCOUNT_TYPES]
+            results = await asyncio.gather(*aws)
+            for ret in results:
+                reply["data"]["accounts"].append(ret["data"]["account"])
+                reply["data"]["assets"].extend(ret["data"]["assets"])
+            return reply
+        else:
+            reply = await self._get_account(future_account_type=future_account_type)
+            reply["data"]["accounts"] = [reply["data"]["account"]]
+            return reply
+
+    async def _get_account(
+        self, future_account_type: int, convert_unit: Optional[str] = None
+    ) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {"futuresAccountType": future_account_type}
+        if convert_unit is not None:
+            payload["convert_unit"] = convert_unit
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Fund/getAccount",
+            payload=payload,
+        )
+
+    async def get_positions(
+        self,
+        future_account_type: Optional[int] = None,
+        symbol: Optional[str] = None,
+        side: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        if future_account_type is None:
+            reply: Dict[str, Any] = {"data": []}
+            aws = [self._get_positions(ft, symbol, side) for ft in self.FUTURE_ACCOUNT_TYPES]
+            results = await asyncio.gather(*aws)
+            for ret in results:
+                reply["data"].extend(ret["data"])
+            return reply
+        else:
+            reply = await self._get_positions(future_account_type, symbol, side)
+            return reply
+
+    async def _get_positions(
+        self,
+        future_account_type: int,
+        symbol: Optional[str] = None,
+        side: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Get position info
+
+        Parameters
+        ----------
+        symbol : str, optional
+            The market symbol.
+        side : int, optional
+            1 for LONG, 0 for SHORT
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {"futuresAccountType": future_account_type}
+        if symbol is not None:
+            payload["symbol"] = format_symbol(symbol)
+        if side is not None:
+            payload["side"] = side
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Positions/getPositions",
+            payload=payload,
+        )
+
+    async def margin_info(
+        self,
+        positions_id: int,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "positionsId": positions_id,
+        }
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Positions/marginInfo",
+            payload=payload,
+        )
+
+    async def margin_history(
+        self,
+        symbol: Optional[str] = None,
+        type: Optional[int] = None,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+        }
+        if symbol is not None:
+            payload["symbol"] = format_symbol(symbol)
+        if type is not None:
+            payload["type"] = type
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Fund/marginHistory",
+            payload=payload,
+        )
+
+    async def update_margin(
+        self,
+        positions_id: int,
+        amount: float,
+        type: int,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Change margin on specified position
+
+        Parameters
+        ----------
+        positions_id : int
+            The position id.
+        amount : float
+            The margin amount.
+        type : int
+            1 for increase; 0 for decrease
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "positionsId": positions_id,
+            "type": type,
+            "amount": amount,
+        }
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Positions/updateMargin",
+            payload=payload,
+        )
+
+    async def update_leverage(
+        self,
+        symbol: str,
+        leverage: int,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Change leverage on specified market
+
+        Parameters
+        ----------
+        symbol : str
+            The market symbol.
+        leverage : int
+            The leverage.
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+            2 for QC perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "symbol": format_symbol(symbol),
+            "leverage": leverage,
+        }
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, symbol=symbol) + "setting/setLeverage",
+            payload=payload,
+        )
+
+    async def update_position_mode(
+        self,
+        symbol: str,
+        mode: int,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Change position mode on specified market
+
+        Parameters
+        ----------
+        symbol : str
+            The market symbol.
+        mode : int
+            1 for one side, 2 for dual side
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+            2 for QC perpetual
+            3 for COIN-based perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "symbol": symbol,
+            "positionsMode": mode,
+        }
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "setting/setPositionsMode",
+            payload=payload,
+        )
+
+    async def get_nominal_value(
+        self,
+        symbol: str,
+        side: Optional[int] = None,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Change leverage on specified market
+
+        Parameters
+        ----------
+        symbol : str
+            The market symbol.
+        side : int, optional
+            1 for LONG, 0 for SHORT
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+            2 for QC perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "symbol": format_symbol(symbol),
+        }
+        if side is not None:
+            payload["side"] = side
+
+        return await self.client.sign_request(
+            http_method="GET",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Positions/getNominalValue",
+            payload=payload,
+        )
+
+    async def set_auto_append_margin(
+        self,
+        positions_id: int,
+        max_additional_usd: float,
+        future_account_type: int = 1,
+    ) -> Dict[str, Any]:
+        """
+        Enable/Disable auto append margin
+
+        Parameters
+        ----------
+        positions_id : int
+            The position id.
+        max_additional_usd : float
+            USD value to append, 0 for disable
+        future_account_type: int, optional, default 1
+            1 for USDT perpetual
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {
+            "futuresAccountType": future_account_type,
+            "maxAdditionalUSDValue": max_additional_usd,
+            "positionsId": positions_id,
+        }
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, future_account_type=future_account_type)
+            + "Positions/updateAppendUSDValue",
+            payload=payload,
+        )
+
+    async def transfer_fund(
+        self,
+        currency_name: str,
+        amount: float,
+        client_id: str,
+        side: int,
+    ) -> Dict[str, Any]:
+        """
+        Transfer fund between spot and future
+
+        Parameters
+        ----------
+        currency_name : str
+            The asset name.
+        amount : float
+            Transfer amount.
+        client_id: str
+            Unique client id, max len 18
+        side: int
+            1 for deposit, 0 for withdrawal
+
+        Returns
+        -------
+        dict[str, Any]
+
+        """
+        payload: Dict[str, Any] = {
+            "currencyName": currency_name,
+            "amount": amount,
+            "clientId": client_id,
+            "side": side,
+        }
+
+        return await self.client.sign_request(
+            http_method="POST",
+            url_path=format_endpoint(self.BASE_ENDPOINT, currency=currency_name)
+            + "Fund/transferFund",
+            payload=payload,
+        )
