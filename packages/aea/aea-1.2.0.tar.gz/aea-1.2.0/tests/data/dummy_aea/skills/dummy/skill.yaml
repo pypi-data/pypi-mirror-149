@@ -1,0 +1,59 @@
+name: dummy
+author: dummy_author
+version: 0.1.0
+type: skill
+description: a dummy_skill for testing purposes.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  __init__.py: QmNqncXE2j6RcXDJiFEuUkjsNbTSC7wPzVCKwg2aagmKLW
+  behaviours.py: QmQe9af92uxEnCBZXJPbL7HwubYkscy5AmpZcKnaacYxjz
+  dummy.py: QmcrSECZ3cL3ba4wt63iHrPoLCHsbZbHNenuZQBusVS8Ys
+  dummy_subpackage/__init__.py: QmQ1NvzFZeq3FEaF4Bq3LGT8VrSXKs2QyX8uAHKTpzj1ZV
+  dummy_subpackage/foo.py: QmPzUah7jE3s9mg1QW3a9aJrzmmhFGzJUHSkTbn5Q1RbjN
+  handlers.py: QmSNUxoN5MzKABJ5rwAi4U75fsLXC5CwsGfbg4dXh4rZPT
+  tasks.py: QmTdnWeaEmqixX3P4r65PixFB6GyHKxU6W4kW4RSTEvYMW
+fingerprint_ignore_patterns: []
+contracts: []
+protocols:
+- fetchai/default:1.1.1
+- fetchai/signing:1.1.1
+- fetchai/state_update:1.1.1
+skills: []
+behaviours:
+  dummy:
+    args:
+      behaviour_arg_1: 1
+      behaviour_arg_2: '2'
+    class_name: DummyBehaviour
+  dummy_behaviour_same_classname:
+    args:
+      behaviour_arg_1: 1
+      behaviour_arg_2: '2'
+    class_name: DummyBehaviour
+    file_path: dummy_subpackage/foo.py
+handlers:
+  another_dummy_handler:
+    args:
+      handler_arg_1: 1
+      handler_arg_2: '2'
+    class_name: DummyStateUpdateHandler
+  dummy:
+    args:
+      handler_arg_1: 1
+      handler_arg_2: '2'
+    class_name: DummyHandler
+  dummy_internal:
+    args:
+      handler_arg_1: 1
+      handler_arg_2: '2'
+    class_name: DummyInternalHandler
+models:
+  dummy:
+    args:
+      model_arg_1: 1
+      model_arg_2: '2'
+    class_name: DummyModel
+dependencies: {}
+is_abstract: false
+connections: []

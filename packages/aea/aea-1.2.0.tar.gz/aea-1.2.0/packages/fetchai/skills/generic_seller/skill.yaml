@@ -1,0 +1,79 @@
+name: generic_seller
+author: fetchai
+version: 0.28.1
+type: skill
+description: The weather station skill implements the functionality to sell weather
+  data.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  README.md: QmQ3hBSdCTwsFziUgPkbUqRcBU95yF2yZfrGXbowgaof5R
+  __init__.py: QmTQaYe9oq1CPuq3yWakYBEMnYkZ186YB5L8RvZpS76Ebp
+  behaviours.py: Qma28yLbE65GZuhXuTFQgqBxeTntYoZor5iXHPC562ffwv
+  dialogues.py: QmX6eAjvCiaZ1kT6VYBoLxwNw8zFuP5YKjrbaSuQQdQ2CY
+  handlers.py: QmREY2Dx7Tmza9kQDe1BWzFfCbPXBc68rwpnavJ6nFjMq9
+  strategy.py: QmfFfSsyXbgg8fwYJYTovdjudkpxDVDTgAV58pDScxXAzz
+fingerprint_ignore_patterns: []
+connections:
+- fetchai/ledger:0.21.0
+contracts: []
+protocols:
+- fetchai/default:1.1.1
+- fetchai/fipa:1.1.1
+- fetchai/ledger_api:1.1.1
+- fetchai/oef_search:1.1.1
+skills: []
+behaviours:
+  service_registration:
+    args:
+      max_soef_registration_retries: 5
+      services_interval: 20
+    class_name: GenericServiceRegistrationBehaviour
+handlers:
+  fipa:
+    args: {}
+    class_name: GenericFipaHandler
+  ledger_api:
+    args: {}
+    class_name: GenericLedgerApiHandler
+  oef_search:
+    args: {}
+    class_name: GenericOefSearchHandler
+models:
+  default_dialogues:
+    args: {}
+    class_name: DefaultDialogues
+  fipa_dialogues:
+    args: {}
+    class_name: FipaDialogues
+  ledger_api_dialogues:
+    args: {}
+    class_name: LedgerApiDialogues
+  oef_search_dialogues:
+    args: {}
+    class_name: OefSearchDialogues
+  strategy:
+    args:
+      classification:
+        piece: classification
+        value: seller
+      data_for_sale:
+        generic: data
+      has_data_source: false
+      is_ledger_tx: true
+      location:
+        latitude: 51.5194
+        longitude: 0.127
+      personality_data:
+        piece: genus
+        value: data
+      service_data:
+        key: seller_service
+        value: generic_service
+      service_id: generic_service
+      unit_price: 10
+    class_name: GenericStrategy
+dependencies:
+  aea-ledger-fetchai:
+    version: <2.0.0,>=1.0.0
+is_abstract: true

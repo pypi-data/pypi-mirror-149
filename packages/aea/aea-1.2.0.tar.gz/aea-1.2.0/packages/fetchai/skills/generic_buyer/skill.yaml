@@ -1,0 +1,87 @@
+name: generic_buyer
+author: fetchai
+version: 0.27.1
+type: skill
+description: The weather client skill implements the skill to purchase weather data.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  README.md: Qmd7hF4eNgxUoGaxkPEKVPQNxpLG2aG4DvovSLKkwKxVYt
+  __init__.py: QmXSAZNfo2h4MGmvaLCoZ18nBBU2WgS9YHWigx8KXTFQT5
+  behaviours.py: QmephYoPF78rWrwqBwpKWKSJhKUV6pe5GpEm4fgoR3BpPx
+  dialogues.py: QmaZsSYcxyjNJ4FQz4gTxYjW5qYi4hfkv3Aky5eCXNLbfc
+  handlers.py: QmUrPrqGB2aW8ZWv1NLPsNCAgjZbMw83g1yk5qGEGsZ8SE
+  strategy.py: QmUGFUoiif8qtGCG7BQiomQL48erPQydWPWm5FbguDpeC1
+fingerprint_ignore_patterns: []
+connections:
+- fetchai/ledger:0.21.0
+contracts: []
+protocols:
+- fetchai/default:1.1.1
+- fetchai/fipa:1.1.1
+- fetchai/ledger_api:1.1.1
+- fetchai/oef_search:1.1.1
+- fetchai/signing:1.1.1
+skills: []
+behaviours:
+  search:
+    args:
+      search_interval: 5
+    class_name: GenericSearchBehaviour
+  transaction:
+    args:
+      max_processing: 420
+      transaction_interval: 2
+    class_name: GenericTransactionBehaviour
+handlers:
+  fipa:
+    args: {}
+    class_name: GenericFipaHandler
+  ledger_api:
+    args: {}
+    class_name: GenericLedgerApiHandler
+  oef_search:
+    args: {}
+    class_name: GenericOefSearchHandler
+  signing:
+    args: {}
+    class_name: GenericSigningHandler
+models:
+  default_dialogues:
+    args: {}
+    class_name: DefaultDialogues
+  fipa_dialogues:
+    args: {}
+    class_name: FipaDialogues
+  ledger_api_dialogues:
+    args: {}
+    class_name: LedgerApiDialogues
+  oef_search_dialogues:
+    args: {}
+    class_name: OefSearchDialogues
+  signing_dialogues:
+    args: {}
+    class_name: SigningDialogues
+  strategy:
+    args:
+      is_ledger_tx: true
+      location:
+        latitude: 51.5194
+        longitude: 0.127
+      max_negotiations: 1
+      max_quantity: 100
+      max_tx_fee: 1
+      max_unit_price: 20
+      min_quantity: 1
+      search_query:
+        constraint_type: ==
+        search_key: seller_service
+        search_value: generic_service
+      search_radius: 5.0
+      service_id: generic_service
+      stop_searching_on_result: true
+    class_name: GenericStrategy
+dependencies:
+  aea-ledger-fetchai:
+    version: <2.0.0,>=1.0.0
+is_abstract: true

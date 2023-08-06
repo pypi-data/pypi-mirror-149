@@ -1,0 +1,57 @@
+name: registration_aw1
+author: fetchai
+version: 0.13.1
+type: skill
+description: The registration_aw1 skill is a skill for registration in Agent World
+  1.
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  README.md: Qmc9dfzqAXJWCJxYNqLd1yz8U7p4DQNbGGMmXMP73wUvJR
+  __init__.py: QmRPeSu3pjMPUDaYep6uLCSEXrXscJTUUvpT46H6EMSXnE
+  behaviours.py: QmXMJ91gk79b9iX9nDLCU4STWHR3Y9BmrYkqFrmHrEMUqv
+  dialogues.py: QmRJT2YeQxc7yhuaPgEDTvGuWyeKvY5cAcgeNZFLYMY8BY
+  handlers.py: QmX6ZYbPuuwu7Zht82pgGrCd3jP3vHCV2ALHmBR9fmPmr1
+  strategy.py: Qmf1a3sg6afcrgx4CQZbGAApbvioopbWsMiMhEoFAMriEW
+fingerprint_ignore_patterns: []
+connections: []
+contracts: []
+protocols:
+- fetchai/register:1.1.1
+- fetchai/signing:1.1.1
+skills:
+- fetchai/simple_service_search:0.11.1
+behaviours:
+  registration:
+    args:
+      tick_interval: 10
+    class_name: AW1RegistrationBehaviour
+handlers:
+  registration:
+    args: {}
+    class_name: AW1RegistrationHandler
+  signing:
+    args: {}
+    class_name: SigningHandler
+models:
+  register_dialogues:
+    args: {}
+    class_name: RegisterDialogues
+  signing_dialogues:
+    args: {}
+    class_name: SigningDialogues
+  strategy:
+    args:
+      announce_termination_key: null
+      developer_handle: PUT_YOUR_DEVELOPER_HANDLE_HERE
+      developer_handle_only: false
+      ethereum_address: PUT_YOUR_ETHEREUM_ADDRESS_HERE
+      shared_storage_key: agents_found
+      signature_of_fetchai_address: PUT_YOUR_SIGNATURE_HERE
+      tweet: PUT_THE_LINK_TO_YOUR_TWEET_HERE
+      whitelist: []
+    class_name: Strategy
+dependencies:
+  aea-ledger-ethereum:
+    version: <2.0.0,>=1.0.0
+is_abstract: false

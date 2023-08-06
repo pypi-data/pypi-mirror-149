@@ -1,0 +1,74 @@
+name: aries_alice
+author: fetchai
+version: 0.26.1
+type: skill
+description: The aries_alice skill implements the alice player in the aries cloud
+  agent demo
+license: Apache-2.0
+aea_version: '>=1.0.0, <2.0.0'
+fingerprint:
+  README.md: Qmc88RFakLqDTqT42YGJDCDrH22tW2dkCBAs8wLKMGt5TV
+  __init__.py: Qmeqv9TDhRxTVGg7ZcSHpkhTusoWbBZ5Y85Sxkqmh2Z8Pe
+  behaviours.py: QmdweWFwQsRpYT62x6agikommGMY75p8obsZr4VDmTbM35
+  dialogues.py: QmVgfF5LR7269g6ffhH56dWq6U11YygUaKZfYvk3tY21mu
+  handlers.py: QmUhygCzBn9g4CxkhBVyCQHYqwn61rvec4z9FbmUQKdYQ1
+  strategy.py: QmWhDYoKp49VnQVGyZWCaCoXcphhF5BpCtByqM9uQ4BB86
+fingerprint_ignore_patterns: []
+connections:
+- fetchai/http_client:0.24.1
+contracts: []
+protocols:
+- fetchai/default:1.1.1
+- fetchai/http:1.1.1
+- fetchai/oef_search:1.1.1
+skills: []
+behaviours:
+  alice:
+    args:
+      max_soef_registration_retries: 5
+      services_interval: 20
+    class_name: AliceBehaviour
+handlers:
+  default:
+    args: {}
+    class_name: DefaultHandler
+  http:
+    args: {}
+    class_name: HttpHandler
+  oef_search:
+    args: {}
+    class_name: OefSearchHandler
+models:
+  default_dialogues:
+    args: {}
+    class_name: DefaultDialogues
+  http_dialogues:
+    args: {}
+    class_name: HttpDialogues
+  oef_search_dialogues:
+    args: {}
+    class_name: OefSearchDialogues
+  strategy:
+    args:
+      admin_host: 127.0.0.1
+      admin_port: 8031
+      classification:
+        piece: classification
+        value: identity.aries.alice
+      location:
+        latitude: 51.5194
+        longitude: 0.127
+      personality_data:
+        piece: genus
+        value: data
+      search_query:
+        constraint_type: ==
+        search_key: intro_service
+        search_value: intro_alice
+      seed: null
+      service_data:
+        key: intro_service
+        value: intro_alice
+    class_name: Strategy
+dependencies: {}
+is_abstract: false
