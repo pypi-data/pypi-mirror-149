@@ -1,0 +1,1 @@
+from basic_multplication.multiplication import Multiplication
