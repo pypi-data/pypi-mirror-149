@@ -1,0 +1,1 @@
+System.register(["./p-1614c895.system.js"],(function(t){"use strict";var n;return{setters:[function(t){n=t.r}],execute:function(){var e=t("lwc_limepkg_scrive_loader",function(){function t(t){n(this,t)}t.prototype.componentWillLoad=function(){};t.prototype.componentDidUnload=function(){};return t}())}}}));
