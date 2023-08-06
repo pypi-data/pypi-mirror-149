@@ -1,0 +1,59 @@
+Metadata-Version: 2.1
+Name: pyrpan
+Version: 1.0.2a0
+Summary: An API wrapper for interacting with the RPAN API.
+Home-page: https://github.com/b1uejay27/PyRPAN
+License: MIT
+Author: b1uejay27
+Author-email: hello@b1uejay27.tech
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Typing :: Typed
+Requires-Dist: aiohttp (>=3.8.1,<4.0.0)
+Requires-Dist: asyncpraw (>=7.5.0,<8.0.0)
+Requires-Dist: expiringdict (>=1.2.1,<2.0.0)
+Project-URL: Repository, https://github.com/b1uejay27/PyRPAN
+Description-Content-Type: text/markdown
+
+<p>
+<a href="https://pypi.org/project/PyRPAN">
+    <img height="20" alt="PyPI version" src="https://img.shields.io/pypi/v/PyRPAN">
+</a>
+
+<a href="https://pypi.org/project/flake8/">
+    <img height="20" alt="Flake badge" src="https://img.shields.io/badge/code%20style-flake8-blue.svg">
+</a>
+</p>
+
+### About
+
+PyRPAN is an async API wrapper made in Python for the Reddit Public Access Network (RPAN), which is Reddit's streaming service.
+
+### Example
+
+```Python
+import asyncio
+
+from pyrpan import PyRPAN
+
+rpan = PyRPAN(client_id='client id here', client_secret='client secret here')
+
+async def main():
+    broadcasts = await rpan.get_broadcast(id='stream id here')  
+    print(broadcast.url)
+
+    await rpan.close()
+
+asyncio.run(main())
+```
+
+### Links
+**Source Code**: [github.com/b1uejay27/PyRPAN](https://github.com/b1uejay27/PyRPAN)<br>
+**PyPi**: [pypi.org/project/PyRPAN](https://pypi.org/project/PyRPAN)<br>
+**Discord Server**: [discord.gg/DfBp4x4](https://discord.gg/DfBp4x4)
+
