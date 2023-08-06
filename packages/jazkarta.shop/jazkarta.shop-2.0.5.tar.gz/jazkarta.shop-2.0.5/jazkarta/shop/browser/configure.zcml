@@ -1,0 +1,188 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="jazkarta.shop">
+
+  <include package=".portlets" />
+
+  <browser:page
+    name="jazkarta-shop-settings"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".controlpanel.SettingsControlPanelView"
+    permission="jazkarta.shop.ManageShop"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="jazkarta-shop-shipping-methods"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".shipping.ShippingMethodControlPanel"
+    template="templates/shipping_methods_controlpanel.pt"
+    permission="jazkarta.shop.ManageShop"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="jazkarta-shop-orders"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".controlpanel.OrderControlPanelView"
+    template="templates/orders_controlpanel.pt"
+    permission="jazkarta.shop.ManageShop"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="jazkarta-shop-order-details"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".controlpanel.OrderDetailsControlPanelView"
+    template="templates/order_details_controlpanel.pt"
+    permission="jazkarta.shop.ManageShop"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="shopping-cart"
+    for="*"
+    class=".viewlets.CartView"
+    template="templates/cart.pt"
+    permission="zope.Public"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="review-cart"
+    for="*"
+    class=".cart.ReviewCartForm"
+    template="templates/review_cart.pt"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="recommended-products"
+    for="*"
+    class=".cart.RecommendedProductsView"
+    template="templates/recommended_products.pt"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="update-cart"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".cart.UpdateCartView"
+    template="templates/checkout_cart.pt"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="shipping"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".shipping.ShippingForm"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="checkout"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".checkout.CheckoutForm"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="checkout-authorizenet-sim"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".checkout.authorize_net_sim.CheckoutFormAuthorizeNetSIM"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="update-fp-fields"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".checkout.authorize_net_sim.UpdateFpFields"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="checkout-stripe"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    class=".checkout.stripe.CheckoutFormStripe"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:page
+    name="export-shop-orders-csv"
+    for="*"
+    class=".controlpanel.ExportShopOrders"
+    permission="cmf.ManagePortal"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:viewlet
+    name="jazkarta.shop.stripe_js"
+    view="jazkarta.shop.interfaces.IStripeEnabledView"
+    manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+    class=".stripe.StripeJS"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:viewlet
+    name="jazkarta.shop.cart"
+    for="*"
+    manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+    class=".viewlets.CartViewlet"
+    permission="zope.Public"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:viewlet
+    name="jazkarta.shop.addtocart"
+    for="..interfaces.IProduct"
+    manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
+    class=".viewlets.AddToCartViewlet"
+    template="templates/add_to_cart.pt"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    />
+
+  <browser:resourceDirectory
+    name="jazkarta.shop"
+    directory="static"
+    />
+
+  <browser:page
+    for="*"
+    name="jazkarta.shop.calendar_macros"
+    template="templates/calendar_macros.pt"
+    permission="zope.Public"
+  />
+
+  <browser:page
+    for="*"
+    name="jazkarta.shop.checkout.thank-you"
+    class=".checkout.thankyou.CheckoutThankYou"
+    permission="zope2.View"
+    layer="..interfaces.IBrowserLayer"
+    template="templates/checkout_thankyou.pt"
+    />
+
+  <cache:rulesetType
+    name="jazkarta.shop.checkout_ruleset"
+    title="Jazkarta Shop Checkout View"
+    />
+
+  <cache:ruleset
+    ruleset="jazkarta.shop.checkout_ruleset"
+    for=".checkout.CheckoutForm"
+    />
+
+</configure>

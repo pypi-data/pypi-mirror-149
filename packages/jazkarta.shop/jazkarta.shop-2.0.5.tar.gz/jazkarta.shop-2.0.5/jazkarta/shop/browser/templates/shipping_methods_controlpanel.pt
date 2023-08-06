@@ -1,0 +1,71 @@
+<tal:block tal:define="dummy python:request.set('disable_border', True)"/><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+<metal:main fill-slot="main">
+    <a tal:attributes="href view/plone_control_panel" class="link-parent" id="setup-link">
+        Site Setup
+    </a>
+  <div data-pat-plone-modal='{"actionOptions": {"displayInModal": false}}'
+       tal:define="view_name view/__name__|string:jazkarta-shop-shipping-methods">
+    <h1 class="documentFirstHeading">Shipping Methods</h1>
+
+    <tal:using_p5 tal:condition="view/using_plone5">
+        <a class="pat-plone-modal green button" href="${context/absolute_url}/${view_name}/+"><button>Add Shipping Method</button></a>
+    </tal:using_p5>
+    <tal:using_p4 tal:condition="not:view/using_plone5">
+        <a tal:attributes="href string:${context/absolute_url}/${view_name}/+"><button>Add Shipping Method</button></a>
+    </tal:using_p4>
+
+    <table class="listing">
+      <tr>
+        <th>Name</th>
+        <th>Zones</th>
+        <th>Min Purchase</th>
+        <th>Calculation</th>
+        <th></th>
+      </tr>
+      <tr tal:repeat="method view/shipping_methods">
+        <td tal:content="method/name"></td>
+        <td tal:content="python:', '.join(sorted(method['zones']))" />
+        <td tal:content="python:'${:.2f}'.format(method['min_purchase']) if method['min_purchase'] else ''" />
+        <td tal:content="python:view.format_calculation(method['calculation'])" tal:on-error="nothing" />
+        <td>
+          <tal:using_p5 tal:condition="view/using_plone5">
+            <a class="pat-plone-modal" href="${context/absolute_url}/${view_name}/${method/key}">Edit</a>
+          </tal:using_p5>
+          <tal:using_p4 tal:condition="not:view/using_plone5">
+            <a tal:attributes="href string:${context/absolute_url}/${view_name}/${method/key}">Edit</a>
+          </tal:using_p4>
+        </td>
+      </tr>
+    </table>
+
+    <script type="text/javascript">
+    jQuery(function($) {
+        var update = function() {
+            var calc = $('select[name="form.widgets.calculation:list"]').val();
+            if (calc == 'weight') {
+                $('#formfield-form-widgets-weight_table').show();
+            } else {
+                $('#formfield-form-widgets-weight_table').hide();
+            }
+        };
+        var initialize = function() {
+            dataGridField2Functions.init();
+            $('select[name="form.widgets.calculation"]').change(update);
+            update();
+        };
+        $(document).on('after-render.plone-modal.patterns', initialize);
+    });
+    </script>
+  </div>
+</metal:main>
+</body>
+</html>

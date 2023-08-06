@@ -1,0 +1,224 @@
+<tal:block tal:define="dummy python:request.set('disable_border', True)"/><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+<head>
+  <metal:js fill-slot="javascript_head_slot">
+  <script type="text/javascript" tal:condition="view/amount">
+
+    function stripeTokenHandler(token) {
+      // Insert the token ID into the form so it gets submitted to the server
+      var form = document.getElementById('checkout-form');
+      var hiddenInput = document.createElement('input');
+      hiddenInput.setAttribute('type', 'hidden');
+      hiddenInput.setAttribute('name', 'stripeToken');
+      hiddenInput.setAttribute('value', token.id);
+      form.appendChild(hiddenInput);
+      // Submit the form
+      form.submit();
+    }
+
+    function createToken(data) {
+      var $form = $('#checkout-form');
+      stripe.createToken(card, data).then(function(result) {
+        if (result.error) {
+        // Show the errors on the form
+            $form.find('.checkout-error-wrapper').show();
+            $form.find('.checkout-error').text(result.error.message);
+            $form.find('input[type="submit"]').prop('disabled', false);
+        } else {
+          // Send the token to your server
+            stripeTokenHandler(result.token);
+        }
+      });
+    };
+
+    jQuery(function($) {
+      var $method = $('input[name="method"]');
+      var $cc_field = $('.field-credit-card');
+      var $number_field = $('.field-number');
+      var $number_label = $('label', $number_field);
+      var updateForm = function() {
+        var method = $method.filter(':checked').val() || 'Online Payment';
+        if (method == 'Online Payment') {
+            $cc_field.show();
+            $number_field.hide();
+        } else if (method == 'Check') {
+            $cc_field.hide();
+            $number_field.show();
+            $number_label.html('Check #');
+        } else {
+            $cc_field.hide();
+            $number_field.show();
+            $number_label.html('Receipt #');
+        }
+      };
+      updateForm();
+      $method.click(updateForm);
+
+      $('#checkout-form').submit(function(e) {
+
+        // don't submit to Stripe if entering check or cash
+        var method = $method.filter(':checked').val() || 'Online Payment';
+        if (method != 'Online Payment') return true;
+
+        var $form = $(this);
+
+        // Disable the submit button to prevent repeated clicks
+        $form.find('input[type="submit"]').prop('disabled', true);
+
+        var $card_info = $('#card-token-data');
+        var data = {
+            name: $card_info.find('input[name="first_name"]').val() + ' ' + $card_info.find('input[name="last_name"]').val(),
+            address_line1: $card_info.find('input[name="address"]').val(),
+            address_city: $card_info.find('input[name="city"]').val(),
+            address_state: $card_info.find('input[name="state"]').val(),
+            address_zip: $card_info.find('input[name="zip"]').val(),
+        };
+        createToken(data);
+
+        // Prevent the form from submitting with the default action
+        return false;
+      });
+    });
+  </script>
+  </metal:js>
+</head>
+
+<body>
+
+<metal:main fill-slot="main">
+    <h1 class="documentFirstHeading">Check out</h1>
+
+    <tal:block tal:replace="structure view/cart_template" />
+
+    <p class="subtotal">
+      <big>
+        Your purchases total:
+        <strong tal:content="python:'${:,.2f}'.format(view.amount)"></strong>
+      </big>
+    </p>
+
+    <form method="post" tal:attributes="action string:${portal_state/navigation_root_url}/checkout" id="checkout-form" class="jaz-shop-checkout-form">
+      <input type="hidden" name="amount" tal:attributes="value view/amount" />
+      <input type="hidden" name="submitted" value="1"/>
+
+      <tal:using_p5 tal:condition="view/using_plone5">
+          <div class="portalMessage alert-error checkout-error-wrapper"
+               tal:attributes="style python:'display: none;;' if not view.error else ''">
+            <strong>Error</strong>
+            <span class="checkout-error" tal:content="view/error"></span>
+          </div>
+      </tal:using_p5>
+      <tal:using_p4 tal:condition="not:view/using_plone5">
+          <div class="jaz-shop-message error checkout-error-wrapper"
+               tal:attributes="style python:'display: none;;' if not view.error else ''">
+            <strong>Error</strong>
+            <span class="checkout-error" tal:content="view/error"></span>
+          </div>
+      </tal:using_p4>
+
+      <fieldset class="fieldset-contact-info jaz-shop-half-form">
+        <legend><span class="step">1.</span> Billing Address</legend>
+
+        <div class="field field-address">
+          <div class="field-inputs" id="card-token-data">
+            <div class="field subfield-first-name">
+              <label>First name</label>
+              <input type="text" name="first_name" required="required" tal:attributes="value python: view.request.form.get('first_name', None)" />
+            </div>
+            <div class="field subfield-last-name">
+              <label>Last name</label>
+              <input type="text" name="last_name" required="required" tal:attributes="value python: view.request.form.get('last_name', None)" />
+            </div>
+            <div class="field subfield-address">
+              <label>Address</label>
+              <input type="text" name="address" required="required" tal:attributes="value python: view.request.form.get('address', None)" />
+            </div>
+            <div class="field subfield-city">
+              <label>City</label>
+              <input type="text" name="city" required="required" tal:attributes="value python: view.request.form.get('city', None)" />
+            </div>
+            <div class="field subfield-state">
+              <label>State</label>
+              <input type="text" name="state" required="required" tal:attributes="value python: view.request.form.get('state', None)"/>
+            </div>
+            <div class="field subfield-zip">
+              <label>Postal code</label>
+              <input type="text" name="zip" required="required" tal:attributes="value python: view.request.form.get('zip', None)" />
+            </div>
+            <div class="field subfield-country"
+                 tal:define="value request/country|string:United States">
+              <label>Country</label>
+              <select name="country" required="required" class="pat-select2">
+                <option tal:repeat="country view/countries"
+                        tal:content="country"
+                        tal:attributes="value country; selected python:'selected' if country == value else None">United States</option>
+              </select>
+            </div>
+            <div class="field subfield-email">
+              <label>Email</label>
+              <input type="email" name="email" required="required" tal:attributes="value python:request.form.get('email', '')" />
+            </div>
+            <div class="field subfield-phone">
+              <label>Phone</label>
+              <input type="text" name="phone" tal:attributes="value python:request.form.get('phone', '')"/>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="fieldset-payment-info jaz-shop-half-form" tal:condition="view/amount">
+        <legend>
+          <span class="step">2.</span> Payment Information
+        </legend>
+
+        <div class="field"
+             tal:define="value python:request.form.get('method', 'Online Payment')"
+             tal:condition="view/is_superuser">
+          <div class="field-inputs">
+            <label>Payment Method</label>
+            &nbsp;<label><input type="radio" name="method" value="Online Payment" tal:attributes="checked python:'checked' if value == 'Online Payment' else None" /> Card</label>
+            &nbsp;<label><input type="radio" name="method" value="Check" tal:attributes="checked python:'checked' if value == 'Check' else None" /> Check</label>
+            &nbsp;<label><input type="radio" name="method" value="Cash" tal:attributes="checked python:'checked' if value == 'Cash' else None" /> Cash</label>
+          </div>
+        </div>
+
+        <div>&nbsp;</div>
+        <div id="card-element" class="field field-credit-card">
+        </div>
+
+        <div class="field field-number" tal:condition="view/is_superuser">
+          <div class="field-inputs">
+            <label>Check #</label>
+            <input type="text" name="number" tal:attributes="value python:request.form.get('number', '')" />
+          </div>
+        </div>
+
+        <div class="field subfield-notes">
+          <br />
+          <label>Additional Notes</label>
+          <textarea rows="3" name="notes" tal:content="python:request.form.get('notes', '')" />
+        </div>
+
+      </fieldset>
+
+      <div class="jaz-shop-half-form">
+        <div class="jaz-shop-message error checkout-error-wrapper"
+             tal:attributes="style python:'display: none;;' if not view.error else ''">
+          <strong>Error</strong>
+          <span class="checkout-error" tal:content="view/error"></span>
+        </div>
+        <div class="jaz-shop-buttons">
+          <input type="submit" value="Complete Purchase" class="allowMultiSubmit context"
+                 tal:attributes="disabled python:'disabled' if (not view.cart.items and not view.cart.amount) else None" />
+        </div>
+      </div>
+
+    </form>
+</metal:main>
+</body>
+</html>
