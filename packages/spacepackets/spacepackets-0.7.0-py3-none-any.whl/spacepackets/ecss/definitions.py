@@ -1,0 +1,18 @@
+import enum
+from typing import Final
+
+
+DEFAULT_MAX_TC_DATA_SIZE: Final = 1004
+
+
+class PusServices(enum.IntEnum):
+    SERVICE_1_VERIFICATION = 1
+    SERVICE_2_RAW_CMD = 2
+    SERVICE_3_HOUSEKEEPING = 3
+    SERVICE_5_EVENT = 5
+    SERVICE_6_MEMORY_MGMT = 6
+    SERVICE_8_FUNC_CMD = 8
+    SERVICE_9_TIME_MGMT = 9
+    SERVICE_17_TEST = 17
+    SERVICE_20_PARAMETER = 20
+    SERVICE_23_FILE_MGMT = 23
