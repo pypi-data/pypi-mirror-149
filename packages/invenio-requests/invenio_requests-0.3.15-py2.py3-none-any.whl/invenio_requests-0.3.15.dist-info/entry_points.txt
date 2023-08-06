@@ -1,0 +1,32 @@
+[invenio_assets.webpack]
+invenio_requests = invenio_requests.webpack:requests
+
+[invenio_base.api_apps]
+invenio_requests = invenio_requests:InvenioRequests
+
+[invenio_base.api_blueprints]
+invenio_request_events = invenio_requests.views:create_request_events_bp
+invenio_requests = invenio_requests.views:create_requests_bp
+
+[invenio_base.apps]
+invenio_requests = invenio_requests:InvenioRequests
+
+[invenio_base.blueprints]
+invenio_requests = invenio_requests.views:create_ui_blueprint
+
+[invenio_db.alembic]
+invenio_requests = invenio_requests:alembic
+
+[invenio_db.models]
+invenio_requests = invenio_requests.records.models
+
+[invenio_i18n.translations]
+messages = invenio_requests
+
+[invenio_jsonschemas.schemas]
+jsonschemas = invenio_requests.records.jsonschemas
+
+[invenio_search.mappings]
+requestevents = invenio_requests.records.mappings
+requests = invenio_requests.records.mappings
+
