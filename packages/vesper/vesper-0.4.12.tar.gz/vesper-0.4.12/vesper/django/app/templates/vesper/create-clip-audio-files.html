@@ -1,0 +1,44 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Create clip audio files</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Create clip audio files</h2>
+
+    <p>
+        Creates audio files for the specified clips of this Vesper archive.
+    </p>
+
+    {% include "vesper/clips-specification-message.html" %}
+
+    <p>
+        The audio files for the recordings of which the clips are parts
+        must be available to supply the clips' audio data. After the clip
+        audio files are created, whenever Vesper needs the clips' audio
+        data it will read them from those files instead of from the
+        recordings.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'create-clip-audio-files' %}" method="post">
+
+        {% csrf_token %}
+        
+        {% include "vesper/clip-set-form-elements.html" %}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Create</button>
+
+    </form>
+
+{% endblock main %}

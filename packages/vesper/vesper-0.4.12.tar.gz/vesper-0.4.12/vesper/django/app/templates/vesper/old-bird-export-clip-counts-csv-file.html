@@ -1,0 +1,38 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Export Old Bird clip counts to CSV file</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Export Old Bird clip counts to CSV file</h2>
+
+    <p>
+        Downloads a CSV file with clip counts for the specified detector,
+        station/mic, and range of dates. The counts are in a specific
+        format requested by Old Bird.
+    </p>
+
+    <form class="form" role="form" action="{% url 'old-bird-export-clip-counts-csv-file' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.detector|form_element }}
+        {{ form.station_mic|form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+        {{ form.file_name|form_element }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Export</button>
+
+    </form>
+
+{% endblock main %}

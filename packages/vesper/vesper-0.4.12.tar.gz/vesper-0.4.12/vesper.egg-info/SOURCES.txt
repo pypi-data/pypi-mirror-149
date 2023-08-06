@@ -1,0 +1,474 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.py
+vesper/__init__.py
+vesper/archive_paths.py
+vesper/archive_settings.py
+vesper/external_urls.py
+vesper/version.py
+vesper.egg-info/PKG-INFO
+vesper.egg-info/SOURCES.txt
+vesper.egg-info/dependency_links.txt
+vesper.egg-info/entry_points.txt
+vesper.egg-info/not-zip-safe
+vesper.egg-info/requires.txt
+vesper.egg-info/top_level.txt
+vesper/archive/__init__.py
+vesper/archive/archive.py
+vesper/archive/clip_class.py
+vesper/archive/detector.py
+vesper/archive/recording.py
+vesper/archive/station.py
+vesper/birdvox/__init__.py
+vesper/birdvox/detectors.py
+vesper/command/__init__.py
+vesper/command/add_recording_audio_files_command.py
+vesper/command/annotator.py
+vesper/command/classify_command.py
+vesper/command/clip_audio_file_export_settings_preset.py
+vesper/command/clip_audio_file_exporter.py
+vesper/command/clip_exporter.py
+vesper/command/clip_hdf5_file_export_settings_preset.py
+vesper/command/clip_hdf5_file_exporter.py
+vesper/command/clip_metadata_csv_file_exporter.py
+vesper/command/clip_set_command.py
+vesper/command/clip_table_format_preset.py
+vesper/command/command.py
+vesper/command/command_utils.py
+vesper/command/create_clip_audio_files_command.py
+vesper/command/create_random_clips_command.py
+vesper/command/delete_clip_audio_files_command.py
+vesper/command/delete_clips_command.py
+vesper/command/delete_recordings_command.py
+vesper/command/detect_command.py
+vesper/command/detection_schedule_preset.py
+vesper/command/execute_deferred_actions_command.py
+vesper/command/export_clip_counts_by_classification_to_csv_file_command.py
+vesper/command/export_clip_counts_by_tag_to_csv_file_command.py
+vesper/command/export_command.py
+vesper/command/import_command.py
+vesper/command/job_info.py
+vesper/command/job_logging_manager.py
+vesper/command/job_manager.py
+vesper/command/job_runner.py
+vesper/command/metadata_importer.py
+vesper/command/recording_importer.py
+vesper/command/recording_utils.py
+vesper/command/refresh_recording_audio_file_paths_command.py
+vesper/command/station_name_aliases_preset.py
+vesper/command/tag_clips_command.py
+vesper/command/test_command.py
+vesper/command/transfer_clip_classifications_command.py
+vesper/command/untag_clips_command.py
+vesper/django/__init__.py
+vesper/django/manage.py
+vesper/django/app/__init__.py
+vesper/django/app/add_recording_audio_files_form.py
+vesper/django/app/admin.py
+vesper/django/app/annotation_utils.py
+vesper/django/app/apps.py
+vesper/django/app/archive.py
+vesper/django/app/classify_form.py
+vesper/django/app/clip_album_commands_preset.py
+vesper/django/app/clip_album_settings_preset.py
+vesper/django/app/clip_set_form.py
+vesper/django/app/create_random_clips_form.py
+vesper/django/app/delete_clips_form.py
+vesper/django/app/delete_recordings_form.py
+vesper/django/app/detect_form.py
+vesper/django/app/execute_deferred_actions_form.py
+vesper/django/app/export_clip_counts_by_classification_to_csv_file_form.py
+vesper/django/app/export_clip_counts_by_tag_to_csv_file_form.py
+vesper/django/app/export_clip_metadata_to_csv_file_form.py
+vesper/django/app/export_clips_to_audio_files_form.py
+vesper/django/app/export_clips_to_hdf5_files_form.py
+vesper/django/app/form_utils.py
+vesper/django/app/import_metadata_form.py
+vesper/django/app/import_recordings_form.py
+vesper/django/app/metadata_import_utils.py
+vesper/django/app/model_utils.py
+vesper/django/app/models.py
+vesper/django/app/name_converter.py
+vesper/django/app/refresh_recording_audio_file_paths_form.py
+vesper/django/app/serve_static_files.py
+vesper/django/app/tag_clips_form.py
+vesper/django/app/transfer_clip_classifications_form.py
+vesper/django/app/untag_clips_form.py
+vesper/django/app/urls.py
+vesper/django/app/views.py
+vesper/django/app/management/__init__.py
+vesper/django/app/management/commands/__init__.py
+vesper/django/app/management/commands/createarchive.py
+vesper/django/app/management/commands/data/createarchive/Archive Template/Archive Database.sqlite
+vesper/django/app/management/commands/data/createarchive/Archive Template/Archive Settings.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Preferences.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Metadata YAML/One Station.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Metadata YAML/Two Stations.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Album Commands/Coarse.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Album Commands/Eastern Calls.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Album Commands/Western Calls.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Album Settings/Resizing Clips, Labels Below.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Audio File Export Settings/Fixed Duration.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Audio File Export Settings/Padded.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip HDF5 File Export Settings/Fixed Duration.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip HDF5 File Export Settings/Padded.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Table Format/Basic.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Clip Table Format/MPG Ranch Original.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Detection Schedule/Ithaca 2021 Fall.yaml
+vesper/django/app/management/commands/data/createarchive/Archive Template/Presets/Station Name Aliases/Station Name Aliases.yaml
+vesper/django/app/migrations/0001_initial.py
+vesper/django/app/migrations/__init__.py
+vesper/django/app/static/favicon.svg
+vesper/django/app/static/third-party/bootstrap-5.1.1/LICENSE.txt
+vesper/django/app/static/third-party/bootstrap-5.1.1/css/bootstrap.min.css
+vesper/django/app/static/third-party/bootstrap-5.1.1/css/bootstrap.min.css.map
+vesper/django/app/static/third-party/bootstrap-5.1.1/js/bootstrap.bundle.min.js
+vesper/django/app/static/third-party/bootstrap-icons-1.5.0/LICENSE.txt
+vesper/django/app/static/third-party/bootstrap-icons-1.5.0/bootstrap-icons.css
+vesper/django/app/static/third-party/bootstrap-icons-1.5.0/fonts/bootstrap-icons.woff
+vesper/django/app/static/third-party/bootstrap-icons-1.5.0/fonts/bootstrap-icons.woff2
+vesper/django/app/static/third-party/jasmine-3.10.1/boot0.js
+vesper/django/app/static/third-party/jasmine-3.10.1/boot1.js
+vesper/django/app/static/third-party/jasmine-3.10.1/jasmine-html.js
+vesper/django/app/static/third-party/jasmine-3.10.1/jasmine.css
+vesper/django/app/static/third-party/jasmine-3.10.1/jasmine.js
+vesper/django/app/static/third-party/luxon-2.2.0/README.txt
+vesper/django/app/static/third-party/luxon-2.2.0/luxon.min.js
+vesper/django/app/static/vesper/ui-constants.js
+vesper/django/app/static/vesper/audio/ring-buffer-processor.js
+vesper/django/app/static/vesper/clip-album/calls-cleanup-overlay.js
+vesper/django/app/static/vesper/clip-album/clip-album-utils.js
+vesper/django/app/static/vesper/clip-album/clip-album.js
+vesper/django/app/static/vesper/clip-album/clip-manager.js
+vesper/django/app/static/vesper/clip-album/clip-view.js
+vesper/django/app/static/vesper/clip-album/clip.js
+vesper/django/app/static/vesper/clip-album/commandable-overlay.js
+vesper/django/app/static/vesper/clip-album/keyboard-input-interpreter.js
+vesper/django/app/static/vesper/clip-album/layout.js
+vesper/django/app/static/vesper/clip-album/multiselection.js
+vesper/django/app/static/vesper/clip-album/night-rug-plot.js
+vesper/django/app/static/vesper/clip-album/spectrogram-clip-view.js
+vesper/django/app/static/vesper/clip-album/time-frequency-point-overlay.js
+vesper/django/app/static/vesper/clip-album/time-frequency-utils.js
+vesper/django/app/static/vesper/clip-album/time-point-overlay.js
+vesper/django/app/static/vesper/signal/data-window.js
+vesper/django/app/static/vesper/signal/decimating-fir-filter.js
+vesper/django/app/static/vesper/signal/dft.js
+vesper/django/app/static/vesper/signal/sample-chunker.js
+vesper/django/app/static/vesper/signal/sliding-sample-buffer.js
+vesper/django/app/static/vesper/signal/spectrogram.js
+vesper/django/app/static/vesper/util/array-utils.js
+vesper/django/app/static/vesper/util/pauser.js
+vesper/django/app/static/vesper/util/pausing-iterator.js
+vesper/django/app/static/vesper/view/add-old-bird-clip-start-indices.css
+vesper/django/app/static/vesper/view/add-recording-audio-files.css
+vesper/django/app/static/vesper/view/classify-form.css
+vesper/django/app/static/vesper/view/clip-album.css
+vesper/django/app/static/vesper/view/clip-album.js
+vesper/django/app/static/vesper/view/clip-calendar.css
+vesper/django/app/static/vesper/view/clip-calendar.js
+vesper/django/app/static/vesper/view/command-form.css
+vesper/django/app/static/vesper/view/delete-recordings-form.css
+vesper/django/app/static/vesper/view/detect-form.css
+vesper/django/app/static/vesper/view/import-metadata.js
+vesper/django/app/static/vesper/view/job.css
+vesper/django/app/static/vesper/view/job.js
+vesper/django/app/static/vesper/view/navbar.css
+vesper/django/app/static/vesper/view/record.js
+vesper/django/app/static/vesper/view/recorder-filter-coefficients.js
+vesper/django/app/static/vesper/view/show-recording-capabilities.css
+vesper/django/app/static/vesper/view/show-recording-capabilities.js
+vesper/django/app/static/vesper/view/title-buttons.css
+vesper/django/app/static/vesper/view/view-utils.js
+vesper/django/app/templates/registration/login.html
+vesper/django/app/templates/vesper/about-vesper.html
+vesper/django/app/templates/vesper/add-old-bird-clip-start-indices.html
+vesper/django/app/templates/vesper/add-recording-audio-files.html
+vesper/django/app/templates/vesper/base.html
+vesper/django/app/templates/vesper/classify.html
+vesper/django/app/templates/vesper/clip-album-go-to-page-modal.html
+vesper/django/app/templates/vesper/clip-album-set-presets-modal.html
+vesper/django/app/templates/vesper/clip-album-title-buttons.html
+vesper/django/app/templates/vesper/clip-album.html
+vesper/django/app/templates/vesper/clip-calendar.html
+vesper/django/app/templates/vesper/clip-set-form-elements.html
+vesper/django/app/templates/vesper/clips-specification-message.html
+vesper/django/app/templates/vesper/command-executes-as-job-message.html
+vesper/django/app/templates/vesper/create-clip-audio-files.html
+vesper/django/app/templates/vesper/create-random-clips.html
+vesper/django/app/templates/vesper/delete-clip-audio-files.html
+vesper/django/app/templates/vesper/delete-clips.html
+vesper/django/app/templates/vesper/delete-recordings.html
+vesper/django/app/templates/vesper/detect.html
+vesper/django/app/templates/vesper/execute-deferred-actions.html
+vesper/django/app/templates/vesper/export-clip-counts-by-classification-to-csv-file.html
+vesper/django/app/templates/vesper/export-clip-counts-by-tag-to-csv-file.html
+vesper/django/app/templates/vesper/export-clip-metadata-to-csv-file.html
+vesper/django/app/templates/vesper/export-clips-to-audio-files.html
+vesper/django/app/templates/vesper/export-clips-to-hdf5-files.html
+vesper/django/app/templates/vesper/header-prefix.html
+vesper/django/app/templates/vesper/import-metadata.html
+vesper/django/app/templates/vesper/import-old-bird-clips.html
+vesper/django/app/templates/vesper/import-recordings.html
+vesper/django/app/templates/vesper/job.html
+vesper/django/app/templates/vesper/navbar-dropdown-item.html
+vesper/django/app/templates/vesper/navbar-item.html
+vesper/django/app/templates/vesper/night.html
+vesper/django/app/templates/vesper/old-bird-export-clip-counts-csv-file.html
+vesper/django/app/templates/vesper/record.html
+vesper/django/app/templates/vesper/recordings-specification-message.html
+vesper/django/app/templates/vesper/refresh-recording-audio-file-paths.html
+vesper/django/app/templates/vesper/set-clip-filter-modal.html
+vesper/django/app/templates/vesper/show-recording-capabilities.html
+vesper/django/app/templates/vesper/tag-clips.html
+vesper/django/app/templates/vesper/test-command.html
+vesper/django/app/templates/vesper/transfer-clip-classifications.html
+vesper/django/app/templates/vesper/untag-clips.html
+vesper/django/app/templatetags/__init__.py
+vesper/django/app/templatetags/vesper_extras.py
+vesper/django/project/__init__.py
+vesper/django/project/settings.py
+vesper/django/project/urls.py
+vesper/django/project/views.py
+vesper/django/project/wsgi.py
+vesper/ephem/__init__.py
+vesper/ephem/sun_moon.py
+vesper/ephem/usno_altitude_azimuth_table.py
+vesper/ephem/usno_rise_set_table.py
+vesper/ephem/usno_table_class_utils.py
+vesper/ephem/usno_table_utils.py
+vesper/ephem/data/de421.bsp
+vesper/mpg_ranch/Tseep Species Classifier.pkl
+vesper/mpg_ranch/__init__.py
+vesper/mpg_ranch/coarse_classifier.py
+vesper/mpg_ranch/outside_classifier.py
+vesper/mpg_ranch/recording_file_parser.py
+vesper/mpg_ranch/species_classifier.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/__init__.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/annotator.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/annotator_utils.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/dataset_utils.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/inferrer.py
+vesper/mpg_ranch/nfc_bounding_interval_annotator_1_0/train_bounding_interval_annotator.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/__init__.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/classifier_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/feature_computer.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/train_classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/Thrush Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/Thrush Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/Tseep Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_2_1/Tseep Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/__init__.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/classifier_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/dataset_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/train_classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Thrush Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Thrush Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Thrush Classifier/TensorFlow SavedModel/saved_model.pb
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Thrush Classifier/TensorFlow SavedModel/variables/variables.data-00000-of-00001
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Thrush Classifier/TensorFlow SavedModel/variables/variables.index
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Tseep Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Tseep Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Tseep Classifier/TensorFlow SavedModel/saved_model.pb
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Tseep Classifier/TensorFlow SavedModel/variables/variables.data-00000-of-00001
+vesper/mpg_ranch/nfc_coarse_classifier_3_0/Tseep Classifier/TensorFlow SavedModel/variables/variables.index
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/README.txt
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/__init__.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/classifier_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/dataset_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/patch_hdf5_model_from_saved_model.py
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/Thrush Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/Thrush Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/Tseep Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_3_1/Tseep Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/__init__.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/classifier_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/dataset_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/train_classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Thrush Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Thrush Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Thrush Classifier/TensorFlow SavedModel/saved_model.pb
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Thrush Classifier/TensorFlow SavedModel/variables/variables.data-00000-of-00001
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Thrush Classifier/TensorFlow SavedModel/variables/variables.index
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Tseep Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Tseep Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Tseep Classifier/TensorFlow SavedModel/saved_model.pb
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Tseep Classifier/TensorFlow SavedModel/variables/variables.data-00000-of-00001
+vesper/mpg_ranch/nfc_coarse_classifier_4_0/Tseep Classifier/TensorFlow SavedModel/variables/variables.index
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/README.txt
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/__init__.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/classifier.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/classifier_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/dataset_utils.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/patch_hdf5_model_from_saved_model.py
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/Thrush Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/Thrush Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/Tseep Classifier/Keras Model.h5
+vesper/mpg_ranch/nfc_coarse_classifier_4_1/Tseep Classifier/Settings.yaml
+vesper/mpg_ranch/nfc_detector_0_0/__init__.py
+vesper/mpg_ranch/nfc_detector_0_0/detector.py
+vesper/mpg_ranch/nfc_detector_0_1/__init__.py
+vesper/mpg_ranch/nfc_detector_0_1/detector.py
+vesper/mpg_ranch/nfc_detector_1_0/__init__.py
+vesper/mpg_ranch/nfc_detector_1_0/detector.py
+vesper/mpg_ranch/nfc_detector_1_1/__init__.py
+vesper/mpg_ranch/nfc_detector_1_1/detector.py
+vesper/mpg_ranch/nfc_detector_low_score_classifier_1_0/__init__.py
+vesper/mpg_ranch/nfc_detector_low_score_classifier_1_0/classifier.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/__init__.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/analyze_classifications.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/classifier_utils.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/classify_validation_examples.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/dataset_utils.py
+vesper/mpg_ranch/nfc_species_classifier_2_0/train_classifier.py
+vesper/old_bird/__init__.py
+vesper/old_bird/add_old_bird_clip_start_indices_command.py
+vesper/old_bird/add_old_bird_clip_start_indices_form.py
+vesper/old_bird/clip_count_utils.py
+vesper/old_bird/clip_import_utils.py
+vesper/old_bird/clip_importer.py
+vesper/old_bird/export_clip_counts_csv_file_form.py
+vesper/old_bird/export_clip_counts_csv_file_utils.py
+vesper/old_bird/import_clips_form.py
+vesper/old_bird/lighthouse_outside_classifier.py
+vesper/old_bird/old_bird_detector_redux_1_0.py
+vesper/old_bird/old_bird_detector_redux_1_1.py
+vesper/old_bird/old_bird_detector_redux_1_1_mt.py
+vesper/old_bird/old_bird_detector_runner.py
+vesper/old_bird/recording_reader.py
+vesper/plugin/__init__.py
+vesper/plugin/detector_plugin_type.py
+vesper/plugin/plugin.py
+vesper/plugin/plugin_manager.py
+vesper/plugin/plugin_type.py
+vesper/plugin/plugin_type_plugin_interface_1_0.py
+vesper/plugin/plugin_type_plugin_type.py
+vesper/plugin/plugin_utils.py
+vesper/pnf/__init__.py
+vesper/pnf/pnf_2018_baseline_detector_1_0.py
+vesper/pnf/pnf_energy_detector_1_0.py
+vesper/psw/__init__.py
+vesper/psw/nogo_coarse_classifier_0_0/__init__.py
+vesper/psw/nogo_coarse_classifier_0_0/classifier.py
+vesper/psw/nogo_coarse_classifier_0_0/classifier_utils.py
+vesper/psw/nogo_coarse_classifier_0_0/create_datasets_from_hdf5_files.py
+vesper/psw/nogo_coarse_classifier_0_0/dataset_utils.py
+vesper/psw/nogo_coarse_classifier_0_0/plot_pr_curve.py
+vesper/psw/nogo_coarse_classifier_0_0/train_classifier.py
+vesper/psw/nogo_coarse_classifier_0_0/data/Keras Model.h5
+vesper/psw/nogo_coarse_classifier_0_0/data/Training Settings.yaml
+vesper/psw/nogo_detector_0_0/__init__.py
+vesper/psw/nogo_detector_0_0/detector.py
+vesper/psw/scripts/__init__.py
+vesper/psw/scripts/concatenate_raven_selection_tables.py
+vesper/psw/scripts/import_raven_selection_tables.py
+vesper/psw/scripts/rename_recording_files.py
+vesper/psw/util/__init__.py
+vesper/psw/util/raven_utils.py
+vesper/scripts/Vesper Recorder Config.yaml
+vesper/scripts/__init__.py
+vesper/scripts/play_recorder_test_signal.py
+vesper/scripts/rename_audiomoth_recording_files.py
+vesper/scripts/run_mpg_ranch_tseep_detector.py
+vesper/scripts/show_audio_input_devices.py
+vesper/scripts/vesper_recorder.py
+vesper/scripts/vesper_recorder.spec
+vesper/scripts/vesper_recorder_service.py
+vesper/scripts/vesper_recorder_service.spec
+vesper/scripts/vesper_test_service.py
+vesper/scripts/vesper_test_service.spec
+vesper/signal/__init__.py
+vesper/signal/audio_file_reader.py
+vesper/signal/audio_file_signal.py
+vesper/signal/audio_file_utils.py
+vesper/signal/channel.py
+vesper/signal/indexer.py
+vesper/signal/invertible_map.py
+vesper/signal/linear_map.py
+vesper/signal/named_sequence.py
+vesper/signal/notes.txt
+vesper/signal/ram_signal.py
+vesper/signal/resampling_utils.py
+vesper/signal/sample_provider.py
+vesper/signal/signal.py
+vesper/signal/signal_error.py
+vesper/signal/spectrogram.py
+vesper/signal/time_axis.py
+vesper/signal/unsupported_audio_file_error.py
+vesper/signal/wave_audio_file.py
+vesper/signal/wave_file_signal.py
+vesper/singleton/README.txt
+vesper/singleton/__init__.py
+vesper/singleton/archive.py
+vesper/singleton/clip_manager.py
+vesper/singleton/extension_manager.py
+vesper/singleton/job_manager.py
+vesper/singleton/preference_manager.py
+vesper/singleton/preset_manager.py
+vesper/singleton/recording_manager.py
+vesper/util/Thrush Coarse Classifier.pkl
+vesper/util/Tseep Coarse Classifier.pkl
+vesper/util/__init__.py
+vesper/util/archive_lock.py
+vesper/util/audio_file_utils.py
+vesper/util/audio_recorder.py
+vesper/util/batch_iterator.py
+vesper/util/binary_classification_stats.py
+vesper/util/bunch.py
+vesper/util/byte_buffer.py
+vesper/util/calculator.py
+vesper/util/calendar_month.py
+vesper/util/calendar_utils.py
+vesper/util/case_utils.py
+vesper/util/clip_manager.py
+vesper/util/clip_time_interval_utils.py
+vesper/util/clips_hdf5_file.py
+vesper/util/conda_utils.py
+vesper/util/conditional_printer.py
+vesper/util/data_windows.py
+vesper/util/date_range.py
+vesper/util/datetime_formatter.py
+vesper/util/detection_score_file_writer.py
+vesper/util/django_utils.py
+vesper/util/extension_manager.py
+vesper/util/file_type_utils.py
+vesper/util/lazily_initialized.py
+vesper/util/logging_utils.py
+vesper/util/lru_cache.py
+vesper/util/matching_utils.py
+vesper/util/measurements.py
+vesper/util/named.py
+vesper/util/nfc_classification_utils.py
+vesper/util/nfc_coarse_classifier.py
+vesper/util/nfc_detection_utils.py
+vesper/util/nfc_species_classifier.py
+vesper/util/notifier.py
+vesper/util/numpy_utils.py
+vesper/util/open_mp_utils.py
+vesper/util/os_utils.py
+vesper/util/preference_manager.py
+vesper/util/preset.py
+vesper/util/preset_manager.py
+vesper/util/recording_manager.py
+vesper/util/repeating_timer.py
+vesper/util/sample_buffer.py
+vesper/util/schedule.py
+vesper/util/script_utils.py
+vesper/util/settings.py
+vesper/util/settings_type.py
+vesper/util/signal_generation_utils.py
+vesper/util/signal_utils.py
+vesper/util/spectrogram.py
+vesper/util/text_utils.py
+vesper/util/time_difference_formatter.py
+vesper/util/time_frequency_analysis.py
+vesper/util/time_frequency_analysis_utils.py
+vesper/util/time_utils.py
+vesper/util/vesper_recorder.py
+vesper/util/yaml_preset.py
+vesper/util/yaml_utils.py

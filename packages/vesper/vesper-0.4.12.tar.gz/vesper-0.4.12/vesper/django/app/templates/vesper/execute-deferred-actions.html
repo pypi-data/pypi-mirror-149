@@ -1,0 +1,35 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Execute deferred actions</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Execute deferred actions</h2>
+
+    <p>
+        Executes archive actions that were deferred by one or more previous
+        Vesper jobs. For example, this command can add to an archive clips
+        whose creation was deferred during one or more previous
+        <code>Detect</code> jobs.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <form class="form" role="form" action="{% url 'execute-deferred-actions' %}" method="post">
+
+        {% csrf_token %}
+        
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Execute</button>
+
+    </form>
+
+{% endblock main %}
