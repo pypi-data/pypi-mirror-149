@@ -1,0 +1,200 @@
+- project:
+    templates:
+      - lib-forward-testing-python3
+      - openstack-cover-jobs
+      - openstack-python3-jobs
+      - periodic-stable-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+    check:
+      jobs:
+        - tooz-tox-py38-etcd
+        - tooz-tox-py36-etcd
+        - tooz-tox-py38-etcd3gw
+        - tooz-tox-py36-etcd3gw
+        - tooz-tox-py38-zookeeper
+        - tooz-tox-py36-zookeeper
+        - tooz-tox-py38-redis
+        - tooz-tox-py36-redis
+        - tooz-tox-py38-sentinel
+        - tooz-tox-py36-sentinel
+        - tooz-tox-py38-memcached
+        - tooz-tox-py36-memcached
+        - tooz-tox-py38-postgresql
+        - tooz-tox-py36-postgresql
+        - tooz-tox-py38-mysql
+        - tooz-tox-py36-mysql
+        - tooz-tox-py38-consul
+        - tooz-tox-py36-consul
+    gate:
+      jobs:
+        - tooz-tox-py38-etcd
+        - tooz-tox-py36-etcd
+        - tooz-tox-py38-etcd3gw
+        - tooz-tox-py36-etcd3gw
+        - tooz-tox-py38-zookeeper
+        - tooz-tox-py36-zookeeper
+        - tooz-tox-py38-redis
+        - tooz-tox-py36-redis
+        - tooz-tox-py38-sentinel
+        - tooz-tox-py36-sentinel
+        - tooz-tox-py38-memcached
+        - tooz-tox-py36-memcached
+        - tooz-tox-py38-postgresql
+        - tooz-tox-py36-postgresql
+        - tooz-tox-py38-mysql
+        - tooz-tox-py36-mysql
+        - tooz-tox-py38-consul
+        - tooz-tox-py36-consul
+
+- job:
+    name: tooz-tox-py38-consul
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-consul`` environment.
+    vars:
+      tox_envlist: py38-consul
+
+- job:
+    name: tooz-tox-py38-etcd
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-etcd`` environment.
+    vars:
+      tox_envlist: py38-etcd
+
+- job:
+    name: tooz-tox-py38-etcd3gw
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-etcd3gw`` environment.
+    vars:
+      tox_envlist: py38-etcd3gw
+
+- job:
+    name: tooz-tox-py38-memcached
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-memcached`` environment.
+    vars:
+      tox_envlist: py38-memcached
+
+- job:
+    name: tooz-tox-py38-mysql
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-mysql`` environment.
+    vars:
+      tox_envlist: py38-mysql
+
+- job:
+    name: tooz-tox-py38-postgresql
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-postgresql`` environment.
+    vars:
+      tox_envlist: py38-postgresql
+
+- job:
+    name: tooz-tox-py38-redis
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-redis`` environment.
+    vars:
+      tox_envlist: py38-redis
+    pre-run:
+      - playbooks/stop-redis.yaml
+
+- job:
+    name: tooz-tox-py38-sentinel
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-sentinel`` environment.
+    vars:
+      tox_envlist: py38-sentinel
+    pre-run:
+      - playbooks/stop-redis.yaml
+
+- job:
+    name: tooz-tox-py38-zookeeper
+    parent: openstack-tox-py38
+    description: |
+      Run tests using ``py38-zookeeper`` environment.
+    vars:
+      tox_envlist: py38-zookeeper
+
+- job:
+    name: tooz-tox-py36-consul
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-consul`` environment.
+    vars:
+      tox_envlist: py36-consul
+
+- job:
+    name: tooz-tox-py36-etcd
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-etcd`` environment.
+    vars:
+      tox_envlist: py36-etcd
+
+- job:
+    name: tooz-tox-py36-etcd3gw
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-etcd3gw`` environment.
+    vars:
+      tox_envlist: py36-etcd3gw
+
+- job:
+    name: tooz-tox-py36-memcached
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-memcached`` environment.
+    vars:
+      tox_envlist: py36-memcached
+
+- job:
+    name: tooz-tox-py36-mysql
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-mysql`` environment.
+    vars:
+      tox_envlist: py36-mysql
+
+- job:
+    name: tooz-tox-py36-postgresql
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-postgresql`` environment.
+    vars:
+      tox_envlist: py36-postgresql
+
+- job:
+    name: tooz-tox-py36-redis
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-redis`` environment.
+    vars:
+      tox_envlist: py36-redis
+    pre-run:
+      - playbooks/stop-redis.yaml
+
+- job:
+    name: tooz-tox-py36-sentinel
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-sentinel`` environment.
+    vars:
+      tox_envlist: py36-sentinel
+    pre-run:
+      - playbooks/stop-redis.yaml
+
+- job:
+    name: tooz-tox-py36-zookeeper
+    parent: openstack-tox-py36
+    description: |
+      Run tests using ``py36-zookeeper`` environment.
+    vars:
+      tox_envlist: py36-zookeeper
