@@ -1,0 +1,76 @@
+groups:
+- neurodata_type_def: OpticFiberImplant
+  neurodata_type_inc: Device
+  doc: Optical fiber implant
+  attributes:
+  - name: angle
+    dtype: float
+    doc: angle in degrees, relative to an unangled implant axis
+    required: false
+  - name: ferrule_diameter
+    dtype: float
+    doc: in mm
+    required: false
+  - name: cannula_diameter
+    dtype: float
+    doc: in mm
+    required: false
+  - name: length
+    dtype: float
+    doc: in mm
+    required: false
+  - name: manufacturer_code
+    dtype: text
+    doc: code from manufacturer
+    required: false
+  - name: numerical_apperture
+    dtype: float
+    doc: numerical apperture
+    required: false
+  - name: transmittance
+    dtype: float
+    doc: transmittance
+    required: false
+- neurodata_type_def: OrthogonalStereotacticTarget
+  neurodata_type_inc: OptogeneticStimulusSite
+  doc: orthogonal stereotactic target
+  attributes:
+  - name: reference
+    dtype: text
+    default_value: bregma
+    doc: reference point, e.g. bregma
+    required: false
+  - name: posteroanterior
+    dtype: float
+    doc: posteroanterior coordinates in mm
+  - name: leftright
+    dtype: float
+    doc: leftright coordinates in mm
+  - name: superoinferior
+    dtype: float
+    doc: superoinferior coordinates in mm
+  - name: pitch
+    dtype: float
+    default_value: 0.0
+    doc: pitch angle in degrees
+    required: false
+  - name: yaw
+    dtype: float
+    default_value: 0.0
+    doc: yaw angle in degrees
+    required: false
+  - name: roll
+    dtype: float
+    default_value: 0.0
+    doc: roll angle in degrees
+    required: false
+  - name: depth
+    dtype: float
+    doc: depth in mm
+    required: false
+  - name: qualitative_depth_reference
+    dtype: text
+    default_value: dura
+    doc: set to "dura" if the insertable is lowered to the dura before coordinate
+      setting
+    required: false
