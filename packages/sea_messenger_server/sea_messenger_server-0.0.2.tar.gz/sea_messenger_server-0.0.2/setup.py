@@ -1,0 +1,10 @@
+from setuptools import setup, find_packages
+
+setup(name="sea_messenger_server",
+      version="0.0.2",
+      description="sea_messenger_server",
+      author="SEugene",
+      author_email="sea.05@list.ru",
+      packages=find_packages(),
+      install_requires=['PyQt5', 'sqlalchemy', 'pycryptodome', 'pycryptodomex']
+      )
