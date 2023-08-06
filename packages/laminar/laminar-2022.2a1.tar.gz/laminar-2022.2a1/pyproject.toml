@@ -1,0 +1,42 @@
+[tool.black]
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | dist
+  )/
+)
+'''
+line-length = 120
+preview = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: not covered",
+  "@overload",
+]
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.mypy]
+follow_imports = "silent"
+ignore_missing_imports = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+strict = true
+
+[tool.pytest.ini_options]
+addopts = "-vv --durations 10 --failed-first --strict-markers"
+markers = [
+  "asyncio",
+  "flow",
+]
