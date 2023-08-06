@@ -1,0 +1,145 @@
+Metadata-Version: 2.1
+Name: django-happy-shop
+Version: 1.1.2
+Summary: 一个可快速集成到任何django项目的轻量级商城模块！
+Home-page: http://www.lotdoc.cn/blog/topic/detail/5/
+Author: 幸福关中
+Author-email: 1158920674@qq.com
+License: MIT
+Project-URL: Bug Tracker, http://www.lotdoc.cn
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+![未标题-1.jpg](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/06b9678856eb485ebe78bbd188d4c4ea~tplv-k3u1fbpfcp-watermark.image?)
+### 介绍
+
+HappyShop 是一个 Django 开发的第三方包，可以快速集成到任何django项目，以便快速获得一个简单的商城功能。
+
+本项目采用django + DRF + vue开发，具备前后端分离基因，拥有完整的多规格商品逻辑，集成支付宝支付，只需要简单配置即可快速收款！
+
+当然，其他功能还在迭代…
+### 演示站
+- 演示地址：[HappyShop (lotdoc.cn)](http://mall.lotdoc.cn/happy/)
+- 开源地址：[django-happy-shop: django-happy-shop是python栈采用最新版django框架前后端分离开发的商城模块，可快速通过pip命令快速集成到任何django项目！ (gitee.com)](https://gitee.com/xingfugz/happy-shop)
+- 文档地址：[django-happy-shop使用文档 (lotdoc.cn)](http://www.lotdoc.cn/blog/detail/155/?menu=5)
+
+### 快速开始
+
+#### pip命令快速安装
+
+安装方法与python其他包的方法一致，一条命令即可快速安装！
+
+```python
+pip install django-happy-shop
+```
+
+### 使用说明
+
+1.  将 "happy_shop" 添加到您的 INSTALLED_APPS 设置中，以及项目需要的其他几个依赖，如下所示：
+
+```python
+INSTALLED_APPS = [
+    ...
+    'happy_shop',      # happy_shop主程序
+    'rest_framework',  # DRF
+	
+    'corsheaders',     # 处理跨域的包
+    'crispy_forms',    # 可浏览API的form包，便于调试
+]
+```
+
+其中引入`happy_shop` 与 ``rest_framework`` 两个模块是必须的，因为改程序依赖于他们两个，下边两个模块是为了方便调试而引入的，一个是解决跨域问题而引入，这个视自己的使用情况决定，当前程序可以不引入，另外一个是为了配合django-filter模块使用，如果不开发调试可不引入！
+
+2. 在项目 urls.py 中包含 happy_shop 的 URLconf，如下所示
+
+```python
+urlpatterns = [
+    ...
+    # 这里url开头的happy暂时请不要自定义，可能会影响某些接口的运作
+    path('happy/', include('happy_shop.urls')),  
+]
+```
+
+如果需要查看可浏览的API文档及页面还需要加入以下两个url，这不是必须的，根据自己使用情况而定！
+
+```python
+from rest_framework.documentation import include_docs_urls
+
+urlpatterns = [
+    ...
+    # 这里url开头的happy暂时请不要自定义，可能会影响某些接口的运作
+    path('happy/', include('happy_shop.urls')),  
+	
+    # 需要查看drf的接口文档请配置
+    path('docs/', include_docs_urls(title='HappyShop API')), 
+    # 需要DRF的可浏览API能力请配置 
+    path('api-auth/', include('rest_framework.urls')),    
+]
+```
+
+3. 运行django的`migrate`命令创建模型数据
+
+```python
+python manage.py migrate
+```
+
+4. 运行django的runserver命令，启动开发服务器
+
+```python
+python manage.py runserver
+```
+
+5. 访问http://127.0.0.1:8000/happy/ 即可查看商城页面！
+
+7. 当前商城系统后台依赖django默认的admin，请访问`http://127.0.0.1:8000/admin/` 进入后台进行数据管理，请自行创建管理员账号密码及无比开启django管理后端【django默认后端】！
+
+```python
+python manage.py createsuperuser  # 创建超管
+```
+
+### 支付配置
+
+注意：如果你只是暂时查看演示，不需要收款，到此就先告一段落！
+
+配置收款需要在项目的settings.py文件中额外引入相关配置，记住支付宝的相关公钥和私钥都是需要配置路径文件，这里一一定要配置正确，否则会影响程序运行，这一块后期版本可能会优化！
+
+**配置如下：**
+
+```python
+HAPPY_SHOP = {
+    'ALIPAY':{
+        'APPID': appid,
+        'RETURN_URL': 'http://127.0.0.1:8000/happy/api/alipay/',
+        'NOTIFY_URL': 'http://127.0.0.1:8000/happy/api/alipay/',
+        'DEBUG': DEBUG, 
+        'PRIVATE_KEY':BASE_DIR / 'app_private_key.pem',    # 应用私钥
+        'PUBLIC_KEY':BASE_DIR / 'alipay_public_key.pem',   # 支付宝公钥，不是应用公钥
+    },
+}
+```
+
+私钥与公钥一定要配置正确，否则回调无法验证成功，订单状态无法修改！ 部署时一定要关闭django的DEBUG模式，否则支付地址跳转为沙箱地址，不能正确收款！
+
+### 其他
+
+其他相关模块的配置，请参考有关模块的文档,感谢一下几个模块的作者！
+
+-   [Home - Django REST framework (django-rest-framework.org)](https://www.django-rest-framework.org/)
+-   [django-cors-headers · PyPI](https://pypi.org/project/django-cors-headers/)
+-   [django-filter — django-filter 2.4.0 documentation](https://django-filter.readthedocs.io/en/latest/)
+-   [alipay/README.zh-hans.md at master · fzlee/alipay (github.com)](https://github.com/fzlee/alipay/blob/master/README.zh-hans.md)
+
+### 交流群
+- qq群：962059502
+
+![QQ群](happy_shop/static/happy_shop/images/qq.png ) 
+![微信群](happy_shop/static/happy_shop/images/wx.png)
+
+
+欢迎大家start，评论指教！
+
