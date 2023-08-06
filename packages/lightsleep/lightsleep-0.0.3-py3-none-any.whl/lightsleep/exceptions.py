@@ -1,0 +1,2 @@
+class SleepException(Exception):
+    pass
