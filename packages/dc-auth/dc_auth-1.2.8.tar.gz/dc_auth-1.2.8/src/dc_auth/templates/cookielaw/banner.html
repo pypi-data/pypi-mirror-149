@@ -1,0 +1,34 @@
+{% load i18n %}
+
+<div id="CookielawBanner" class="dc-auth-theme">
+    <div class="notification is-danger br-none has-text-centered">
+        Data Central uses cookies to make your browsing
+            experience better. By using Data Central you agree to
+            its use of cookies. <a href="https://cookiesandyou.com/" target="_blank">Learn more <i
+                class="fal fa-angle-right"></i></a>
+            <a class="button is-danger is-inverted is-small m-l-sm"
+               href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+    </div>
+</div>
+
+<script>
+    {# This should be part of the js build but leave it es5 for now. If we get bugs from lots of people using older browsers then move to a build process #}
+    var Cookielaw = {
+        createCookie: function (name, value, days) {
+            var date = new Date(),
+                expires = '';
+            if (days) {
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        },
+
+        createCookielawCookie: function () {
+            this.createCookie('cookielaw_accepted', '1', 10 * 365);
+            document.getElementById('CookielawBanner').style.display = 'none';
+        }
+    };
+</script>

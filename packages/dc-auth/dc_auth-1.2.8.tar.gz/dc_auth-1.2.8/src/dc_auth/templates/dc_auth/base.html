@@ -1,0 +1,80 @@
+{% load static %}
+{% load i18n %}
+{% load dc_static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        {% block meta %}
+            {% include 'dc_auth/header/meta.html' %}
+        {% endblock %}
+
+        {% include 'dc_auth/header/analytics.html' %}
+
+        {% block title_wrapper %}
+            {% include 'dc_auth/header/title.html' %}
+        {% endblock %}
+
+        {% include 'dc_auth/header/style.html' %}
+
+        {% block style %}
+            <link rel="stylesheet" type="text/css" href="{% dc_static_css 'main-public.min.css' %}"/>
+            {% block style-extra %}
+
+            {% endblock %}
+        {% endblock %}
+
+        <!--pre-load jquery-->
+        {#    First try loading jQuery from Google's CDN#}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        {# Fall back to a local copy of jQuery if the CDN fails#}
+        <script>
+            window.jQuery || document.write('<script src="{% dc_static_js 'jquery.min.js' %}"><\/script>')
+        </script>
+
+    {% endblock %}
+
+    {% block head-container %}
+        {% block head-css %}
+        {% endblock %}
+
+        {% block head-js %}
+        {% endblock head-js %}
+    {% endblock %}
+</head>
+
+{% block body %}
+    <body class="public {% block bodyclass %}{% endblock %} is-widescreen" id="top-of-page" data-spy="scroll"
+          data-target=".scrollspy">
+    <div class="wrapper">
+        {% block navbar %}
+            {% include 'dc_auth/primary_navbar.html' %}
+        {% endblock %}
+
+        {% block page-header %}
+        {% endblock %}
+
+        {% block main_outer %}
+            <div class="container is-widescreen">
+                <div class="p-xs">
+                    {% block main %}
+                        <!-- Content -->
+                    {% endblock %}
+                </div>
+            </div><!-- /.container -->
+        {% endblock main_outer %}
+
+        {% include 'dc_auth/footer.html' %}
+    </div><!-- ./wrapper -->
+
+    {% block script %}
+
+        <script type="text/javascript" src="{% dc_static_js 'bundle.min.js' %}"></script>
+
+        {% block js-extra %}
+
+        {% endblock %}
+    {% endblock %}
+    </body>
+{% endblock %}
+</html>

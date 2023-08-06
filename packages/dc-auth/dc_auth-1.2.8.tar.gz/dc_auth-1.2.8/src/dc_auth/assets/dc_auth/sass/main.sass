@@ -1,0 +1,99 @@
+@charset "utf-8"
+@import "../css/margins.css"
+
+@import "../../../../node_modules/bulma/sass/base/minireset.sass"
+
+html
+  font-size: 14px
+
+  -moz-osx-font-smoothing: grayscale
+  -webkit-font-smoothing: antialiased
+  min-width: 300px
+  overflow-x: hidden
+  overflow-y: scroll
+  text-rendering: optimizeLegibility
+  text-size-adjust: 100%
+
+.dc-auth-theme
+
+  //1. Import the initial variables
+  @import "../../../../node_modules/bulma/sass/utilities/initial-variables.sass"
+  @import "../../../../node_modules/bulma/sass/utilities/functions.sass"
+
+  //2. Set your own initial variables
+  @import "custom_variables.sass"
+
+  //3. Import the rest of Bulma
+  /*! bulma.io v0.7.2 | MIT License | github.com/jgthms/bulma */
+  @import "../../../../node_modules/bulma/sass/utilities/_all"
+  @import "../../../../node_modules/bulma/sass/base/_all"
+  @import "../../../../node_modules/bulma/sass/elements/_all"
+  @import "../../../../node_modules/bulma/sass/components/_all"
+  @import "../../../../node_modules/bulma/sass/grid/_all"
+  @import "../../../../node_modules/bulma/sass/layout/_all"
+
+
+  //*
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //++ Typography helpers (base/helpers.sass)
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //*/
+
+  font-family: $body-family
+  font-size: 1rem
+  font-weight: $body-weight
+  line-height: $body-line-height
+
+  .navbar
+    font-family: $family-open
+
+  .footer
+    font-family: $family-lato
+
+  h1, h2, h3, h4, h5, h6
+    font-weight: normal
+    font-family: $title-family
+    margin-top: 2rem
+
+  @each $name, $pair in $colors
+    $color: nth($pair, 1)
+    .has-text-#{$name}
+      color: $color !important
+    .has-bg-#{$name}
+      background-color: $color !important
+    .has-bl-#{$name}
+      border-left: solid 4px $color !important
+    .has-border-#{$name}
+      border-color: $color !important
+    .has-bg-light-#{$name}
+      background-color: lighten($color, 40%) !important
+
+  @each $name, $pair in $shades
+    $color: nth($pair, 1)
+    .has-text-#{$name}
+      color: $color !important
+    .has-border-#{$name}
+      border-color: $color !important
+    .has-bg-#{$name}
+      background-color: $color !important
+    .has-bg-light-#{$name}
+      background-color: lighten($color, 40%) !important
+
+  .has-bg-transparent
+    background-color: transparent !important
+
+  .has-bg-grey
+    background-color: lighten($dc-grey, 46%) !important
+
+  .has-bg-body
+    background-color: $body-bg !important
+
+  @each $pc in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80)
+    .bg-dark-#{$pc}
+      background-color: rgba(0, 0, 0, $pc/100) !important
+
+
+  .small-caps
+    font-variant: small-caps
+    text-transform: lowercase
+

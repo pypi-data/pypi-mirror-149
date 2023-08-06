@@ -1,0 +1,19 @@
+{% load cookielaw_tags %}
+{% cookielaw_banner %}
+
+{% if messages %}
+    <div class="dc-auth-theme">
+        {% for message in messages %}
+            <div class="notification m-b-none br-none has-text-centered
+                {% if message.level == 20 %}is-info
+                        {% elif message.level == 25 %}is-success
+                        {% elif message.level == 30 %}is-warning
+                        {% elif message.level == 40 %}is-danger
+                        {% endif %}
+                ">
+                <button class="delete"></button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

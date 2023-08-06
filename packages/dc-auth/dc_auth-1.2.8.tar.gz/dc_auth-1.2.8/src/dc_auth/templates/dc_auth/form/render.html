@@ -1,0 +1,25 @@
+{% load dc_form_helpers %}
+<div class="field">
+    {% if not field in form.hidden_fields %}
+        {{ field.label_tag|add_class:"label" }}
+    {% endif %}
+    <div class="control has-text-centered">
+        {% if field|is_textarea %}
+            {{ field |add_class:"textarea" }}
+        {% elif field|is_checkbox %}
+            {{ field |add_class:"checkbox" }}
+        {% elif field|can_use_bulma_input %}
+            {{ field |add_class:"input" }}
+        {% else %}
+            {{ field }}
+        {% endif %}
+    </div>
+    {% if field.help_text %}
+        <small class="help">{{ field.help_text }}</small>
+    {% endif %}
+    {% for error in field.errors %}
+        <div class="message is-danger">
+            <div class="message-body">{{ error|striptags }}</div>
+        </div>
+    {% endfor %}
+</div>

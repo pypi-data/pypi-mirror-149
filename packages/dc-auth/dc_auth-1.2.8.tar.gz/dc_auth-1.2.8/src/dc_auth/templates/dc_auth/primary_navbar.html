@@ -1,0 +1,115 @@
+{% load static %}
+{% load dc_static %}
+<div class="dc-auth-theme">
+    <nav class="navbar is-white" role="navigation" aria-label="main navigation" style="border-bottom: 1px solid #e9ecef;">
+        <div class="container is-widescreen">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="{{ settings.DC_API_URL }}" title="Back to Data Central">
+                    <img src="{% dc_static_img 'logo/Data Central_AlternativeLogo_FullColour.png' %}" style="min-height:38px" alt="Data Central Logo">
+                </a>
+
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+                   data-target="navBarPrimary">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+
+            <div id="navBarPrimary" class="navbar-menu">
+                <div class="navbar-end">
+                    <a class="navbar-item" href="{{ settings.DC_API_URL }}">
+                        Data
+                    </a>
+
+                    <a class="navbar-item" href="{{ settings.DC_CMS_URL }}">
+                        Docs
+                    </a>
+
+                    <a class="navbar-item" href="{{ settings.DC_API_URL }}/api/">
+                        API
+                    </a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+
+                        <a class="navbar-link is-arrowless">
+                            About
+                            <i class="m-l-xs m-t-xxs fas fa-caret-down has-text-grey"></i>
+                        </a>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ settings.DC_ABOUT_URL }}">Team</a>
+                            <a class="navbar-item" href="{{ settings.DC_TIMELINE_URL }}">Timeline</a>
+                            <a class="navbar-item" href="{{ settings.DC_BLOG_URL }}">Blog</a>
+                            <a class="navbar-item" href="{{ settings.DC_ACKNOWLEDGING_URL }}">Acknowledging Data Central</a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ settings.DC_CMS_URL }}/help-center/workshops/">Workshops</a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="{{ settings.DC_CMS_URL }}/outreach/">Educational Videos</a>
+                        </div>
+                    </div>
+
+
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <div class="navbar-link is-arrowless">
+                            Support <i class="m-l-xs m-t-xxs fas fa-caret-down has-text-grey"></i>
+                        </div>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ settings.DC_SERVICE_DESK_HOME_URL }}">Contact</a>
+                            <a class="navbar-item" href="{{ settings.DC_SERVICE_DESK_BUG_URL }}">Bug Report</a>
+                            <a class="navbar-item" href="{{ settings.DC_SERVICE_DESK_FEATURE_URL }}">Feature Request</a>
+                        </div>
+                    </div>
+
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <div class="navbar-link is-arrowless">
+                            My Tools <i class="m-l-xs m-t-xxs fas fa-caret-down has-text-grey"></i>
+                        </div>
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="{{ settings.DC_CMS_URL }}">Document Central</a>
+                            <a class="navbar-item" href="{{ settings.DC_WIKI_URL }}">
+                                Team Wiki
+                            </a>
+                            <a class="navbar-item has-text-grey-light">
+                                In Prep
+                            </a>
+                            <a class="navbar-item" href="{{ settings.DC_CLOUD_URL }}">
+                                Cloud
+                            </a>
+                            <a class="navbar-item" href="{{ settings.DC_TEAMS_URL }}">
+                                Team Management <span class="tag is-success m-l-xs">New</span>
+                            </a>
+                            <a class="navbar-item" href="{{ settings.DC_LENS_URL }}">
+                                LENS Proposal System
+                            </a>
+                        </div>
+                    </div>
+
+
+                    <div class="navbar-item {% if user.is_authenticated %}has-dropdown is-hoverable{% endif %}">
+                        {% if user.is_authenticated %}
+                            <a class="navbar-link has-text-primary is-arrowless">
+                                <strong>{{ user|truncatechars:20 }}
+                                    <i class="m-l-xs m-t-xxs fas fa-caret-down"></i></strong>
+                            </a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item" href="{{ settings.DC_ACCOUNTS_URL }}" target="_blank">My
+                                    Account</a>
+                                <a class="navbar-item" href="{% url 'cas_ng_logout' %}?next=/">Log out</a>
+                            </div>
+                        {% else %}
+                            <div class="buttons">
+                                <a class="button is-outlined"
+                                   href="{{ settings.DC_ACCOUNTS_URL }}/register" target="_blank" rel="noopener">
+                                    Register
+                                </a>
+                                <a class="button is-primary "
+                                   href="{% url 'cas_ng_login' %}">
+                                    Log in
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
