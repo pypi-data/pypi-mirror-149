@@ -1,0 +1,226 @@
+"""
+Type annotations for xray service client paginators.
+
+[Open documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/)
+
+Usage::
+
+    ```python
+    from aiobotocore.session import get_session
+
+    from types_aiobotocore_xray.client import XRayClient
+    from types_aiobotocore_xray.paginator import (
+        BatchGetTracesPaginator,
+        GetGroupsPaginator,
+        GetSamplingRulesPaginator,
+        GetSamplingStatisticSummariesPaginator,
+        GetServiceGraphPaginator,
+        GetTimeSeriesServiceStatisticsPaginator,
+        GetTraceGraphPaginator,
+        GetTraceSummariesPaginator,
+    )
+
+    session = get_session()
+    with session.create_client("xray") as client:
+        client: XRayClient
+
+        batch_get_traces_paginator: BatchGetTracesPaginator = client.get_paginator("batch_get_traces")
+        get_groups_paginator: GetGroupsPaginator = client.get_paginator("get_groups")
+        get_sampling_rules_paginator: GetSamplingRulesPaginator = client.get_paginator("get_sampling_rules")
+        get_sampling_statistic_summaries_paginator: GetSamplingStatisticSummariesPaginator = client.get_paginator("get_sampling_statistic_summaries")
+        get_service_graph_paginator: GetServiceGraphPaginator = client.get_paginator("get_service_graph")
+        get_time_series_service_statistics_paginator: GetTimeSeriesServiceStatisticsPaginator = client.get_paginator("get_time_series_service_statistics")
+        get_trace_graph_paginator: GetTraceGraphPaginator = client.get_paginator("get_trace_graph")
+        get_trace_summaries_paginator: GetTraceSummariesPaginator = client.get_paginator("get_trace_summaries")
+    ```
+"""
+import sys
+from datetime import datetime
+from typing import Generic, Iterator, Sequence, TypeVar, Union
+
+from aiobotocore.paginate import AioPaginator
+from botocore.paginate import PageIterator
+
+from .literals import TimeRangeTypeType
+from .type_defs import (
+    BatchGetTracesResultTypeDef,
+    GetGroupsResultTypeDef,
+    GetSamplingRulesResultTypeDef,
+    GetSamplingStatisticSummariesResultTypeDef,
+    GetServiceGraphResultTypeDef,
+    GetTimeSeriesServiceStatisticsResultTypeDef,
+    GetTraceGraphResultTypeDef,
+    GetTraceSummariesResultTypeDef,
+    PaginatorConfigTypeDef,
+    SamplingStrategyTypeDef,
+)
+
+if sys.version_info >= (3, 8):
+    from typing import AsyncIterator
+else:
+    from typing_extensions import AsyncIterator
+
+
+__all__ = (
+    "BatchGetTracesPaginator",
+    "GetGroupsPaginator",
+    "GetSamplingRulesPaginator",
+    "GetSamplingStatisticSummariesPaginator",
+    "GetServiceGraphPaginator",
+    "GetTimeSeriesServiceStatisticsPaginator",
+    "GetTraceGraphPaginator",
+    "GetTraceSummariesPaginator",
+)
+
+
+_ItemTypeDef = TypeVar("_ItemTypeDef")
+
+
+class _PageIterator(Generic[_ItemTypeDef], PageIterator):
+    def __iter__(self) -> Iterator[_ItemTypeDef]:
+        """
+        Proxy method to specify iterator item type.
+        """
+
+
+class BatchGetTracesPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.BatchGetTraces)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#batchgettracespaginator)
+    """
+
+    def paginate(
+        self, *, TraceIds: Sequence[str], PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[BatchGetTracesResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.BatchGetTraces.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#batchgettracespaginator)
+        """
+
+
+class GetGroupsPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetGroups)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getgroupspaginator)
+    """
+
+    def paginate(
+        self, *, PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetGroupsResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetGroups.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getgroupspaginator)
+        """
+
+
+class GetSamplingRulesPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetSamplingRules)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getsamplingrulespaginator)
+    """
+
+    def paginate(
+        self, *, PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetSamplingRulesResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetSamplingRules.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getsamplingrulespaginator)
+        """
+
+
+class GetSamplingStatisticSummariesPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetSamplingStatisticSummaries)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getsamplingstatisticsummariespaginator)
+    """
+
+    def paginate(
+        self, *, PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetSamplingStatisticSummariesResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetSamplingStatisticSummaries.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getsamplingstatisticsummariespaginator)
+        """
+
+
+class GetServiceGraphPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetServiceGraph)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getservicegraphpaginator)
+    """
+
+    def paginate(
+        self,
+        *,
+        StartTime: Union[datetime, str],
+        EndTime: Union[datetime, str],
+        GroupName: str = ...,
+        GroupARN: str = ...,
+        PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetServiceGraphResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetServiceGraph.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#getservicegraphpaginator)
+        """
+
+
+class GetTimeSeriesServiceStatisticsPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTimeSeriesServiceStatistics)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettimeseriesservicestatisticspaginator)
+    """
+
+    def paginate(
+        self,
+        *,
+        StartTime: Union[datetime, str],
+        EndTime: Union[datetime, str],
+        GroupName: str = ...,
+        GroupARN: str = ...,
+        EntitySelectorExpression: str = ...,
+        Period: int = ...,
+        ForecastStatistics: bool = ...,
+        PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetTimeSeriesServiceStatisticsResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTimeSeriesServiceStatistics.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettimeseriesservicestatisticspaginator)
+        """
+
+
+class GetTraceGraphPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTraceGraph)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettracegraphpaginator)
+    """
+
+    def paginate(
+        self, *, TraceIds: Sequence[str], PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetTraceGraphResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTraceGraph.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettracegraphpaginator)
+        """
+
+
+class GetTraceSummariesPaginator(AioPaginator):
+    """
+    [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTraceSummaries)
+    [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettracesummariespaginator)
+    """
+
+    def paginate(
+        self,
+        *,
+        StartTime: Union[datetime, str],
+        EndTime: Union[datetime, str],
+        TimeRangeType: TimeRangeTypeType = ...,
+        Sampling: bool = ...,
+        SamplingStrategy: "SamplingStrategyTypeDef" = ...,
+        FilterExpression: str = ...,
+        PaginationConfig: "PaginatorConfigTypeDef" = ...
+    ) -> AsyncIterator[GetTraceSummariesResultTypeDef]:
+        """
+        [Show boto3 documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/xray.html#XRay.Paginator.GetTraceSummaries.paginate)
+        [Show types-aiobotocore documentation](https://youtype.github.io/types_aiobotocore_docs/types_aiobotocore_xray/paginators/#gettracesummariespaginator)
+        """
