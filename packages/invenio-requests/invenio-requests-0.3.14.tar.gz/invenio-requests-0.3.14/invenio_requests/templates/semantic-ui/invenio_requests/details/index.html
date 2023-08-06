@@ -1,0 +1,60 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% if custom_base_template|default(false) %}
+  {%- extends custom_base_template %}
+{% else %}
+  {%- extends config.BASE_TEMPLATE %}
+{% endif %}
+
+
+{% set title = _("Request ") %}
+
+{% block page_body %}
+  {{ super() }}
+    {%- block request_body %}
+      <div class="ui container request-detail-page rel-mt-2">
+        {%- block request_header %}
+
+        <div class="ui grid">
+          {% block request_actions %}
+            <div class="column eight wide right floated right aligned">
+              <div id="request-actions"></div>
+            </div>
+          {% endblock request_actions %}
+        </div>
+          <h2 class="ui header">
+            <img class="ui avatar image"
+                 src="/static/images/square-placeholder.png"
+                 alt="member avatar">
+            {{ request.title }}
+          </h2>
+
+        {%- endblock request_header %}
+
+        {%- block request_timeline %}
+            <div id="request-detail"
+                 data-record='{{ request | tojson }}'
+                 data-default-query-config='{{ default_query_config | tojson }}'
+            >{# react app root #}</div>
+        {%- endblock request_timeline %}
+    </div>
+  {% endblock request_body %}
+{% endblock page_body %}
+
+{% block css %}
+  {{ super() }}
+  {{ webpack['invenio-requests-theme.css'] }}
+{% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+    {% include config.THEME_JAVASCRIPT_TEMPLATE %}
+  {{ webpack['invenio-requests-base.js'] }}
+{% endblock %}
