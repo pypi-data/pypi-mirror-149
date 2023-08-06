@@ -1,0 +1,89 @@
+Metadata-Version: 2.1
+Name: stadle-client
+Version: 0.0.2
+Summary: Stadle, A platform for federated learning.
+Home-page: https://github.com/tie-set/stadle_dev
+Author: Tie-Set Inc
+Author-email: package@tie-set.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Description-Content-Type: text/markdown
+Requires-Dist: certifi (==2021.10.8)
+Requires-Dist: click (==8.0.3)
+Requires-Dist: getmac (==0.8.2)
+Requires-Dist: numpy (==1.22.1)
+Requires-Dist: pyOpenSSL (==21.0.0)
+Requires-Dist: pyblas (==0.0.10)
+Requires-Dist: python-xz (==0.3.1)
+Requires-Dist: setuptools (==60.2.0)
+Requires-Dist: six (==1.15.0)
+Requires-Dist: tk (==0.1.0)
+Requires-Dist: torch (==1.10.1)
+Requires-Dist: torchvision (==0.10.0)
+Requires-Dist: typing-extensions (==3.7.4)
+Requires-Dist: websockets (==8.1)
+Requires-Dist: wheel (==0.37.1)
+Provides-Extra: dev
+Requires-Dist: check-manifest (==0.47) ; extra == 'dev'
+Requires-Dist: pytest (==6.2.5) ; extra == 'dev'
+Requires-Dist: twine (==3.7.1) ; extra == 'dev'
+
+# STADLE v0.0.2
+
+<img src="logo/stadle_logo.png" width="600"/>
+
+Our STADLE platform is a paradigm-shifting technology for collaborative and continuous learning combining privacy-preserving frameworks.
+STADLE platform stands for Scalable, Traceable, Adaptive, Distributed Learning platform for versatile ML applications.
+
+## Table of Contents
+
+- [STADLE v0.0.1](#stadle-v002)
+  - [Table of Contents](#table-of-contents)
+  - [General Terminologies](#general-terminologies)
+  - [Contributing](#contributing)
+    - [Bug Reports](#bug-reports)
+    - [Tech Support](#tech-support)
+  - [License](#license)
+
+## General Terminologies
+
+There are 3 main components in STADLE.
+
+- Persistence-server
+
+  - A core functionality which helps in keeping track of various database entries.
+  - Packaged as a command inside `stadle` library.
+  - `stadle persistence-server [args]`
+
+- Aggregator
+
+  - A core functionality which helps aggregation process.
+  - Packaged as a command inside `stadle` library.
+    - `stadle aggregator [args]`
+
+- Client [this package]
+  - In charge of communicating with `stadle` core functions.
+  - A core functionality which helps executing the machine learning code from client side.
+  - Packaged inside `stadle` library as a class.
+    - `from stadle import BasicClient`
+    - `class BasicClient` is used to let `stadle` know that the following code is going to be ML oriented.
+
+## Contributing
+
+Reach out with your issues or proposals to improve STADLE.
+
+### Bug Reports
+
+Please check/submit issues [here](https://github.com/tie-set/stadle_client/issues).
+
+### Tech Support
+
+Please reach out to our technical support team via [support@tie-set.com](support@tie-set.com).
+
+## License
+
+Any use and distribution of this code must be under the NDA with [TieSet Inc.](https://tie-set.com/)
+
+
