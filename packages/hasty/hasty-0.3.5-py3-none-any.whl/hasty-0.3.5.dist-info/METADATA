@@ -1,0 +1,75 @@
+Metadata-Version: 2.1
+Name: hasty
+Version: 0.3.5
+Summary: Hasty API client library
+Home-page: https://github.com/hasty-ai/hasty-python/
+Author: Hasty GmbH
+Author-email: herbert@hasty.ai
+License: MIT License
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy (>=1.16)
+Requires-Dist: requests (>=2.23.0)
+Requires-Dist: retrying (==1.3.3)
+
+# Python library for the Hasty API.
+[![PyPI version](https://badge.fury.io/py/hasty.svg)](https://badge.fury.io/py/hasty)
+[![Documentation Status](https://readthedocs.org/projects/hasty/badge/?version=latest)](https://hasty.readthedocs.io/en/latest/?badge=latest)
+![CI](https://github.com/hasty-ai/hasty-python/workflows/CI/badge.svg)
+
+
+## Installation
+```
+ pip install hasty
+```
+
+## Usage Example
+
+Establish initial connection with Hasty:
+``` python
+from hasty import Client
+
+API_KEY = "your_key"
+h = Client(api_key=API_KEY)
+```
+
+Get projects
+``` python
+
+projects = h.get_projects()
+print(projects)
+>> ['Project(id="9a5ac730-9b08-477d-8f20-e7245baf0e29", name="African Wildlife")']
+```
+
+Create dataset
+``` python
+buffalo_ds = project.create_dataset("buffalo")
+print(buffalo_ds)
+>> Dataset(id="66ee13d5-aaf7-4fac-862c-45f44eff802a", name="buffalo")
+```
+
+Upload image
+``` python
+img = project.upload_from_file(buffalo_ds,
+                               "./buffalo/001.jpg")
+print(img)
+>> Image(id="ebf88007-134b-4bce-9799-995504b2b0ee", dataset_name="buffalo", name="001.jpg")
+```
+
+For more information check our [documentation](https://hasty.readthedocs.io/en/latest/)
+
+
