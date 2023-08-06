@@ -1,0 +1,18 @@
+print-status: False
+
+api:
+    server:
+        base-url: /dell-development
+        port: 5000
+        scheme: https
+    database:
+        dialect: ${DATABASE_DIALECT:sqlite}
+        settings:
+            check_same_thread: False
+
+match:
+    duration-in-minutes: 1
+
+swagger:
+    schemes: [${api.server.scheme}] ###- bug
+    host: ${SWAGGER_HOST:${api.server.host}} ###- bug

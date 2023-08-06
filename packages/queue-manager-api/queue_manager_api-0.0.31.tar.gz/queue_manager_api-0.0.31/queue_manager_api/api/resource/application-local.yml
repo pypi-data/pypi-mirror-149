@@ -1,0 +1,16 @@
+print-status: False
+
+api:
+    server:
+        scheme: http
+    database:
+        dialect: ${DATABASE_DIALECT:sqlite}
+        settings:
+            check_same_thread: False
+
+match:
+    duration-in-minutes: 1
+
+swagger:
+    schemes: [${api.server.scheme}] ###- bug
+    host: ${SWAGGER_HOST:${api.server.host}}:${api.server.port} ###- bug
