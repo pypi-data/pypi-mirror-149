@@ -1,0 +1,82 @@
+2* todo 若偵測到有非此分鐘的 .msgpack, 全部快速壓縮為 .lz4
+    https://github.com/bozaro/lz4-rs
+    這個 lz4 東西支援 threads 速度應該非常驚人
+
+== 2022-05-03 10:26 bowen 設法改用 ? 取代 unwrap
+== 2022-05-02 17:28 caro bowen
+. 已經可以把 path to string 包裝起來很好看
+
+== 2022-05-02 coding
+為了讓 clion 也可以直接編譯與 unittest, 增添以下東西
+[target.x86_64-apple-darwin]
+rustflags = [
+    "-C", "link-arg=-undefined",
+    "-C", "link-arg=dynamic_lookup",
+]
+
+[target.aarch64-apple-darwin]
+rustflags = [
+    "-C", "link-arg=-undefined",
+    "-C", "link-arg=dynamic_lookup",
+]
+
+單元測試要加入在 Edit Configurations
+test --package cameo_ocean --lib tests
+
+== 2022-05-02 00:02 bowen
+done 00:02 檔案名字必須輸出到這邊 data/日期/日期_時_分.msgpack
+
+== 2022-05-01 15:43 bowen
+== 2022-05-01 06:24 bowen
+. done 07:34 刪除 int_workers 改用內建 cpu 預設數量
+1* . pending 可以加入 timestamp 這樣的好處是，滾動資料，掃描資料的時候可以讓 client 有所依循
+3* . done 07:12, 要測試 python 讀取是否可以順暢讀出, 格式要確定未來有通用性
+3* . pending 最好 headers 只寫 PK 就好了，因為其他的很佔用空間
+3* . done 06:45 ip port workers 要可以從 python 指定
+. 22MB/s benchmark actix cameo_ocean 速度真的就是七倍快於 fastapi
+3* done 10:47 清理檔案
+done 11:27 引入 rust duplicated code 追蹤: sh/du.sh
+  brew install pmd
+  pmd cpd --files src/*.rs --language rust --minimum-tokens 13
+done 13:33 refactoring 易讀性，現在很好懂了
+
+
+== 2022-04-30 23:41 bowen
+. rust actix 已經可以正確寫入 headers and body
++ 竟然真的用 actix pyo3 寫出 msgpack log, 真的是不可思議，而且一天就寫完了，感覺沒有那麼困難
++ 往後就真的可以用 pyo3 建構給 python 使用的套件，無論是 http or function 呼叫都可以了
+i rust 真的很難搞，尤其是字串與其他型別的轉換，很容易踩到地雷區域
+
+== rust python init pyo3
+希望可以製作一個 rust_python 套件, 示範作用
+
+mkdir string_sum_bowen
+python3 -m venv .env
+source .env/bin/activate
+
+python3 -m pip install maturin
+maturin init --bindings pyo3
+
+unset CONDA_PREFIX
+maturin develop
+
+maturin publish
+
+== 上傳到pypi
+pypi密碼
+bohachu
+fu. 1i6cj06
+
+== 為了要編譯 rust 套件，install rust into replit: 001 cargo 002 rustc
+{ pkgs }: {
+  deps = [
+    pkgs.python38Full
+    pkgs.cargo
+    pkgs.rustc
+  ];
+
+== replit測試，會自動編譯 rust 套件
+python3 -m pip install string_sum_bowen
+
+== 成功 replit 編譯以及執行沒問題，超強
+
