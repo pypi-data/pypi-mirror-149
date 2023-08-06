@@ -1,0 +1,66 @@
+Metadata-Version: 2.1
+Name: hexcover
+Version: 0.5.0
+Summary: Given a centroid and side length, tile an area with regular flat hexagons
+Home-page: https://github.com/urschrei/hexcover
+Author: Stephan Hügel
+Author-email: urschrei@gmail.com
+License: MIT
+Project-URL: Source, https://github.com/urschrei/hexcover
+Project-URL: Tracker, https://github.com/urschrei/hexcover/issues
+Keywords: Geo, Telecoms, Hexagon, GIS,Programming Language :: Python,Programming Language :: Python :: 3.7,Programming Language :: Python :: 3.8,Programming Language :: Python :: 3.9,Programming Language :: Python :: 3.10,Development Status :: 4 - Beta,Intended Audience :: Developers,Intended Audience :: Science/Research,Intended Audience :: Education,License :: OSI Approved :: MIT License,Operating System :: OS Independent,Topic :: Software Development :: Libraries :: Python Modules,Topic :: Scientific/Engineering :: GIS
+Platform: UNKNOWN
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown; charset=UTF-8
+License-File: license.txt
+Provides-Extra: all
+Requires-Dist: numpy (>=1.11.0) ; extra == 'all'
+Requires-Dist: pytest (>=6.2.2) ; extra == 'all'
+Provides-Extra: numpy
+Requires-Dist: numpy (>=1.11.0) ; extra == 'numpy'
+Provides-Extra: test
+Requires-Dist: pytest (>=6.2.2) ; extra == 'test'
+
+# Hexcover
+A small utility package which calculates a regular hexagonal tiling for an area, given a centroid as a Shapely [Point](https://shapely.readthedocs.io/en/latest/manual.html#Point), and a side length.
+
+# Installation
+`Hexcover` is available on PyPI:  
+`pip install hexcover`
+
+# Usage
+```python
+
+from shapely.geometry import Point
+from hexcover.util import hexagon_coverage
+
+# centroid
+c = Point(0.0, 0.0)
+coverage = hexagon_coverage(c, 10)
+
+# coverage is a namedtuple of seven polygons. The first entry is the central polygon.
+# Subsequent entries begin directly above the central polygon, and proceed clockwise.
+```
+The returned `namedtuple` has seven fields:
+
+- `centre`
+- `top`
+- `topright`
+- `bottomright`
+- `bottom`
+- `bottomleft`
+- `topleft`
+
+## Examples
+There's an example [notebook](hexcover.ipynb), and a sample output [GeoJSON file](coverage.geojson) showing the result of covering the [Crystal Palace Transmitting Station]() with 100-metre hexagons.
+
+# Requirements
+`Shapely` >= 1.6.3
+
+# License
+[The Blue Oak Model License 1.0](LICENSE.md)
+
+# DOI
+[![DOI](https://zenodo.org/badge/194419900.svg)](https://zenodo.org/badge/latestdoi/194419900)
+
+
