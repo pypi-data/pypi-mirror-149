@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Cache-control" content="max-age=0">
+        {#<link href="{{ static_url("css/bulma/bulma.min.css") }}" rel="stylesheet">#}
+        {#<link href="{{ static_url("css/main.css") }}" rel="stylesheet">#}
+        {#<script src="{{ static_url("alpinejs.min.js") }}"></script>#}
+        <style>
+        {{ static_content("css/bulma/bulma.min.css") }}
+
+        {{ static_content("css/main.css") }}
+        </style>
+
+        <script>
+        {{ static_content("alpinejs.min.js") }}
+        </script>
+        {% block head %}
+        {% endblock %}
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <div class="block">
+                    <section class="hero">
+                        <div class="hero-body">
+                            <p class="title">
+                                {{ comparison.title }}
+                            </p>
+                            <p class="subtitle">
+                                {{ comparison.file_a }} 
+                                {% if comparison.label_monitored is not none %}
+                                [{{ comparison.label_monitored }}]
+                                {% endif %}
+                                vs. {{ comparison.file_b }}
+                                {% if comparison.label_reference is not none %}
+                                [{{ comparison.label_reference }}]
+                                {% endif %}
+                            </p>
+                        </div>
+                    </section>
+                    <div class="container">
+                            <div class="box">
+                            {% block body %}
+                            {% endblock %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
