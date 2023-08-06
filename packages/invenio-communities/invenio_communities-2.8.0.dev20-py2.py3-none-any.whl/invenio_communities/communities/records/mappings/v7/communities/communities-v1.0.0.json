@@ -1,0 +1,141 @@
+{
+  "mappings": {
+    "numeric_detection": false,
+    "properties": {
+      "created": {
+        "type": "date"
+      },
+      "updated": {
+        "type": "date"
+      },
+      "id": {
+        "type": "keyword"
+      },
+      "slug": {
+        "type": "keyword"
+      },
+      "access": {
+        "properties": {
+          "visibility": {
+            "type": "keyword"
+          },
+          "member_policy": {
+            "type": "keyword"
+          },
+          "record_policy": {
+            "type": "keyword"
+          }
+        }
+      },
+      "featured": {
+        "properties": {
+          "past": {
+            "type": "date"
+          },
+          "future": {
+            "type": "date"
+          }
+        }
+      },
+      "metadata": {
+        "properties": {
+          "title": {
+            "type": "text"
+          },
+          "description": {
+            "type": "text"
+          },
+          "type": {
+            "type": "object",
+            "properties": {
+              "@v": {
+                "type": "keyword"
+              },
+              "id": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "object",
+                "dynamic": true,
+                "properties": {
+                  "en": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "curation_policy": {
+            "type": "text"
+          },
+          "page": {
+            "type": "text"
+          },
+          "organizations": {
+            "type": "object",
+            "properties": {
+              "@v": {
+                "type": "keyword"
+              },
+              "id": {
+                "type": "keyword"
+              },
+              "name": {
+                "type": "text"
+              }
+            }
+          },
+          "funding": {
+            "properties": {
+              "award": {
+                "type": "object",
+                "properties": {
+                  "@v": {
+                    "type": "keyword"
+                  },
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "title": {
+                    "type": "object",
+                    "dynamic": true
+                  },
+                  "number": {
+                    "type": "text"
+                  },
+                  "identifiers": {
+                    "properties": {
+                      "identifier": {
+                        "type": "text"
+                      },
+                      "scheme": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+              },
+              "funder": {
+                "type": "object",
+                "properties": {
+                  "@v": {
+                    "type": "keyword"
+                  },
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "name": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "website": {
+            "type": "keyword"
+          }
+        }
+      }
+    }
+  }
+}
