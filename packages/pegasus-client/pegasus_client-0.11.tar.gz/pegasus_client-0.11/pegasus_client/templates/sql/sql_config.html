@@ -1,0 +1,276 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include 'components/header.html' %}  
+  </head>
+  
+    <body style="font-family: 'Nunito', sans-serif; background: #F6F8F9; font-size: small;">
+      <div class="container">
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              {% if 'ERROR' in message %}
+              <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+              {% else %}
+              <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
+              {% endif %}
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      
+      <div id="copy_alert" class="alert alert-info alert-dismissible fade show mt-2" role="alert" hidden>
+        text copied
+      </div>
+
+
+
+      {% if message['type']=='success' %}
+      <div class="alert alert-success mt-2" role="alert">
+        {{ message['message'] }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% elif message['type']=='error' %}
+      <div class="alert alert-danger" role="alert">
+        {{ message['message'] }}
+      </div>
+      {% endif %}
+
+      
+        {% include 'components/search_bar.html' %}
+        
+        <ul class="nav nav-tabs" style="margin-bottom: 10px; margin-top: 10px; background: #F6F8F9">
+          <li class="nav-item">
+            <a class="nav-link {% if setting_type=='queries' %}active{% endif %} background: #F6F8F9" href="/sqlsetup/queries">Queries</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if setting_type=='commands' %}active{% endif %} background: #F6F8F9" href="/sqlsetup/commands">Commands</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if setting_type=='connections' %}active{% endif %} background: #F6F8F9" href="/sqlsetup/connections">Connections</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if setting_type=='settings' %}active{% endif %} background: #F6F8F9" href="/sqlsetup/settings">Settings</a>
+          </li>
+        </ul>
+
+        
+        
+        {% if setting_type=='connections' %}        
+        <!-- CONNECTIONS -->
+        <p>Add, remove, or edit database connections.</p>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newConnModal">
+          Add 
+        </button>
+
+        <div class="row">
+        
+        <div class="col-md-12">
+          <table class="table table-bordered shadow p-3 mb-5 bg-white rounded text-center" style="margin: 5px; vertical-align: middle">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">name</th>
+                <th scope="col" class="text-center">type</th>
+                <th scope="col" class="text-center">server</th>
+                <th scope="col" class="text-center">database</th>
+                <th scope="col" class="text-center">username</th>
+                <th scope="col" class="text-center">password</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for conn in config['connections'] %}
+              <form name="update_conn_form" method="POST" action="/sql-api/updateconn" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+              <input name="connName"  value="{{ conn }}" style="margin: 0px; padding: 0px;" type="text" class="form-control invisible" placeholder="connection name" hidden>
+                <tr> <!--TABLE ROW-->
+                <td style="vertical-align: middle;">{{ conn }}</td>
+                <td>
+                  <div class="input-group">
+                    <select value="d" name="type" class="custom-select mb-0" style="font-size: inherit;">
+                      <option {% if config['connections'][conn]['type']=='mysql' %} selected="selected"{% endif %} value="mysql">MySQL</option>
+                      <option {% if config['connections'][conn]['type']=='sqlserver' %} selected="selected"{% endif %} value="sqlserver">SQL Server</option>
+                      <option {% if config['connections'][conn]['type']=='azure' %} selected="selected"{% endif %} value="azure">Azure Server</option>
+                    </select>
+                  </div>
+                </td>
+                <td ><input name="server" value="{{ config['connections'][conn]['server'] }}" type="text" class="form-control mb-0" aria-describedby="basic-addon3" style="font-size: inherit;"></td>
+                <td><input name="database" value="{{ config['connections'][conn]['database'] }}" type="text" class="form-control mb-0" aria-describedby="basic-addon3" style="font-size: inherit;"></td>
+                <td><input name="username" value="{{ config['connections'][conn]['username'] }}" type="text" class="form-control mb-0" aria-describedby="basic-addon3" style="font-size: inherit;"></td>
+                <td><input name="password" value="{% if config['connections'][conn]['password']|length>0 %}shh no peeking{% else %}{% endif %}" type="password" class="form-control mb-0" aria-describedby="basic-addon3" style="font-size: inherit;"></td>
+                <td style="vertical-align: middle;"><button type="submit" class="btn btn-secondary"><i class="fa fa-save"></i></button></td>
+                <td style="vertical-align: middle;"><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete{{conn}}Modal"><i class="fa fa-trash-o"></i></button></td>
+              </tr><!--TABLE ROW-->
+              </form>
+              {% endfor %}
+          </table>
+          </div>
+          </div>
+        <!-- END OF CONNECTIONS -->
+        {% endif %}
+
+        {% if setting_type=='queries' %}
+        <p>Add, remove, or edit saved queries.</p>   
+        <!-- QUERIES -->
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newQueryModal">
+          Add 
+        </button>
+
+        <table class="table table-bordered shadow p-3 mb-5 bg-white rounded text-center" style="margin: 5px; vertical-align: middle">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">name</th>
+                {% if config['settings']['additional_config'] != '' %} 
+                  <th scope="col" class="text-center">config location</th>
+                {% endif %}
+                <th scope="col" class="text-center">connection</th>
+                <th scope="col" class="text-center">query</th>
+                <th scope="col" class="text-center"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for query in config['queries'] %}
+                <tr> <!--TABLE ROW-->
+                <td style="vertical-align: middle;">{{ query }}</td>
+                {% if config['settings']['additional_config'] != '' %} 
+                  <td style="vertical-align: middle;">{{ config['queries'][query]['location'] }}</td>
+                {% endif %}
+                <td style="vertical-align: middle;">{{ config['queries'][query]['connection'] }}</td>
+                <td><textarea name="query" class="form-control mb-0" style="overflow: auto; margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; font-size: inherit;" rows="1">{{ config['queries'][query]['query'] }}</textarea></td>
+                <td style="vertical-align: middle;">
+                  <button type="button" class="btn btn-success" onclick="location.href='/{{ query }}'"><i class="fa fa-play"></i></button>
+                  <button type="button" class="btn btn-secondary" onclick="copy_query('{{ config['queries'][query]['query'] | replace("\n", " ") }}')"><i class="fa fa-solid fa-copy"></i></button>
+                  <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#edit{{ query }}Modal" {% if config['queries'][query]['location'] == 'external' %}disabled{% endif %}><i class="fa fa-edit"></i></button>
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete{{query}}Modal" {% if config['queries'][query]['location'] == 'external' %}disabled{% endif %}><i class="fa fa-trash-o"></i></button>
+                </td>
+              </tr><!--TABLE ROW-->
+              {% endfor %}
+          </table>
+        <!-- END OF QUERIES -->
+        {% endif %}
+
+        {% if setting_type=='commands' %} 
+        <p>Add, remove, or edit commands.</p>
+
+        <!-- COMMANDS -->
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newCommandModal">
+          Add
+        </button>
+
+        <div class="row">
+        {% for command in config['commands'] %}
+        
+        <div class="col-sm-6, col-md-4, col-lg-4">
+          <form name="update_command_form" method="POST" action="/sql-api/updatecommand" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          
+            <div class="card shadow mb-5 bg-white rounded" style="width: 100%; margin: 5px;">
+              <div class="card-header">
+                <h5>{{ command }}</h5> 
+
+                {% if config['commands'][command]['location'] == 'external' %} 
+                  <small>external config</small> 
+                {% endif %}
+
+
+              </div>
+              <div class="card-body">
+                <p class="mb-0">{{ ', '.join(config['commands'][command]['queries']) }}</p>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="btn btn-success" onclick="location.href='/{{ command }}'"><i class="fa fa-external-link"></i></button>
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#update{{ command }}Modal" {% if config['commands'][command]['location'] == 'external' %}disabled{% endif %}><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete{{command}}Modal" {% if config['commands'][command]['location'] == 'external' %}disabled{% endif %}><i class="fa fa-trash-o"></i></button>
+                </div>
+            </div>
+          </form>
+        </div>
+          
+        
+        {% endfor %}
+        </div>
+
+        <!-- END OF COMMANDS -->
+        {% endif %}
+
+        
+
+        {% if setting_type=='settings' %}
+        <p>Toggle settings for using SQL in Pegasus.</p>
+        <form action="/sql-api/download">
+            <input type="submit" class="btn btn-secondary" value="Download sql.yaml" />
+        </form>
+        <!-- SETTINGS -->
+        <form name="settingsForm" class="shadow p-3 mb-5 bg-white rounded" action="/sql-api/updatesettings" style="padding: 10px; margin-bottom: 15px; margin-top: 15px;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <div class="form-check">
+            <input name="auto_format_queries" class="form-check-input" type="checkbox" value="" id="auto_format_queries_check" {% if config['settings']['auto_format_queries']==True %}checked{% endif %}>
+            <label class="form-check-label" for="auto_format_queries_check">
+              auto_format_queries
+            </label>
+          </div>
+          <div class="form-check">
+            <input name="better_tables" class="form-check-input" type="checkbox" value="" id="better_tables_check" {% if config['settings']['better_tables']==True %}checked{% endif %}>
+            <label class="form-check-label" for="better_tables_check">
+              better_tables
+            </label>
+          </div>
+          <small class="form-text text-muted">Indicates whether one or two columns should be used when displaying results.</small>
+          <div class="form-check">
+            <input name="two_columns" class="form-check-input" type="checkbox" value="" id=two_columnss_check" {% if config['settings']['two_columns']==True %}checked{% endif %}>
+            <label class="form-check-label" for="two_columns_check">
+              two_columns
+            </label>
+          </div>
+          <small id="emailHelp" class="form-text text-muted">Only commands and queries can be loaded from the additional config, missing connections should be added.</small>
+          <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                  <div class="input-group-text">Additional Config</div>
+              </div>
+          <input name="additional_config" type="text" class="form-control" id="additional_config" value="{{ config['settings']['additional_config'] }}" placeholder="{{ config['settings']['additional_config'] }}">
+          </div>
+    
+          <button type="submit" class="btn btn-secondary">Save</button>
+        </form>
+        <!-- END OF SETTINGS -->
+        {% endif %}
+      </div>
+      
+
+
+
+    <!-- MODALS -->
+
+    <!-- connection modals -->
+    {% include 'sql/modals/query_modals.html' %}
+
+    <!-- connection modals -->
+    {% include 'sql/modals/connection_modals.html' %}
+
+    <!-- command modals -->
+    {% include 'sql/modals/command_modals.html' %}
+    <script>
+    function copy_query(query) {
+      /* Select the text field */
+
+      var $temp = $("<input>");
+      $("body").append($temp);
+      $temp.val(query).select();
+      document.execCommand("copy");
+      $temp.remove();
+
+      var x = document.getElementById("copy_alert").removeAttribute("hidden");
+    }
+    </script>
+
+  </body>
+  <footer>
+    {% include 'components/footer.html' %}
+  </footer>
+</html>

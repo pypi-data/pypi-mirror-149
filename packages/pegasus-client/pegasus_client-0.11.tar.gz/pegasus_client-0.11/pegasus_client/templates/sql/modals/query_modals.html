@@ -1,0 +1,98 @@
+<!-- add query -->
+<div class="modal fade" id="newQueryModal" tabindex="-1" role="dialog" aria-labelledby="newQueryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="newQueryModalLabel">New Query</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <form name="new_query_form" id="new_query_form" method="POST" action="/sql-api/newquery" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">query name</div>
+                </div>
+                <input name="queryName" onkeypress="return event.charCode != 32" placeholder="system_search" type="text" class="form-control" id="inlineFormInputGroup" required>
+            </div>
+            <a data-toggle="modal" data-target="#newConnModal" data-dismiss="modal" href="#">Add new connection</a>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">connection</label>
+                </div>
+                <select value="d" name="connection" class="custom-select" required>
+                <option>Choose one...</option>
+                {% for conn in config['connections'] %}
+                <option value="{{conn}}">{{conn}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <textarea style="overflow: auto; margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace;" name="query" placeholder="SELECT id, value &#10;FROM this_table&#10;WHERE value > 10 ORDER BY value DESC" class="form-control" style='overflow: auto; margin-bottom: 5px;' rows=5></textarea>
+        </div>
+        <div class="modal-footer">
+        <button type="submit" class="btn btn-success">add</button>
+            </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- edit query -->
+{% for query in config['queries'] %}
+<div class="modal fade" id="edit{{ query }}Modal" tabindex="-1" role="dialog" aria-labelledby="edit{{ query }}ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="edit{{ query }}ModalLabel">Edit {{ query }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <form name="edit_query_form" method="POST" action="/sql-api/updatequery" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <input value="{{ query }}" onkeypress="return event.charCode != 32" name="queryName" type="text" class="form-control mb-3" placeholder="query name" hidden> 
+            <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">connection</label>
+            </div>
+            <select value="d" name="connection" class="custom-select">
+                {% for conn in config['connections'] %}
+                <option value="{{conn}}" {% if conn==config['queries'][query]['connection'] %} selected="selected"{% endif %}>{{conn}}</option>
+                {% endfor %}
+            </select>
+            </div>
+            <td><textarea name="query" class="form-control" style="overflow: auto; margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace;" rows="{{ config['queries'][query]['query'].split('\n')|length }}">{{ config['queries'][query]['query'] }}</textarea></td>
+        </div>
+        <div class="modal-footer">
+        <button type="submit" class="btn btn-success">save</button>
+            </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- delete query -->
+{% for query in config['queries'] %}
+<div class="modal fade" id="delete{{query}}Modal" tabindex="-1" role="dialog" aria-labelledby="newQueryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="newQueryModalLabel">Delete {{ query }}?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-footer">
+        <form action="/sql-api/deletequery/{{query}}">
+            <button type="submit" class="btn btn-danger">Yes</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </div>
+    </div>
+    </div>
+</div>
+{% endfor %} 

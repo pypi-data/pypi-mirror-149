@@ -1,0 +1,105 @@
+<form class="d-flex" name="Form1" onsubmit="run_command(this);" style="padding: 10px; margin-bottom: 15px; margin-top: 15px;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <div class="input-group">
+        <div class="input-group-prepend shadow-sm bg-white rounded">
+            <div class="input-group-text">></div>
+        </div>
+        <input name="param" type="text" class="form-control shadow-sm bg-white" id="command_input" {% if info is defined %} value="{{ info['command'] }} {{ info['param'] }}" {% else %}placeholder="help"{% endif %} type="search" autofocus>
+        
+        <button class="btn btn-success shadow-sm" style="border-radius: 0; border: 1px solid #ced4da; border-left-width: 0;" type="submit">Go</button>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle shadow-sm" style="border-bottom-left-radius: 0; border-top-left-radius: 0; border: 1px solid #ced4da; border-left-width: 0;" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog" aria-hidden="true"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" data-toggle="modal" data-target="#settingsModal" href="#">Settings</a>
+                <a class="dropdown-item" data-toggle="modal" data-target="#commandsModal" href="#">Commands</a>
+                <a class="dropdown-item" href="/sqlsetup">SQL Setup</a>
+            </div>
+        </div>
+    
+    </div>
+    
+</form>
+
+<!-- MODALS -->
+<div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Refresh Time (seconds)</div>
+                    </div>
+                <input name="refresh_time" value="0" type="text" class="form-control" id="refresh_time" readonly>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="commandsModal" tabindex="-1" role="dialog" aria-labelledby="commandsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="CommandsModalLabel">Commands</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <p>All commands:</p>
+                {% if command is defined %}
+                {% for command in commands['Module Command'] %}
+
+                    {% if command['type'] == "string" %}
+                        <p>{{ command['content'] }}</p>
+                    {% else %}
+                        {% for c in command['content'] %}
+                            <p>{{ c[1] }} {{ c[0] }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
+
+
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function run_command(form) {
+
+        const input = document.getElementById('command_input').value.trim().split(' ');
+
+        var command = input[0];
+
+        input.shift();
+
+        const parameter = input;
+
+        var value_parameter = parameter.join(' ')
+
+        document.getElementById("command_input").value = value_parameter;
+        form.action = '/' + command;
+
+        }  
+</script>
