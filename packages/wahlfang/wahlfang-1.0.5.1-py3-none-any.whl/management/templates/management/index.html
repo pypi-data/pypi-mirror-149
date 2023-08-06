@@ -1,0 +1,66 @@
+{% extends 'management/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-dark text-light">
+          <h4 class="d-inline">My Sessions</h4>
+          <a class="btn btn-success float-right"
+             href="{% url 'management:index' %}?action=add_session">Create New Session</a>
+        </div>
+        <div class="card-body">
+          <div class="list-group">
+            {% for session in sessions %}
+              <div class="list-group-item list-group-item-action">
+                <a class="main-link" href="{% url 'management:session' session.id %}"></a>
+                <button type="button" class="close btn btn-danger btn-lg float-right" data-toggle="modal"
+                        data-target="#deleteModel{{ session.pk }}"
+                        aria-label="remove session">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <span>{{ session.title }}</span>
+                <small class="float-right text-muted right-margin">
+                  {% if session.start_date %}
+                    {{ session.start_date|date:"l Y-m-d H:i:s" }}
+                  {% endif %}
+                </small>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% for session in sessions %}
+    <div class="modal fade" id="deleteModel{{ session.pk }}" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Delete Election</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete the {{ session.title }} meeting?</p>
+          </div>
+          <div class="modal-footer">
+            <form action="{% url 'management:delete_session' pk=session.pk %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
+
+{% block footer_scripts %}
+  <script src="{% static "js/jquery-3.5.1.slim.min.js" %}"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"></script>
+  <script src="{% static "bootstrap-4.5.3-dist/js/bootstrap.min.js" %}"
+          integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"></script>
+{% endblock %}
+
