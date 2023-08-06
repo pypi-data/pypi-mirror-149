@@ -1,0 +1,85 @@
+Metadata-Version: 2.1
+Name: pytest-zulip
+Version: 0.2.0
+Summary: Pytest report plugin for Zulip
+Home-page: https://github.com/treussart/pytest-zulip
+Author: mtreussart
+Author-email: matthieu@treussart.com
+License: BSD
+Keywords: py.test pytest zulip report
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Utilities
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+Requires-Dist: pytest
+
+# pytest-zulip
+
+Pytest report plugin for [Zulip](https://zulip.com/)
+
+Allow to send notification on Zulip chat product.
+
+## installation
+
+    pip install pytest-zulip
+
+## Configure via env var
+
+    ZULIP_URL="https://x.zulipchat.com/api/v1/messages"
+    ZULIP_BOT_EMAIL_ADDRESS="bot@x.zulipchat.com"
+    ZULIP_BOT_API_KEY="API_KEY"
+    ZULIP_TOPIC="TOPIC"
+    ZULIP_STREAM="STREAM"
+
+Optional:
+
+    ZULIP_ELLIPSIS_CHAR="…"
+
+## Add option to send message
+
+    pytest --notify-zulip
+
+## Modify content via hook
+
+    def pytest_zulip_create_content(session: Session, exitstatus: Union[int, ExitCode]) -> str:
+        reporter = session.config.pluginmanager.get_plugin('terminalreporter')
+        return str(reporter.stats.get('passed', []))
+
+## Dev
+
+### Change version
+
+edit
+
+    pytest_zulip/__init__.py
+
+commit
+
+    git commit -m "v0.1.0"
+
+tag
+
+    git tag v0.1.0
+
+### Build package
+
+    python setup.py sdist bdist_wheel
+    pip install twine
+    twine upload dist/*
+
+
