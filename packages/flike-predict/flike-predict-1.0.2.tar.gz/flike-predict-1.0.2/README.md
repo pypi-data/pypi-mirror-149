@@ -1,0 +1,123 @@
+# Module flike
+
+More information about Flike can be found [here](https://goflike.app).
+
+# Installation
+
+Install the [flike-predict](https://pypi.org/project/flike-predict/) package with pip.
+
+`pip3 install flike-predict`
+
+# Quick Guide
+
+1. Install the module as described in [Installation](#installation).
+2. Import the module into your code
+
+    `from flike import *`
+
+3. Initialize the `flike-recommend` client by calling the `initialize` function with your API key as a paremeter.
+4. Call the corresponding functions whenever a user interacts with a content item.
+    - `start` when a user starts interacting with a content item.
+    - `like` when a user seems to like a content item. E.g., in the case of a video, call `like` when the user watched more than 80% of a video.
+    - `dislike` when a user seems to dislike a content item. E.g., in the case of a video, call `dislike` when they stop watching after watching less than 50% of it.
+5. Retrieve recommendations for a user by calling `recommend`.
+6. Filter and sort the recommendations if any constraints need to be considered.
+7. Display/Use the recommendation in your application in whatever way applicable.
+
+## Functions
+
+`dislike(user_id: str, item_id: str)`
+: Registers a user-started item as 'disliked' by the user.
+'Dislike' refers to any action indicating that a user dislikes the content item.
+E.g. for a video, this could be a user only watching 5% of the video and not finishing it.
+
+    Parameters
+    ----------
+    user_id : str
+        The unique identifier of the user
+    item_id : str
+        The unique identifier of the content item
+
+`inititialize(api_key: str, server_url: str = None, version: str = None)`
+: Initialize the recommender.
+
+    Parameters
+    ----------
+    api_key : str
+        Your API Key
+    server_url : str (optional)
+        This is only used for internal testing
+    version : str (optional)
+        Version of the API to use
+
+`like(user_id: str, item_id: str)`
+: Registers a user-started item as 'liked' by the user.
+'Like' refers to any action indicating that a user likes the content item.
+E.g. for a video, this could be a user watching more than 85% of the video.
+
+    Parameters
+    ----------
+    user_id : str
+        The unique identifier of the user
+    item_id : str
+        The unique identifier of the content item
+
+`recommend(user_id: str, num_item: int)`
+: Get an array of content items that a user is probable to consume/buy/subscribe/like or similar.
+Recommendations are sorted by descending probability of a user 'liking' them.
+
+    Parameters
+    ----------
+    user_id : str
+        The unique identifier of the user
+    num_item : str
+        Number of content items that should be suggested
+
+`start(user_id: str, item_id: str, correlation_id: str)`
+: Registers a user starting to consume/interact with a content item..
+
+    Parameters
+    ----------
+    user_id : str
+        The unique identifier of the user
+    item_id : str
+        The unique identifier of the
+    corellation_id
+        The unique identifier of a recommendation
+
+## Classes
+
+`FlikeException(response: requests.models.Response)`
+: Exception raised by Flike API.
+
+    Attributes
+    ----------
+    status : str
+        status code of the error (HTTP error code)
+    message : str
+        explanation of the error
+
+    ### Ancestors (in MRO)
+
+    * builtins.Exception
+    * builtins.BaseException
+
+`Recommendation(item_id: str, probability: float)`
+: Recommendation of a content item for a user
+
+    Attributes
+    ----------
+    item_id : str
+        Unique identifier of the content item being recommended
+    probability : str
+        Probability of a user 'liking' the recommended item
+
+`RecommendationsResponse(items: list[flike.Recommendation], correlation_id: str)`
+: Response to a recommendation request.
+
+    Attributes
+    ----------
+    items : str
+        Recommendations for a user
+    correlation_id : str
+        Unique identifier of the content item being recommended
