@@ -1,0 +1,108 @@
+{
+  "configuration": {
+    "required": false,
+    "type": "dict"
+  },
+  "data_checksums": {
+    "description": [
+      "Enable or disable data checksums",
+      "If unspecified, fall back to site settings choice",
+      ""
+    ],
+    "type": "bool"
+  },
+  "encoding": {
+    "description": [
+      "Character encoding of the PostgreSQL instance"
+    ],
+    "type": "str"
+  },
+  "extensions": {
+    "description": [
+      "List of extensions to install in the instance"
+    ],
+    "type": "list"
+  },
+  "locale": {
+    "description": [
+      "Default locale"
+    ],
+    "type": "str"
+  },
+  "name": {
+    "required": true,
+    "type": "str"
+  },
+  "port": {
+    "description": [
+      "TCP port the postgresql instance will be listening to"
+    ],
+    "type": "int"
+  },
+  "prometheus_port": {
+    "description": [
+      "TCP port for the web interface and telemetry of Prometheus"
+    ],
+    "type": "int"
+  },
+  "replrole_password": {
+    "description": [
+      "replication role password"
+    ],
+    "no_log": true,
+    "type": "str"
+  },
+  "ssl": {
+    "default": false,
+    "required": false,
+    "type": "bool"
+  },
+  "standby_for": {
+    "description": [
+      "DSN of primary for streaming replication"
+    ],
+    "type": "str"
+  },
+  "standby_slot": {
+    "description": [
+      "replication slot name"
+    ],
+    "type": "str"
+  },
+  "standby_status": {
+    "choices": [
+      "demoted",
+      "promoted"
+    ]
+  },
+  "state": {
+    "choices": [
+      "stopped",
+      "started",
+      "absent"
+    ],
+    "default": "started",
+    "description": [
+      "Runtime state"
+    ]
+  },
+  "surole_password": {
+    "description": [
+      "super-user role password"
+    ],
+    "no_log": true,
+    "type": "str"
+  },
+  "version": {
+    "choices": [
+      "14",
+      "13",
+      "12",
+      "11",
+      "10"
+    ],
+    "description": [
+      "PostgreSQL version"
+    ]
+  }
+}

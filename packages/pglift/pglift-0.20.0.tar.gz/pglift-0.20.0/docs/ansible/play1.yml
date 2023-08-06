@@ -1,0 +1,60 @@
+---
+- name: my postgresql instances
+  hosts: localhost
+  tasks:
+    - name: production instance
+      dalibo.pglift.instance:
+        name: prod
+        state: started
+        port: 5433
+        ssl: true
+        configuration:
+          max_connections: 100
+          shared_buffers: 1GB
+          unix_socket_directories: /tmp
+        prometheus_port: 9186
+        surole_password: "{{ postgresql_surole_password }}"
+        extensions:
+          - pg_stat_statements
+          - unaccent
+
+    - name: a role in production instance
+      dalibo.pglift.role:
+        instance: prod
+        name: bob
+        password: "{{ prod_bob_password }}"
+        pgpass: false
+        login: true
+        connection_limit: 10
+        validity: '2025-01-01T00:00'
+        in_roles:
+          - pg_read_all_stats
+          - pg_signal_backend
+
+    - name: a database in production instance
+      dalibo.pglift.database:
+        instance: prod
+        name: db
+        owner: bob
+        settings:
+          work_mem: 3MB
+
+    - name: pre-production instance
+      dalibo.pglift.instance:
+        name: preprod
+        port: 5434
+        state: started
+        configuration:
+          unix_socket_directories: /tmp
+        prometheus_port: 9188
+        surole_password: "{{ postgresql_surole_password }}"
+
+    - name: dev instance, not running at the moment
+      dalibo.pglift.instance:
+        name: dev
+        port: 5444
+        state: stopped
+        configuration:
+          unix_socket_directories: /tmp
+        prometheus_port: 9189
+        surole_password: "{{ postgresql_surole_password }}"

@@ -1,0 +1,452 @@
+import logging
+import pathlib
+import platform
+import shutil
+import subprocess
+from datetime import datetime
+from textwrap import dedent
+from typing import Any, Dict, Iterator, List, Optional, Set, Type
+
+import pgtoolkit.conf
+import port_for
+import pydantic
+import pytest
+from pgtoolkit.ctl import Status
+from typing_extensions import Protocol
+
+from pglift import _install, instances, pgbackrest, prometheus
+from pglift.ctx import Context
+from pglift.models import interface, system
+from pglift.settings import (
+    PgBackRestSettings,
+    PostgreSQLSettings,
+    PostgreSQLVersion,
+    PrometheusSettings,
+    Settings,
+    _postgresql_bindir_version,
+    plugins,
+)
+
+from .. import NoSiteContext, NoSiteSettings
+from . import AuthType, configure_instance, execute
+
+default_pg_version: Optional[str]
+try:
+    default_pg_version = _postgresql_bindir_version()[1]
+except EnvironmentError:
+    default_pg_version = None
+
+
+def pytest_addoption(parser: Any) -> None:
+    parser.addoption(
+        "--pg-version",
+        choices=list(PostgreSQLVersion),
+        default=default_pg_version,
+        help="Run tests with specified PostgreSQL version (default: %(default)s)",
+    )
+    parser.addoption(
+        "--systemd",
+        action="store_true",
+        default=False,
+        help="Run tests with systemd as service manager/scheduler",
+    )
+    parser.addoption(
+        "--no-plugins",
+        action="store_true",
+        default=False,
+        help="Run tests without any pglift plugin loaded.",
+    )
+
+
+def pytest_report_header(config: Any) -> List[str]:
+    pg_version = config.getoption("--pg-version")
+    return [f"postgresql: {pg_version}"]
+
+
+@pytest.fixture(autouse=True)
+def journalctl() -> Iterator[None]:
+    journalctl = shutil.which("journalctl")
+    if journalctl is None:
+        yield
+        return
+    proc = subprocess.Popen([journalctl, "--user", "-f", "-n0"])
+    yield
+    proc.kill()
+
+
+@pytest.fixture(scope="session")
+def systemd_available() -> bool:
+    try:
+        subprocess.run(
+            ["systemctl", "--user", "status"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=True,
+        )
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return False
+    return True
+
+
+@pytest.fixture(scope="session")
+def pgbackrest_available() -> bool:
+    return shutil.which("pgbackrest") is not None
+
+
+@pytest.fixture(scope="session")
+def prometheus_execpath() -> Optional[pathlib.Path]:
+    for name in ("prometheus-postgres-exporter", "postgres_exporter"):
+        path = shutil.which(name)
+        if path is not None:
+            return pathlib.Path(path)
+    return None
+
+
+@pytest.fixture(scope="session")
+def systemd_requested(request: Any, systemd_available: bool) -> bool:
+    value = request.config.getoption("--systemd")
+    assert isinstance(value, bool)
+    if value and not systemd_available:
+        raise pytest.UsageError("systemd is not available on this system")
+    return value
+
+
+@pytest.fixture(scope="session", params=list(AuthType), ids=lambda v: f"auth:{v}")
+def postgresql_auth(request: Any) -> AuthType:
+    assert isinstance(request.param, AuthType)
+    return request.param
+
+
+@pytest.fixture(scope="session")
+def postgresql_settings(
+    tmp_path_factory: pytest.TempPathFactory, postgresql_auth: AuthType
+) -> PostgreSQLSettings:
+    passfile = tmp_path_factory.mktemp("home") / ".pgpass"
+    passfile.touch(mode=0o600)
+    passfile.write_text("#hostname:port:database:username:password\n")
+    auth: Dict[str, Any] = {
+        "local": "password",
+        "host": "reject",
+        "passfile": str(passfile),
+    }
+    surole = {}
+    if postgresql_auth == AuthType.peer:
+        pass  # See also PeerAuthContext.
+    elif postgresql_auth == AuthType.password_command:
+        auth["password_command"] = [
+            str(tmp_path_factory.mktemp("home") / "passcmd"),
+            "{instance}",
+        ]
+    elif postgresql_auth == AuthType.pgpass:
+        surole["pgpass"] = True
+    else:
+        raise AssertionError(f"unexpected {postgresql_auth}")
+    return PostgreSQLSettings.parse_obj(
+        {
+            "root": str(tmp_path_factory.mktemp("postgres")),
+            "auth": auth,
+            "surole": surole,
+        }
+    )
+
+
+@pytest.fixture(scope="session")
+def settings(
+    request: Any,
+    postgresql_settings: PostgreSQLSettings,
+    tmp_path_factory: pytest.TempPathFactory,
+    systemd_requested: bool,
+    systemd_available: bool,
+    pgbackrest_available: bool,
+    prometheus_execpath: Optional[pathlib.Path],
+) -> Settings:
+    prefix = tmp_path_factory.mktemp("prefix")
+    (prefix / "run" / "postgresql").mkdir(parents=True)
+    obj = {"prefix": str(prefix), "postgresql": postgresql_settings.dict()}
+    if systemd_requested:
+        obj.update({"service_manager": "systemd", "scheduler": "systemd"})
+
+    if obj.get("service_manager") == "systemd" and not systemd_available:
+        pytest.skip("systemd not functional")
+
+    if pgbackrest_available:
+        obj["pgbackrest"] = {}
+
+    if prometheus_execpath:
+        obj["prometheus"] = {"execpath": prometheus_execpath}
+
+    try:
+        s = NoSiteSettings.parse_obj(obj)
+    except pydantic.ValidationError as exc:
+        pytest.skip(
+            "; ".join(
+                f"unsupported setting(s) {' '.join(map(str, e['loc']))}: {e['msg']}"
+                for e in exc.errors()
+            )
+        )
+
+    no_plugins = request.config.getoption("--no-plugins")
+    assert isinstance(no_plugins, bool)
+    if no_plugins:
+        to_disable = [name for name, field in plugins(s) if field is not None]
+        if to_disable:
+            s = s.copy(update={k: None for k in to_disable})
+
+    return s
+
+
+@pytest.fixture(scope="session")
+def pg_version(request: Any, settings: Settings) -> str:
+    version = request.config.getoption("--pg-version")
+    if version is None:
+        pytest.skip("no PostgreSQL installation found")
+    assert isinstance(version, str)
+    assert settings.postgresql.bindir
+    if not pathlib.Path(settings.postgresql.bindir.format(version=version)).exists():
+        pytest.fail(f"PostgreSQL {version} not available", pytrace=False)
+    return version
+
+
+class PeerAuthContext(NoSiteContext):
+    @classmethod
+    def site_config(cls, *parts: str) -> Optional[pathlib.Path]:
+        datadir = pathlib.Path(__file__).parent / "data"
+        fpath = datadir.joinpath(*parts)
+        if fpath.exists():
+            return fpath
+        return super().site_config(*parts)
+
+
+@pytest.fixture(scope="session")
+def ctx(postgresql_auth: AuthType, settings: Settings) -> Context:
+    logger = logging.getLogger("pglift")
+    logger.setLevel(logging.DEBUG)
+    cls = PeerAuthContext if postgresql_auth == AuthType.peer else NoSiteContext
+    context = cls(settings=settings)
+    context.pm.trace.root.setwriter(print)
+    context.pm.enable_tracing()
+    return context
+
+
+@pytest.fixture(scope="session")
+def installed(ctx: Context, tmp_path_factory: pytest.TempPathFactory) -> Iterator[None]:
+    tmp_path = tmp_path_factory.mktemp("config")
+    settings = ctx.settings
+    if settings.service_manager != "systemd":
+        yield
+        return
+
+    custom_settings = tmp_path / "settings.json"
+    custom_settings.write_text(settings.json())
+    _install.do(
+        ctx,
+        env=f"SETTINGS=@{custom_settings}",
+        header=f"# ** Test run on {platform.node()} at {datetime.now().isoformat()} **",
+    )
+    yield
+    _install.undo(ctx)
+
+
+@pytest.fixture
+def pgbackrest_settings(ctx: Context) -> PgBackRestSettings:
+    settings = pgbackrest.available(ctx)
+    if settings is None:
+        pytest.skip("pgbackrest not available")
+    return settings
+
+
+@pytest.fixture
+def prometheus_settings(ctx: Context) -> PrometheusSettings:
+    settings = prometheus.available(ctx)
+    if settings is None:
+        pytest.skip("prometheus not available")
+    return settings
+
+
+@pytest.fixture(scope="session")
+def tmp_port_factory() -> Iterator[int]:
+    """Return a generator producing available and distinct TCP ports."""
+
+    def available_ports() -> Iterator[int]:
+        used: Set[int] = set()
+        while True:
+            port = port_for.select_random(exclude_ports=list(used))
+            used.add(port)
+            yield port
+
+    return available_ports()
+
+
+@pytest.fixture(scope="session")
+def surole_password(postgresql_auth: AuthType, settings: Settings) -> str:
+    password = "s3kret"
+    if postgresql_auth == AuthType.password_command:
+        password_command = settings.postgresql.auth.password_command
+        assert len(password_command) == 2
+        passcmdfile = pathlib.Path(password_command[0])
+        with passcmdfile.open("w") as f:
+            f.write(
+                dedent(
+                    f"""\
+                    #!/bin/sh
+                    instance=$1
+                    if [ ! "$instance" ]
+                    then
+                        echo "no instance given!!" >&2
+                        exit 1
+                    fi
+                    echo "retrieving password for $instance..." >&2
+                    echo {password}
+                    """
+                )
+            )
+        passcmdfile.chmod(0o700)
+
+    return password
+
+
+@pytest.fixture(scope="session")
+def replrole_password(settings: Settings) -> str:
+    return "r3pl"
+
+
+@pytest.fixture(scope="session")
+def composite_instance_model(ctx: Context) -> Type[interface.Instance]:
+    return interface.Instance.composite(ctx.pm)
+
+
+@pytest.fixture(scope="session")
+def instance_manifest(
+    ctx: Context,
+    pg_version: str,
+    surole_password: str,
+    replrole_password: str,
+    tmp_port_factory: Iterator[int],
+    composite_instance_model: Type[interface.Instance],
+) -> interface.Instance:
+    port = next(tmp_port_factory)
+    prometheus_port = next(tmp_port_factory)
+    return composite_instance_model.parse_obj(
+        {
+            "name": "test",
+            "version": pg_version,
+            "port": port,
+            "configuration": {
+                # Keep logs to stderr in tests so that they are captured by pytest.
+                "logging_collector": False,
+            },
+            "surole_password": surole_password,
+            "replrole_password": replrole_password,
+            "extensions": ["passwordcheck"],
+            "prometheus": {"port": prometheus_port},
+        }
+    )
+
+
+@pytest.fixture(scope="session")
+def instance_initialized(
+    ctx: Context, installed: None, instance_manifest: interface.Instance
+) -> system.PostgreSQLInstance:
+    assert instance_manifest.version is not None
+    instance = system.BaseInstance.get(
+        instance_manifest.name, instance_manifest.version, ctx
+    )
+    assert instances.status(ctx, instance) == Status.unspecified_datadir
+    instances.init(ctx, instance_manifest)
+    assert instances.status(ctx, instance) == Status.not_running
+    return system.PostgreSQLInstance.system_lookup(
+        ctx, (instance_manifest.name, instance_manifest.version)
+    )
+
+
+@pytest.fixture(scope="session")
+def log_directory(tmp_path_factory: pytest.TempPathFactory) -> pathlib.Path:
+    return tmp_path_factory.mktemp("postgres-logs")
+
+
+@pytest.fixture(scope="session")
+def instance(
+    ctx: Context,
+    instance_manifest: interface.Instance,
+    instance_initialized: system.PostgreSQLInstance,
+    log_directory: pathlib.Path,
+) -> system.Instance:
+    # Limit postgresql.conf to uncommented entries to reduce pytest's output
+    # due to --show-locals.
+    postgresql_conf = instance_initialized.datadir / "postgresql.conf"
+    postgresql_conf.write_text(
+        "\n".join(
+            line
+            for line in postgresql_conf.read_text().splitlines()
+            if line.strip() and not line.strip().startswith("#")
+        )
+    )
+    configure_instance(
+        ctx, instance_manifest, creating=True, log_directory=str(log_directory)
+    )
+    return system.Instance.system_lookup(
+        ctx, (instance_manifest.name, instance_manifest.version)
+    )
+
+
+@pytest.fixture(scope="session")
+def instance_dropped(
+    ctx: Context, instance: system.Instance
+) -> pgtoolkit.conf.Configuration:
+    config = instance.config()
+    if instance.exists():
+        instances.drop(ctx, instance)
+    return config
+
+
+class RoleFactory(Protocol):
+    def __call__(self, name: str, options: str = "") -> None:
+        ...
+
+
+@pytest.fixture()
+def role_factory(ctx: Context, instance: system.Instance) -> Iterator[RoleFactory]:
+    rolnames = set()
+
+    def factory(name: str, options: str = "") -> None:
+        if name in rolnames:
+            raise ValueError(f"'{name}' name already taken")
+        execute(ctx, instance, f"CREATE ROLE {name} {options}", fetch=False)
+        rolnames.add(name)
+
+    yield factory
+
+    for name in rolnames:
+        execute(ctx, instance, f"DROP ROLE IF EXISTS {name}", fetch=False)
+
+
+class DatabaseFactory(Protocol):
+    def __call__(self, name: str) -> None:
+        ...
+
+
+@pytest.fixture()
+def database_factory(
+    ctx: Context, instance: system.Instance
+) -> Iterator[DatabaseFactory]:
+    datnames = set()
+
+    def factory(name: str, *, owner: Optional[str] = None) -> None:
+        if name in datnames:
+            raise ValueError(f"'{name}' name already taken")
+        sql = f"CREATE DATABASE {name}"
+        if owner:
+            sql += f" OWNER {owner}"
+        execute(ctx, instance, sql, fetch=False, autocommit=True)
+        datnames.add(name)
+
+    yield factory
+
+    for name in datnames:
+        execute(
+            ctx,
+            instance,
+            f"DROP DATABASE IF EXISTS {name}",
+            fetch=False,
+            autocommit=True,
+        )
