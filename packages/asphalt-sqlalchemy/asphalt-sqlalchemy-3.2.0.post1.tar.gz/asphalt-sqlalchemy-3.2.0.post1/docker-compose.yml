@@ -1,0 +1,18 @@
+# Docker-like setup that serves as a local drop-in for the corresponding Travis services
+version: "3.7"
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "33060:3306"
+    environment:
+      MYSQL_DATABASE: asphalttest
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+
+  postgresql:
+    image: postgres
+    ports:
+      - "54320:5432"
+    environment:
+      POSTGRES_DB: asphalttest
+      POSTGRES_PASSWORD: secret
