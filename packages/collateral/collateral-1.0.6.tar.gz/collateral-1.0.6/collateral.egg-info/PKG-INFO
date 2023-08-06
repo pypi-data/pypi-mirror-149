@@ -1,0 +1,279 @@
+Metadata-Version: 2.1
+Name: collateral
+Version: 1.0.6
+Summary: parallel object manipulation
+Home-page: https://gitlab.limos.fr/brguillo/collateral
+Author: Bruno Guillon
+Author-email: bruno.guillon@uca.fr
+License: MIT License
+Platform: any
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Testing
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Collateral
+This tool package provides a simple way to manipulate several objects with similar behaviors in parallel.
+```python
+>>> import collateral as ll
+>>> help(ll) #doctest: +SKIP
+
+```
+
+## Motivation
+Often, in software development, we define objects that should behave the same way as known objects.
+Typically, a class implementing `collections.abc.MutableMapping` is expected to behave similarly to `dict`.
+When developing such objects, we might want to quickly check this behavior similarity (or dissimilarity)
+in an interactive way, without having to write down many automatic tests,
+or, in contrast, to write down tests that compares behaviors.
+The collateral package has been designed for this purpose.
+
+Just give to the constructor a sequence of objects (typically 2), called _collaterals_,
+and then manipulate them in parallel through the resulting _Collateral object_, as if there was only one object.
+```python
+>>> #What is the difference between lists and tuples?
+>>> C = ll.Collateral([3, 4, 3], (3, 4, 3))
+>>> C.count(3)
+Collateral(2, 2)
+>>> C[0]
+Collateral(3, 3)
+>>> C[-1]
+Collateral(3, 3)
+>>> C[1:2]
+Collateral([4], (4,))
+>>> C.index(4)
+Collateral(1, 1)
+>>> iter(C)
+Collateral(<list_iterator object at 0x...>, <tuple_iterator object at 0x...>)
+
+```
+
+## How it works
+Intuitively, the methods and attributes of a Collateral object
+are the methods and attributes of its collaterals,
+which are applied pointwise on each of them,
+in order to form a new Collateral object that gathers the results.
+Hence, getting an attribute named `attr` (or calling a method named `meth`) is the same as
+1.	getting `attr` from (or calling `meth` on) each of the collaterals;
+2.	gathering the results in a new `Collateral` object.
+
+Methods/attributes with such behavior are said _pointwise_.
+```python
+>>> C.count(3)	#both have a `count` method that do the same
+Collateral(2, 2)
+>>> C[2]	#both support indexing
+Collateral(3, 3)
+>>> D = ll.Collateral([3, 4, 4], [4, 3, 4])
+>>> D.__add__([2, 3]) #in D, both collaterals are list whence may be added to list
+Collateral([3, 4, 4, 2, 3], [4, 3, 4, 2, 3])
+>>> D + [2, 3] #equivalent to, but more pleasant than, the previous example
+Collateral([3, 4, 4, 2, 3], [4, 3, 4, 2, 3])
+
+```
+
+There are a few special cases:
++ Procedures;
++ Attributes/methods with protected names;
++ Transversal attributes/methods.
+
+### Pointwise methods and attributes
+A method/attribute exists in a Collateral object
+if it is a method/attribute of all of its collaterals.
+An attribute name which correspond to callable values in each of the collaterals
+results in a method within the Collateral object gathering the attributes of the collaterals.
+In contrast, if for some of the collaterals the attribute is not callable,
+then its Collateral counterpart will be a property returning the Collateral object
+that gathers the corresponding attributes from each of the collaterals
+(some of them might be callable).
+
+Furthermore, when called, pointwise methods handle their Collateral parameters (keyworded or not) in a special way.
+Indeed, when some parameter is itself a Collateral object,
+its collaterals specify pointwise the parameter to pass to the inner call of the method on collaterals of our main Collateral object.
+```python
+>>> F = ll.Collateral(dict(shape="circle", color="red"), dict(SHAPE="square", color="blue"))
+>>> K = ll.Collateral("color", "background")
+>>> F.get(K, "white") == ll.Collateral("red", "white") #returns True
+True
+>>> K = ll.Collateral("shape", "SHAPE")
+>>> F[K] == ll.Collateral("circle", "square") #returns True
+True
+
+```
+
+### Procedures
+A _procedure_ is a function which returns nothing (e.g., `list.append`).
+Unfortunately, this is undistinguishable from functions returning `None` in Python.
+When a method name correspond to a procedure method in each of the collaterals of some Collateral object,
+its pointwise counterpart in that Collateral object will always return a Collateral object
+which gathers as many `None`s as there are collaterals.
+Such Collateral object are not really interesting and will most often pollute the output of an interactive interpreter.
+For this reason, the package aims to make each pointwise counterpart of procedures a procedure.
+This is handled dynamically, by replacing outputs that Collateral consisting of `None` values only by, simply, `None`.
+Yet, as `None` is also a possible return value (e.g., in `dict.get`),
+it is possible to indicate that some special method names are not procedure,
+or that some special function are not procedures (see Setting up section below).
+```python
+>>> D.append(None) #will return nothing (i.e., `None`), because append is a procedure
+>>> D.pop() #will return a Collateral object gathering two `None` (that have just been added) because `pop` is known as a non-procedure name (by default)
+Collateral(None, None)
+
+```
+
+### Protected names
+Some pointwise attributes cannot be defined with their original name,
+either because the name is already used by some attribute of the Collateral base class
+(e.g., `__class__`, `__slots__`, `__getattr___`),
+or because the corresponding method is a special method whose return type is forced
+(e.g., `__hash__` and `__int__` should return an `int`, `__bool__` should return a `bool`, `__repr__` should return a `str`).
+When defining a pointwise method for a so-named method,
+a prefix (default is `_collateral_`, see Setting up section below) is prepended to the name
+(as many times (usually once) as needed in order to obtain a non-protected name).
+```python
+>>> E = ll.Collateral((3, 4, 4), (4, 3, 4))
+>>> E._collateral___hash__() #returns the Collateral object gathering the hashes of the collaterals of E
+Collateral(-2504614661605197030, 3996966733163272653)
+>>> E._collateral___repr__() #returns the Collateral object gathering the repr of the collaterals of E
+Collateral('(3, 4, 4)', '(4, 3, 4)')
+>>> E.__int__ #is not defined
+Traceback (most recent call last):
+    ....
+collateral.exception.CollateralAttributeError: ("'tuple' object has no attribute '__int__'", Collateral(AttributeError("'tuple' object has no attribute '__int__'"), AttributeError("'tuple' object has no attribute '__int__'")))
+>>> E.__class__ #is the Collateral class of E, not the Collateral object gathering the classes of the collaterals of E
+<class 'collateral.collateral.Collateral'>
+
+```
+
+### Transversal attributes
+A _transversal_ attribute/method is a Collateral attribute/method which is not pointwise.
+Such attributes and methods are defined in Collateral objects in order to ease their use.
+For instance, there will always be an `__hash__` function,
+which returns a hash (`int`) of the Collateral object based on the hashes of its collaterals
+(and not a new Collateral object gathering these hashes of the collaterals)
+or raised a `TypeError` if some of the collaterals is not hashable.
+Other methods such as `__repr__`, `_repr_pretty_`, `__eq__`, and `__dir__` are also defined.
+```python
+>>> isinstance(hash(E), int)
+True
+>>> repr(D)
+'Collateral([3, 4, 4], [4, 3, 4])'
+
+```
+Most importantly, Collateral objects all have a `'collaterals'` class attribute
+which is the tuple of its collaterals.
+(By the way, Collateral objects are instances of their own dynamically factored singleton type, so yes, `'collaterals'` is a **class** attribute.)
+```python
+>>> C.collaterals	#returns the tuple of collaterals of C
+([3, 4, 3], (3, 4, 3))
+>>> C.collaterals[0] #returns the first collateral of C
+[3, 4, 3]
+>>> len(C.collaterals) #returns 2, namely the number of collaterals of C
+2
+
+```
+
+The attribute type is not `tuple`, but a subclass of it,
+which provides a few additional methods, for manipulating the collaterals tuple.
+Among these methods,
+some are aggregating functions (e.g., `min`, `max`, `reduce`, `all_equal`, `all`, `any`),
+while some are aimed to produce a Collateral object from the given collaterals
+(e.g., `map`, `filter`, `enumerate`, `call`, `join`, `add`, `drop`).
+```python
+>>> C.collaterals.map(list).collaterals.map(len).collaterals.min()
+3
+>>> C.collaterals.add([])
+Collateral([3, 4, 3], (3, 4, 3), [])
+>>> C.collaterals.add([]).collaterals.filter()
+Collateral([3, 4, 3], (3, 4, 3))
+>>> C.collaterals.filter(lambda e: isinstance(e, tuple))
+Collateral((3, 4, 3))
+
+```
+(Actually, `map`, `enumerate`, and `call` are a kind of pointwise methods.)
+
+### More pointwise functions
+The package provides the `functions` modules
+in which many pointwise functions are defined.
+Most of them are pointwise counterparts of builtin functions
+(e.g., `len`, `int`, `hash`, `enumerate`),
+with same name.
+Others are Collateral specific pointwise functions,
+like `apply` (which call a function on each collaterals),
+`and_`, `or_`, and `not_`.
+```python
+>>> C = ll.Collateral(1, 2, 0, 3, None)
+>>> ll.functions.apply(print, C, pre_args="prefix:", post_args=":suffix", sep='\t') #print each collaterals with prefix 'prefix:\t' and suffix '\t:suffix' #doctest: +NORMALIZE_WHITESPACE
+p	r	e	f	i	x	:	1	:	s	u	f	f	i	x
+p	r	e	f	i	x	:	2	:	s	u	f	f	i	x
+p	r	e	f	i	x	:	0	:	s	u	f	f	i	x
+p	r	e	f	i	x	:	3	:	s	u	f	f	i	x
+p	r	e	f	i	x	:	None	:	s	u	f	f	i	x
+Collateral(None, None, None, None, None)
+>>> ll.functions.apply(bool, C) #returns Collateral(True, True, False, True, False)
+Collateral(True, True, False, True, False)
+>>> ll.functions.or_(C, True) #returns Collateral(1, 2, True, 3, True)
+Collateral(1, 2, True, 3, True)
+>>> ll.functions.and_(C, True) #returns Collateral(True, True, 0, True, False)
+Collateral(True, True, 0, True, None)
+>>> ll.functions.not_(C) #returns Collateral(False, False, True, False, True)
+Collateral(False, False, True, False, True)
+
+```
+
+## Examples:
+```python
+>>> import collections
+>>> class MyDict(collections.abc.Mapping):
+...     def __init__(self, source_dict=(), /):
+...         self._dict = dict(source_dict)
+...     def __getitem__(self, k):
+...         return self._dict[k]
+...     def __iter__(self):
+...         return iter(self._dict)
+...     def __len__(self):
+...         return len(self._dict)
+...     def __repr__(self):
+...         return f"MyDict({self._dict!r})"
+>>> d = { 3: True, "foo": { 2: None }, True: "foo" }
+>>> md = MyDict(d)
+>>> C = ll.Collateral(d, md)
+>>> C
+Collateral({3: True, 'foo': {2: None}, True: 'foo'}, MyDict({3: True, 'foo': {2: None}, True: 'foo'}))
+>>> C.keys()	#returns ll.Collateral(d.keys(), md.keys())
+Collateral(dict_keys([3, 'foo', True]), KeysView(MyDict({3: True, 'foo': {2: None}, True: 'foo'})))
+>>> C.values()	#returns ll.Collateral(d.values(), md.values())
+Collateral(dict_values([True, {2: None}, 'foo']), ValuesView(MyDict({3: True, 'foo': {2: None}, True: 'foo'})))
+>>> C[3]	#returns ll.Collateral(d[3], md[3])
+Collateral(True, True)
+>>> C[True]	#returns ll.Collateral(d[True], md[True])
+Collateral('foo', 'foo')
+>>> C.__init__()	#call d.__init__({}) (no effect) and md.__init__({}) (clear) and returns None
+>>> C #see the divergence of __init__
+Collateral({3: True, 'foo': {2: None}, True: 'foo'}, MyDict({}))
+>>> C.get(3, False)	#3 is still a key of d but not of md (because of the divergence of __init__)
+Collateral(True, False)
+>>> C["bar"] = 0	#setitem does not exist for md
+Traceback (most recent call last):
+    ...
+TypeError: 'Collateral' object does not support item assignment
+>>> ll.keep_errors	#function decorator that replaces raising by returning
+<function keep_errors at 0x...>
+>>> C.collaterals.map(ll.keep_errors(lambda x: x.__setitem__("bar", 0)))
+Collateral(None, AttributeError("'MyDict' object has no attribute '__setitem__'"))
+>>> C
+Collateral({3: True, 'foo': {2: None}, True: 'foo', 'bar': 0}, MyDict({}))
+>>> hash(C)	#raise an exception since neither dict nor MyDict objects are hashable
+Traceback (most recent call last):
+    ...
+TypeError: unhashable type: 'dict'
+>>> hC = ll.keep_errors(hash)(C) #returns a Collateral gathering the exception (or the result) raised when calling hash on each of the collaterals
+>>> hC
+TypeError("unhashable type: 'dict'")
+>>> C.collaterals.map(hash, keep_errors=True)
+Collateral(TypeError("unhashable type: 'dict'"), TypeError("unhashable type: 'MyDict'"))
+
+```
+
+
