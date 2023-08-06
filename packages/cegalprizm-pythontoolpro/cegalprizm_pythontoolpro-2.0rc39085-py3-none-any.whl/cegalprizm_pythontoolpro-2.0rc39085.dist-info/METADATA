@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: cegalprizm-pythontoolpro
+Version: 2.0rc39085
+Summary: Python API for interfacing with Petrel
+Home-page: 
+Author: 
+Author-email: 
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: License :: Other/Proprietary License
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: grpcio (>=1.33.2)
+Requires-Dist: protobuf
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: requests
+Requires-Dist: cegal-keystoneauth
+Requires-Dist: cegalprizm-hub (==1.*)
+
+# Introduction
+
+A Python library for interfacing with Petrel.
+
+# Usage
+
+Python Tool Pro requires a connection to be established from the preferred client-side Python IDE to the Python Tool Pro server in Petrel. Petrel domain objects are accessed from the external Python IDE and the scripts are executed outside of Petrel. The results of the Python scripts are then streamed back to Petrel.
+
+# Basic Example - Open connection
+
+```python
+from cegalprizm.pythontool import PetrelConnection
+petrel = PetrelConnection()
+project_name = petrel.get_current_project_name()
+print(f'Name of currently active Petrel project is "{project_name}"')
+petrel.close()
+```
+
+
+# Further information and examples
+Please see the Cegal Prizm Documentation site [here](https://docs.prizm.cegal-geo.com/products/python-tool-pro/Introduction.html)
+
+# License
+Copyright (2022) Cegal, As. This library (the "Software") may not be used except in connection with the Licensees use of the Cegal Prizm Hub pursuant to an Agreement (defined below) between Licensee (defined below) and Cegal, AS. ("Cegal"). This Software shall be deemed part of the "Subscription Services" under the Agreement. Licensees use of the Software must comply at all times with any restrictions applicable to the Subscription Services, generally, and must be used in accordance with any applicable documentation. If you have not agreed to an Agreement or otherwise do not agree to these terms, you may not use the Software. This license terminates automatically upon the termination of the Agreement or Licensees breach of these terms. Agreement: the agreement between Cegal and Licensee governing the use of the Cegal Prizm Hub, which shall be, with respect to Cegal, and the Cegal Terms of Service located at https://cegal.com/about/terms-and-conditions , in each case unless Licensee has entered into a separate written agreement with Cegal governing the use of the applicable Cegal Services. Licensee: the user of the Software, or, if the Software is being used on behalf of a company, the company.
+
