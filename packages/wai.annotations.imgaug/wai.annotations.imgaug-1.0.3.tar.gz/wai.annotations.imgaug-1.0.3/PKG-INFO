@@ -1,0 +1,57 @@
+Metadata-Version: 2.1
+Name: wai.annotations.imgaug
+Version: 1.0.3
+Summary: Various inline stream processors for image augmentation.
+Home-page: https://github.com/waikato-ufdl/wai-annotations-imgaug
+Author: Peter Reutemann
+Author-email: fracpete@waikato.ac.nz
+License: Apache License Version 2.0
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Programming Language :: Python :: 3
+License-File: LICENSE
+
+Inline stream processors for image augmentation:
+
+* `add-annotation-overlay-od`: adds object detection overlays to images
+* `crop`: crops images
+* `flip`: flips images either left-to-right, up-to-down or both
+* `gaussian-blur`: applies gaussian blur to images
+* `hsl-grayscale`: turns RGB images into fake grayscale ones by converting them to HSL and then using the L channel for all three channels
+* `linear-contrast`: applies linear contrast to images
+* `rotate`: rotates images by a specified degree (0-360) or randomly within degree range
+* `scale`: scales images by a specified percentage (0-1) or randomly within percentage range
+
+Changelog
+=========
+
+1.0.3 (2022-05-05)
+------------------
+
+- `--labels` option of the `add-annotation-overlay-od` plugin gets respected now,
+  also using correct label for text now (when varying the colors)
+
+
+1.0.2 (2022-05-05)
+------------------
+
+- added `add-annotation-overlay-od` plugin to overlay the object detections on the images
+
+
+1.0.1 (2022-03-01)
+------------------
+
+- added more typing hints to parameters
+- added ability to add augmented images rather than replace original ones, using
+  the `-m/--mode add` option (`--suffix` overrides the default suffix)
+- added `scale` ISP for scaling images
+
+
+1.0.0 (2022-02-23)
+------------------
+
+- Initial release: crop, flip, gaussian-blur, hsl-grayscale, linear-contrast, rotate
+
+
