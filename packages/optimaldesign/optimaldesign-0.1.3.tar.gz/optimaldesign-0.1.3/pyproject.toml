@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "optimaldesign"
+version = "0.1.0"
+description = ""
+authors = [
+    "Markus Unkel <markus@unkel.io>"
+]
+
+license = "No License"
+
+[tool.poetry.dependencies]
+python = "~3.8"
+pydantic = "1.9.0"
+loguru = "0.6.0"
+jax = "0.3.4"
+jaxlib = "0.3.2"
+scipy = "1.8.0"
+numpy = "1.22.3"
+
+[tool.poetry.dev-dependencies]
+black = "22.1.0"
+mypy = "0.931"
+pydocstyle = "6.1.1"
+toml = "0.10.2"
+virtualenv = "20.13.2"
+coverage = { version = "5.5", extras = ["toml"] }
+flake8 = "3.9.2"
+flake8-gl-codeclimate = "0.1.4"
+flake8-junit-report = "2.1.0"
+pyproject-flake8 = "0.0.1a2"
+pytest = "6.2.4"
+pytest-cov = "2.12.0"
+jupyter = "^1.0.0"
+pandas = "1.4.0"
+plotly = "5.5.0"
+tqdm = "4.62.3"
+ipywidgets = "7.7.0"
+widgetsnbextension = "3.6.0"
+kaleido = "0.2.1"
+
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+
+[tool.flake8]
+max-line-length = 100
+exclude = ".venv"
+
+[tool.coverage.run]
+omit = [
+    ".venv/*",
+    "venv/*",
+    "*/tests/*",
+]
