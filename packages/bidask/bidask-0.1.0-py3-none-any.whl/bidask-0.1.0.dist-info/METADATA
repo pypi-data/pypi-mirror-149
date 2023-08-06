@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: bidask
+Version: 0.1.0
+Summary: Efficient Estimation of Bid-Ask Spreads from Open, High, Low, and Close Prices
+Home-page: https://github.com/eguidotti/bidask
+License: GPL-3.0-or-later
+Author: Emanuele Guidotti
+Author-email: emanuele.guidotti@unine.ch
+Requires-Python: >=3.6,<4.0
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: numpy
+Project-URL: Repository, https://github.com/eguidotti/bidask
+Description-Content-Type: text/markdown
+
+# Efficient Estimation of Bid-Ask Spreads from Open, High, Low, and Close Prices
+
+Implements an efficient estimation procedure of the bid-ask spread from Open, High, Low, and Close prices as proposed in Ardia, Guidotti, Kroencke (2021): https://www.ssrn.com/abstract=3892335
+
+## Installation
+
+Install this package with:
+
+```bash
+pip install bidask
+```
+
+## Usage
+
+Import the estimator
+
+```python
+from bidask import edge
+```
+
+Estimate the spread
+
+```python
+edge(open, high, low, close)
+```
+
+- `open`: array-like vector of Open prices.
+- `high`: array-like vector of High prices.
+- `low`: array-like vector of Low prices.
+- `close`: array-like vector of Close prices.
+
+Prices must be sorted in ascending order of the timestamp.
+
+## Cite as
+
+*Ardia, David and Guidotti, Emanuele and Kroencke, Tim Alexander, "Efficient Estimation of Bid-Ask Spreads from Open, High, Low, and Close Prices". Available at SSRN: https://ssrn.com/abstract=3892335*
+
+A BibTex  entry for LaTeX users is:
+
+```bibtex
+@unpublished{edge2021,
+    author = {Ardia, David and Guidotti, Emanuele and Kroencke, Tim},
+    title  = {Efficient Estimation of Bid-Ask Spreads from Open, High, Low, and Close Prices},
+    year   = {2021},
+    note   = {Available at SSRN}
+    url    = {https://ssrn.com/abstract=3892335}
+}
+```
+
