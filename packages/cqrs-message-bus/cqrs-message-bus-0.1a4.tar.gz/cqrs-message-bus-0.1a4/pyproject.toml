@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+
+[tool.flake8]
+# Flake8 doesn't support pyproject.toml yet (see .flake8 file):
+# https://gitlab.com/pycqa/flake8/issues/428
+max-line-length = 88
+
+[tool.isort]
+line_length = 88
+force_single_line = "1"
+known_first_party = ["mb", "tests"]
+default_section = "THIRDPARTY"
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug"
+]
