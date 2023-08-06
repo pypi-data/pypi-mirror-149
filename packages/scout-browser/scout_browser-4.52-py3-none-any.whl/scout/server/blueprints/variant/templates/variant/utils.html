@@ -1,0 +1,404 @@
+{% macro modal_causative(case, institute, variant) %}
+<div class="modal fade" id="causativeModal" tabindex="-1" role="dialog" aria-labelledby="causativeLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+           <h5 class="modal-title" id="causativeLabel">Mark variant as causative</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        <form action="{{ url_for('cases.mark_causative', institute_id=institute._id, case_name=case.display_name,
+           variant_id=variant._id, partial_causative=False) }}" method="POST">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col d-flex">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div data-placement="top">
+                      Variant explains phenotype partially (partial causative)&nbsp;&nbsp;
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                      <input type="checkbox" class="ios8-switch" id="partial_causative" name="partial_causative"
+                        data-toggle='collapse' data-target='#partial_phenotypes'>
+                      <label for="partial_causative"></label>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <div id="partial_phenotypes" class="collapse mt-2">
+              <h6><strong>Associated phenotype</strong></h6>
+              <!-- A partial causative variant is resposible for a specific phenotype. Make sure phenotype is specified -->
+              <div class="row ml-3">
+                <div class="col-6">
+                  <!-- Phenotype could be specified using OMIM -->
+                  <h6>Diagnosis phenotype (OMIM):</h6>
+                  <select multiple="multiple" name="omim_select" id="omim_select" class="selectpicker">
+                    {% for omim_term in case.diagnosis_phenotypes %}
+                      {% if omim_term is number %} <!-- Old way of saving OMIM terms in cases: list of diagnosis numbers -->
+                        <option value="{{omim_term}}">
+                          {{ omim_term }}
+                        </option>
+                      {% elif 'disease_nr' in omim_term %}
+                        <option value="{{omim_term.disease_id}}"> <!-- New way of saving OMIM terms in cases: list of dicts -->
+                          {{ omim_term.description }} ({{omim_term.disease_id}})
+                        </option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-6">
+                  <!-- Phenotype could also be specified by HPO terms -->
+                  <h6>Phenotype terms (HPO):</h6>
+                  <select multiple="multiple" name="hpo_select" id="hpo_select" class="selectpicker">
+                    {% for hpo_term in case.phenotype_terms %}
+                      <option value="{{hpo_term.feature}}_{{hpo_term.phenotype_id}}">
+                        {{hpo_term.feature}} ({{ hpo_term.phenotype_id }})
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <br>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button name="action" value="ADD" type="submit" class="btn btn-primary" title="Mark causative">
+              Mark causative
+            </button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro igv_track_selection(igv_tracks, current_user) %}
+<div id="accordion">
+  <div class="row">
+    <div class="col-4 d-flex align-items-center">
+     <span><a data-toggle="collapse" data-parent="#accordion" href="#track_settings" class="text-secondary">Settings DNA <i class="fas fa-cogs text-secondary"></i></a></span>
+    </div>
+    <div id="track_settings" class="col-8 collapse">
+      <form action="{{url_for('variant.update_tracks_settings')}}" method="POST">
+        <div class="row d-flex align-items-center">
+            <div class="col-3">Show tracks:</div>
+            <div class="col-6">
+              <select name="user_tracks" class="selectpicker" data-width="90%" multiple>
+                {% for track in igv_tracks %}
+                  <!--pre-select option if user has saved it in preferences or select all options if user has no preferences yet-->
+                  <option value="{{ track }}" {{ "selected" if current_user.igv_tracks and track in current_user.igv_tracks or current_user.igv_tracks is not defined }}>{{ track }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-3">
+              <button type="submit" class="btn btn-sm btn-outline-secondary">Save</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro overlapping_panel(variant, overlapping_vars, case, institute) %}
+  <div class="card panel-default">
+    {% if variant.category == 'sv' %}
+      <div class="panel-heading">Overlapping SNVs</div>
+    {% else %}
+      <div class="panel-heading">Overlapping SVs</div>
+    {% endif %}
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th>Variant</th>
+              <th>Gene</th>
+	            <th>Type</th>
+              <th>Combined score</th>
+              <th>Rank score</th>
+              <th>Length</th>
+              <th>Region</th>
+              <th>Function</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for overlapping_variant in overlapping_vars %}
+            <tr>
+              <td>
+                {% if overlapping_variant.category in ("sv", "cancer_sv") %}
+                  <a href="{{url_for('variant.sv_variant', institute_id=institute._id,
+                                   case_name=case.display_name, variant_id=overlapping_variant._id)}}" target="_blank">
+                    {{ overlapping_variant.display_name|truncate(20, True) }}
+                  </a>
+                {% else %}
+                  <a href="{{url_for('variant.variant', institute_id=institute._id,
+                                 case_name=case.display_name, variant_id=overlapping_variant._id)}}" target="_blank">
+                    {{ overlapping_variant.display_name|truncate(20, True) }}
+                  </a>
+                {% endif %}
+              </td>
+              <td>{{ overlapping_variant.hgnc_symbols|join(', ')|truncate(40, True) }}</td>
+              <td>{{ overlapping_variant.sub_category|upper }}</td>
+	            <td class="text-right">{{ variant.rank_score + overlapping_variant.rank_score }}</td>
+              <td class="text-right">{{ overlapping_variant.rank_score }}</td>
+              <td class="text-right">{{ overlapping_variant.length }}</td>
+              <td>{{ overlapping_variant.region_annotations|join(', ')|truncate(40, True) }}</td>
+              <td>{{ overlapping_variant.functional_annotations|join(', ')|truncate(40, True) }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="8">No overlapping variants found</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro genes_panel(variant) %}
+  <div class="card panel-default">
+    <table class="table table-bordered table-sm">
+      <thead>
+        <tr style="cursor: pointer; white-space: nowrap">
+          <th>Gene <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'gene'"></i></th>
+          <th>Ensembl ID <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'ensembl ID'"></i></th>
+          <th>Description <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'description'"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gene in variant.genes %}
+          <tr>
+            <td>
+              <a href="{{ url_for('genes.gene', hgnc_id=gene.hgnc_id) }}">
+                {{ gene.common.hgnc_symbol if gene.common else gene.hgnc_id }}
+              </a>
+            </td>
+            <td>
+              {% if gene.common %}
+                <a target="_blank" href="{{ gene.ensembl_link }}">
+                  {{ gene.common.ensembl_id }}
+                </a>
+              {% endif %}
+            </td>
+            <td>{{ gene.common.description if gene.common }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endmacro %}
+
+{% macro transcripts_panel(variant) %}
+  <div class="card panel-default table-responsive fixed-panel">
+    <table id="transcripts_panel_table" class="table table-bordered card-sm">
+      <thead>
+        <tr style="cursor: pointer; white-space: nowrap">
+          <th>Gene <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'gene'"></i></th>
+          <th>Transcript <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'transcript'"></i></th>
+          <th>RefSeq <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'refSeq'"></i></th>
+          <th>Biotype <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'biotype'"></i></th>
+          <th>Mutation type <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'mutation type'"></i></th>
+          <th>Strand <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'strand'"></i></th>
+          <th>Exon <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'exon'"></i></th>
+          <th>Intron <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'intron'"></i></th>
+          <th>cDNA <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'cDNA'"></i></th>
+          <th>Amino acid <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'amino acid'"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gene in variant.genes %}
+          {% for transcript in gene.transcripts %}
+            <tr class="{{ 'danger' if transcript.is_disease_associated }}">
+              <td>
+                <a href="{{ url_for('genes.gene', hgnc_id=gene.hgnc_id) }}">
+                  {{ gene.common.hgnc_symbol if gene.common else gene.hgnc_id }}
+                </a>
+              </td>
+              <td class="d-flex justify-content-around align-items-center">
+                <a target="_blank" href="{{ transcript.ensembl_link }}">
+                  {{ transcript.transcript_id }}
+                </a>
+                {% if transcript.is_canonical %}
+                  <span class="badge badge-info">C</span>
+                {% endif %}
+              </td>
+              <td>
+                {{ transcript.refseq_identifiers|join(',') }}
+              </td>
+              <td>{{ transcript.biotype or '' }}</td>
+              <td data-toggle="tooltip" data-placement="right" title="{{ transcript.functional_annotations|join(', ') }}">
+                {{ transcript.functional_annotations
+                      |join(', ')
+                      |truncate(20, True) }}
+              </td>
+              <td class="text-center">{{ transcript.strand }}</td>
+              <td>{{ transcript.exon or '' }}</td>
+              <td>{{ transcript.intron or '' }}</td>
+              <td>{{ (transcript.coding_sequence_name or '') }}</td>
+              <td>{{ (transcript.protein_sequence_name or '')|url_decode }}</td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endmacro %}
+
+{% macro proteins_panel(variant) %}
+  <div class="panel panel-default table-responsive">
+    <table id="proteins_panel_table" class="table table-bordered">
+      <thead>
+        <tr style="cursor: pointer; white-space: nowrap">
+          <th>Gene <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'gene'"></i></th>
+          <th>Transcript <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'transcript'"></i></th>
+          <th>Protein <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'protein'"></i></th>
+          <th>SWISS PROT <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'SWISS PROT'"></i></th>
+          <th>Sift <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'Sift'"></i></th>
+          <th>Polyphen <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'Polyphen'"></i></th>
+          <th>Pfam <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'Pfam'"></i></th>
+          <th>ProSite <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'ProSite'"></i></th>
+          <th>Smart <i class="fas fa-sort" data-toggle="tooltip" title="Sort by 'Smart'"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for gene in variant.genes %}
+          {% for transcript in gene.transcripts %}
+            <tr>
+              <td>{{ gene.common.hgnc_symbol if gene.common else gene.hgnc_id }}</td>
+              <td>
+                <a target="_blank" href="{{ transcript.ensembl_link }}">
+                  {{ transcript.transcript_id }}
+                </a>
+              </td>
+              <td>{{ transcript.protein_id if transcript.protein_id }}</td>
+              <td>
+                {% if transcript.swiss_prot != 'unknown' %}
+                  <a target="_blank" href="{{ transcript.swiss_prot_link }}">
+                    {{ transcript.swiss_prot }}
+                  </a>
+                {% else %}
+                  {{ transcript.swiss_prot }}
+                {% endif %}
+              </td>
+              <td>{{ transcript.sift_prediction }}</td>
+              <td>{{ transcript.polyphen_prediction }}</td>
+              <td>
+                <a target="_blank" href="{{ transcript.pfam_domain_link }}">
+                  {{ transcript.pfam_domain if transcript.pfam_domain }}
+                </a>
+              </td>
+              <td>
+                <a target="_blank" href="{{ transcript.prosite_profile_link }}">
+                  {{ transcript.prosite_profile if transcript.prosite_profile }}
+                </a>
+              </td>
+              <td>
+                <a target="_blank" href="{{ transcript.smart_domain_link }}">
+                  {{ transcript.smart_domain if transcript.smart_domain }}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endmacro %}
+
+{% macro sv_alignments(variant, case, zoom)%}
+  {% set align_start = variant.position - 500 if variant.position > 500 else 0 %}
+  {% set align_end = variant.end + 500 %}
+  {% set chrom = variant.chromosome %}
+    <div class="col-4 offset-1">
+    {% if zoom == "start" %}
+      {% set align_end = variant.position + 500 %}
+      {{variant.chromosome}}:{{variant.position}}
+    {% elif zoom == "end" %}
+      {% set align_start = variant.end - 500 %}
+      {% set chrom = variant.end_chrom %}
+      {{variant.end_chrom}}:{{variant.end}}
+    {% elif zoom == "length" %}
+      {{ '-' if variant.length == 100000000000 else variant.length }}
+    {% endif %}
+    </div>
+    <div class="col-3">
+    {% if variant.is_mitochondrial and case.mt_bams or case.bam_files %}
+      <span><a class="btn btn-secondary btn-sm text-white" href="{{url_for('alignviewers.igv', institute_id=case['owner'], case_name=case['display_name'], variant_id=variant['_id'], chrom=chrom, start=align_start, stop=align_end) }}" target="_blank">IGV viewer</a></span>
+    {% else %}
+      - BAM file(s) missing
+    {% endif %}
+    </div>
+    <div class="col-1">
+      <!--Define build variable to be used in the UCSC link-->
+      {% set build = "hg19" %}
+      {% if case.genome_build == 38 or variant.chromosome == "MT" %}
+        {% set build = "hg38" %}
+      {% endif %}
+
+      {% if zoom == "length" and variant.chromosome == variant.end_chrom %}
+        <a class="btn btn-outline-secondary btn-sm" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db={{build}}&position=chr{{ variant.chromosome }}:{{ variant.position }}-{{ variant.end }}&dgv=pack&knownGene=pack&omimGene=pack" target="_blank">UCSC</a>
+      {% elif zoom == "start" %}
+        <a class="btn btn-outline-secondary btn-sm" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db={{build}}&position=chr{{ variant.chromosome }}:{{ variant.position }}&dgv=pack&knownGene=pack&omimGene=pack" target="_blank">UCSC</a>
+      {% elif zoom == "end" %}
+        <a class="btn btn-outline-secondary btn-sm" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db={{build}}&position=chr{{ variant.end_chrom }}:{{ variant.end }}&dgv=pack&knownGene=pack&omimGene=pack" target="_blank">UCSC</a>
+      {% endif %}
+    </div>
+
+{% endmacro %}
+
+{% macro pin_button(variant, case, institute) %}
+  {% if 'suspects' in case and case.suspects and variant._id in case.suspects %}
+    <form action="{{ url_for('cases.pin_variant',
+                             institute_id=institute._id,
+                             case_name=case.display_name,
+                             variant_id=variant._id) }}"
+          method="POST">
+      <button name="action" value="DELETE" type="submit" class="btn btn-light" title="Unpin variant">Unpin</button>
+    </form>
+  {% else %}
+    <form action="{{ url_for('cases.pin_variant',
+                             institute_id=institute._id,
+                             case_name=case.display_name,
+                             variant_id=variant._id) }}"
+          method="POST">
+      <button name="action" value="ADD" type="submit" class="btn btn-light navbar-btn" title="Pin variant">Pin</button>
+    </form>
+  {% endif %}
+{% endmacro %}
+
+{% macro causative_button(variant, case, institute) %}
+  {% if 'causatives' in case and case.causatives and variant._id in case.causatives %}
+      <form action="{{ url_for('cases.mark_causative',
+                               institute_id=institute._id,
+                               case_name=case.display_name,
+                               variant_id=variant._id,
+                               partial_causative=False) }}"
+            method="POST">
+        <button name="action" value="DELETE" type="submit" class="btn btn-light navbar-btn" title="Reset causative">
+          Reset causative
+        </button>
+      </form>
+  {% elif 'partial_causatives' in case and case.partial_causatives and variant._id in case.partial_causatives %}
+    <form action="{{ url_for('cases.mark_causative',
+                             institute_id=institute._id,
+                             case_name=case.display_name,
+                             variant_id=variant._id,
+                             partial_causative=True) }}"
+          method="POST">
+    <button name="action" value="DELETE" type="submit" class="btn btn-light navbar-btn" title="Reset causative">
+      Reset partial causative
+    </button>
+  </form>
+  {% else %}
+  <button class="btn btn-light navbar-btn" data-toggle="modal" data-target="#causativeModal">
+    Mark causative
+  </button>
+  {% endif %}
+{% endmacro %}
