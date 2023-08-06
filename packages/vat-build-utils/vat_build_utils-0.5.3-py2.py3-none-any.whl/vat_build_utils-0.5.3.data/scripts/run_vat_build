@@ -1,0 +1,39 @@
+#!python
+
+from __future__ import print_function
+
+import argparse
+import logging
+
+from vat_utils.config import create_config_client_v2
+
+from build_utils.execute_build import execute_build
+
+logger = logging.getLogger(__name__)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('build_context_config_source')
+    parser.add_argument('build_config_path')
+    parser.add_argument('--disable-output-steps', action='store_true')
+    parser.add_argument('--verbose', action='store_true')
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.WARN)
+
+    build_context_config_client = create_config_client_v2(args.build_context_config_source)
+    build_context_config = build_context_config_client.get_root_json_value()
+
+    build_output = execute_build(
+        build_context_config,
+        args.build_config_path,
+        enable_output_steps=not args.disable_output_steps
+    )
+
+    logger.info(build_output)
+
+if __name__ == '__main__':
+    main()

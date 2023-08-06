@@ -1,0 +1,27 @@
+#!python
+
+import argparse
+import itertools
+import subprocess
+
+from vat_utils.config import create_config_client_v2
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config_source')
+    parser.add_argument('terraform_dir')
+    args = parser.parse_args()
+
+    backend_config = create_config_client_v2(args.config_source).get_root_json_value()
+
+    terraform_command = (
+        ["terraform", "init"] +
+        list(itertools.chain.from_iterable(
+            [("-backend-config", "{0}={1}".format(key, value)) for key, value in backend_config.items()])) +
+        [args.terraform_dir]
+    )
+
+    subprocess.check_call(terraform_command)
+
+if __name__ == '__main__':
+    main()
