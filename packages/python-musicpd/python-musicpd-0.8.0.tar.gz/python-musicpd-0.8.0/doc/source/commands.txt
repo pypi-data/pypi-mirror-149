@@ -1,0 +1,135 @@
+== Status Commands
+clearerror                                 -> fetch_nothing
+currentsong                                -> fetch_object
+idle               [<str>]                 -> fetch_list
+noidle                                     -> None
+status                                     -> fetch_object
+stats                                      -> fetch_object
+
+== Playback Option Commands
+consume            <bool>                  -> fetch_nothing
+crossfade          <int>                   -> fetch_nothing
+mixrampdb          <str>                   -> fetch_nothing
+mixrampdelay       <int>                   -> fetch_nothing
+random             <bool>                  -> fetch_nothing
+repeat             <bool>                  -> fetch_nothing
+setvol             <int>                   -> fetch_nothing
+getvol                                     -> fetch_object
+single             <bool>                  -> fetch_nothing
+replay_gain_mode   <str>                   -> fetch_nothing
+replay_gain_status                         -> fetch_item
+volume             <int>                   -> fetch_nothing
+
+== Playback Control Commands
+next                                       -> fetch_nothing
+pause              [<bool>]                -> fetch_nothing
+play               [<int>]                 -> fetch_nothing
+playid             [<int>]                 -> fetch_nothing
+previous                                   -> fetch_nothing
+seek               <int> <int>             -> fetch_nothing
+seekid             <int> <int>             -> fetch_nothing
+seekcur            <int>                   -> fetch_nothing
+stop                                       -> fetch_nothing
+
+== Queue Commands
+add                <str>                   -> fetch_nothing
+addid              <str> [<int>]           -> fetch_item
+clear                                      -> fetch_nothing
+delete             <int>|<range>           -> fetch_nothing
+deleteid           <int>                   -> fetch_nothing
+move               <int>|<range> <int>     -> fetch_nothing
+moveid             <int> <int>             -> fetch_nothing
+playlist                                   -> fetch_playlist
+playlistfind       <locate>                -> fetch_songs
+playlistid         [<int>]                 -> fetch_songs
+playlistinfo       [<int>|<range>]         -> fetch_songs
+playlistsearch     <locate>                -> fetch_songs
+plchanges          <int>                   -> fetch_songs
+plchangesposid     <int>                   -> fetch_changes
+prio               <int> <int>|<range>     -> fetch_nothing,
+prioid             <int> <int>             -> fetch_nothing,
+rangeid            <int> <range>           -> fetch_nothing,
+shuffle            [<range>]               -> fetch_nothing
+swap               <int> <int>             -> fetch_nothing
+swapid             <int> <int>             -> fetch_nothing
+addtagid           <int> <str> <str>       -> fetch_nothing
+cleartagid         <int> [<str>]           -> fetch_nothing
+
+== Stored Playlist Commands
+listplaylist       <str>                   -> fetch_list
+listplaylistinfo   <str>                   -> fetch_songs
+listplaylists                              -> fetch_playlists
+load               <str> [<range>]         -> fetch_nothing
+playlistadd        <str> <str>             -> fetch_nothing
+playlistclear      <str>                   -> fetch_nothing
+playlistdelete     <str> <int>             -> fetch_nothing
+playlistmove       <str> <int> <int>       -> fetch_nothing
+rename             <str> <str>             -> fetch_nothing
+rm                 <str>                   -> fetch_nothing
+save               <str>                   -> fetch_nothing
+
+== Database Commands
+albumart           <str> <int>                              -> fetch_composite
+count              <str> <str>                              -> fetch_object
+count              group <str>                              -> fetch_object
+getfingerprint     <str>                                    -> fetch_object
+find               <str> <str> [<str> <str>]...             -> fetch_songs
+findadd            <str> <str> [<str> <str>]                -> fetch_nothing
+list               <str> [<str> <str>]...[group <str>]...   -> fetch_list
+listall            [<str>]                                  -> fetch_database
+listallinfo        [<str>]                                  -> fetch_database
+listfiles          <str>                                    -> fetch_database
+lsinfo             [<str>]                                  -> fetch_database
+readcomments       [<str>]                                  -> fetch_object
+readpicture        <str> <int>                              -> fetch_composite
+search             <str> <str> [<str> <str>]...             -> fetch_song
+searchadd          <str> <str> [<str> <str>]...             -> fetch_nothing
+searchaddpl        <str> <str> <str> [<str> <str>]...       -> fetch_nothing
+update             [<str>]                                  -> fetch_item
+rescan             [<str>]                                  -> fetch_item
+
+== Mounts and neighbors ==
+mount              <str> <str>     -> fetch_nothing
+unmount            <str>           -> fetch_nothing
+listmounts                         -> fetch_mounts
+listneighbors                      -> fetch_neighbors
+
+== Sticker Commands
+sticker   get      <str> <str> <str>       -> fetch_item
+sticker   set      <str> <str> <str> <str> -> fetch_nothing
+sticker   delete   <str> <str> [<str>]     -> fetch_nothing
+sticker   list     <str> <str>             -> fetch_list
+sticker   find     <str> <str> <str>       -> fetch_songs
+
+== Connection Commands
+close                               -> None
+kill                                -> None
+password           <str>            -> fetch_nothing
+ping                                -> fetch_nothing
+binarylimit        <str>            -> fetch_nothing
+tagtypes                            -> fetch_list
+tagtypes disable <str> [<str>]...   -> fetch_nothing
+tagtypes enable <str> [<str>]...    -> fetch_nothing
+tagtypes clear                      -> fetch_nothing
+tagtypes all                        -> fetch_nothing
+
+== Partition Commands
+partition          <str>    -> fetch_nothing
+listpartitions              -> fetch_list
+newpartition       <str>    -> fetch_nothing
+delpartition       <str>    -> fetch_nothing
+moveoutput         <str>    -> fetch_nothing
+
+== Audio Output Commands
+disableoutput      <int>       -> fetch_nothing
+enableoutput       <int>       -> fetch_nothing
+toggleoutput       <int>       -> fetch_nothing
+outputs                        -> fetch_outputs
+outputset  <str> <str> <str>   -> fetch_nothing
+
+== Reflection Commands
+config           -> fetch_object
+commands         -> fetch_list
+notcommands      -> fetch_list
+urlhandlers      -> fetch_list
+decoders         -> fetch_plugins

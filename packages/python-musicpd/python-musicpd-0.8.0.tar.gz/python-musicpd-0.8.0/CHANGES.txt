@@ -1,0 +1,128 @@
+python-musicpd Changes List
+===========================
+
+Changes in 0.8.0
+----------------
+
+* Need python 3.6 minimum (modernize code)
+* Add context management for MPDClient instance (Thanks Wonko der Verständige)
+* Switch to SPDX for license header
+
+Changes in 0.7.0
+----------------
+
+* Add socket timeout (disabled by default)
+* MPD_TIMEOUT is set for both tcp and unix sockets
+* Raises an exception if command contains '\n'
+
+Changes in 0.6.0
+----------------
+
+* Add binarylimit command
+* Add getvol command
+* Honor MPD_TIMEOUT environment variable
+* Default connection timeout is now 30s (previously 5s)
+* Add abstract unix socket support
+* Add tests, improved coverage
+* Switch back to gztar (even though official python doc mention xztar, PEP 527
+  considers only gztar and zip)
+
+Changes in 0.5.1
+----------------
+
+* Clean up packaging (remove useless files and html doc)
+* Remove bztar from sdist
+* Switch to xztar sdist
+
+Changes in 0.5.0
+----------------
+
+* Add readpicture command
+* Add getfingerprint command
+* Add delpartition command
+* Add moveoutput command
+* Update host and port attributes when reconnecting
+* Fixed albumart
+
+Changes in 0.4.4
+----------------
+
+* Add tcp socket timeout, exposed in musicpd.CONNECTION_TIMEOUT, defaults to 5s
+  (Thanks to Bart Van Loon)
+* Add partition commands (Thanks Naglis Jonaitis)
+* Add listfiles command
+* Add tagtypes (disable|enable|clear|all) commands
+* Add albumart command
+
+Changes in 0.4.3
+----------------
+
+* Use setuptools
+* Add sphinx documentation
+* Add sensible defaults and honor environment variables
+  Use MPD_HOST/MPD_PORT (honor password setting in MPD_HOST)
+  If MPD_HOST is not set, tries to find a socket in
+  ${XDG_RUNTIME_DIR:-/run}/mpd/socket
+
+Changes in 0.4.2
+----------------
+
+* Add unittest (requires mock)
+* Add mounts and neighbors commands (mount, unmount, listmounts and
+  listneighbors)
+* Add rangeid command
+* Add tag editing commands (addtagid and cleartagid)
+* Add missing priority commands (prio and prioid)
+* Add config command
+
+Changes in 0.4.1
+----------------
+
+* Fixed noidle command
+
+Changes in 0.4.0
+----------------
+
+* support range
+
+Changes in 0.3.1 UNRELEASED
+---------------------------
+
+* renamed musicpd
+* python3 port
+* no python2 support
+* added searchadd and searchaddpl commands
+* added seekcur command
+* added client to client commands
+* added readcomments and toggleoutput commands
+
+Changes in 0.3.0
+----------------
+
+* added replay_gain_mode and replay_gain_status commands
+* added mixrampdb and mixrampdelay commands
+* added findadd and rescan commands
+* added decoders command
+* changed license to LGPL
+* added sticker commands
+* correctly handle errors in command lists (fixes a longstanding bug)
+* raise IteratingError instead of breaking horribly when called wrong
+* added fileno() to export socket FD (for polling with select et al.)
+* asynchronous API (use send_<cmd> to queue, fetch_<cmd> to retrieve)
+* support for connecting to unix domain sockets
+* added consume and single commands
+* added idle and noidle commands
+* added listplaylists command
+
+Changes in 0.2.1
+----------------
+
+* connect() no longer broken on Windows
+
+Changes in 0.2.0
+----------------
+
+* support for IPv6 and multi-homed hostnames
+* connect() will fail if already connected
+* commands may now raise ConnectionError
+* addid and update may now return None
