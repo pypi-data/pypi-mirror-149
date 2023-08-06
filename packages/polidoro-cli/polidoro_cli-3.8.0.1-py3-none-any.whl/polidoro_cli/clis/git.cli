@@ -1,0 +1,16 @@
+set DEFAULT_COMMAND=git
+
+l={
+    'command': 'git log --color --graph --pretty=format:"%C(yellow)%h%Creset - %Cgreen(%ci) %C(bold blue)<%an>%Creset%C(bold yellow)%d%n%C(bold)%s" --abbrev-commit -10',
+    'help': 'Show custom git log. Show 10 entries by default, -N to change.'
+}
+
+ps=push
+pl=pull
+f=fetch -p --progress
+commit_push,cp={'command': 'git add -p; cli git build_commit; git push'}
+rs=reset --soft HEAD~${arg0:1}
+rh=reset --hard HEAD~${arg0:1}
+merge_updated,mu=checkout $arg0;pull;checkout -;merge $arg0
+sa={'command': 'cli git in_all status -s'}
+fa={'command': 'cli git in_all fetch'}

@@ -1,0 +1,15 @@
+set DEFAULT_COMMAND=$docker mix
+
+deps=deps.get
+iex={'command': '$docker iex -S mix'}
+iexup={'command': '$docker iex -S mix phx.server'}
+setup=ecto.setup
+reset=ecto.reset
+migrate=ecto.migrate
+up=phx.server
+schema=phx.gen.schema
+gettext=gettext.extract --merge
+test={
+    'command': '$docker mix test',
+    'envs': {'MIX_ENV': 'test'}
+}

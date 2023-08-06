@@ -1,0 +1,3 @@
+set DEFAULT_COMMAND=ssh
+
+prod_shell,ps=-t ubuntu@172.31.27.26 'docker exec -it $(docker ps -f name=django --format {{.Names}}) ./manage.py shell'
