@@ -1,0 +1,86 @@
+Metadata-Version: 2.1
+Name: vngrs-nlp
+Version: 0.1.2
+Summary: NLP Tools for Turkish Language.
+Author: Meliksah Turker
+Author-email: turkermeliksah@hotmail.com
+License: GNU Affero General Public License v3.0
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Information Technology
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Text Processing
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+Provides-Extra: extras
+License-File: LICENSE
+
+![](https://github.com/vngrs-ai/VNLP/blob/main/img/logo.png)
+## VNLP: Turkish NLP Tools
+State of the art, lightweight NLP tools for Turkish language.
+Developed by VNGRS.
+https://vngrs.com/
+### Functionality:
+- Sentence Splitter
+- Normalizer
+	- Spelling/Typo correction
+	- Convert numbers to word form
+	- Deasciification
+- Stopword Remover:
+	- Static
+	- Dynamic
+- Stemmer: Morphological Analyzer & Disambiguator
+- Named Entity Recognizer (NER) 
+- Dependency Parser
+- Part of Speech (POS) Tagger
+- Sentiment Analyzer
+- Turkish Word Embeddings
+	- FastText
+	- Word2Vec
+- Text Summarization: In development progress...
+### Installation
+```
+pip install vngrs-nlp
+```
+```
+conda install vngrs-nlp
+```
+### Documentation:
+- Detailed documentation about usage, classes, functions, datasets and evaluation metrics are available at [Documentation](https://vnlp.readthedocs.io).
+### Usage Example:
+**Dependency Parser**
+```
+from vnlp import DependencyParser
+dep_parser = DependencyParser()
+dep_parser.predict("Onun iÃ§in yol arkadaÅŸlarÄ±mÄ±zÄ± titizlikle seÃ§er, kendilerini iyice sÄ±narÄ±z.")
+[(1, 'Onun', 5, 'obl'),
+(2, 'iÃ§in', 1, 'case'),
+(3, 'yol', 1, 'nmod'),
+(4, 'arkadaÅŸlarÄ±mÄ±zÄ±', 5, 'obj'),
+(5, 'titizlikle', 6, 'obl'),
+(6, 'seÃ§er', 7, 'acl'),
+(7, ',', 10, 'punct'),
+(8, 'kendilerini', 10, 'obj'),
+(9, 'iyice', 8, 'advmod'),
+(10, 'sÄ±narÄ±z', 0, 'root'),
+(11, '.', 10, 'punct')]
+# Spacy's submodule Displacy can be used to visualize DependencyParser result.
+import spacy
+from vnlp import DependencyParser
+dependency_parser = DependencyParser()
+result = dependency_parser.predict("OÄŸuz'un kÄ±rmÄ±zÄ± bir Astra'sÄ± vardÄ±.", displacy_format = True)
+spacy.displacy.render(result, style="dep", manual = True)
+```
+![](https://github.com/vngrs-ai/VNLP/blob/main/img/dp_vis_sample.png)
+
