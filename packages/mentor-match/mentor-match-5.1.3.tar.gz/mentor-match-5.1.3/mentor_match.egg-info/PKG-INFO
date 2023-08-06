@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: mentor-match
+Version: 5.1.3
+Summary: A series of classes to match mentors and mentees
+Home-page: UNKNOWN
+Author: Jonathan Kerr
+Author-email: jonathan.drew.kerr@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Description-Content-Type: text/markdown
+
+# Mentor Match
+
+This is a package to help match mentees and mentors. It's specifically designed for a volunteer programme I support, but you could probably extend or alter it to suit whatever you're doing.
+
+It uses [this implementation of Munkres](https://github.com/bmc/munkres) to find the most effective pairings. The Munkres algorithm works on a grid of scores.
+
+## Scoring
+
+Full details of how the matches are calculated can be read in the code itself. Customisable configurations are on the
+roadmap but are not planned for any upcoming releases.
+
+## Installation
+
+You can install this project with `python -m pip install mentor-match`
+
+## Use
+
+To use this library, first install it (see above). You may need to munge your data for the system to be happy with it.
+Use the [example CSV file](example.csv) as guides for your mentor and mentee data, then put them together in the same folder.
+
+The software will run three matching exercises. Participants who don't match in the first round are more heavily
+weighted in the next round. The aim is to improve the experience for everyone.
+
+The weightings are as follows:
+
+
+| property                                                          | First run | Second run | Third run |
+|-------------------------------------------------------------------|-----------|------------|-----------|
+| **mentee's target profession is the same as mentor's profession** | 4         | 4          | 0         |
+| **grade is one or two grades different**                          | 3         | 3          | 3         |
+| **bonus for anyone's who's not got a match yet**                  | 0         | 50         | 100       |
+
+
+Here is a snippet that outlines a minimal use in a Python project:
+
+```python
+from matching import process
+
+data_folder = "Documents/mentoring-data"
+mentors, mentees = process.conduct_matching_from_file(data_folder)
+
+output_folder = data_folder / "output"
+process.create_mailing_list(mentors, output_folder)
+process.create_mailing_list(mentees, output_folder)
+```
+This creates a mailing list according to a set template, ready for processing by your favourite/enterprise mandated
+email solution
+
+Alternatively, you can run this software from the command line as follows
+
+```commandline
+python -m matching /path/to/participant/data
+```
+
+
