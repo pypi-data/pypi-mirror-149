@@ -1,0 +1,75 @@
+[tool.poetry]
+name = "confluence-utils"
+version = "0.5.0"
+description = ""
+authors = ["Tevin Trout <ttrout@bellese.io>", "Scott Hamrick <shamrick@bellese.io>", "Andrew Lee <alee@bellese.io>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Bellese/confluence-utils"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+click = "^8"
+click-plugins = "^1.1.1"
+mistune = "^2.0.2"
+python-frontmatter = "^1.0.0"
+atlassian-python-api = "^3.21.0"
+tabulate = "^0.8.9"
+click-log = "^0.4.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+pre-commit = "^2.18.1"
+flake8 = "^4.0.1"
+mypy = "^0.942"
+isort = "^5.10.1"
+pytest-cov = "^3.0.0"
+python-semantic-release = "^7.28.1"
+types-tabulate = "^0.8.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+"confluence" = "confluence_utils.cli:cli"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 79
+
+[tool.black]
+preview = true
+line-length = 79
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[tool.semantic_release]
+version_toml = "pyproject.toml:tool.poetry.version"
+version_variable = "confluence_utils/__init__.py:__version__"
+branch = "main"
+commit_subject = "chore: release version {version}"
+upload_to_repository = false
+build_command = "poetry build"
