@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:meta="http://xml.zope.org/namespaces/meta"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      meta:interpolation="true"
+      metal:use-macro="context/@@shell/macros/shell"
+      i18n:domain="euphorie"
+>
+
+  <!-- The equivalent template in the Jekyll prototype is /assessments -->
+
+  <body>
+    <metal:slot fill-slot="content">
+      <div id="content-pane">
+        <metal:homescreen_navigation use-macro="here/view/macros/homescreen_navigation">
+          <metal:slot fill-slot="view_options" />
+          <metal:slot fill-slot="quick_functions">
+            <metal:assessment_quick_functions define-macro="assessment_quick_functions">
+              <label class="pat-toolbar-function pat-toolbar-search-field">
+                <input name="SearchableText"
+                       placeholder="Search risk assessments"
+                       type="search"
+                       i18n:attributes="placeholder placeholder_search_risk_assessments"
+                />
+              </label>
+
+              <a class="pat-modal icon create"
+                 href="${here/absolute_url}/@@new-session.html#document-content"
+                 title="Start a new risk assessment"
+                 data-pat-modal="class: small panel"
+                 i18n:attributes="title link_start_session"
+                 i18n:translate="link_start_session"
+              >Start a new risk assessment</a>
+            </metal:assessment_quick_functions>
+          </metal:slot>
+        </metal:homescreen_navigation>
+        <div id="application-content"
+             tal:define="
+               sessions view/sessions;
+               show_extra_fields python:True;
+             "
+        >
+          <div class="portlet">
+            <div class="content">
+              <metal:assessments_list metal:define-macro="assessments_list">
+                <ul class="data-matrix ${python:'hd' if show_extra_fields else None}"
+                    tal:define="
+                      show_extra_fields show_extra_fields|python:False;
+                      toLocalizedTime nocall: context/@@plone/toLocalizedTime;
+                    "
+                >
+                  <li class="row ${python:'archived' if session.is_archived else None}"
+                      title="${python:'Archived' if session.is_archived else None}"
+                      tal:repeat="session sessions"
+                      i18n:attributes="title"
+                  >
+
+                    <h4 class="name field">
+                      <a class="pat-inject follow"
+                         href="${here/aq_parent/absolute_url}/${session/zodb_path}/++session++${session/id}/@@start"
+                         data-pat-inject="source: #content; target: #content; history: record"
+                      >
+                  ${session/title}
+                        <em tal:condition="not:session/title">
+                          [<tal:i18n i18n:translate="label_missing_title">Title is missing</tal:i18n>]
+                        </em>
+                      </a>
+                    </h4>
+                    <p class="date field"
+                       tal:condition="show_extra_fields"
+                    >
+                      <span class="last-saved">
+                        <tal:i18n i18n:translate="label_started">Started</tal:i18n>
+                        <time datetime="${value}"
+                              tal:define="
+                                value session/created/isoformat|nothing;
+                              "
+                        >${python:toLocalizedTime(value)}</time>
+                      </span>
+                    </p>
+                    <p class="status field">
+                      <span class="value">
+                        <tal:i18n i18n:translate="">Last saved</tal:i18n>
+                        <time class="pat-display-time"
+                              datetime="${value}"
+                              data-pat-display-time="from-now: true; locale: ${language}"
+                              tal:define="
+                                value python:webhelpers.timezoned_date(session.modified);
+                              "
+                        >${value}</time>
+                      </span>
+                    </p>
+                    <p class="tool field"
+                       tal:condition="show_extra_fields"
+                    >
+                      <a class="pat-inject tool field"
+                         href="${here/aq_parent/absolute_url}/${session/zodb_path}"
+                         data-pat-inject="history: record"
+                      >${session/tool/title}</a>
+                    </p>
+                    <p class="field icons"
+                       tal:define="
+                         disabled python:False;
+                       "
+                    >
+                      <metal:status_icon use-macro="here/certificate_macros/macros/status_icon"
+                                         tal:condition="show_extra_fields|python:False"
+                      />
+                      <a class="icon locking ${python:session.published and 'locked' or 'unlocked'} pat-tooltip"
+                         href="${here/aq_parent/absolute_url}/${session/zodb_path}/++session++${session/id}/@@publication_menu#publication-menu"
+                         data-pat-tooltip="source: ajax; position-list: tr"
+                         tal:condition="python:webhelpers.use_publication_feature_for_session(session) and show_extra_fields"
+                      >Published
+                        <time class="pat-display-time"
+                              datetime="2018-03-28T08:00Z"
+                              data-pat-display-time="from-now: true"
+                        >2018-03-28</time></a>
+
+                      <a class="icon more-menu iconified icon-ellipsis pat-tooltip inactive"
+                         href="${here/aq_parent/absolute_url}/${session/zodb_path}/++session++${session/id}/@@more_menu#more-menu"
+                         data-pat-tooltip="source: ajax; position-list: tr"
+                         i18n:translate=""
+                      >More</a>
+
+                    </p>
+                  </li>
+                </ul>
+
+              </metal:assessments_list>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </metal:slot>
+
+  </body>
+</html>
