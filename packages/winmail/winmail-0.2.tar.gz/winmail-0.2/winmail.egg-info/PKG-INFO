@@ -1,0 +1,153 @@
+Metadata-Version: 2.1
+Name: winmail
+Version: 0.2
+Summary: Winmail API
+Home-page: http://winmail.cn
+Author: Sway
+Author-email: sway_wang@foxmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+# Winmail API
+
+## 项目介绍
+
+[Winmail](http://winmail.cn) Server OpenAPI 接口工具类
+
+接口版本： 1.1、1.2
+
+支持Winmail OpenAPI接口，使用HTTP、HTTPS连接；
+支持COM接口，使用COM接口时，Python需运行在Winmail所在机器。
+
+## 安装
+
+```bash
+pip install winmail
+```
+
+## 使用说明
+
+### OpenAPI说明
+
+```python
+import os
+import json
+from winmail import OpenApi as WinmailApi
+
+server = '192.168.120.195'
+port = 6080
+apikey = 'bt66oa8d5b'
+apisecret = 'btt87e78f6871aea2016a3916eb65299b7affb18'
+
+# 管理员接口示例
+manage_path = 'admin'
+user = 'admin'
+pwd = 'admin'    
+api = WinmailApi(server, port, apikey, apisecret, use_ssl=False)
+
+login_result = api.login(user, pwd, manage_path)
+
+if login_result['result'] == 'ok':
+
+    if api.update_session():
+        print('update ok')
+    else:
+        print('update failed')
+
+    # 取域名列表，按API接口说明的参数字典
+    method_params = {
+        "method": "domain"
+    }
+
+    method_result = api.get_api(**method_params)
+    
+    if method_result['result'] == 'ok':
+        print(method_result)
+    else:
+        print(method_result)
+
+else:
+    print(login_result)
+
+
+# 邮箱用户接口示例
+user = 'a'
+pwd = 'test'
+# 邮件用户的参考：sessid包含的webmail风格。如果是手机可以使用6，普通PC用2
+tid = '6'
+api = WinmailApi(server, port, apikey, apisecret, use_ssl=False)
+
+login_result = api.login(user, pwd, tid=tid)
+if login_result['result'] == 'ok':
+    # print(api.url)
+    # print(api.sessid)
+
+    if api.update_session():
+        print('update ok')
+    else:
+        print('update failed')
+
+    # 写邮件操作示例
+    # 上传附件操作，如果有多个附件可以一次请求也可以多次请求。每次请求的附件都会保留在邮件上除非使用reset清除。建议上传前清一下附件缓存
+    method_params = {
+        "method": "newmsg.reset",
+    }
+    method_result = api.get_api(**method_params)
+    if method_result['result'] != 'ok':
+        print(method_result)
+
+    # 第一次上传多个附件
+    method_params = {
+        "method": "upload.upload",
+        "attachfile": ['E:\\magic winmail\\server\\logs\\webmail.log',
+                'E:\\magic winmail\\server\\logs\\system.log']
+    }
+    method_result = api.get_api(**method_params)
+    if method_result['result'] != 'ok':
+        print(method_result)
+    # 第二次上传单个附件
+    method_params = {
+        "method": "upload.upload",
+        "attachfile": 'E:\\magic winmail\\server\\logs\\admin.log'
+    }
+    method_result = api.get_api(**method_params)
+    if method_result['result'] != 'ok':
+        print(method_result)
+
+    # 写邮件信体
+    method_params = {
+        "method": "newmsg.send",
+        "from": "AA<a@195.com>",
+        "to": "B用户<b@195.com>",
+        "subject": 'OpenApi写信测试',
+        "msgbody": "<font color=red>RED content</font>",
+        "ishtml": '1',
+        "savetosent": '1'
+    }
+    method_result = api.get_api(**method_params)
+
+    if method_result['result'] == 'ok':
+        print(method_result)
+    else:
+        print(method_result)
+
+else:
+    print(login_result)
+```
+
+### Com接口说明
+
+请参考Winmail的Com接口文档。
+暂未全部完成Com接口。
+
+```python
+from winmail import ComApi as WinmailCom
+
+wc = WinmailCom()
+winmail_db_path = wc.get_db_path()
+add_domain = wc.add_domain('test.com')
+print(add_domain)
+```
+
+
