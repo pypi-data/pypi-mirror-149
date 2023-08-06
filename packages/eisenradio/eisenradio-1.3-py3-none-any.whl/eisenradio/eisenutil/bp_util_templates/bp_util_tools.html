@@ -1,0 +1,183 @@
+{% extends 'bp_util_base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Tools {% endblock %}</h1>
+
+<hr>
+<h3>Monitor Records</h3>
+<div>
+
+                    {% if enabled %}
+                        {% set btn_color='btn btn-success btn-sm' %}
+                    {% else -%}
+                        {% set btn_color='btn btn-warning btn-sm' %}
+                    {% endif -%}
+
+                    <form action="{{ url_for('eisenutil_bp.tools_radio_blacklist_set') }}">
+                        <div class="form-group">
+                            <input  class="{{btn_color}}"
+                                    type="submit"
+                                    id="black_btn"
+                                    value="{{button_label}}"
+                                    onclick="return confirm('Are you sure you want to switch?')"
+                                    style="width: 6em;">
+                            <label for="black_btn"><span id="black_btn_span_msg">{{button_message}}</span>
+                            </label>
+                        </div>
+                    </form>
+    <p></p>
+    <p></p>
+
+                    <form action="{{ url_for('eisenutil_bp.tools_blacklist_overview') }}">
+                        <button type="submit"
+                                class="btn btn-warning btn-sm"
+                                style="width: 6em;">Blacklists</button>
+
+                    </form>
+
+                    <br>
+
+                    <p>
+                        <span class="monitor_records">
+                        Ignores known titles.
+                        </span>
+                    </p>
+
+
+</div>
+
+
+
+<hr>
+            <div id="div_Export">
+<h3>Export</h3>
+                <input id="toolsExpUrl" type="radio" name="sameNameExp" value="url" onclick="exportUrls();" checked>
+                <label for="toolsExpUrl"> Names and URLs</label>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input id="toolsExpTrace" type="radio" name="sameNameExp" value="trace" onclick="exportTraceLists();">
+                <label for="toolsExpTrace"> Blacklists</label>
+            </div>
+    <div id="div_toolsExportUrl">
+
+        <p>Export, Backup Radio Names and URLs from database to
+            <span class="exImConfigs"><b>eisenradio_settings.ini</b></span> file.</p>
+
+            <button class="btn btn-primary btn-sm"
+                    onclick="toolsExportIni()"
+                    id="tools_export_ini"
+            >Export
+            </button>
+
+                <span class="exImConfigs">Path: {{ export_path }}</span>
+
+    </div>
+
+    <div id="div_toolsExportTracLists" style="display: none">
+
+        <p>Export, Backup radio lists with titles to ignore <span class="exImConfigs"><b>eisenradio_blacklists.json</b></span>.</p>
+            <button class="btn btn-warning btn-sm"
+                    onclick="toolsExportBlacklists()"
+                    id="tools_export_blacklists"
+            >Export
+            </button>
+
+                <span class="exImConfigs">Path: {{ export_path }}</span>
+    </div>
+
+<hr>
+
+
+            <div id="div_Import">
+<h3>Import</h3>
+                <input id="toolsImpURL" type="radio" name="sameNameImp" value="url" onclick="importUrls();" checked>
+                <label for="toolsImpURL">Names and URLs</label>
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <input id="toolsImpTrace" type="radio" name="sameNameImp" value="trace" onclick="importTraceLists();">
+                <label for="toolsImpTrace"> Blacklists</label>
+            </div>
+
+    <div id="div_toolsImport" >
+
+            <p style="font-size: 1.5;">Import (restore or append) Radio Names and URLs from *.ini file
+                to database. Remember to set the "Save" path. :)</p>
+            <p>
+                You can create a settings.ini on a tablet or PC and then import it on your mobile/cell phone.
+            </p>
+            <p style="color:red;"> App restart required! </p>
+            <p></p>
+
+
+                <form id="form_upload" action="{{ url_for('eisenutil_bp.tools_upload_ini') }}" method="post" enctype="multipart/form-data">
+                    <div>
+                        <label for="inputFile">Choose <span class="exImConfigs">*.ini</span> file to import.</label>
+
+                        <input type="file" id="inputFile" name="inputFile">
+                    </div>
+                    <p></p>
+                    <div>
+                      <button class="btn btn-primary btn-sm">Import</button>
+                    </div>
+                </form>
+
+            <p></p>
+                <p>Mandatory [STATIONS] and your list:</p>
+
+                    <pre>
+                    <br>[STATIONS]
+		            <br>BLUES_UK = http://149.255.59.3:8232/stream
+		            <br>hr3 = http://metafiles.gl-systemhaus.de/hr/hr3_2.m3u
+                    <br>pop24 = http://rosewellpop.radioca.st:80/streams/128kbps
+		            </pre>
+    </div>
+    <div id="div_toolsImportTraceLists" style="display: none">
+
+            <p style="font-size: 1.5;">
+                Import (restore or append) lists with known titles.</p>
+                <p>Imported lists will be merged with existing lists.</p>
+
+
+
+
+                <form id="form_upload_trace_lists" action="{{ url_for('eisenutil_bp.tools_upload_blacklists') }}" method="post" enctype="multipart/form-data">
+                    <div>
+                        <label for="inputFile">Choose
+                            <span class="exImConfigs">eisenradio_blacklists.json</span> file to import.</label>
+
+                        <input type="file" id="inputFileTrace" name="inputFile">
+                    </div>
+                    <p></p>
+                    <div>
+                      <button class="btn btn-warning btn-sm">Import</button>
+                    </div>
+                </form>
+            <p></p>
+                <br>
+
+                    <pre>
+                    <br>"Eisenradio message": "\"This is a json formatted dictionary. Rename radios you do not want.\"",
+		            <br>"time_machine": [
+		            <br>"Murder at Midnight - 12 The Man Who Died Yesterday",
+                    <br>"The Adventures of Philip Marlowe - The Fox's Tail",
+		            </pre>
+    </div>
+<hr>
+
+<h3>Delete</h3>
+        <p style="font-size: 1.5;">Delete all Radios.</p>
+        <p style="color:red;">Then restart the app.</p>
+
+        <p></p>
+        <form id="del_all_radios_form" action="{{ url_for('eisenutil_bp.tools_delete_all') }}" method="post">
+            <div class="form-group">
+                <input class="btn btn-primary btn-sm"
+                       type="submit"
+                       id="del_all_radios"
+                       value="Delete"
+                       onclick="return confirm('Are you sure you want to delete all radios?')"
+                       name="post_delete_all_radios">
+                <label for="del_all_radios">
+                </label>
+            </div>
+        </form>
+<hr>
+{% endblock %}
