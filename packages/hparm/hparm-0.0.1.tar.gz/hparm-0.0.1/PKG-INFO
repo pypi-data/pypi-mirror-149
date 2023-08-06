@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: hparm
+Version: 0.0.1
+Summary: Loads yaml file to a python structure
+Author: knoriy
+Author-email: <knoriy@bournemouth.ac.uk>
+License: UNKNOWN
+Keywords: python,yaml
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# HParm
+
+HParm is a simple module build to load yaml files in both dot notation as well as dictionary access notation.
+
+## Install hparm
+```
+pip install git+https://github.com/knoriy/hparm.git
+```
+
+## Examples
+
+### Example yaml file and use case
+```
+paths:
+  first_file: 'path/to/first_file.yaml'
+  second_file: 'path/to/second_file.yaml'
+variable:
+  epochs:100
+  batch: 16
+
+```
+
+```
+from hparm import HParm
+
+hp = hparm('dir/to/file.yaml')
+
+# dictionary notation
+hp['variable']['epochs]
+
+# dot notation
+hp.varaibles.epochs
+
+```
+
