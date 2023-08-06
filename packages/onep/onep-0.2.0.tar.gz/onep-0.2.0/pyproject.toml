@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "onep"
+version = "0.2.0"
+
+description = "1Password CLI helper"
+authors = ["Antoine POPINEAU <antoine@popineau.eu>"]
+license = "MIT"
+
+repository = "https://github.com/apognu/1p"
+readme = "README.md"
+classifiers = [
+  "Topic :: Security",
+  "Topic :: Utilities"
+]
+keywords = ["password", "1password", "cli", "secrets"]
+
+packages = [
+  { include = "onep/**/*.py" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+inquirer = "^2.9.2"
+keyring = "^23.5.0"
+termcolor = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+mypy = "^0.950"
+
+[tool.poetry.scripts]
+1p = "onep.onep:main"
+
+[tool.black]
+line-length = 200
+
+[tool.mypy]
+exclude = [".venv/"]
+strict = true
+warn_no_return = false
+install_types = true
+non_interactive = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
