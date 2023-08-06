@@ -1,0 +1,22 @@
+{% extends 'cta/_common.html' %}
+{% load static %}
+
+{% block cta %}
+<!-- ======= Kakap Section ======= -->
+<style>
+  .cta {
+  background: linear-gradient(rgba(2, 2, 2, 0.7), rgba(0, 0, 0, 0.7)),
+  url("{% static 'img/cta/'|add:theme|add:'.jpg' %}") fixed center center;
+}
+</style>
+
+  <section id="cta" class="cta">
+    <div class="container">
+      <div class="text-center" data-aos="zoom-in">
+        <h3>{{ cta.title }}</h3>
+        <p>{{ cta.desc }}</p>
+        <a class="cta-btn" href="{{ cta.link }}">{{ cta.title }} 바로가기</a>
+      </div>
+    </div>
+  </section><!-- End Cta Section -->
+{% endblock %}
