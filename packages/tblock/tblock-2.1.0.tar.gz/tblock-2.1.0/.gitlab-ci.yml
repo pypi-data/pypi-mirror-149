@@ -1,0 +1,111 @@
+stages:
+  - test
+
+on_setup:
+  image: curlimages/curl:7.77.0
+  stage: .pre
+  variables:
+    INSTANCE: "https://codeberg.org"
+    MAIN_REPO: tblock/tblock
+    STATE: pending
+    MESSAGE: "Pipeline is running"
+    NTFY_SECRET: $NTFY_SECRET
+  only:
+    - main
+    - pre-v2.1.0
+    - tags
+  script:
+    - ./scripts/gitlab-ci.sh
+    - ./scripts/ntfy.sh
+
+test:
+  image: alpine
+  stage: test
+  only:
+    - main
+    - tags
+    - pre-v2.1.0
+  before_script:
+    - apk add python3 py3-pip py3-setuptools py3-colorama py3-requests py3-defusedxml make
+    - pip install bandit flake8 nose
+  script:
+    - make test
+
+test-install:
+  image: alpine
+  stage: test
+  only:
+    - main
+    - tags
+    - pre-v2.1.0
+  before_script:
+    - apk add python3 py3-pip py3-virtualenv
+  script:
+    - /usr/bin/env python3 -V
+    - /usr/bin/env python3 -m virtualenv .venv
+    - .venv/bin/pip install -r requirements.txt
+    - .venv/bin/python3 setup.py build
+    - .venv/bin/python3 setup.py install --skip-build --optimize=1
+    - .venv/bin/tblock -Syn tblock-base > /dev/null 2>&1
+  after_script:
+    - cat /var/log/tblock.log
+
+test-upgrade:
+  image: alpine
+  stage: test
+  only:
+    - main
+    - tags
+    - pre-v2.1.0
+  before_script:
+    - apk add python3 py3-pip py3-virtualenv
+  script:
+    - /usr/bin/env python3 -V
+    - /usr/bin/env python3 -m virtualenv .venv
+    - .venv/bin/pip install -r requirements.txt
+    - .venv/bin/pip install tblock==1.2.0
+    - .venv/bin/tblock -Y
+    - .venv/bin/tblock -s
+    - .venv/bin/pip uninstall -y tblock
+    - .venv/bin/python3 setup.py build
+    - .venv/bin/python3 setup.py install --skip-build --optimize=1
+    - .venv/bin/tblock -Yf
+    - .venv/bin/tblock -s
+  after_script:
+    - cat /var/log/tblock.log
+
+on_success:
+  image: curlimages/curl:7.77.0
+  stage: .post
+  only:
+    - main
+    - tags
+    - pre-v2.1.0
+  variables:
+    INSTANCE: "https://codeberg.org"
+    MAIN_REPO: tblock/tblock
+    STATE: success
+    MESSAGE: "Pipeline passed successfully"
+    NTFY_SECRET: $NTFY_SECRET
+  script:
+    - ./scripts/gitlab-ci.sh
+    - ./scripts/ntfy.sh
+  when: on_success
+
+on_failure:
+  image: curlimages/curl:7.77.0
+  stage: .post
+  only:
+    - main
+    - tags
+    - pre-v2.1.0
+  variables:
+    INSTANCE: "https://codeberg.org"
+    MAIN_REPO: tblock/tblock
+    STATE: failure
+    MESSAGE: "Pipeline failed"
+    NTFY_SECRET: $NTFY_SECRET
+  script:
+    - ./scripts/gitlab-ci.sh
+    - ./scripts/ntfy.sh
+  when: on_failure

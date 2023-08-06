@@ -1,0 +1,24 @@
+Description: Don't install binaries using setup.py
+ so that it is easier to specify that they should go into /usr/bin and not
+ under /usr/local/bin
+Author: Twann <tw4nn@disroot.org>
+
+Origin: vendor
+Forwarded: not-needed
+Last-Update: 2022-03-04
+
+--- a/setup.py
++++ b/setup.py
+@@ -63,11 +63,7 @@ if __name__ == "__main__":
+             license="GPLv3",
+             packages=["tblock", "tblock.converter", "tblock.argumentor"],
+             install_requires=requirements,
+-            entry_points={"console_scripts": [
+-                "tblock = tblock.cli:run",
+-                "tblockc = tblock.cli:run_converter",
+-                "tblockd = tblock.cli:run_daemon"
+-            ]},
++            entry_points={},
+             classifiers=[
+                 "Environment :: Console",
+                 "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
