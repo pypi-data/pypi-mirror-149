@@ -1,0 +1,88 @@
+Metadata-Version: 2.1
+Name: wagtail-json-widget
+Version: 0.0.5
+Summary: JSONEditor for Wagtail CMS
+Home-page: https://github.com/cursive-works/wagtail-json-widget
+Author: Patrick Smith
+Author-email: pat.smith@cursive.works
+License: MIT
+Keywords: WAGTAIL,JSON,STREAMFIELD,JSONEditor,WAGTAIL CMS
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: wagtail (>=2.13)
+
+# Wagtail JSON Widget
+
+JSON editing for Wagtail Admin with [josdejong / jsoneditor](https://github.com/josdejong/jsoneditor). Provides widgets for Page and StreamField.
+
+![Screenshot](https://github.com/cursive-works/wagtail-json-widget/raw/master/docs/img/wjw-menu.png)
+
+## Installation
+
+Install from [PyPI](https://pypi.org/project/wagtail-json-widget/):
+
+```
+pip install wagtail-json-widget
+```
+
+Then add the following to your project's `INSTALLED_APPS`.
+
+```
+'wagtail_json_widget',
+```
+
+## Usage
+
+As a field:
+```python
+from django.db import models
+from django import forms
+from wagtail.admin.edit_handlers import FieldPanel
+from wagtail.admin.forms import WagtailAdminPageForm
+
+from wagtail.core.models import Page
+
+from .blocks import MyStreamBlock
+from wagtail_json_widget.widgets import JSONEditorWidget
+
+
+class MyPageForm(WagtailAdminPageForm):
+    myjson = forms.JSONField(widget=JSONEditorWidget, required=False)
+
+
+class MyPage(Page):
+
+    myjson = models.JSONField(null=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('myjson'),
+    ]
+    base_form_class = MyPageForm
+```
+
+As a StreamField block:
+
+```python
+from wagtail.core import blocks
+from wagtail_json_widget.blocks import JsonBlock
+
+class MyBlock(blocks.StructBlock):
+    my_json_block = JsonBlock()
+    ...
+    
+```
+
