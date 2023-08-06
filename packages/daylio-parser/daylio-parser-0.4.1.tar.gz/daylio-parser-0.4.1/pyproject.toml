@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "daylio-parser"
+version = "0.4.1"
+description = "A Python module to parse Daylio exports"
+authors = ["staticf0x <44530786+staticf0x@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/staticf0x/daylio-parser"
+repository = "https://github.com/staticf0x/daylio-parser"
+documentation = "https://daylio-parser.readthedocs.io/en/latest/"
+keywords = ["daylio", "parser", "stats"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.22"
+pydantic = "^1.9.0"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.10"
+pylint = "^2.13"
+Sphinx = "^4.0"
+sphinx-rtd-theme = "^1.0.0"
+tox = "^3.23"
+black = "^22.3.0"
+flake8 = "^4.0.1"
+pydocstyle = "^6.1.1"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+devtools = {extras = ["pygments"], version = "^0.8.0"}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310"]
+
+[tool.isort]
+profile = "black"
