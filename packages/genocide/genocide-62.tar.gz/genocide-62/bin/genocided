@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"daemon"
+
+
+import os
+import time
+
+
+from genocide.obj import Config, format
+
+
+Config.name = "genocide"
+Config.workdir = "/var/lib/genocide/"
+
+
+from genocide.hdl import Callbacks, dispatch
+from genocide.irc import IRC
+from genocide.mdl import init
+from genocide.rss import Fetcher
+
+
+import genocide.all
+
+
+def main():
+    Callbacks.add("command", dispatch)
+    Callbacks.threaded = True
+    print("GENOCIDED started at %s" % time.ctime(time.time()).replace("  ", " "))
+    i = IRC()
+    i.start()
+    print(format(i.cfg, skip="realname,sleep,username"))
+    f = Fetcher()
+    f.start()
+    init()
+    while 1:
+        time.sleep(1.0)
+
+main()
