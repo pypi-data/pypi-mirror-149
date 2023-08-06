@@ -1,0 +1,34 @@
+Metadata-Version: 2.1
+Name: apricatewrapper
+Version: 0.1.0.1
+Summary: A wrapper around the Apricate.io API in python
+Home-page: https://github.com/Denmads/ApricateIO-Wrapper
+Author: Mads Jensen
+Author-email: 
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3.9
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests (>=2.27.1)
+
+# ApricateIO-Wrapper  
+
+A basic python wrapper around the Apricate.io API.
+
+---
+
+## Example Usage
+
+    from apricatewrapper import ApricateAPI
+
+    api = ApricateAPI()
+    
+    user_res = api.users.create_user("my_user")
+    token = user_res["data"]["token"]
+    
+    api.set_token(token)
+    plots_res = api.plots.my_plots()
+    print(plot_res)
+
