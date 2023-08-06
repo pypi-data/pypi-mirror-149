@@ -1,0 +1,25 @@
+[package]
+name = "faster-fishers"
+version = "0.1.0"
+authors = ["Maxime Jacques <maxyme@outlook.com>"]
+edition = "2021"
+license = "MIT"
+description = "Rust version of Scipy's Fisher exact test."
+
+[lib]
+name = "faster_fishers"
+crate-type = ["cdylib"]
+
+[dependencies]
+numpy = "0.16.2"
+ndarray = "0.15.4"
+statrs = "0.15.0"
+rayon = "1.5.2"
+
+[dev-dependencies]
+float-cmp = "0.9.0"
+criterion = "0.3.5"
+
+[dependencies.pyo3]
+version = "0.16.4"
+features = ["extension-module"]
