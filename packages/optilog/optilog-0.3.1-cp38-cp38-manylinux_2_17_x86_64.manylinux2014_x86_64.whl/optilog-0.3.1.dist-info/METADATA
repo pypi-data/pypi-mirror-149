@@ -1,0 +1,190 @@
+Metadata-Version: 2.1
+Name: optilog
+Version: 0.3.1
+Summary: UNKNOWN
+Home-page: http://ulog.udl.cat/software/
+Author: Logic and Optimization Group
+Author-email: 
+License: UNKNOWN
+Keywords: sat maxsat constraint solver problem
+Platform: Linux
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pypblib (>=0.0.4)
+Requires-Dist: pandas (>=1.1.5)
+Requires-Dist: tabulate (>=0.8.9)
+Requires-Dist: sly (==0.4)
+Requires-Dist: appdirs
+
+# OptiLog: A Framework for SAT-based Systems
+
+![](http://hardlog.udl.cat/static/doc/optilog/html/_images/OptiLog_Arch.png)
+
+OptiLog is a Python framework for rapid prototyping of SAT-based systems. OptiLog includes functionality for loading and creating formulas, state of the art SAT solvers, high level formula modelling, pseudo boolean and cardinality encodings, automatic configuration and experiment running and parsing.
+
+OptiLog is designed to be simple and efficient. OptiLog can be used by field experts for tasks such as algorithm design, research and benchmarking, but it has also been successfully deployed in undergraduate Computational Logic courses. Moreover, OptiLog has been designed from the ground up to be modular and extensible through the abstract iSAT C++ interface.
+
+## Why OptiLog
+
+OptiLog has a fully modular dynamic Python binding generator for SAT solvers. This means that integrating new SAT solvers into OptiLog is as simple as implementing a C++ interface, and doesn't require any Python C API knowledge!
+
+On top of that, OptiLog provides all the functionality required to develop and deploy complete SAT-based systems. We provide access to state of the art automatic configuration tools to configure any kind of algorithm (not limited to SAT) as well as experiment-running and log-parsing modules.
+
+## Architecture
+
+The main architecture of OptiLog is composed of the five main modules of the [end-user OptiLog API](http://hardlog.udl.cat/static/doc/optilog/html/optilog/enduser.html#enduser-index) that supports the creation of SAT based systems and the [iSAT](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solverdevel/isat.html#isat-interface) interface for [SAT solver developers](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solverdeveloper.html#solverdevel-index).
+
+* The [Modelling](http://hardlog.udl.cat/static/doc/optilog/html/optilog/modelling.html#modelling-module) module:
+    The Modelling module provides a rich and compact formalism to model problems. In particular, this module allows modelling problems with non-CNF Boolean and Pseudo Boolean expressions that can be automatically transformed into the SAT formula provided by the Formulas module.
+
+* The [Formula](http://hardlog.udl.cat/static/doc/optilog/html/optilog/formula.html) module:
+    The Formulas module provides tools to load and manipulate SAT, MaxSAT, and QBF formulas.
+
+* The [Solvers](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solvers/satsolver.html#solvers-module) module:
+    The Solvers module provides dynamic Python bindings for Python. It currently supports Solvers through the [PyiSAT](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solvers/satsolver.html?highlight=pyisat#pyisat-interface). These SAT solvers implement the [iSAT](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solverdevel/isat.html#isat-interface) interface.
+
+* The [Encoders](http://hardlog.udl.cat/static/doc/optilog/html/optilog/encoders.html#encoders-module) module:
+    The Encoders module provides access to a set of encoders that can be used to translate constraints from one language to another. This module is currently composed of encoders for Pseudo-Boolean and Cardinality constraints into SAT.
+
+* The [Tuning](http://ulog.udl.cat/static/doc/optilog/html/optilog/tuning.html#tuning-module) module:
+    The Tuning module provides support to automatically configure Python functions.
+
+* The [Running](http://hardlog.udl.cat/static/doc/optilog/html/optilog/running.html#running-module) module:
+    The Running module provides support to automatically generate execution scenarios that run experiments and collect logs.
+
+* The [BlackBox](http://ulog.udl.cat/static/doc/optilog/html/optilog/blackbox.html) module:
+    The Blackbox module allows to encapsulate external applications into Python objects, which enables its interaction with the other modules from Optilog such as the Running module or the Tuning module.
+
+## SAT solver Examples
+
+OptiLog deals with boolean variables represented by positive integers (DIMACS).
+
+Here is an example using the well known Glucose41:
+
+```
+>>> from optilog.sat import Glucose41
+>>> solver = Glucose41()
+>>> solver.add_clause([1, 3])
+>>> solver.add_clause([-1, -2])
+>>> solver.solve(assumptions=[1])
+True
+>>> solver.model()
+[1, -2, -3]
+```
+
+All SAT solvers are incremental, which means new clauses can be added after a solver has found a model:
+
+```
+>>> from optilog.sat import Glucose41
+>>> solver = Glucose41()
+>>> solver.add_clause([1, -2])
+>>> solver.solve(assumptions=[1, 2])
+True
+>>> solver.model()
+[1, 2]
+>>> solver.add_clause([-1, -2])
+>>> solver.solve(assumptions=[1, 2])
+False
+>>> solver.core()
+[1]
+```
+
+CNF and WCNF formulas can also be directly loaded in to the solver:
+
+```
+>>> from optilog.sat import Glucose41
+>>> solver = Glucose41()
+>>> solver.load_cnf('./path/to/file')
+```
+
+## Integrating a SAT solver
+
+Adding a new SAT solver to OptiLog is super easy. Just create a class that implements your desired method of the iSAT interface. Here you can see an example of the Cadical wrapper implementing the `addClause` and `solve` methods:
+
+```
+CadicalWrapper::CadicalWrapper()
+{
+    solver = new CaDiCaL::Solver;
+}
+
+CadicalWrapper::~CadicalWrapper()
+{
+    delete solver;
+}
+
+void CadicalWrapper::addClause(const std::vector<int>& literals)
+{
+    for (auto i = literals.begin(); i != literals.end(); ++i)
+    {
+        solver->add(*i);
+    }
+    solver->add(0);
+}
+
+E_STATE CadicalWrapper::solve(const std::vector<int>& assumptions)
+{
+    for (auto i = assumptions.begin(); i != assumptions.end(); ++i)
+    {
+        solver->assume(*i);
+    }
+    return (solver->solve() == 10 ? E_STATE::SAT : E_STATE::UNSAT);
+}
+
+OPTILOG_C_INTERFACE(CadicalWrapper, "Cadical")
+```
+
+Then, the solver is compiled as a shared library and integrated into OptiLog by copying the library on the `~/.optilog_solvers/` directory. Please checkout [the documentation](http://hardlog.udl.cat/static/doc/optilog/html/optilog/solverdevel/how-add-a-new-solver.html) for more details on how to integrate a SAT solver and add configurable parameters.
+
+## Installation
+
+OptiLog requires Python 3.6+ and a Linux installation. Current wheels are distributed on PyPi for the latest release.
+
+Simply run:
+
+```
+$ pip install optilog
+```
+
+[Documentation is available online](http://hardlog.udl.cat/static/doc/optilog/html/index.html)
+
+## License & Documentation
+
+OptiLog is free to use for academic use cases.
+SatexBlackBox module depends on [SAT Heritage](https://github.com/sat-heritage/docker-images) and their docker images. If you use that module, you must also comply with their license
+For industrial use please contact the authors.
+
+For more information you can find the full license here: [License](http://hardlog.udl.cat/static/doc/optilog/html/optilog/license.html)
+
+
+## Cite
+
+```
+@InProceedings{10.1007/978-3-030-80223-3_1,
+author="Ans{\'o}tegui, Carlos
+and Ojeda, Jes{\'u}s
+and Pacheco, Antonio
+and Pon, Josep
+and Salvia, Josep M.
+and Torres, Eduard",
+editor="Li, Chu-Min
+and Many{\`a}, Felip",
+title="OptiLog: A Framework for SAT-based Systems",
+booktitle="Theory and Applications of Satisfiability Testing -- SAT 2021",
+year="2021",
+publisher="Springer International Publishing",
+address="Cham",
+pages="1--10",
+abstract="We present OptiLog, a new Python framework for rapid prototyping of SAT-based systems. OptiLog allows to use and integrate SAT solvers currently developed in C/C++ just by implementing the iSAT C++ interface. It also provides a Python binding to the PBLib C++ toolkit for encoding Pseudo Boolean and Cardinality constraints. Finally, it leverages thepower of automatic configurators by allowing to easily create configuration scenarios including multiple solvers and encoders.",
+isbn="978-3-030-80223-3"
+}
+```
+
+
