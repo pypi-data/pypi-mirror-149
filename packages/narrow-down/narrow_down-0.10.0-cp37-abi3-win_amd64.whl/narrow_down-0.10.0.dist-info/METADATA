@@ -1,0 +1,135 @@
+Metadata-Version: 2.1
+Name: narrow-down
+Version: 0.10.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Dist: numpy~=1.18
+Requires-Dist: scipy
+Requires-Dist: typing_extensions
+Requires-Dist: protobuf~=3.15
+Requires-Dist: types-protobuf
+Requires-Dist: scylla-driver; extra == 'scylladb'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: invoke; extra == 'dev'
+Requires-Dist: flake8~=3.9; extra == 'dev'
+Requires-Dist: flakehell; extra == 'dev'
+Requires-Dist: flake8-builtins; extra == 'dev'
+Requires-Dist: flake8-blind-except; extra == 'dev'
+Requires-Dist: flake8-logging-format; extra == 'dev'
+Requires-Dist: flake8-bugbear; extra == 'dev'
+Requires-Dist: flake8-annotations; extra == 'dev'
+Requires-Dist: flake8-docstrings; extra == 'dev'
+Requires-Dist: flake8-bandit; extra == 'dev'
+Requires-Dist: darglint~=1.8; extra == 'dev'
+Requires-Dist: isort; extra == 'dev'
+Requires-Dist: black~=22.3.0; extra == 'dev'
+Requires-Dist: safety; extra == 'dev'
+Requires-Dist: jupyter; extra == 'dev'
+Requires-Dist: nbqa; extra == 'dev'
+Requires-Dist: nox; extra == 'dev'
+Requires-Dist: mypy; extra == 'dev'
+Requires-Dist: mypy-protobuf; extra == 'dev'
+Requires-Dist: nbmake==1.2; extra == 'dev'
+Requires-Dist: bump2version~=1.0; extra == 'dev'
+Requires-Dist: pytest~=6.2; extra == 'dev'
+Requires-Dist: pytest-asyncio; extra == 'dev'
+Requires-Dist: pytest-benchmark; extra == 'dev'
+Requires-Dist: pytest-profiling; extra == 'dev'
+Requires-Dist: xdoctest~=0.15; extra == 'dev'
+Requires-Dist: coverage[toml]~=6.0; extra == 'dev'
+Requires-Dist: pytest-cov~=3.0; extra == 'dev'
+Requires-Dist: watchdog[watchmedo]~=2.1; extra == 'dev'
+Requires-Dist: flake8-pylint~=0.1; extra == 'dev'
+Requires-Dist: protoc-wheel-0; extra == 'dev'
+Requires-Dist: narrow-down[scylladb,docs]; extra == 'dev'
+Requires-Dist: pandas~=1.0; extra == 'experiments'
+Requires-Dist: tabulate; extra == 'experiments'
+Requires-Dist: tqdm; extra == 'experiments'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: myst-parser; extra == 'docs'
+Requires-Dist: nbconvert; extra == 'docs'
+Requires-Dist: furo; extra == 'docs'
+Provides-Extra: scylladb
+Provides-Extra: dev
+Provides-Extra: experiments
+Provides-Extra: docs
+License-File: LICENSE.rst
+Summary: Fast fuzzy text search
+Keywords: narrow-down,LSH,minhash
+Requires-Python: <3.11,>=3.7
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+Project-URL: homepage, https://github.com/chr1st1ank/narrow-down
+Project-URL: documentation, https://chr1st1ank.github.io/narrow-down
+Project-URL: Bug Tracker, https://github.com/chr1st1ank/narrow-down/issues
+Project-URL: repository, https://github.com/chr1st1ank/narrow-down
+
+
+# Narrow Down - Efficient near-duplicate search
+
+
+<div align="center">
+
+[![PyPI - Version](https://img.shields.io/pypi/v/narrow-down.svg)](https://pypi.python.org/pypi/narrow-down)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/narrow-down.svg)](https://pypi.python.org/pypi/narrow-down)
+[![Tests](https://github.com/chr1st1ank/narrow-down/workflows/tests/badge.svg)](https://github.com/chr1st1ank/narrow-down/actions?workflow=tests)
+[![Codecov](https://codecov.io/gh/chr1st1ank/narrow-down/branch/main/graph/badge.svg)](https://codecov.io/gh/chr1st1ank/narrow-down)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://www.contributor-covenant.org/version/2/0/code_of_conduct/)
+
+
+</div>
+
+Narrow Down offers a flexible but easy-to-use Python API to finding duplicates or similar documents also in very large datasets. It reduces the O(n²) problem of comparing all strings with each other to linear scale by using approximation algorithms like Locality Sensitive Hashing.
+
+* GitHub repo: <https://github.com/chr1st1ank/narrow-down.git>
+* Documentation: <https://chr1st1ank.github.io/narrow-down>
+
+
+## Features
+
+* Document indexing and search based on the Minhash LSH algorithm
+* High performance thanks to a native extension module in Rust
+* Easy-to-use API with automated parameter tuning
+* Works with exchangeable storage backends. Currently implemented:
+  * In-Memory
+  * Cassandra / ScyllaDB 
+  * SQLite
+  * User defined backends (by implementing a small interface)
+* Native asyncio interface
+
+## Installation
+The Python package can be installed with *pip*:
+```shell
+pip install narrow-down
+```
+
+### Extras
+
+Some of the heavier functionality is available as *extra*:
+```shell
+pip install narrow-down[scylladb]   # Cassandra / ScyllaDB storage backend
+```
+
+## Similar projects
+- [pylsh](https://github.com/mattilyra/LSH) offers a good implementation of the classic Minhash LSH scheme in Python and Cython. If you only need this and you don't need a database backend it can be a good choice.
+- [Datasketch](https://github.com/ekzhu/datasketch) implements an interesting collection of different data sketching algorithms for similarity matching, cardinality estimation and k-nearest-neighbour search. The implementation is not highly optimized but very well usable, the documentation rich and multiple database backends can be used for some of the sketches
+- [Milvus](https://milvus.io/) offers a full database stack for vector search, a different approach for fast searching. It can also be applied to text search when an emedding like Word2Vec or Bert is used to vectorize the text.
+
+## Credits
+
+This package was created with [Cookiecutter][cookiecutter] and the [fedejaure/cookiecutter-modern-pypackage][cookiecutter-modern-pypackage] project template.
+
+[cookiecutter]: https://github.com/cookiecutter/cookiecutter
+[cookiecutter-modern-pypackage]: https://github.com/fedejaure/cookiecutter-modern-pypackage
+
