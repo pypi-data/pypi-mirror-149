@@ -1,0 +1,10 @@
+{{top_text}}
+
+Settings File			| Environment Variable			| Type			| Description
+------					| ---------						| ---------		| ---------
+{% for cat in configuration.categories -%}
+**{{ cat }}**
+{% for key in configuration.categories[cat] -%}
+`{{ key }}`	| `{{ configuration.env_prefix }}{{ key | upper }}`  | {{ configuration.types[key].__desc__() }} | {{ configuration.descs[key] or configuration.names[key] }}
+{% endfor %}
+{%- endfor %}

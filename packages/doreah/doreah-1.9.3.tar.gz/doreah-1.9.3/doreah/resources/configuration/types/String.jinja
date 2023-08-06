@@ -1,0 +1,9 @@
+<input
+	form="doreah_config_form"
+	type="text"	name="{{ setting }}"
+	{# maxlength="{{ type.maxlength }}" #}
+	placeholder="{{ default }}"
+	{% if user %}
+	value="{{ user }}"
+	{% endif %}
+	onchange="if (this.value == '') { submitValue('{{ setting }}',null) } else { submitValue('{{ setting }}',this.value); }" />

@@ -1,0 +1,80 @@
+
+⚠ This is highly experimental. Some features may not work. ⚠
+
+<br/><br/>
+
+<table>
+
+{% for identifier in keystore.keys %}
+
+{% set key = keystore.keys[identifier] %}
+
+<tr>
+	<td>{{ identifier }}</td>
+	<td>
+		<span class='blur'>{{ key }}</span>
+		<!--<span title="Copy" style="cursor:pointer;" onclick="copyToClipboard('{{ key }}')">📋</span>-->
+	</td>
+	<td><button type="button" class="warning" onclick="deleteKey('{{ identifier }}')">Delete</button></td>
+</tr>
+{% endfor %}
+
+<tr>
+	<td>
+		<input type="text" placeholder='Identifier' id='new_identifier' />
+	</td>
+	<td>
+		<button type="button" onclick="addKey()">New Key</button>
+	</td>
+</tr>
+
+
+</table>
+
+<script>
+	function addKey() {
+		ident = document.getElementById('new_identifier').value;
+		key = createRandomKey(32);
+		setKey(ident,key);
+	}
+	function setKey(ident,key) {
+		var dict = {};
+		dict[ident] = key;
+		fetch(
+			"{{ keystore.save_endpoint }}",
+			{
+				'method':'POST',
+				'body':JSON.stringify(dict),
+				'headers': {
+					'Content-Type': 'application/json'
+				}
+			}
+		).then(response => location.reload());
+
+	}
+
+	function deleteKey(ident) {
+		return setKey(ident,null);
+	}
+
+	function createRandomKey(length) {
+		var result = '';
+		var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		var chars = characters.length;
+		for ( var i = 0; i < chars; i++ ) {
+			result += characters.charAt(Math.floor(Math.random() * chars));
+		}
+		return result;
+	}
+
+</script>
+
+<style>
+	td .blur {
+		filter: blur(3px);
+	}
+	td:hover .blur {
+		filter: blur(0px);
+	}
+
+</style>
