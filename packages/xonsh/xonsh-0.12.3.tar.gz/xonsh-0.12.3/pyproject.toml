@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[tool.black]
+# better to keep default line-length than to match flake8
+exclude = '''
+(   # exclude entire contents of these top level directories...
+    /(  \.eggs
+     |  \.git
+     |  \.hg
+     |  \.mypy
+     |  _cache
+     |  \.nox
+     |  \.tox
+     |  \.venv
+     |  _build
+     |  buck-out
+     |  build
+     |  dist
+     )/
+
+)
+|
+(   # and these additional random rules
+    /(  __pycache__
+     |  \.circleci
+     |  \.github
+     |  \.vscode
+     |  \.pytest_cache
+     |  ply
+     )/
+)
+'''
+
+extend_exclude = '''
+((xonsh/parser_table.py)|(xonsh/completion_parser_table.py))
+'''
+
+force_exclude = '''.*/__amalgam__.py'''
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = ["xonsh/*_table.py", "xonsh/ply/**.py", "*/__amalgam__.py", "**/__amalgam__.py"]
+src_paths = ["xonsh", "xontrib", "xompletions", "tests"]
+known_first_party = ["xonsh", "xontrib", "xompletions", "tests"]
+known_third_party = ["ply", "pytest"]
