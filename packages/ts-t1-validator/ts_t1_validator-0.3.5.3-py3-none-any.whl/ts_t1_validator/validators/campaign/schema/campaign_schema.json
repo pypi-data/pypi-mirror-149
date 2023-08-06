@@ -1,0 +1,93 @@
+{
+  "title": "campaignRequest",
+  "description": "general campaign request model",
+  "properties": {
+    "advertiser_id": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "campaign_name": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 2
+    },
+    "is_programmatic_guaranteed": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "boolean"
+    },
+    "zone_name": {
+      "type": "string",
+      "example": "America/New_York"
+    },
+    "start_date": {
+      "type": "string",
+      "example": "'2022-01-23T16:27'"
+    },
+    "end_date": {
+      "type": "string",
+      "example": "'2022-03-23T16:27'"
+    },
+    "currency_code": {
+      "type": "string",
+      "example": "USD"
+    },
+    "budget": {
+      "type": "number",
+      "format": "decimal",
+      "example": 12.55
+    },
+    "goal_type": {
+      "type": "string",
+      "enum": [
+        "ctr",
+        "vcr",
+        "viewability_rate",
+        "cpa",
+        "cpc",
+        "reach",
+        "roi",
+        "spend",
+        "vcpm"
+      ]
+    },
+    "goal_value": {
+      "type": "number",
+      "format": "decimal",
+      "example": 12.55
+    },
+    "spend_cap_type": {
+      "type": "string",
+      "enum": [
+        "even",
+        "asap",
+        "no-limit"
+      ]
+    },
+    "spend_cap_automatic": {
+      "type": ["boolean", "null"]
+    },
+    "frequency_optimization": {
+      "type": "boolean"
+    },
+    "restrict_targeting_to_same_device_id": {
+      "type": "boolean"
+    }
+  },
+  "required": ["advertiser_id",
+    "campaign_name",
+    "is_programmatic_guaranteed",
+    "status",
+    "zone_name",
+    "start_date",
+    "end_date",
+    "currency_code",
+    "budget",
+    "goal_type",
+    "goal_value",
+    "spend_cap_type",
+    "frequency_optimization",
+    "restrict_targeting_to_same_device_id"
+  ]
+}
