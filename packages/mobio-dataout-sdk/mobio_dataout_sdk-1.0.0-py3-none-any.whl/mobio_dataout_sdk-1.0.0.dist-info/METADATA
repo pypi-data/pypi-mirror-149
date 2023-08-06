@@ -1,0 +1,43 @@
+Metadata-Version: 2.1
+Name: mobio-dataout-sdk
+Version: 1.0.0
+Summary: Mobio project SDK
+Home-page: https://github.com/mobiovn
+Author: MOBIO
+Author-email: contact@mobio.vn
+License: MIT
+Keywords: mobio,data out
+Platform: UNKNOWN
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+Requires-Dist: m-singleton
+Requires-Dist: m-kafka-sdk-v2
+
+##  Thư viện DATA OUT SDK dành cho các module cần out các event.
+
+
+### Cài đặt:
+```bash
+ $ pip3 install mobio-dataout-sdk
+ ```
+
+
+### Sử dụng:
+
+   ```python
+    from mobio.sdks.dataout import DataOut
+
+    DataOut().send(
+        body, merchant_id, data_type
+    )
+    
+    // body: dữ liệu json event raw của từng module, dữ liệu này chưa được chuẩn hóa theo đúng tài liệu định dạng mô t
+ả event. module dataout sẽ chuẩn hóa về dữ liệu chuẩn của tài liệu 
+    // merchant_id: id merchant phát sinh event
+    // data_type: mã event được đặc tả trong tài liệu 
+
+#### Log - 1.0.0 
+    - release sdk
+
+
+
