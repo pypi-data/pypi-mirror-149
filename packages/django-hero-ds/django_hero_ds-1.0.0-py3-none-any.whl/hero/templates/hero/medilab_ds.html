@@ -1,0 +1,24 @@
+{% extends 'hero/_common.html' %}
+{% load static %}
+
+
+{% block hero %}
+<!-- ======= Hero Section ======= -->
+<style>
+  #hero {
+  background: linear-gradient(to right,transparent, var(--faint-c)),
+  url("{% static 'img/hero/'|add:hero.bg|add:'.jpg' %}") no-repeat 60% top;
+}
+</style>
+
+<section id="hero" class="d-flex align-items-center">
+  <div class="container text-center text-sm-start">
+    {% autoescape off %}
+    <h1 class="m-sm-1 mx-5 ">{{ hero.title }}</h1>
+    <h2 class="m-sm-1 mx-5">{{ hero.slogan }}</h2>
+    {% endautoescape %}
+    <a href="{{ hero.btn.link }}" class="btn-get-started scrollto">{{ hero.btn.title }}</a>
+  </div>
+</section>
+<!-- End Hero -->
+{% endblock %}
