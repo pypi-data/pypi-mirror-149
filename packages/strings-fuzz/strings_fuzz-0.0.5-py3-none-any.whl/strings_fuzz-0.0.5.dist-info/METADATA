@@ -1,0 +1,60 @@
+Metadata-Version: 2.1
+Name: strings-fuzz
+Version: 0.0.5
+Summary: A flexible fuzzy name matcher, with multi-language support, that finds best matches between two sets using the edit distance method
+Home-page: https://github.com/tigeryst/strings-fuzz
+Author: Tiger Yotsawat
+Author-email: tigeryotsawat@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/tigeryst/strings-fuzz/issues
+Keywords: fuzzy,Levenshtein,matcher
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fuzzywuzzy (~=0.18.0)
+Requires-Dist: num2words (~=0.5.10)
+Requires-Dist: python-Levenshtein (~=0.12.2)
+Requires-Dist: pythainlp (~=3.0.5)
+Requires-Dist: pandas (~=1.4.2)
+Requires-Dist: numpy (~=1.22.3)
+Provides-Extra: test
+Requires-Dist: pytest (>=7.1.2) ; extra == 'test'
+
+# Strings-Fuzz
+
+A flexible fuzzy string matcher that finds best matches between two sets using the edit distance method. It provides useful NLP methods to help identify stopwords to be replaced or removed in each set as well as some default stopwords for different types of data.
+
+## Language Support
+
+Currently supports Enlish and Thai.
+
+## Installation
+
+Run the following to install:
+
+```python
+pip install strings-fuzz
+```
+
+## Usage
+
+```python
+from strings_fuzz import cleaner
+
+# Trims trailing symbols and spaces
+cleaner.trim("...+=    Hello World   . ")
+```
+
+# Developing Strings-Fuzz
+
+To install strings-fuzz along with the tools you need to develop and run tests, run the following in your virtualenv:
+
+```bash
+$ pip install -e .[dev]
+```
+
+
