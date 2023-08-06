@@ -1,0 +1,86 @@
+Metadata-Version: 2.1
+Name: webdriver_kaifuku
+Version: 22.5.6.0
+Summary: Restartable webdriver instances
+Home-page: https://github.com/RonnyPfannschmidt-RedHat/webdriver_kaifuku
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+<h1 align="center"> webdriver_kaifuku </h1>
+<h3 align="center"> Restartable webdriver instances </h3>
+
+<p align="center">
+    <a href="https://pypi.org/project/webdriver-kaifuku/">
+    <img alt="Python Versions" src="https://img.shields.io/pypi/pyversions/webdriver-kaifuku.svg?style=flat">
+    </a>
+    <a href="https://pypi.org/project/webdriver_kaifuku/#history">
+    <img alt="PyPI version" src="https://badge.fury.io/py/webdriver-kaifuku.svg">
+    </a>
+    <a href="https://codecov.io/gh/RedHatQE/webdriver_kaifuku">
+      <img src="https://codecov.io/gh/RonnyPfannschmidt/webdriver_kaifuku/branch/master/graph/badge.svg" />
+    </a>
+    <a href="https://github.com/RonnyPfannschmidt/webdriver_kaifuku/actions/workflows/test_suite.yml">
+    <img alt="github actions" src="https://github.com/RonnyPfannschmidt/webdriver_kaifuku/actions/workflows/test_suite.yml/badge.svg">
+    </a>
+    <a href="https://github.com/RonnyPfannschmidt/webdriver_kaifuku/blob/master/LICENSE">
+    <img alt="License" src="https://img.shields.io/pypi/l/webdriver_kaifuku.svg?version=latest">
+    </a>
+</p>
+The library provides restartable webdriver instances.
+
+### Usage:
+It support both `local` and `remote` webdriver. Some basic examples are-
+
+- Local Browser
+
+Make sure `webdriver` is already installed on your local machine.
+```python
+from webdriver_kaifuku import BrowserManager
+
+manager = BrowserManager.from_conf({"webdriver": "Chrome"})
+manager.start()
+manager.close()
+```
+- [Selenium Container](https://github.com/RedHatQE/selenium-images)
+
+```python
+from webdriver_kaifuku import BrowserManager
+
+manager_config = {
+    "webdriver": "Remote",
+    "webdriver_options": {
+        "desired_capabilities": {"browserName": "firefox"},
+        "command_executor": "http://localhost:<port>/wd/hub",
+    },
+}
+manager = BrowserManager.from_conf(manager_config)
+manager.start()
+manager.close()
+```
+
+- [Wharf](https://github.com/RedHatQE/webdriver-wharf)
+
+```python
+from webdriver_kaifuku import BrowserManager
+
+manager_config = {
+    "webdriver_wharf": "<wharf_url>",
+    "webdriver": "Remote",
+    "webdriver_options": {"desired_capabilities": {"browserName": "firefox"}},
+}
+manager = BrowserManager.from_conf(manager_config)
+manager.start()
+manager.close()
+```
+
+
