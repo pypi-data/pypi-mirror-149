@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <meta charset="UTF-8"/>
+
+  <link rel="shortcut icon" href="{{static_path}}/favicon.ico" type="image/x-icon"/>
+
+  {% block head_css %}
+  <link rel="stylesheet" href="{{static_path}}/_base.css"/>
+  <link rel="stylesheet" href="{{static_path}}/_layout.css"/>
+  <link rel="stylesheet" href="{{static_path}}/_content.css"/>
+  <link rel="stylesheet" href="{{static_path}}/_requirement.css"/>
+  <link rel="stylesheet" href="{{static_path}}/_element.css"/>
+  {% endblock head_css %}
+
+  {% block head_scripts %}
+  {# moved to docs templates: #}
+  {# <script type="text/javascript" src="{{static_path}}/_static/toc.js"></script> #}
+  {% endblock head_scripts %}
+
+  <title>{% block title %}{% endblock title %}</title>
+
+  {% endblock head %}
+</head>
+
+<body class="{% block viewtype %}{% endblock %}">
+<script>document.body.dataset.state = sessionStorage.getItem('tocState') || 'open';</script>
+
+  <div class="layout" id="layout">
+
+    <aside class="layout_aside-header">
+      {% block aside_header_content %}{% endblock %}
+    </aside>
+
+    <aside class="layout_aside">
+      {% block aside_content %}{% endblock %}
+    </aside>
+
+    {% block layout_nav %}
+    {# Include "_shared/doc_nav.jinja.html" in the corresponding template, if the block is needed #}
+    {% endblock layout_nav %}
+
+    <header class="layout_header">
+      {% block header_content %}{% endblock %}
+    </header>
+
+    <main class="layout_main">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

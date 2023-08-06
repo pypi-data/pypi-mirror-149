@@ -1,0 +1,89 @@
+{% set template_type = 'Deep Traceability' %}
+
+{% extends "base.jinja.html" %}
+
+{% block head_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{static_path}}/_requirement-tree.css"/>
+{% endblock head_css %}
+
+{% block head_scripts %}
+  <script type="text/javascript" src="{{root_path}}/_static/toc.js"></script>
+  {%- if config.enable_mathjax -%}
+  <script id="MathJax-script" async src="{{root_path}}/_static/mathjax/tex-mml-chtml.js"></script>
+  {%- endif -%}
+  {# only for deep-trace: #}
+  <script type="text/javascript" src="{{root_path}}/_static/jquery.min.js"></script>
+  <script type="text/javascript" src="{{root_path}}/_static/pan-with-space.js"></script>
+  {{ super() }}
+{% endblock head_scripts %}
+{% block title %}{{document.name}} - {{ template_type }}{% endblock %}
+{% block viewtype %}deep-traceability-view{% endblock %}
+
+{% block layout_nav %}
+  {% include "_shared/doc_nav.jinja.html" %}
+{% endblock layout_nav %}
+
+{% block aside_header_content %}
+  {% include "_shared/aside_header.jinja.html" %}
+{% endblock aside_header_content %}
+
+{% block aside_content %}
+  {% include "_shared/toc.jinja.html" %}
+{% endblock aside_content %}
+
+{% block header_content %}
+  <p>{{document.name}} <span class="document-view-type">{{ template_type }}</span></p>
+{% endblock header_content %}
+
+{% block content %}
+
+      {% include "_shared/tags.jinja.html" %}
+
+      <div class="content">
+      {%- for section_or_requirement in document_iterator.all_content() %}
+        {%- if section_or_requirement.is_section and section_or_requirement.ng_has_requirements %}
+          <section class="content_section">
+            <div class="content_item" data-role="current">
+              {%- set section = section_or_requirement %}
+              {%- with anchor=link_renderer.render_local_anchor(section_or_requirement) -%}
+                {% include "_shared/docsection.jinja.html" %}
+              {%- endwith -%}
+            </div>
+          </section>
+
+        {%- elif section_or_requirement.is_requirement %}
+        <section class="content_section">
+          <div class="content_item" data-role="parents">
+          {%- with requirement=section_or_requirement, requirement_partial="_shared/requirement.jinja.html" -%}
+            {% include "_shared/requirement_tree_left.jinja.html" %}
+          {%- endwith -%}
+          </div>
+
+          {%- set requirement = section_or_requirement %}
+          <div class="content_item" data-role="current">
+            {%- with anchor=link_renderer.render_local_anchor(section_or_requirement) -%}
+            {% include "_shared/requirement.jinja.html" %}
+            {%- endwith -%}
+          </div>
+
+          <div class="content_item" data-role="children">
+          {%- with requirement=section_or_requirement, requirement_partial="_shared/requirement.jinja.html" -%}
+            {% include "_shared/requirement_tree_right.jinja.html" %}
+          {%- endwith -%}
+          </div>
+        </section>
+        {%- endif %}
+      {%- endfor %}
+      </div>
+
+{% endblock content %}
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+      // Quick and dirty scrolling to the middle of the document.
+      var table = $('.table').first();
+      window.scrollBy(table.outerWidth() / 2 - $(window).width() / 2, 0);
+    });
+  </script>
+{% endblock %}

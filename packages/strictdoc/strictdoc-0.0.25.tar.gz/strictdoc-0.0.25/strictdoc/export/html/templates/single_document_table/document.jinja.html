@@ -1,0 +1,75 @@
+{% set template_type = 'Table' %}
+
+{% extends "base.jinja.html" %}
+
+{% block head_scripts %}
+  <script type="text/javascript" src="{{root_path}}/_static/toc.js"></script>
+  {%- if config.enable_mathjax -%}
+  <script id="MathJax-script" async src="{{root_path}}/_static/mathjax/tex-mml-chtml.js"></script>
+  {%- endif -%}
+  {{ super() }}
+{% endblock head_scripts %}
+{% block title %}{{document.name}} - {{ template_type }}{% endblock %}
+{% block viewtype %}table-view{% endblock %}
+
+{% block layout_nav %}
+  {% include "_shared/doc_nav.jinja.html" %}
+{% endblock layout_nav %}
+
+{% block aside_header_content %}
+  {% include "_shared/aside_header.jinja.html" %}
+{% endblock aside_header_content %}
+
+{% block aside_content %}
+  {% include "_shared/toc.jinja.html" %}
+{% endblock aside_content %}
+
+{% block header_content %}
+  <p>{{document.name}} <span class="document-view-type">{{ template_type }}</span></p>
+{% endblock header_content %}
+
+{% block content %}
+
+      {% include "_shared/tags.jinja.html" %}
+
+      <div class="content">
+
+        {%- if document.free_texts -%}
+        <section data-col="0">
+          {%- for free_text in document.free_texts -%}
+          <div class="free-text">
+            {{ renderer.render_free_text(document_type, free_text) }}
+          </div>
+          {%- endfor -%}
+        </section>
+        {%- endif -%}
+
+      {%- for section_or_requirement in document_iterator.all_content() %}
+
+        {%- if section_or_requirement.is_composite_requirement %}
+
+          {%- set requirement = section_or_requirement %}
+          {% with anchor=link_renderer.render_local_anchor(section_or_requirement) -%}
+          {% include "_shared/requirement.jinja.html" %}
+          {%- endwith %}
+
+        {%- elif section_or_requirement.is_requirement %}
+
+          {%- set requirement = section_or_requirement %}
+          {% with anchor=link_renderer.render_local_anchor(section_or_requirement) -%}
+            {% include "_shared/requirement.jinja.html" %}
+          {%- endwith %}
+
+        {%- elif section_or_requirement.is_section %}
+
+          {%- set section = section_or_requirement %}
+          {% with anchor=link_renderer.render_local_anchor(section_or_requirement) -%}
+          {% include "_shared/docsection.jinja.html" %}
+          {%- endwith %}
+
+        {%- endif %}
+
+      {%- endfor %}
+      </div>
+
+{% endblock content %}

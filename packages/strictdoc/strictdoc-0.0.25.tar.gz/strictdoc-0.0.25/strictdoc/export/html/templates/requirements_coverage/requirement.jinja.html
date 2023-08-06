@@ -1,0 +1,16 @@
+<article class="requirement"
+{%- if requirement.status %}
+data-status='{{ requirement.status.lower() }}'
+{%- endif %}
+{%- if requirement.uid %}
+data-uid='{{ requirement.uid }}'
+{%- endif %}>
+
+  <section>
+    {% include "_shared/requirement_block/uid_and_title.jinja.html" %}
+  </section>
+</article>
+
+{% if config.experimental_enable_file_traceability %}
+{% include "_shared/requirement_block/files_tree.jinja.html" %}
+{% endif %}
