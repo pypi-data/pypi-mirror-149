@@ -1,0 +1,90 @@
+command: |
+    set -e -x
+    git clone https://github.com/mosaicml/composer $HOME/composer
+    cd $HOME/composer
+    echo 'Checking out composer branch dev'
+    git checkout dev
+    pip install --user -e .[all]
+    composer -n 8 examples/run_composer_trainer.py -f /mnt/config/parameters.yaml
+name: regressions-v0-4-rc1
+git_branch: dev
+git_repo: https://github.com/mosaicml/composer
+image: mosaicml/pytorch_internal
+instance: r1z1-g8-a100
+parameters:
+  callbacks:
+    speed_monitor:
+      window_size: 100
+    lr_monitor: {}
+  dataloader:
+    num_workers: 8
+    persistent_workers: true
+    pin_memory: true
+    prefetch_factor: 2
+    timeout: 0
+  device:
+    gpu: {}
+  eval_batch_size: 2048
+  grad_accum: 1
+  loggers:
+    wandb:
+      extra_init_params:
+        config:
+          metadata:
+            commit: dev
+            image: mosaicml/pytorch
+            instance: r1z1-g8-a100
+            model: resnet50
+            repo: https://github.com/mosaicml/composer
+            run_type: convergence
+            sweep: regressions-v0-4-rc1
+            version: v0.4.0
+      flatten_hparams: true
+      name: regressions-v0-4-rc1-a73ae5
+      project: avery-project
+      rank_zero_only: true
+    file:
+      buffer_size: 1
+      filename: stdout
+      flush_interval: 100
+      log_interval: 1
+      log_level: batch
+  max_duration: 90ep
+  model:
+    resnet:
+      initializers:
+      - kaiming_normal
+      - bn_uniform
+      model_name: resnet50
+      num_classes: 1000
+  optimizer:
+    decoupled_sgdw:
+      dampening: 0
+      lr: 2.048
+      momentum: 0.875
+      nesterov: false
+      weight_decay: 0.0005
+  precision: amp
+  scale_schedule_ratio: 1.0
+  schedulers:
+    cosine_decay_with_warmup:
+      t_warmup: 8ep
+  seed: 17
+  train_batch_size: 2048
+  train_dataset:
+    imagenet:
+      crop_size: 224
+      datadir: /localdisk/ImageNet
+      drop_last: true
+      is_train: true
+      resize_size: -1
+      shuffle: true
+  val_dataset:
+    imagenet:
+      crop_size: 224
+      datadir: /localdisk/ImageNet
+      drop_last: false
+      is_train: false
+      resize_size: 256
+      shuffle: false
+  validate_every_n_epochs: 1

@@ -1,0 +1,30 @@
+name: resnet56-baseline
+project: tyler-test-mcli
+image: mosaicml/pytorch_internal
+git_repo: git@github.com:mosaicml/composer.git
+git_branch: dev
+models:
+  - resnet56_cifar10
+instance:
+  - cota-g1-3080
+# timing_instance:
+#   - cota-g8-3080
+# - g4dn.metal
+# - a2-highgpu-8g-a100-8
+command: >-
+  pip install git+ssh://git@github.com/mosaicml/yahp.git@main
+
+  git clone {{ git_repo }} /root/composer
+
+  cd /root/composer
+
+  echo 'Checking out composer branch {{ git_branch }}'
+
+  git checkout {{ git_branch }}
+
+  pip install --user -e .[all]
+
+  composer -n {{ parameters['_n_gpus'] }} examples/run_mosaic_trainer.py -f /mnt/config/parameters.yaml
+
+parameters:
+  max_duration: "1ep"

@@ -1,0 +1,10 @@
+name: regressions-v0.4-rc1
+models: gpt2_125m
+instance: a2-highgpu-8g-a100-8
+algorithms:
+  - - alibi
+  - - seq_length_warmup
+grid:
+  train_dataset.lm.num_tokens:
+    # - 2422210560 # .33 * 14000 (batches) * 512 (batch_size) * 1024 (seq_len)
+    - 7340032000

@@ -1,0 +1,21 @@
+name: resnet50-baseline
+models: resnet50_webdataset
+instance: r1z1-g8-a100
+command: >-
+  set -e -x
+
+  git clone {{ git_repo }} $HOME/composer
+
+  cd $HOME/composer
+
+  echo 'Checking out composer branch {{ git_branch }}'
+
+  git checkout {{ git_branch }}
+
+  pip install --user -e .[all]
+
+  pip uninstall -y webdataset
+
+  pip install git+https://github.com/mosaicml/webdataset@dev
+
+  composer -n $(LOCAL_WORLD_SIZE) examples/run_composer_trainer.py -f /mnt/config/parameters.yaml
