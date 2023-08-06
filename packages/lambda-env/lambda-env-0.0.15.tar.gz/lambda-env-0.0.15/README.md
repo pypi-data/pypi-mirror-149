@@ -1,0 +1,1 @@
+Transforms environment variables with SSM locations to their stored values.
