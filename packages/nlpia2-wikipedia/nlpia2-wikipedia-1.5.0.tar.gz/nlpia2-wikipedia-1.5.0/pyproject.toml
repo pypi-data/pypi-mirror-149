@@ -1,0 +1,55 @@
+[tool.poetry]
+# https://python-poetry.org/docs/pyproject/
+# https://github.com/python-poetry/poetry/blob/master/pyproject.toml
+name = "nlpia2-wikipedia"
+version = "1.5.0"
+description = "Updated version of `wikipedia` package because original repo has been abansdonedsince 2014."
+license = "GPLv3"
+readme = "README.md"
+authors = [
+    "Hobson Lane <hobson@tangibleai.com>",
+    ]
+homepage = "https://gitlab.com/tangibleai/Wikipedia"
+repository = "https://gitlab.com/tangibleai/Wikipedia"
+documentation = "https://gitlab.com/tangibleai/Wikipedia"
+include = [
+    'wikipedia',
+    ]
+
+# https://python-poetry.org/docs/pyproject/#keywords
+keywords = ['Wikipedia', 'scraping', 'api', 'wrapper', 'crawler', 'markdown', 'html', 'parser']
+# https://pypi.org/classifiers/
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Text Processing",
+  "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Wiki",
+]
+
+[tool.poetry.build]
+generate-setup-file = false
+
+# [build-system]
+# requires = ["poetry_core>=1.0.0", "setuptools>=54.0.2", "tox", "wheel"]
+# build-backend = "poetry.core.masonry.api"
+
+
+# [tool.poetry.scripts]
+# # https://python-poetry.org/docs/pyproject/#scripts
+# "wikisearch" = "wikipedia.cli:main"
+
+[tool.poetry.dependencies]
+python = "^3.8,<3.10.0"
+poetry = "^1.1"
+beautifulsoup4 = "^4.11"
+requests = "^2.0,<3.0.0"
+
+[tool.poetry.dev-dependencies]
+tox = "^3.18"
+pytest = ">=6.2.0"
+pytest-cov = "^3.0.0"
+pydocstyle = "^5.1.1"
+Sphinx = "^4.4.0"
+
