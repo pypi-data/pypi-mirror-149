@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+
+import base64
+import json
+import random
+import string
+import cherrypy  # also routes are needed
+import cv2
+import PIL
+import hashlib
+import jinja2
+import tqdm
+import pkgutil
+from collections import OrderedDict
+import zlib
+import pathlib
+import fargv
+import sys
+import os
+import io
+from PIL import Image
+from cherrypy.lib import file_generator
+from frat import FratWebServer
+import frat
+import json
+
+
+if __name__ == "__main__":
+    p={"images":[set([]), "the images to be groundtruthed"], 
+       "config_json_path":".frat_config.json",
+       "default_config":["font", "diplomatics"]}
+    p, _ = fargv.fargv(p)
+    if len(p.config_json_path)>0:
+        try:
+            config_dict = json.load(open(p.config_json_path,"r"))
+        except IOError: # using default configuration
+            if p.default_config == "font":
+                config_dict = frat.frat_gui_config_font
+            elif p.default_config == "diplomatics":
+                config_dict = frat.frat_gui_config_diplomatics
+            else:
+                raise ValueError
+    conf = {
+        '/': {
+            'log.screen': False,
+        'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+            'tools.sessions.on': True,
+            'tools.response_headers.on': True,
+            'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+        }
+    }
+    cherrypy.server.socket_host = '0.0.0.0'
+    cherrypy.quickstart(FratWebServer(p.images,config_dict=config_dict), '/', conf)
