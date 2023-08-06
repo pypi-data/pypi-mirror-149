@@ -1,0 +1,121 @@
+Metadata-Version: 2.1
+Name: msbackup
+Version: 2.1.5
+Summary: Generic backup utility.
+Home-page: https://redmine.mousesoft.ru/projects/msbackup
+Author: Aleksei Badiaev
+Author-email: aleksei.badiaev@mousesoft.ru
+License: MIT
+Keywords: linux backup administration
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: Russian
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: System :: Archiving :: Backup
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: check-manifest ; extra == 'dev'
+Requires-Dist: coverage ; extra == 'dev'
+Requires-Dist: doc8 ; extra == 'dev'
+Requires-Dist: docutils ; extra == 'dev'
+Requires-Dist: flake8 ; extra == 'dev'
+Requires-Dist: ipdb ; extra == 'dev'
+Requires-Dist: libvirt-python ; extra == 'dev'
+Requires-Dist: pep8 ; extra == 'dev'
+Requires-Dist: pydocstyle ; extra == 'dev'
+Requires-Dist: stdeb3 ; extra == 'dev'
+Requires-Dist: twine ; extra == 'dev'
+Requires-Dist: unittest-xml-reporting ; extra == 'dev'
+Requires-Dist: wheel ; extra == 'dev'
+Provides-Extra: kvm
+Requires-Dist: libvirt-python ; extra == 'kvm'
+
+MouseSoft Backup utility
+========================
+
+Архиватор файлов, баз данных *PostgreSQL*, *SQLite* и *MongoDB*, хранилищ систем
+контроля версий *Mercurial* и *Subversion*, службы каталогов *OpenLDAP*
+и виртуальных машин *KVM*.
+
+Использование
+-------------
+
+Приложение предоставляет возможность архивирования данных следующих систем:
+
+* **file** - архивирование папки с файлами посредством *tar* с опциональным
+  сжатием и шифрованием;
+
+* **hg** - сканирует папку с репозиториями системы контроля версий
+  [Mercurial](http://www.mercurial-scm.org/), клонирует выбранные в соответствии
+  с конфигурацией репозиории и затем сжимает их архиватором;
+
+* **svn** - сканирует папку с репозиториями системы контроля версий
+  [Apache Subversion](http://subversion.apache.org/), клонирует выбранные
+  в соответствии с конфигурацией репозиории и затем сжимает их архиватором;
+
+* **pg** - сканирует кластер системы управления базами данных
+  [PostgreSQL](http://www.postgresql.org/) и архивирует дампы выбранных
+  в соответствии с конфигурацией базы данных;
+
+* **sqlite** - архивирует базу данных [SQLite](http://www.sqlite.org/);
+
+* **mongodb** - архивирует базу данных [MongoDB](http://www.mongodb.com/);
+
+* **ldap** - архивирует конфигурацию и данные службы каталогов
+[OpenLDAP](http://www.openldap.org/);
+
+* **kvm** - архивирует виртуальные машины под управлением
+  [Libvirt](https://libvirt.org/) без их выключения.
+
+Если запустить приложение с параметром `--rotate`, файлы архивов будут
+ротированы в соответствии с конфигурацией.
+
+Для шифрования файла с архивом нужно указать параметр `--encrypt`.
+
+Тестирование
+------------
+
+Зависимости проекта могут быть установлены командой:
+
+   pip install -U -e .[dev,kvm]
+
+Для запуска тестов следует выполнить команду:
+
+   make test
+
+Для получения отчёта о покрытии кода проекта тестами в формате HTML нужно
+запустить команду:
+
+    EXPORT_RESULT=true make coverage
+
+После успешного выполнения в папке `out/coverage` будут находиться файлы отчёта
+о покрытии кода проекта тестами в формате HTML с индексом в файле `index.html`.
+
+Сборка дистрибутива
+-------------------
+
+Перед сборкой дистрибутива необходимо обновить версию приложения командой:
+
+    ./update-version.sh 2.1.5
+
+Собрать пакет Debian можно командой:
+
+    make dist-deb
+
+После успешного выполнения команды в папке `out/deb` будут пакеты Debian.
+
+Для сборки пакета Wheel необходимо запустить команду:
+
+    make dist-wheel
+
+После успешного выполнения команды в папке `out/dist` будет пакет Wheel.
+
+Для сборки всех возможных пакетов и файла спецификации Artifactory необходимо
+выполнить команду:
+
+    make dist
+
