@@ -1,0 +1,47 @@
+from setuptools import setup, find_packages
+
+# with open("README.md", "r") as f:
+#     long_description = f.read()
+
+    
+setup(
+    name = 'MoreThanSentiments',
+    version = '0.1.1',
+    description = 'An NLP python package for computing Boilerplate score and many other text features.',
+#     py_modules = ["morethansentiments"],
+#    package_dir = {'':'src'},
+    package = find_packages(exclude=("test", "Data",)),
+    author = 'Jinhang Jiang, Karthik Srinivasan',
+    author_email = 'jinhang@asu.edu, karthiks@ku.edu',
+    long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
+    long_description_content_type = "text/markdown",
+    url='https://github.com/jinhangjiang/morethansentiments',
+    include_package_data=True,
+    
+    
+    classiffiers = [
+        'Development Status :: 4 - Beta',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        "License :: OSI Approved :: BSD License",
+        'Intended Audience :: Developers',
+        'Intended Audience :: Other Audience',
+        'Intended Audience :: Science/Research',
+        'Intended Audience :: Education',
+        'Topic :: Text Processing',
+        'Operating System :: Microsoft :: Windows'      
+    ],
+    
+    install_requires = [
+        'tqdm',
+        'spacy',
+        'pandas',
+        'nltk',
+    ],
+    
+    keywords = ['Text Mining', 'Data Science', 'Natural Language Processing', 'Accounting'],
+    
+)
