@@ -1,0 +1,18 @@
+run_name: davis-run
+instance_type: r1z1-g0
+platform: r1z1
+image: pytorch/pytorch:latest
+integrations:
+  - integration_type: "git_repo"
+    git_repo: mosaicml/science
+    git_branch: davis/launcher-overview
+    path: science
+    pip_install: --user -e .
+  - integration_type: "apt_packages"
+    packages:
+        - git
+command: |
+    echo Running
+    sleep 400
+
+parameters: {}

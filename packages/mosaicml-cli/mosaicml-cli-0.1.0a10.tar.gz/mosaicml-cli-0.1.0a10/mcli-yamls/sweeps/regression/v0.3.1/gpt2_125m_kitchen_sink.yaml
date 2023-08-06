@@ -1,0 +1,17 @@
+name: regressions-v0.3.1-scratch
+image: mosaicml/pytorch_internal
+git_repo: git@github.com:mosaicml/composer.git
+git_branch: v0.3.1
+models:
+  - gpt2_125m
+accuracy_instance:
+  - a2-highgpu-8g-a100-8
+timing_instance:
+  - a2-highgpu-8g-a100-8
+  - cota-g8-3080
+  - g4dn.metal
+algorithms:
+  - alibi
+  - seq_length_warmup
+grid:
+parameters:

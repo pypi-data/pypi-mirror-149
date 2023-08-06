@@ -1,0 +1,73 @@
+run_name: cory-run
+instance_type: r1z1-g8-a100
+platform: r1z1
+image: mosaicml/pytorch_internal
+integrations:
+  - integration_type: "git_repo"
+    git_repo: mosaicml/composer
+    pip_install: .[all]
+  - integration_type: "pip_packages"
+    packages:
+        - awscli
+command: |
+    echo Running...
+    cd composer
+    composer -n 8 examples/run_composer_trainer.py -f /mnt/config/parameters.yaml 
+parameters:
+    algorithms:
+    - mixup:
+        alpha: 0.2
+        interpolate_loss: false
+    - channels_last: {}
+    callbacks:
+    - speed_monitor:
+        window_size: 100
+    - lr_monitor: {}
+    dataloader:
+      num_workers: 8
+      persistent_workers: true
+      pin_memory: true
+      prefetch_factor: 2
+      timeout: 0
+    device:
+      gpu: {}
+    eval_batch_size: 2048
+    grad_accum: 1
+    max_duration: 90ep
+    model:
+      resnet:
+        initializers:
+        - kaiming_normal
+        - bn_uniform
+        model_name: resnet50
+        num_classes: 1000
+    optimizer:
+      decoupled_sgdw:
+        dampening: 0
+        lr: 2.048
+        momentum: 0.875
+        nesterov: false
+        weight_decay: 0.0005
+    precision: amp
+    schedulers:
+    - cosine_decay_with_warmup:
+        t_warmup: 8ep
+    seed: 0
+    train_batch_size: 2048
+    train_dataset:
+      imagenet:
+        crop_size: 224
+        datadir: /datasets/ImageNet
+        drop_last: true
+        is_train: true
+        resize_size: -1
+        shuffle: true
+    val_dataset:
+      imagenet:
+        crop_size: 224
+        datadir: /datasets/ImageNet
+        drop_last: false
+        is_train: false
+        resize_size: 256
+        shuffle: false
+    validate_every_n_epochs: 1
