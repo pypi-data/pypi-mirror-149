@@ -1,0 +1,111 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "sphinx-carousel"
+version = "0.0.2"
+description = "A Sphinx extension for creating slideshows using Bootstrap Carousels."
+readme = "README.md"
+authors = ["Robpol86 <robpol86@gmail.com>"]
+license = "BSD-2-Clause"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: MacOS X",
+    "Environment :: Plugins",
+    "Environment :: Win32 (MS Windows)",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Documentation :: Sphinx",
+    "Topic :: Software Development :: Documentation",
+]
+
+[tool.poetry.urls]
+documentation = "https://sphinx-carousel.readthedocs.io"
+repository = "https://github.com/Robpol86/sphinx-carousel"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+# Project dependencies.
+Sphinx = ">=4.0.0"  # min-toggle
+#Sphinx = [  # min-toggle
+#    {version = "~4.0", python = "^3.6,<3.10"},  # min-toggle
+#    {version = "~4.2", python = "^3.10"},  # min-toggle
+#]  # min-toggle
+
+[tool.poetry.dev-dependencies]
+Sphinx = {version = "^4.5", python = "^3.6"}  # min-toggle
+# IDE.
+docutils-stubs = "*"
+# Linters.
+black = {version = "*", python = "^3.6.2"}
+flake8 = {version = "*", python = "^3.6"}
+flake8-docstrings = "*"
+flake8-import-order = {version = "*", python = "^3.6"}
+pep8-naming = {version = "*", python = "^3.6"}
+pylint = {version = "*", python = "^3.6"}
+# Tests.
+beautifulsoup4 = "*"
+coverage = {version = "*", extras = ["toml"]}
+myst-parser = {version = "*", python = "^3.6"}
+pytest = "*"
+pytest-cov = "*"
+pytest-icdiff = "*"
+TexSoup = "*"
+# Docs.
+sphinx-autobuild = "*"
+sphinx-copybutton = "*"
+sphinx-design = {version = "*", python = "^3.6"}
+sphinx-multi-theme = "*"
+sphinx-notfound-page = "*"
+sphinx-rtd-theme = ">=1.0"
+sphinxext-opengraph = "*"
+
+[tool.black]
+line-length = 125
+target-version = ["py36", "py37", "py38", "py39", "py310"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "#\\s*pragma: no cover",
+    "^\\s*from",
+    "^\\s*import",
+    "^\\s*raise AssertionError",
+    "^\\s*raise NotImplementedError",
+]
+
+[tool.pylint.FORMAT]
+good-names = ["i", "j", "k", "ex", "Run", "_", "x", "y", "z", "fd"]
+ignore = [".venv/*", "build/*", "dist/*"]
+max-line-length = 125
+reports = false
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = [
+    "consider-using-f-string",
+    "duplicate-code",
+    "fixme",
+    "too-many-arguments",
+]
+
+[tool.pylint.SIMILARITIES]
+ignore-imports = true
+min-similarity-lines = 7
+
+[tool.pylint.TYPECHECK]
+ignored-modules = ["distutils", "py"]
+
+[tool.pytest.ini_options]
+addopts = "--cov-branch --cov-report=term-missing --durations=15 --showlocals --verbose --verbose"
+log_level = "DEBUG"
