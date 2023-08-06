@@ -1,0 +1,51 @@
+Metadata-Version: 2.1
+Name: hrm-py
+Version: 0.1.1
+Summary: Human Resource Machine (HRM) Interpreter
+Home-page: UNKNOWN
+Author: Sigmanificient
+Author-email: contact@yohannboniface.dev
+License: MIT
+Project-URL: Github repository, https://github.com/Sigmanificient/HRM-Interpreter
+Keywords: hrm,interpreter,interpreted language,human,resource,machine
+Platform: unix
+Platform: linux
+Platform: osx
+Platform: windows
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: testing
+License-File: LICENSE
+
+# Human Resource Machine Interpreter
+
+<img src="https://raw.githubusercontent.com/Sigmanificient/HRM-Interpreter/main/docs/banner.png" alt="Game img">
+
+Human Resource Machine is a game where you play an employee controlled by a block-like "programming language".
+The goal of this repository is to create an interpreter for this "programming language".
+
+The syntax is kind of clause to assembly, using jumps for controlling the flow.
+The inbox and outbox correspond to argument and return value.
+For each level, a prompt is given and the player code is tested with multiple values.
+
+Overflow occurs when the value is lower than -999 or bigger than 999.
+
+## HRM interpreted Language
+
+The HRM language will follow these specificities:
+
+- Comment will be defined using `#` on an empty line.
+- `inbox` will give an integer value from a given stack ranging from -999 to 999
+- `outbox` will be yield from the `run` function.
+- every value within square bracket will be considered as a number corresponding to a slot id, or a label that identify a slot.
+- `jump` will have an argument to the instruction to teleport the pointer to. blank & comment line will not count.
+- `slot` allow to define slot name given an id and a string.
+
+
