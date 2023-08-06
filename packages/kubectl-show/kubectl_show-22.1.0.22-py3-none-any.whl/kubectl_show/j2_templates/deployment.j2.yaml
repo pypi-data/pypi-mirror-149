@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ _name or 'nginx-example' }}
+  {%- if _namespace %}
+  namespace: {{ _namespace }}
+  {%- endif %}
+spec:
+  replicas: {{ _replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      app: {{ _name or 'nginx-example' }}
+  template:
+    metadata:
+      labels:
+        app: {{ _name or 'nginx-example' }}
+    spec:
+      {% if _imagePullSecrets -%}
+      imagePullSecrets:
+      {% for secret in _imagePullSecrets -%}
+      - name: {{ secret }}
+      {% endfor -%}
+      {% else -%}
+      imagePullSecrets: []
+      {% endif -%}
+      nodeSelector: {}
+        #node.type: db
+      tolerations: []
+      #- key: "only"
+      #  operator: "Equal"
+      #  value: "db"
+      #  effect: "NoSchedule"
+      affinity:
+        podAntiAffinity: {}
+        nodeAffinity: {}
+      volumes: []
+      #- name: postgres
+      #  hostPath:
+      #    path: /data/middleware-data/postgres-data
+      #    type: DirectoryOrCreate
+      containers:
+      - image: {{ _image or 'nginx' }}
+        imagePullPolicy: IfNotPresent
+        name: {{ _name or 'nginx-example' }}
+        args: []
+        env: []
+        ports:
+          - containerPort: 80
+            name: http
+        volumeMounts: []
+          #- name: postgres
+          #  subPath: postgres
+          #  mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: {{ _rrm }}
+            cpu: {{ _rrc }}
+            {%- if _rre %}
+            ephemeral-storage: {{ _rre }}
+            {%- endif %}
+          limits:
+            memory: {{ _rlm }}
+            cpu: {{ _rlc }}
+            {%- if _rle %}
+            ephemeral-storage: {{ _rle }}
+            {%- endif %}
+          #livenessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: 80
+          #    scheme: HTTP
+          #  failureThreshold: 3
+          #  initialDelaySeconds: 30
+          #  periodSeconds: 30
+          #  successThreshold: 1
+          #  timeoutSeconds: 10
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: 80
+          #    scheme: HTTP
+          #lifecycle:
+          #  postStart:
+          #    exec:
+          #      command: []
+          #  preStop:
+          #    exec:
+          #      command: []
