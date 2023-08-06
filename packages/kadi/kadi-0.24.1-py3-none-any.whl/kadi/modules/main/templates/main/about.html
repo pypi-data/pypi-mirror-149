@@ -1,0 +1,110 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+  {% snippet "breadcrumb_home" %}
+  {% snippet "breadcrumb", url=url_for("main.about"), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-end">
+        <a href="https://www.kit.edu" target="_blank" rel="noopener noreferrer">
+          <img class="img-fluid mb-4" src="{{ static_url('images/kit.png') }}" width="140">
+        </a>
+        <a href="https://www.iam.kit.edu" target="_blank" rel="noopener noreferrer">
+          <img class="img-fluid mb-4" src="{{ static_url('images/iam.png') }}" width="120">
+        </a>
+      </div>
+      <p>
+        {% trans strong_open="<strong>" | safe, strong_close="</strong>" | safe, trimmed %}
+          Kadi4Mat is the {{ strong_open }}Karlsruhe Data Infrastructure for Materials Science{{ strong_close }}, an
+          open source software for managing research data.
+        {% endtrans %}
+        {% trans strong_open="<strong>" | safe, strong_close="</strong>" | safe, trimmed %}
+          It is being developed as part of several research projects at the {{ strong_open }}Institute for Applied
+          Materials - Microstructure Modelling and Simulation (IAM-MMS){{ strong_close }} of the {{ strong_open }}
+          Karlsruhe Institute of Technology (KIT){{ strong_close }}.
+        {% endtrans %}
+      </p>
+      <p>
+        {% trans em_open="<em>" | safe, em_close="</em>" | safe, trimmed %}
+          The goal of this project is to combine the ability to manage and exchange data, the {{ em_open }}repository{{
+          em_close }}, with the possibility to analyze, visualize and transform said data, the {{ em_open }}electronic
+          lab notebook (ELN){{ em_close }}.
+        {% endtrans %}
+        {% trans trimmed %}
+          Kadi4Mat is supposed to support a close cooperation between experimenters, theorists and simulators,
+          especially in materials science, and enable the acquisition of new knowledge and the development of novel
+          materials.
+        {% endtrans %}
+        {% trans trimmed %}
+          This is made possible by employing a modular and generic architecture, which allows to cover the specific
+          needs of different scientists, each utilizing unique workflows.
+        {% endtrans %}
+        {% trans trimmed %}
+          At the same time, this opens up the possibility to easily branch out into other disciplines in the future.
+        {% endtrans %}
+      </p>
+      <hr>
+      <h5 class="font-weight-bold">{% trans %}Further links{% endtrans %}</h5>
+      <ul class="mb-0 pl-4">
+        <li>
+          {% trans %}More information:{% endtrans %}
+          <a href="https://kadi.iam-cms.kit.edu" target="_blank" rel="noopener noreferrer">
+            <strong>https://kadi.iam-cms.kit.edu</strong>
+          </a>
+        </li>
+        <li>
+          {% trans %}Source code:{% endtrans %}
+          <a href="https://gitlab.com/iam-cms/kadi" target="_blank" rel="noopener noreferrer">
+            <strong>https://gitlab.com/iam-cms/kadi</strong>
+          </a>
+        </li>
+        <li>
+          {% trans %}Documentation:{% endtrans %}
+          <ul class="mb-0 pl-4">
+            <li>
+              {% trans %}Stable (reflecting the latest release):{% endtrans %}
+              <a href="https://kadi4mat.readthedocs.io/en/stable" target="_blank" rel="noopener noreferrer">
+                <strong>https://kadi4mat.readthedocs.io/en/stable</strong>
+              </a>
+            </li>
+            <li>
+              {% trans %}Latest (reflecting the current state):{% endtrans %}
+              <a href="https://kadi4mat.readthedocs.io/en/latest" target="_blank" rel="noopener noreferrer">
+                <strong>https://kadi4mat.readthedocs.io/en/latest</strong>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    {% if current_user.is_authenticated %}
+      <div class="card-footer">
+        <a class="badge badge-primary font-weight-normal"
+           href="https://kadi4mat.readthedocs.io/en/stable/HISTORY.html"
+           target="_blank"
+           rel="noopener noreferrer">
+          Kadi4Mat v{{ version }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  {{ template_hook("kadi_get_about_templates") }}
+{% endblock %}

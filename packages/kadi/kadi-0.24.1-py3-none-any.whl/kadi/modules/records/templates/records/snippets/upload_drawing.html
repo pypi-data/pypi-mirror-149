@@ -1,0 +1,44 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+<canvas-painter :image-url="fileTypes.drawing.fileUrl"
+                :is-rendered="currentTab === 'drawing'"
+                :unsaved-changes="fileTypes.drawing.unsavedChanges"
+                @unsaved-changes="fileTypes.drawing.unsavedChanges = $event">
+  <template #default="props">
+    <div class="form-row mt-1">
+      <div class="col-md-4 mb-md-0 mb-2">
+        <button type="button"
+                class="btn btn-sm btn-block btn-primary"
+                :disabled="!fileTypes.drawing.unsavedChanges
+                           || fileTypes.drawing.uploading
+                           || !fileTypes.drawing.filename
+                           || fileTypes.drawing.filename.length > 256"
+                @click="saveDrawing(props.canvas)">
+          <i class="fa-solid fa-upload"></i> {% trans %}Upload as file{% endtrans %}
+        </button>
+      </div>
+      <div class="col-md-8">
+        <div class="input-group input-group-sm">
+          <input class="form-control"
+                 placeholder="{% trans %}Filename{% endtrans %}"
+                 v-model.trim="fileTypes.drawing.filename">
+          <div class="input-group-append">
+            <span class="input-group-text">.png</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</canvas-painter>

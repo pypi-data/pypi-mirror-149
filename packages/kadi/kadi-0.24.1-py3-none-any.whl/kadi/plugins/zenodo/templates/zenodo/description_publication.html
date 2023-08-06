@@ -1,0 +1,55 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+<p>
+  <i class="fa-solid fa-circle-info"></i>
+  {% trans trimmed %}
+    Note that resources uploaded to Zenodo will not be published directly, i.e. each upload can be reviewed and adjusted
+    via Zenodo before publishing.
+  {% endtrans %}
+  {% trans em_open="<em>" | safe, em_close="</em>" | safe, trimmed %}
+    All resources will be uploaded as type {{ em_open }}Dataset{{ em_close }}.
+  {% endtrans %}
+  {% trans %}Furthermore, your current display name will be used as the first author in Zenodo.{% endtrans %}
+</p>
+
+{% if resource_type == "record" %}
+  {% trans trimmed %}
+    Besides the files of this record, the following record metadata will always be used for the Zenodo upload:
+  {% endtrans %}
+{% else %}
+  {% trans trimmed %}
+    Besides the (directly linked) records of this collection, the following collection metadata will always be used for
+    the Zenodo upload:
+  {% endtrans %}
+{% endif %}
+
+<ul>
+  <li>{% trans %}Title{% endtrans %}</li>
+  {% if resource_type == "record" %}
+    <li>{% trans %}License{% endtrans %}</li>
+  {% endif %}
+  <li>
+    {% trans %}Description{% endtrans %}
+    <span class="text-muted">
+      ({% trans %}Note that Zenodo only supports a limited amount of Markdown/HTML tags{% endtrans %})
+    </span>
+  </li>
+  <li>
+    {% trans %}Tags{% endtrans %}
+    <span class="text-muted">
+      ({% trans %}Will be used as keywords in Zenodo{% endtrans %})
+    </span>
+  </li>
+</ul>

@@ -1,0 +1,239 @@
+{# Copyright 2021 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "sysadmin/base.html" %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  {% snippet "breadcrumb", url=url_for("sysadmin.manage_users"), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    {% include "sysadmin/snippets/menu.html" %}
+
+    <div class="card-body">
+      {% if local_provider_registered and new_username %}
+        <p>
+          <i class="fa-solid fa-circle-info"></i>
+          {% trans trimmed username=new_username %}
+            Local user '{{ username }}' was registered with an initial password.
+          {% endtrans %}
+          {% trans %}Please keep it somewhere safe as you will not be able to access it again.{% endtrans %}
+        </p>
+        <strong>{% trans %}Initial user password{% endtrans %}</strong>
+        <div class="input-group input-group-sm">
+          <input class="form-control" readonly="true" value="{{ new_password }}">
+          <div class="input-group-append">
+            <clipboard-button content="{{ new_password }}" class="input-group-text"></clipboard-button>
+          </div>
+        </div>
+        <hr>
+      {% endif %}
+
+      <dynamic-pagination endpoint="{{ url_for('api.get_users') }}"
+                          placeholder="{% trans %}No users.{% endtrans %}"
+                          :args="{inactive: !active, sysadmins: sysadmins}"
+                          :per-page="5"
+                          :enable-filter="true"
+                          ref="pagination">
+        <template #default="props">
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{% trans %}Users{% endtrans %}</strong>
+              <span class="badge badge-pill badge-light text-muted border border-muted">{$ props.total $}</span>
+            </div>
+            <popover-toggle title="{% trans %}System role permissions{% endtrans %}"
+                            toggle-class="btn btn-sm btn-light">
+              <template #toggle>
+                <i class="fa-solid fa-circle-info"></i> {% trans %}System role permissions{% endtrans %}
+              </template>
+              <template #content>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Admin</strong>
+                  </div>
+                  <div class="col-md-8">{% trans %}Can manage any resource.{% endtrans %}</div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Member</strong>
+                  </div>
+                  <div class="col-md-8">{% trans %}Can create new resources.{% endtrans %}</div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>Guest</strong>
+                  </div>
+                  <div class="col-md-8">{% trans %}Read only access.{% endtrans %}</div>
+                </div>
+              </template>
+            </popover-toggle>
+          </div>
+          <ul class="list-group" v-if="props.total > 0">
+            <li class="list-group-item bg-light py-2">
+              <div class="row d-flex align-items-center">
+                <div class="col-xl-5">{% trans %}User{% endtrans %}</div>
+                <div class="col-xl-2">{% trans %}System role{% endtrans %}</div>
+                <div class="col-xl-2 d-flex align-self-center">
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox" id="active" class="form-check-input" v-model="active">
+                    <label class="form-check-label" for="active">{% trans %}Active only{% endtrans %}</label>
+                  </div>
+                </div>
+                <div class="col-xl-2 d-flex align-self-center">
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox" id="sysadmins" class="form-check-input" v-model="sysadmins">
+                    <label class="form-check-label" for="sysadmins">{% trans %}Sysadmins only{% endtrans %}</label>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="list-group-item py-2" v-for="user in props.items" :key="user.id">
+              <div class="row align-items-center">
+                <div class="col-xl-5 mb-2 mb-xl-0">
+                  <identity-popover :user="user"></identity-popover>
+                  <br>
+                  <small>@{$ user.identity.username $}</small>
+                </div>
+                <div class="col-xl-2 mb-2 mb-xl-0">
+                  <select class="custom-select custom-select-sm"
+                          v-model="user.system_role"
+                          :disabled="user.disabled"
+                          @change="changeRole(user)">
+                    {% for role in sorted(list(config["SYSTEM_ROLES"].keys())) %}
+                      <option value="{{ role }}">{{ role | capitalize }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-xl-2 mb-2 mb-xl-0">
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           :id="`${user.id}_state`"
+                           :disabled="user.disabled || user.id === {{ current_user.id }}"
+                           v-model="user.state === 'active'"
+                           @change="toggleProperty(user, false)">
+                    <label class="form-check-label" :for="`${user.id}_state`">
+                      {% trans %}Active{% endtrans %}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-xl-2 mb-2 mb-xl-0">
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           :id="`${user.id}_sysadmin`"
+                           :disabled="user.disabled || user.id === {{ current_user.id }}"
+                           v-model="user.is_sysadmin"
+                           @change="toggleProperty(user, true)">
+                    <label class="form-check-label" :for="`${user.id}_sysadmin`">
+                      {% trans %}Sysadmin{% endtrans %}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-xl-1 d-xl-flex justify-content-end">
+                  <button type="button"
+                          class="btn btn-sm btn-danger"
+                          title="{% trans %}Delete user{% endtrans %}"
+                          :disabled="user.disabled || user.id === {{ current_user.id }}"
+                          @click="deleteUser(user)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </template>
+      </dynamic-pagination>
+
+      {% if local_provider_registered %}
+        <hr>
+        <div class="mb-2">
+          <strong>{% trans %}Register a new local user{% endtrans %}</strong>
+        </div>
+        <submission-form>
+          {{ render_csrf() }}
+
+          <div class="row">
+            <div class="col-lg-4">
+              <text-field :field="{{ form.username }}"></text-field>
+            </div>
+            <div class="col-lg-4">
+              <text-field :field="{{ form.displayname }}"></text-field>
+            </div>
+            <div class="col-lg-4">
+              <text-field :field="{{ form.email }}"></text-field>
+            </div>
+          </div>
+          <submit-field :field="{{ form.submit }}"></submit-field>
+        </submission-form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        active: false,
+        sysadmins: false,
+      },
+      methods: {
+        changeRole(user) {
+          this.$set(user, 'disabled', true);
+
+          axios.patch(user._actions.change_role, {name: user.system_role})
+            .then(() => kadi.alert('{{ _("Role changed successfully.") }}', {type: 'success', scrollTo: false}))
+            .catch((error) => kadi.alert('{{ _("Error changing role.") }}', {request: error.request}))
+            .finally(() => user.disabled = false);
+        },
+        toggleProperty(user, sysadmin) {
+          this.$set(user, 'disabled', true);
+
+          axios.patch(sysadmin ? user._actions.toggle_sysadmin : user._actions.toggle_state)
+            .then(() => {
+              this.$refs.pagination.update();
+              kadi.alert('{{ _("State changed successfully.") }}', {type: 'success', scrollTo: false});
+            })
+            .catch((error) => kadi.alert('{{ _("Error changing state.") }}', {request: error.request}))
+            .finally(() => user.disabled = false);
+        },
+        deleteUser(user) {
+          let promptMsg = '{{ _("Are you sure you want to delete this user and all their resources?") }}';
+          promptMsg += '\n{{ _("Please enter the username to confirm:") }}';
+
+          const person = prompt(promptMsg, '');
+          if (person !== user.identity.username) {
+            return;
+          }
+
+          this.$set(user, 'disabled', true);
+
+          axios.delete(user._actions.delete)
+            .then(() => {
+              this.$refs.pagination.update();
+              kadi.alert('{{ _("User deleted successfully.") }}', {type: 'success', scrollTo: false});
+            })
+            .catch((error) => {
+              kadi.alert('{{ _("Error deleting user.") }}', {request: error.request});
+              user.disabled = false;
+            });
+        },
+      },
+    });
+  </script>
+{% endblock %}

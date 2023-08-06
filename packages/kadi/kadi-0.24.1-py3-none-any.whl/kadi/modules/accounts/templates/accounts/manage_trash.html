@@ -1,0 +1,139 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "accounts/view_user_base.html" %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  {% snippet "breadcrumb", url=url_for("accounts.manage_trash"), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    {% include "accounts/snippets/view_user_menu.html" %}
+
+    <div class="card-body">
+      <dynamic-pagination endpoint="{{ url_for('api.get_trash') }}"
+                          placeholder="{% trans %}No deleted resources.{% endtrans %}"
+                          :per-page="5"
+                          :enable-filter="true"
+                          ref="pagination">
+        <template #default="props">
+          <div class="row mb-3">
+            <div class="col-lg-4">
+              <strong>{% trans %}Deleted resources{% endtrans %}</strong>
+              <span class="badge badge-pill badge-light text-muted border border-muted">{$ props.total $}</span>
+            </div>
+            <div class="col-lg-8 d-lg-flex justify-content-end">
+              <small class="text-muted">
+                <i class="fa-solid fa-circle-info"></i>
+                {% trans duration=config["RESOURCES_MAX_AGE"] | duration, trimmed %}
+                  Resources will be deleted permanently after {{ duration }}.
+                {% endtrans %}
+              </small>
+            </div>
+          </div>
+          <ul class="list-group" v-if="props.total > 0">
+            <li class="list-group-item bg-light py-2">
+              <div class="row">
+                <span class="col-xl-3">{% trans %}Identifier{% endtrans %}</span>
+                <span class="col-xl-2">{% trans %}Type{% endtrans %}</span>
+                <span class="col-xl-4">{% trans %}Deleted at{% endtrans %}</span>
+              </div>
+            </li>
+            <li class="list-group-item py-2" v-for="resource in props.items" :key="`${resource.type}${resource.id}`">
+              <div class="row align-items-center">
+                <span class="col-xl-3 mb-2 mb-xl-0">@{$ resource.identifier $}</span>
+                <div class="col-xl-2 mb-2 mb-xl-0">
+                  <span class="badge badge-light border border-muted font-weight-normal">
+                    {$ resource.pretty_type $}
+                  </span>
+                </div>
+                <div class="col-xl-4 mb-2 mb-xl-0">
+                  <local-timestamp :timestamp="resource.deleted_at"></local-timestamp>
+                  <br>
+                  <small class="text-muted">
+                    (<from-now :timestamp="resource.deleted_at"></from-now>)
+                  </small>
+                </div>
+                <div class="col-xl-3 mb-2 mb-xl-0 d-xl-flex justify-content-end">
+                  <div class="btn-group">
+                    <button type="button"
+                            class="btn btn-sm btn-light"
+                            title="{% trans %}Restore{% endtrans %}"
+                            :disabled="resource.disabled"
+                            @click="restoreResource(resource)">
+                      <i class="fa-solid fa-trash-arrow-up"></i> {% trans %}Restore{% endtrans %}
+                    </button>
+                    <button type="button"
+                            class="btn btn-sm btn-danger"
+                            title="{% trans %}Delete{% endtrans %}"
+                            :disabled="resource.disabled"
+                            @click="purgeResource(resource)">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </template>
+      </dynamic-pagination>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      methods: {
+        restoreResource(resource) {
+          if (!window.confirm('{{ _("Are you sure you want to restore this resource?") }}')) {
+            return;
+          }
+
+          this.$set(resource, 'disabled', true);
+
+          axios.post(resource._actions.restore)
+            .then(() => {
+              this.$refs.pagination.update();
+              kadi.alert('{{ _("Resource restored successfully.") }}', {type: 'success', scrollTo: false});
+            })
+            .catch((error) => {
+              kadi.alert('{{ _("Error restoring resource.") }}', {request: error.request});
+              resource.disabled = false;
+            });
+        },
+        purgeResource(resource) {
+          if (!window.confirm('{{ _("Are you sure you want to permanently delete this resource?") }}')) {
+            return;
+          }
+
+          this.$set(resource, 'disabled', true);
+
+          axios.post(resource._actions.purge)
+            .then(() => {
+              this.$refs.pagination.update();
+              kadi.alert('{{ _("Resource deleted successfully.") }}', {type: 'success', scrollTo: false});
+            })
+            .catch((error) => {
+              kadi.alert('{{ _("Error deleting resource.") }}', {request: error.request});
+              resource.disabled = false;
+            });
+        },
+      },
+    });
+  </script>
+{% endblock %}

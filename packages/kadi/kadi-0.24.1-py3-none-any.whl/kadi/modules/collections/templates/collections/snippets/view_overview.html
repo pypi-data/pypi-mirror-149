@@ -1,0 +1,115 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% set can_update_collection = has_permission(current_user, "update", "collection", collection.id) %}
+{% set can_link_collection = has_permission(current_user, "link", "collection", collection.id) %}
+
+<div class="d-flex justify-content-between">
+  <div>
+    <a href="{{ url_for('collections.edit_collection', id=collection.id) }}"
+       class="btn btn-sm btn-primary my-1{% if not can_update_collection %} disabled{% endif %}">
+      <i class="fa-solid fa-pencil"></i> {% trans %}Edit collection{% endtrans %}
+    </a>
+    <a href="{{ url_for('collections.new_collection', collection=collection.id) }}"
+       class="btn btn-sm btn-primary my-1{% if not can_create_collections %} disabled{% endif %}">
+      <i class="fa-solid fa-copy"></i> {% trans %}Copy collection{% endtrans %}
+    </a>
+    <div class="btn-group my-1">
+      <button type="button"
+              class="btn btn-sm btn-primary dropdown-toggle"
+              data-toggle="dropdown"
+              {% if not can_link_collection %}disabled{% endif %}>
+        {% trans %}Add record{% endtrans %}
+      </button>
+      <div class="dropdown-menu">
+        <a href="{{ url_for('collections.manage_links', id=collection.id) }}" class="dropdown-item">
+          {% trans %}Existing record{% endtrans %}
+        </a>
+        <a href="{{ url_for('records.new_record', collection=collection.id) }}"
+           class="dropdown-item{% if not can_create_records %} disabled{% endif %}">
+          {% trans %}New record{% endtrans %}
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="text-right">
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-light dropdown-toggle my-1" data-toggle="dropdown">
+        {% trans %}Export as{% endtrans %}
+      </button>
+      <div class="dropdown-menu">
+        {% for export_type, title in config["EXPORT_TYPES"]["collection"].items() %}
+          <a href="{{ url_for('collections.export_collection', id=collection.id, export_type=export_type) }}"
+             class="dropdown-item">
+            {{ title }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% if publication_providers %}
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-light dropdown-toggle my-1" data-toggle="dropdown">
+          {% trans %}Publish via{% endtrans %}
+        </button>
+        <div class="dropdown-menu">
+          {% for provider in publication_providers %}
+            <a href="{{ url_for('collections.publish_collection', id=collection.id, provider=provider.name) }}"
+               class="dropdown-item">
+              {{ provider.title }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+<hr>
+
+{{ template_hook("kadi_get_resource_overview_templates", resource=collection) }}
+
+{% snippet "resources/basic_info", resource=collection %}
+
+{% if collection.tags.count() > 0 %}
+  <hr>
+  <strong class="mr-3">{% trans %}Tags{% endtrans %}</strong>
+  {% for tag in collection.tags.order_by("name") %}
+    <h5 class="d-inline">
+      <a href="{{ url_for('collections.collections', tag=tag.name) }}"
+         class="badge badge-light border border-muted font-weight-normal m-1"
+         title="{{ tag.name }}">
+        {{ tag.name | truncate(25) }}
+      </a>
+    </h5>
+  {% endfor %}
+{% endif %}
+
+<hr>
+<resource-view title="{% trans %}Records{% endtrans %}"
+               placeholder="{% trans %}No records.{% endtrans %}"
+               :endpoint="getRecordsEndpoint"
+               :per-page="6">
+  <div class="row">
+    <div class="col-md-6 offset-lg-6 d-lg-flex justify-content-end mb-4 mb-lg-0">
+      <a class="btn btn-sm btn-block btn-light" :href="searchRecordsEndpoint">
+        <i class="fa-solid fa-magnifying-glass"></i> {% trans %}Advanced search{% endtrans %}
+      </a>
+    </div>
+  </div>
+</resource-view>
+{% if num_children %}
+  <div class="form-check form-check-inline mt-3">
+    <input type="checkbox" class="form-check-input" id="child-collections" v-model="includeChildCollections">
+    <label class="form-check-label" for="child-collections">{% trans %}Include child collections{% endtrans %}</label>
+  </div>
+{% endif %}

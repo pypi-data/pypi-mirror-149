@@ -1,0 +1,151 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "base.html" %}
+
+{% block head %}
+  <link rel="preload" href="{{ static_url('images/kadi_bg.png') }}" as="image" type="image/png">
+{% endblock %}
+
+{% block content %}
+  <language-prompt class="mb-4" preferred-locale="{{ preferred_locale }}"></language-prompt>
+
+  {% include "main/snippets/header.html" %}
+
+  <div class="card my-4">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <h5>
+            <strong>{% trans %}Welcome to Kadi4Mat.{% endtrans %}</strong>
+          </h5>
+          {% trans %}You are currently logged in as{% endtrans %}
+          <identity-popover :user="{{ json_user(current_user) }}"></identity-popover>.
+        </div>
+        <div class="col-lg-5">
+          <a href="{{ url_for('main.about') }}" class="btn btn-sm btn-block btn-light">
+            {% trans %}About{% endtrans %}
+          </a>
+          <a href="{{ url_for('main.help') }}" class="btn btn-sm btn-block btn-light">
+            <i class="fa-solid fa-circle-question"></i> {% trans %}Help{% endtrans %}
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer" v-if="showVersionMsg">
+      <button type="button" class="close text-primary" @click="dismissVersion">
+        <i class="fa-solid fa-xmark fa-xs"></i>
+      </button>
+      <a href="https://kadi4mat.readthedocs.io/en/stable/HISTORY.html" target="_blank" rel="noopener noreferrer">
+        <i class="fa-solid fa-rocket"></i>
+        <strong>
+          {% trans version=version %}See what's new in Kadi4Mat version {{ version }}.{% endtrans %}
+        </strong>
+      </a>
+    </div>
+  </div>
+  <h4>
+    <strong>{% trans %}Get started{% endtrans %}</strong>
+  </h4>
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row d-flex align-items-center">
+        <div class="col-xl-4 mb-4 mb-xl-0">
+          {% if can_create_records %}
+            <a class="btn btn-sm btn-primary btn-block" href="{{ url_for('records.new_record') }}">
+              <i class="fa-solid fa-square-plus"></i> {% trans %}Create new record{% endtrans %}
+            </a>
+          {% endif %}
+          <a class="btn btn-sm btn-light btn-block" href="{{ url_for('records.records') }}">
+            <i class="fa-solid fa-magnifying-glass"></i> {% trans %}Search existing records{% endtrans %}
+          </a>
+        </div>
+        <div class="col-xl-8">
+          {% trans trimmed %}
+            Records are the basic components of Kadi4Mat, as they contain data and connect it with corresponding
+            metadata.
+          {% endtrans %}
+          {% trans trimmed %}
+            The data of a record can consist of an arbitrary number of different files, all sharing the same metadata,
+            as well as metadata only.
+          {% endtrans %}
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-muted py-1">
+      {% set help_url =
+             '<a class="text-muted" href="{}"><strong>{}</strong></a>'
+             .format(url_for("main.help", _anchor="navigation"), _("Help")) %}
+
+      {% trans help=help_url | safe, trimmed %}
+        For more information about records and other types of resources, see the {{ help }} page.
+      {% endtrans %}
+    </div>
+  </div>
+  <div v-if="kadi.js_resources.records.length > 0 || kadi.js_resources.collections.length > 0">
+    <h4 class="mb-3">
+      <strong>{% trans %}Latest updates{% endtrans %}</strong>
+    </h4>
+    <div v-if="kadi.js_resources.records.length > 0">
+      <div class="d-flex justify-content-between">
+        <h5>
+          <strong>{% trans %}Records{% endtrans %}</strong>
+        </h5>
+        <a href="{{ url_for('records.records') }}">
+          <strong>{% trans %}View all{% endtrans %}</strong>
+        </a>
+      </div>
+      <resource-index-view :resources="kadi.js_resources.records"></resource-index-view>
+      <br v-if="kadi.js_resources.collections.length > 0">
+    </div>
+    <div v-if="kadi.js_resources.collections.length > 0">
+      <div class="d-flex justify-content-between">
+        <h5>
+          <strong>{% trans %}Collections{% endtrans %}</strong>
+        </h5>
+        <a href="{{ url_for('collections.collections') }}">
+          <strong>{% trans %}View all{% endtrans %}</strong>
+        </a>
+      </div>
+      <resource-index-view :resources="kadi.js_resources.collections"></resource-index-view>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        storageKey: 'hide_version_msg',
+        showVersionMsg: false,
+      },
+      methods: {
+        dismissVersion() {
+          // Store the current version in the local storage when dismissing it.
+          window.localStorage.setItem(this.storageKey, kadi.js_resources.version);
+          this.showVersionMsg = false;
+        },
+      },
+      mounted() {
+        // Check if the version changed since the last time it was dismissed. If it did, show the meessage and delete
+        // the old version from the local storage, if applicable.
+        if (window.localStorage.getItem(this.storageKey) !== kadi.js_resources.version) {
+          window.localStorage.removeItem(this.storageKey);
+          this.showVersionMsg = true;
+        }
+      },
+    });
+  </script>
+{% endblock %}

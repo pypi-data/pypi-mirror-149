@@ -1,0 +1,112 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% set can_update_template = has_permission(current_user, "update", "template", template.id) %}
+
+<div class="d-flex justify-content-between">
+  <div>
+    <a href="{{ url_for('templates.edit_template', id=template.id) }}"
+       class="btn btn-sm btn-primary my-1{% if not can_update_template %} disabled{% endif %}">
+      <i class="fa-solid fa-pencil"></i> {% trans %}Edit template{% endtrans %}
+    </a>
+    <a href="{{ url_for('templates.new_template', type=template.type, template=template.id) }}"
+       class="btn btn-sm btn-primary my-1{% if not can_create_templates %} disabled{% endif %}">
+      <i class="fa-solid fa-copy"></i> {% trans %}Copy template{% endtrans %}
+    </a>
+  </div>
+  <div>
+    <a href="{{ url_for('records.new_record', template=template.id) }}"
+       class="btn btn-sm btn-primary my-1{% if not can_create_records %} disabled{% endif %}">
+      {% trans %}Apply template{% endtrans %}
+    </a>
+  </div>
+</div>
+<hr>
+
+{{ template_hook("kadi_get_resource_overview_templates", resource=template) }}
+
+<h5 class="float-right ml-4">
+  <span class="badge badge-primary font-weight-normal">{{ template.type | capitalize }}</span>
+</h5>
+
+{% snippet "resources/basic_info", resource=template %}
+
+<hr>
+<p>
+  <strong>{% trans %}Template data{% endtrans %}</strong>
+</p>
+<div class="card bg-light">
+  <div class="card-body">
+    {% if template.type == "record" %}
+
+      <div class="row">
+        {% for key, value in sorted(template.data.items()) %}
+          {% if key != "extras" %}
+            <div class="col-lg-3 mb-2">
+              <strong>{{ key | capitalize }}</strong>
+            </div>
+            <div class="col-lg-9 mb-2">
+              {% if not value %}
+                -
+              {% elif key == "description" %}
+                <markdown-preview input="{{ template.data['description'] }}"></markdown-preview>
+              {% elif key == "tags" %}
+                {% for tag in sorted(template.data["tags"]) %}
+                  <span class="badge badge-light border border-muted font-weight-normal">{{ tag }}</span>
+                {% endfor %}
+              {% else %}
+                {{ value }}
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {% if not template.data.get("extras") %}
+          <div class="col-lg-3">
+            <strong>Extras</strong>
+          </div>
+          <div class="col-lg-9">-</div>
+        {% endif %}
+      </div>
+
+      {% if template.data.get("extras") %}
+        <extras-viewer {% if can_update_template %}
+                       edit-endpoint="{{ url_for('templates.edit_template', id=template.id) }}"
+                       {% endif %}
+                       :extras="{{ template.data.extras | escaped_json }}">
+          <strong>Extras</strong>
+        </extras-viewer>
+      {% endif %}
+
+    {% elif template.type == "extras" %}
+
+      {% if template.data %}
+        <extras-viewer {% if can_update_template %}
+                       edit-endpoint="{{ url_for('templates.edit_template', id=template.id) }}"
+                       {% endif %}
+                       :extras="{{ template.data | escaped_json }}">
+          <strong>Extras</strong>
+        </extras-viewer>
+      {% else %}
+        <div class="row">
+          <div class="col-lg-3">
+            <strong>Extras</strong>
+          </div>
+          <div class="col-lg-9">-</div>
+        </div>
+      {% endif %}
+
+    {% endif %}
+  </div>
+</div>

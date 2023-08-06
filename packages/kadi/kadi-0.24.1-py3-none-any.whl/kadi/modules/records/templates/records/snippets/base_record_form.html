@@ -1,0 +1,55 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+<text-field :field="titleField" @input="title = $event"></text-field>
+<div class="row">
+  <div class="col-lg">
+    <identifier-field :field="{{ form.identifier }}" :input="title"></identifier-field>
+  </div>
+  <div class="col-lg">
+    <dynamic-select-field endpoint="{{ url_for('api.select_record_types') }}"
+                          placeholder="{% trans %}Enter or search for a record type{% endtrans %}"
+                          container-classes="select2-single-sm"
+                          :field="{{ form.type }}"
+                          :tags="true">
+    </dynamic-select-field>
+  </div>
+</div>
+{% if record %}
+  <markdown-field :field="{{ form.description }}"
+                  link-endpoint="{{ url_for('api.select_files', current_record=record.id) }}"
+                  image-endpoint="{{ url_for('api.select_files', current_record=record.id, images=True) }}">
+  </markdown-field>
+{% else %}
+  <markdown-field :field="{{ form.description }}"
+                  link-endpoint="{{ url_for('api.select_files') }}"
+                  image-endpoint="{{ url_for('api.select_files', images=True) }}">
+  </markdown-field>
+{% endif %}
+<dynamic-select-field endpoint="{{ url_for('api.select_licenses') }}"
+                      placeholder="{% trans %}Search for a license{% endtrans %}"
+                      :field="{{ form.license }}">
+</dynamic-select-field>
+<select-field :field="{{ form.visibility }}"></select-field>
+<dynamic-select-field endpoint="{{ url_for('api.select_tags') }}"
+                      placeholder="{% trans %}Enter or search for tags{% endtrans %}"
+                      :field="{{ form.tags }}"
+                      :max-input-length="{{ form.tags.max_len }}"
+                      :multiple="true"
+                      :tags="true">
+</dynamic-select-field>
+<extras-field template-endpoint="{{ url_for('api.select_templates', type='extras') }}"
+              :field="{{ form.extras }}"
+              :edit-extra-keys="kadi.js_resources.edit_extra_keys">
+</extras-field>

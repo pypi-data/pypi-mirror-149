@@ -1,0 +1,109 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "accounts/view_user_base.html" %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  {% snippet "breadcrumb", url=url_for("accounts.view_resources", id=user.id), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    {% include "accounts/snippets/view_user_menu.html" %}
+
+    <nav-tabs :tabs="['records', 'collections', 'templates', 'groups']">
+      <template #records-head>
+        {% trans %}Records{% endtrans %}
+      </template>
+      <template #records-body>
+        {% for title, endpoint in [
+          (_("Created records"), url_for('api.get_user_records', id=user.id)),
+          (_("Records shared with this user"), url_for('api.get_user_records', id=user.id, shared=True)),
+        ] %}
+          {% if not loop.last or user != current_user %}
+            <resource-view title="{{ title }}"
+                           placeholder="{% trans %}No records.{% endtrans %}"
+                           endpoint="{{ endpoint }}">
+            </resource-view>
+
+            {% if not loop.last and user != current_user %}
+              <hr>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </template>
+      <template #collections-head>
+        {% trans %}Collections{% endtrans %}
+      </template>
+      <template #collections-body>
+        {% for title, endpoint in [
+          (_("Created collections"), url_for('api.get_user_collections', id=user.id)),
+          (_("Collections shared with this user"), url_for('api.get_user_collections', id=user.id, shared=True)),
+        ] %}
+          {% if not loop.last or user != current_user %}
+            <resource-view title="{{ title }}"
+                           placeholder="{% trans %}No collections.{% endtrans %}"
+                           endpoint="{{ endpoint }}">
+            </resource-view>
+
+            {% if not loop.last and user != current_user %}
+              <hr>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </template>
+      <template #templates-head>
+        {% trans %}Templates{% endtrans %}
+      </template>
+      <template #templates-body>
+        {% for title, endpoint in [
+          (_("Created templates"), url_for('api.get_user_templates', id=user.id)),
+          (_("Templates shared with this user"), url_for('api.get_user_templates', id=user.id, shared=True)),
+        ] %}
+          {% if not loop.last or user != current_user %}
+            <resource-view title="{{ title }}"
+                           placeholder="{% trans %}No templates.{% endtrans %}"
+                           endpoint="{{ endpoint }}">
+            </resource-view>
+
+            {% if not loop.last and user != current_user %}
+              <hr>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </template>
+      <template #groups-head>
+        {% trans %}Groups{% endtrans %}
+      </template>
+      <template #groups-body>
+        {% for title, endpoint in [
+          (_("Created groups"), url_for('api.get_user_groups', id=user.id)),
+          (_("Common groups"), url_for('api.get_user_groups', id=user.id, common=True)),
+        ] %}
+          {% if not loop.last or user != current_user %}
+            <resource-view title="{{ title }}"
+                           placeholder="{% trans %}No groups.{% endtrans %}"
+                           endpoint="{{ endpoint }}">
+            </resource-view>
+
+            {% if not loop.last and user != current_user %}
+              <hr>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </template>
+    </nav-tabs>
+  </div>
+{% endblock %}

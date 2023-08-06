@@ -1,0 +1,126 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "accounts/view_user_base.html" %}
+
+{% block content %}
+  <div class="card">
+    {% include "accounts/snippets/view_user_menu.html" %}
+
+    <div class="card-body">
+      {% if user.image_name %}
+        <img class="img-thumbnail float-sm-right mb-4 ml-0 ml-sm-4"
+             width="150"
+             src="{{ url_for('api.preview_user_image', id=user.id) }}">
+      {% endif %}
+
+      {% if user.state in ["inactive", "deleted"] %}
+        <h5>
+          <span class="badge badge-danger">
+            {% if user.state == "inactive" %}
+              {% trans %}Inactive{% endtrans %}
+            {% else %}
+              {% trans %}Deleted{% endtrans %}
+            {% endif %}
+          </span>
+        </h5>
+        <br>
+      {% endif %}
+
+      <p class="h5 font-weight-bold">{{ user.identity.displayname }}</p>
+      <p class="mt-2">
+        @{{ user.identity.username }}
+        <span class="text-muted">
+          ({% trans %}Account type:{% endtrans %} {{ user.identity.Meta.identity_type["name"] }})
+        </span>
+        <br>
+        <small class="text-muted">{% trans %}Persistent ID:{% endtrans %} {{ user.id }}</small>
+      </p>
+
+      {% if user == current_user or not user.email_is_private %}
+        <p>
+          {% if user.email_is_private %}
+            <tooltip-item title="{% trans %}Only you can view your email address.{% endtrans %}">
+              <i class="fa-solid fa-lock"></i>
+            </tooltip-item>
+          {% endif %}
+
+          <a href="mailto:{{ user.identity.email }}">
+            <strong>{{ user.identity.email }}</strong>
+          </a>
+
+          {% if user.email_confirmed %}
+            <span class="badge badge-light border border-muted font-weight-normal">
+              {% trans %}Confirmed{% endtrans %}
+            </span>
+          {% endif %}
+        </p>
+      {% endif %}
+
+      <div class="my-5">
+        {% if user.about %}
+          <markdown-preview input="{{ user.about }}"></markdown-preview>
+        {% else %}
+          <p>
+            <em class="text-muted">{% trans %}No information provided.{% endtrans %}</em>
+          </p>
+        {% endif %}
+      </div>
+      <br>
+      <div class="row align-items-end">
+        <div class="col-md-8">
+          <small>
+            {% trans %}Member since{% endtrans %}
+            <local-timestamp timestamp="{{ user.created_at }}"></local-timestamp>
+            <span class="text-muted">
+              (<from-now timestamp="{{ user.created_at }}"></from-now>)
+            </span>
+          </small>
+        </div>
+
+        {% if user == current_user %}
+          <div class="col-md-4 d-md-flex justify-content-end mt-2 mt-md-0">
+            <a href="{{ url_for('settings.edit_profile') }}" class="btn btn-sm btn-light">
+              <i class="fa-solid fa-pencil"></i> {% trans %}Edit profile{% endtrans %}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if user.identities.count() > 1 %}
+        <hr>
+        <div class="mb-2">{% trans %}Also known as:{% endtrans %}</div>
+        <ul class="list-group">
+          {% for identity in user.identities %}
+            {% if identity != user.identity %}
+              <li class="list-group-item py-2">
+                <div class="row">
+                  <div class="col-md-4">
+                    <strong>{{ identity.displayname }}</strong>
+                  </div>
+                  <div class="col-md-4 d-md-flex justify-content-center">@{{ identity.username }}</div>
+                  <div class="col-md-4 d-md-flex justify-content-end">
+                    <span class="text-muted">
+                      {% trans %}Account type:{% endtrans %} {{ identity.Meta.identity_type["name"] }}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

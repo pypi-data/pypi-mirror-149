@@ -1,0 +1,64 @@
+{# Copyright 2022 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+<div class="container-fluid bg-primary py-2">
+  <a class="text-white mr-4" href="{{ url_for('main.index') }}">{% trans %}Home{% endtrans %}</a>
+  <a class="text-white mr-4" href="{{ url_for('main.about') }}">{% trans %}About{% endtrans %}</a>
+  <a class="text-white mr-4" href="{{ url_for('main.help') }}">{% trans %}Help{% endtrans %}</a>
+
+  {% if get_sys_config('TERMS_OF_USE') %}
+    <a class="text-white mr-4" href="{{ url_for('main.terms_of_use') }}">{% trans %}Terms of use{% endtrans %}</a>
+  {% endif %}
+
+  {% if get_sys_config('PRIVACY_POLICY') %}
+    <a class="text-white mr-4" href="{{ url_for('main.privacy_policy') }}">{% trans %}Privacy policy{% endtrans %}</a>
+  {% endif %}
+
+  {% if get_sys_config('LEGAL_NOTICE') %}
+    <a class="text-white mr-4" href="{{ url_for('main.legal_notice') }}">{% trans %}Legal notice{% endtrans %}</a>
+  {% endif %}
+
+  {% for title, url in get_sys_config("NAV_FOOTER_ITEMS") %}
+    <a class="text-white mr-4" href="{{ url }}">{{ title }}</a>
+  {% endfor %}
+
+  {{ template_hook("kadi_get_nav_footer_items") }}
+
+  <hr class="d-block d-lg-none my-2">
+  <div class="float-lg-right d-flex d-lg-block justify-content-between">
+    <span class="dropup mr-4">
+      <a class="text-white dropdown-toggle" href="#" data-toggle="dropdown">
+        <i class="fa-solid fa-globe"></i> {% trans %}Language{% endtrans %}
+      </a>
+      <div class="dropdown-menu mb-3">
+        <strong class="dropdown-header text-default">{% trans %}Select a language{% endtrans %}</strong>
+        <div class="dropdown-divider mt-0"></div>
+        {% for locale, language in config["LOCALES"].items() %}
+          <a class="dropdown-item" href="?locale={{ locale }}">
+            {{ language }}
+            {% if locale == get_locale() %}
+              <span class="float-right">
+                <i class="fa-solid fa-check fa-sm"></i>
+              </span>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </span>
+
+    <a class="text-white" href="https://www.kit.edu" target="_blank" rel="noopener noreferrer">
+      <small>© 2022 {% trans %}Karlsruhe Institute of Technology{% endtrans %}</small>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">Login failed due to missing user attributes</div>
+    <div class="card-body">
+      <p>
+        Your home organization <strong>{{ idp_displayname }}</strong> ({{ idp_entity_id}}) did not provide all
+        information about you that is required to log in to Kadi4Mat.
+      </p>
+      <p>The following user information in form of SAML attributes is required by this service:</p>
+      <ul class="list-group">
+        <li class="list-group-item bg-light py-2">
+          <div class="row">
+            <span class="col-6">
+              <strong>Attribute</strong>
+            </span>
+            <span class="col-6">
+              <strong>Provided value</strong>
+            </span>
+          </div>
+        </li>
+        {% for attr, val in required_attrs.items() %}
+          <li class="list-group-item py-2">
+            <div class="row">
+              <span class="col-6">{{ attr }}</span>
+              <span class="col-6">{{ val if val is not none else "-" }}</span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <hr>
+      <p>
+        Please contact your home organization's help desk at
+        <a href="mailto:{{ idp_support_contact }}"><strong>{{ idp_support_contact }}</strong></a> and request release
+        for the missing attributes. To do this, click on the button below. This will open your mail program with the
+        needed technical information to resolve this issue. You can add additional information and review the email
+        before sending it. Alternatively, you can manually copy and paste the text from the following template:
+      </p>
+<textarea id="template" class="form-control" rows="8">Dear administrator of the Identity Provider "{{ idp_displayname }}",
+
+I tried to log in to a service with the entityID "{{ sp_entity_id }}". Unfortunately, the login failed because the Identity Provider "{{ idp_displayname }}" did not release the requested user attributes to this service. To be able to access this service, I kindly ask you to ensure that your Identity Provider releases my user attributes to "{{ sp_entity_id }}".
+
+The attributes that were not released to the service are:
+{% for attr, val in required_attrs.items() %}{% if val is none %}  * {{ attr + "\n" }}{% endif %}{% endfor %}
+Connection summary:
+  * IdP: {{ idp_entity_id }} ({{ idp_displayname }})
+  * SP: {{ sp_entity_id }}
+  * Time: {{ timestamp }} (UTC)
+
+Kind regards</textarea>
+      <br>
+      <a id="email" class="btn btn-primary" href="#">Report problem to your home organization's help desk</a>
+      <hr>
+      <a href="{{ url_for('main.index') }}">
+        <strong>{% trans %}Return to the homepage.{% endtrans %}</strong>
+      </a>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script nonce="{{ csp_nonce() }}">
+    const mailto = 'mailto:{{ idp_support_contact }}'
+                 + `?subject=Attributes missing for "${window.encodeURIComponent('{{ sp_entity_id }}')}"`
+                 + `&body=${window.encodeURIComponent(document.getElementById('template').value)}`;
+    document.getElementById('email').setAttribute('href', mailto);
+  </script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{# Copyright 2022 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% if not provider.is_connected %}
+  <p>
+    <i class="fa-solid fa-circle-info"></i>
+    {% trans trimmed  %}
+      This publication provider requires a service that is not yet connected to your account.
+    {% endtrans %}
+    {% trans trimmed %}
+      Click one of the buttons below to either connect your account directly to the service or to manage all of your
+      connected services.
+    {% endtrans %}
+  </p>
+  <a href="{{ url_for('settings.oauth2_login', provider=provider.name) }}" class="btn btn-sm btn-primary">
+    {% trans %}Connect service{% endtrans %}
+  </a>
+  <a href="{{ url_for('settings.manage_services') }}" class="btn btn-sm btn-light">
+    {% trans %}Manage services{% endtrans %}
+  </a>
+{% else %}
+  {% if provider.description %}
+    <div class="mt-2">{{ provider.description }}</div>
+  {% else %}
+    <div class="text-muted mt-2">
+      <em>{% trans %}No description.{% endtrans %}</em>
+    </div>
+  {% endif %}
+  <hr>
+  <submission-form :check-dirty="false">
+    {{ render_csrf() }}
+    {{ template_hook("kadi_get_publication_form", provider=provider.name, resource=resource) }}
+
+    <input type="submit" class="btn btn-sm btn-primary" value="{% trans %}Publish resource{% endtrans %}">
+  </submission-form>
+{% endif %}

@@ -1,0 +1,86 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "workflows/base.html" %}
+
+{% block content %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <i class="fa-solid fa-circle-info"></i>
+      Workflows are represented as record files. As such, new workflows can be added directly to existing records via
+      the <em>Add files > Upload workflow</em> menu. Existing workflow files are displayed separately below, but cannot
+      yet be executed via the web interface.
+      <em>Note that all workflow-related functionality is still experimental.</em>
+    </div>
+  </div>
+  <div class="row">
+    {% if can_create_records %}
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <a class="btn btn-primary btn-block" href="{{ url_for('records.new_record', redirect='workflow') }}">
+          <i class="fa-solid fa-square-plus"></i> {% trans %}Create new record{% endtrans %}
+        </a>
+      </div>
+      <div class="col-lg-8">
+    {% else %}
+      <div class="col-lg-12">
+    {% endif %}
+        <div class="input-group">
+          <input id="filter-input"
+                 class="form-control"
+                 placeholder="Filter by filename or record identifier"
+                 v-model="filter">
+          <clear-button input-id="filter-input" :input="filter" @clear-input="filter = ''"></clear-button>
+        </div>
+      </div>
+  </div>
+  <br>
+  <dynamic-pagination endpoint="{{ url_for('api.get_workflows') }}"
+                      placeholder="No workflow files."
+                      :args="{filter: filter}"
+                      :per-page="12">
+    <template #default="paginationProps">
+      <card-deck :items="paginationProps.items">
+        <template #default="props">
+          <div class="card-body">
+            <a :href="props.item._links.view" class="stretched-link">
+              <span class="h5">
+                <strong>{$ props.item.name | truncate(100) $}</strong>
+              </span>
+              <p>@{$ props.item.record_identifier $}</p>
+              <div class="elevated">
+                {% trans %}Created by{% endtrans %} <identity-popover :user="props.item.creator"></identity-popover>
+              </div>
+            </a>
+          </div>
+          <div class="card-footer py-1">
+            <small class="text-muted">
+              {% trans %}Last modified{% endtrans %} <from-now :timestamp="props.item.last_modified"></from-now>
+            </small>
+          </div>
+        </template>
+      </card-deck>
+    </template>
+  </dynamic-pagination>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        filter: '',
+      },
+    });
+  </script>
+{% endblock %}

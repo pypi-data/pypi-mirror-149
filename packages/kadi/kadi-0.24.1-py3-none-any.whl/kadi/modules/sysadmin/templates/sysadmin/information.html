@@ -1,0 +1,115 @@
+{# Copyright 2021 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "sysadmin/base.html" %}
+
+{% block content %}
+  <div class="card">
+    {% include "sysadmin/snippets/menu.html" %}
+
+    <div class="card-body">
+      <div class="mb-2">
+        <strong>{% trans %}Kadi4Mat version{% endtrans %}</strong>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body py-2">
+          <div class="row">
+            <div class="col-md-7">
+              <a href="https://kadi4mat.readthedocs.io/en/stable/HISTORY.html"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                <strong>v{{ version }}</strong>
+              </a>
+            </div>
+            <div class="col-md-5 d-md-flex justify-content-end">
+              <div v-if="latestVersionInitialized">
+                <div v-if="latestVersion !== null">
+                  <div v-if="latestVersion === '{{ version }}'">
+                    <i class="fa-solid fa-check"></i>
+                    <strong>{% trans %}Latest version{% endtrans %}</strong>
+                  </div>
+                  <div v-else>
+                    <a href="https://kadi4mat.readthedocs.io/en/stable/installation/production/updating.html"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                      <i class="fa-solid fa-circle-info"></i>
+                      <strong>{% trans %}Update available{% endtrans %} (v{$ latestVersion $})</strong>
+                    </a>
+                  </div>
+                </div>
+                <div v-else>
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <strong>{% trans %}Could not retrieve latest version{% endtrans %}</strong>
+                </div>
+              </div>
+              <div v-else>
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-2">
+        <strong>{% trans %}Usage statistics{% endtrans %}</strong>
+      </div>
+      <ul class="list-group">
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of active users"),
+                   value=num_users %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of active records"),
+                   value=num_records %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of active collections"),
+                   value=num_collections %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of templates"),
+                   value=num_templates %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of active groups"),
+                   value=num_groups %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total amount of active files"),
+                   value=num_files %}
+        {% snippet "stat",
+                   _module="sysadmin",
+                   title=_("Total size of locally stored files"),
+                   value=local_file_size | filesize %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        latestVersion: null,
+        latestVersionInitialized: false,
+      },
+      mounted() {
+        axios.get(kadi.js_resources.get_latest_version_endpoint)
+          .then((response) => this.latestVersion = response.data.latest_version)
+          .finally(() => this.latestVersionInitialized = true);
+      },
+    });
+  </script>
+{% endblock %}

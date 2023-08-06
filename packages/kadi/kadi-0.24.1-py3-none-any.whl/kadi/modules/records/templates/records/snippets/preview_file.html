@@ -1,0 +1,46 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+<div v-if="previewData.type === 'archive'">
+  <archive-viewer :entries="previewData.data"></archive-viewer>
+</div>
+<div v-if="previewData.type === 'audio'">
+  <audio class="w-100" preload="metadata" controls :src="previewData.data"></audio>
+</div>
+<div v-if="previewData.type === 'csv'">
+  <csv-viewer :rows="previewData.data.rows"
+              :encoding="previewData.data.encoding"
+              :has-header="previewData.data.has_header">
+  </csv-viewer>
+</div>
+<div v-if="previewData.type === 'image'">
+  <builtin-viewer :preview-type="previewData.type" :url="previewData.data" :file-size="{{ file.size }}">
+  </builtin-viewer>
+</div>
+<div v-if="previewData.type === 'markdown'">
+  <markdown-viewer :lines="previewData.data.lines" :encoding="previewData.data.encoding"></markdown-viewer>
+</div>
+<div v-if="previewData.type === 'pdf'">
+  <builtin-viewer :preview-type="previewData.type" :url="previewData.data" :file-size="{{ file.size }}">
+  </builtin-viewer>
+</div>
+<div v-if="previewData.type === 'stl'">
+  <stl-viewer :model-url="previewData.data" :file-size="{{ file.size }}"></stl-viewer>
+</div>
+<div v-if="previewData.type === 'video'">
+  <video class="w-100" preload="metadata" controls :src="previewData.data"></video>
+</div>
+<div v-if="previewData.type === 'workflow'">
+  <workflow-editor :workflow-url="previewData.data" :editable="false"></workflow-editor>
+</div>

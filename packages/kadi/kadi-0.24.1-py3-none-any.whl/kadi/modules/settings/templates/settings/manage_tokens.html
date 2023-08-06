@@ -1,0 +1,228 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "settings/base.html" %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  {% snippet "breadcrumb", url=url_for("settings.manage_tokens"), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    {% include "settings/snippets/menu.html" %}
+
+    <div class="card-body">
+      {% if new_token %}
+        <p>
+          <i class="fa-solid fa-circle-info"></i>
+          {% trans %}A new personal access token has been created.{% endtrans %}
+          {% trans %}Please keep it somewhere safe as you will not be able to access it again.{% endtrans %}
+        </p>
+        <strong>{% trans %}Your personal access token{% endtrans %}</strong>
+        <div class="input-group input-group-sm">
+          <input class="form-control" readonly="true" value="{{ new_token }}">
+          <div class="input-group-append">
+            <clipboard-button content="{{ new_token }}" class="input-group-text"></clipboard-button>
+          </div>
+        </div>
+        <hr>
+      {% endif %}
+
+      <submission-form>
+        {{ render_csrf() }}
+
+        <div class="row">
+          <text-field class="col-lg-8" :field="{{ form.name }}"></text-field>
+          <date-time-field class="col-lg-4" :field="{{ form.expires_at }}"></date-time-field>
+        </div>
+        <div class="mb-4">
+          <collapse-item id="scopes" class="text-default" :is-collapsed="scopesCollapsed">
+            <strong>{% trans %}Scopes{% endtrans %}</strong>
+          </collapse-item>
+          <span class="text-muted ml-0 ml-lg-3 mt-2 mt-lg-0 d-block d-lg-inline">
+            <i class="fa-solid fa-circle-info"></i>
+            {% trans %}Scopes can restrict a token's access to specific resources or actions.{% endtrans %}
+          </span>
+        </div>
+        <div id="scopes" class="collapse hide mb-4">
+          <div class="d-lg-flex justify-content-between">
+            <div :class="{'mt-4 mt-lg-0': index > 0}" v-for="(actions, object, index) in scopes" :key="object">
+              <input type="checkbox"
+                     class="align-middle"
+                     :id="object"
+                     :checked="allScopesChecked(object)"
+                     @click="checkAllScopes(object, $event)">
+              <label :for="object">
+                <strong>{$ object | capitalize $}</strong>
+              </label>
+              <div v-for="(actionModel, action) in actions" :key="`${object}.${action}`">
+                <input type="checkbox"
+                       class="align-middle"
+                       name="scopes"
+                       v-model="actionModel.checked"
+                       :id="`${object}.${action}`"
+                       :value="`${object}.${action}`">
+                <label :for="`${object}.${action}`">{$ action $}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <submit-field :field="{{ form.submit }}"></submit-field>
+      </submission-form>
+      <hr>
+      <dynamic-pagination endpoint="{{ url_for('api.get_access_tokens') }}"
+                          placeholder="{% trans %}No access tokens.{% endtrans %}"
+                          :per-page="5"
+                          ref="pagination">
+        <template #default="props">
+          <p>
+            <strong>{% trans %}Access tokens{% endtrans %}</strong>
+            <span class="badge badge-pill badge-light text-muted border border-muted">{$ props.total $}</span>
+          </p>
+          <ul class="list-group" v-if="props.total > 0">
+            <li class="list-group-item py-2 bg-light">
+              <div class="row align-items-center">
+                <div class="col-md-2">{% trans %}Name{% endtrans %}</div>
+                <div class="col-md-3">{% trans %}Created at{% endtrans %}</div>
+                <div class="col-md-3">{% trans %}Expires at{% endtrans %}</div>
+                <div class="col-md-3">{% trans %}Scopes{% endtrans %}</div>
+              </div>
+            </li>
+            <li class="list-group-item" v-for="token in props.items" :key="token.id">
+              <div class="row align-items-center mb-2">
+                <div class="col-md-2 mb-2 mb-md-0">
+                  <strong :class="{'crossed': token.is_expired}">{$ token.name $}</strong>
+                  <br>
+                  <span class="text-danger" v-if="token.is_expired">{% trans %}Expired{% endtrans %}</span>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                  <local-timestamp :timestamp="token.created_at"></local-timestamp>
+                  <br>
+                  <small class="text-muted">
+                    (<from-now :timestamp="token.created_at"></from-now>)
+                  </small>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                  <div v-if="token.expires_at">
+                    <local-timestamp :timestamp="token.expires_at"></local-timestamp>
+                    <br>
+                    <small class="text-muted">
+                      (<from-now :timestamp="token.expires_at"></from-now>)
+                    </small>
+                  </div>
+                  <span v-if="!token.expires_at">
+                    <em>{% trans %}Never{% endtrans %}</em>
+                  </span>
+                </div>
+                <div class="col-md-3 mb-2 mb-md-0">
+                  <div v-if="token.scopes.length > 0">
+                    <span v-for="(scope, index) in token.scopes" :key="`${scope.object}.${scope.action}`">
+                      {$ `${scope.object}.${scope.action}` $}<span v-if="index < token.scopes.length - 1">,</span>
+                    </span>
+                  </div>
+                  <span v-if="token.scopes.length === 0">
+                    <em>{% trans %}Full access{% endtrans %}</em>
+                  </span>
+                </div>
+                <div class="col-md-1 d-md-flex justify-content-end">
+                  <button type="button"
+                          class="btn btn-sm btn-light"
+                          title="{% trans %}Remove token{% endtrans %}"
+                          :disabled="token.disabled"
+                          @click="removeToken(token)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <small class="text-muted">
+                <i class="fa-solid fa-circle-info"></i>
+                {% trans %}Last used:{% endtrans %}
+                <span v-if="token.last_used === null">
+                  <em>{% trans %}Never{% endtrans %}</em>
+                </span>
+                <span v-else>
+                  <local-timestamp :timestamp="token.last_used"></local-timestamp>
+                </span>
+              </small>
+            </li>
+          </ul>
+        </template>
+      </dynamic-pagination>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        scopes: {},
+        scopesCollapsed: true,
+      },
+      methods: {
+        removeToken(token) {
+          if (!window.confirm('{{ _("Are you sure you want to remove this token?") }}')) {
+            return;
+          }
+
+          this.$set(token, 'disabled', true);
+
+          axios.delete(token._actions.remove)
+            .then(() => {
+              this.$refs.pagination.update();
+              kadi.alert('{{ _("Token removed successfully.") }}', {type: 'success', scrollTo: false});
+            })
+            .catch((error) => {
+              kadi.alert('{{ _("Error removing token.") }}', {request: error.request});
+              token.disabled = false;
+            });
+        },
+        checkAllScopes(object, e) {
+          for (const action in this.scopes[object]) {
+            this.scopes[object][action].checked = e.target.checked;
+          }
+        },
+        allScopesChecked(object) {
+          for (const action in this.scopes[object]) {
+            if (!this.scopes[object][action].checked) {
+              return false;
+            }
+          }
+          return true;
+        },
+      },
+      mounted() {
+        const accessTokenScopes = kadi.js_resources.access_token_scopes;
+        const currentScopes = kadi.js_resources.current_scopes;
+        const scopes = {};
+
+        for (const object in accessTokenScopes) {
+          scopes[object] = {};
+
+          accessTokenScopes[object].forEach((action) => {
+            let checked = false;
+            if (currentScopes.includes(`${object}.${action}`)) {
+              checked = true;
+              this.scopesCollapsed = false;
+            }
+            scopes[object][action] = {checked};
+          });
+        }
+        this.scopes = scopes;
+      },
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{# Copyright 2020 Karlsruhe Institute of Technology
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ #     http://www.apache.org/licenses/LICENSE-2.0
+ #
+ # Unless required by applicable law or agreed to in writing, software
+ # distributed under the License is distributed on an "AS IS" BASIS,
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License. #}
+
+{% extends "templates/base.html" %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  {% snippet "breadcrumb", url=url_for("templates.new_template", type=type), title=title %}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <submission-form>
+        {{ render_csrf() }}
+
+        <h5 class="float-right">
+          <span class="badge badge-primary font-weight-normal">{{ type | capitalize }}</span>
+        </h5>
+        <h5 class="font-weight-bold mb-0">{% trans %}Metadata{% endtrans %}</h5>
+        <small class="text-muted">{% trans %}The metadata of the template itself.{% endtrans %}</small>
+        <hr class="mt-0">
+
+        {% include "templates/snippets/base_template_form.html" %}
+
+        <h5 class="font-weight-bold mb-0">{% trans %}Template data{% endtrans %}</h5>
+        <small class="text-muted">
+          {% trans %}The actual content of this template, depending on its type.{% endtrans %}
+        </small>
+        <hr class="mt-0">
+
+        {% include "templates/snippets/{}_template_form.html".format(type) %}
+
+        <submit-field :field="{{ form.submit }}"></submit-field>
+      </submission-form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script nonce="{{ csp_nonce() }}">
+    new Vue({
+      el: '#vm',
+      data: {
+        title: '',
+        titleField: kadi.js_resources.title_field,
+      },
+      mounted() {
+        this.title = this.titleField.data;
+      },
+    });
+  </script>
+{% endblock %}
