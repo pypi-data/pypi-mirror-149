@@ -1,0 +1,7 @@
+{% extends 'generic/object_list.html' %}
+
+{% block bulk_buttons %}
+<button type="submit" name="_delete" formaction="{% url 'plugins:nautobot_cable_utils:measurement_log_bulk_delete' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-danger btn-sm">
+    <span class="mdi mdi-trash-can-outline" aria-hidden="true"></span> Delete Selected
+</button>
+{% endblock %}

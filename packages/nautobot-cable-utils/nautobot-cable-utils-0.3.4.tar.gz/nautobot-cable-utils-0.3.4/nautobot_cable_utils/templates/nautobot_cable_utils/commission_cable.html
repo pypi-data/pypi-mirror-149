@@ -1,0 +1,30 @@
+{% extends 'generic/object_edit.html' %}
+{% load form_helpers %}
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'nautobot_cable_utils/html5-qrcode.min.js' %}"></script>
+  <script src="{% static 'nautobot_cable_utils/qr-scanner.js' %}"></script>
+{% endblock %}
+
+{% block title %}
+  Commission Cable
+{% endblock %}
+
+{% block form %}
+    <div class="panel panel-default">
+      <div class="panel-heading"><strong>Commission Cable #{{cable.pk}}</strong></div>
+      <div class="panel-body">
+        {% render_field form.template %}
+        {{ form.cable }}
+        <a onClick="toggleQrcodeReader();" style="cursor: pointer; cursor: hand;"><i class="glyphicon glyphicon-qrcode"></i> Scan</a>
+        <a id="toggle-flash" onClick="toggleTorch();" style="cursor: pointer; cursor: hand; visibility: hidden;"><i class="glyphicon glyphicon-flash"></i> Toggle Light</a>
+      </div>
+      <div id="qr-reader"></div>
+    </div>
+{% endblock %}
+
+{% block buttons %}
+    <button type="submit" name="_create" class="btn btn-primary">Create</button>
+    <a href="{{ return_url }}" class="btn btn-default">Cancel</a>
+{% endblock %}

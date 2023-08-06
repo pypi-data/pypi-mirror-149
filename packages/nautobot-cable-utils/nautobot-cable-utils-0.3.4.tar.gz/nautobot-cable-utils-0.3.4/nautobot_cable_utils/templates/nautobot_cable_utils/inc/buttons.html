@@ -1,0 +1,18 @@
+{% if cable_planned %}
+<a href="{% url 'plugins:nautobot_cable_utils:commission' cable.pk %}" class="btn btn-success">
+  <span class="glyphicon glyphicon-resize-small" aria-hidden="true"></span> Commission
+</a>
+{% endif %}
+{% if log %}
+<a href="{{ log }}" class="btn btn-success">
+  <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Measurement Log
+</a>
+{% endif %}
+<a href="{% url 'plugins:nautobot_cable_utils:reconnect' cable.pk %}" class="btn btn-primary">
+  <span class="glyphicon glyphicon-resize-small" aria-hidden="true"></span> Reconnect
+</a>
+{% if cable_inventory %}
+<a href="{% url 'plugins:nautobot_cable_utils:undo_commission' cable.pk %}" class="btn btn-warning">
+  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Undo Commission
+</a>
+{% endif %}

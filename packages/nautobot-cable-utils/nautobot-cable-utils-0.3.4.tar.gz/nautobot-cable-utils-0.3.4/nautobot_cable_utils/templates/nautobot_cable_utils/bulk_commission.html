@@ -1,0 +1,55 @@
+{% extends 'generic/object_detail.html' %}
+{% load form_helpers %}
+{% load helpers %}
+{% load static %}
+
+{% block title %}
+Bulk Commission Cables - left: {{ count }}
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'nautobot_cable_utils/html5-qrcode.min.js' %}"></script>
+    <script src="{% static 'nautobot_cable_utils/qr-scanner.js' %}"></script>
+{% endblock %}
+
+{% block buttons %}
+{% endblock %}
+
+{% block content_left_page %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Termination A</strong>
+        </div>
+        {% include 'dcim/inc/cable_termination.html' with termination=object.termination_a %}
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <strong>Termination B</strong>
+        </div>
+        {% include 'dcim/inc/cable_termination.html' with termination=object.termination_b %}
+    </div>
+{% endblock content_left_page %}
+
+{% block content_right_page %}
+
+    {% block form %}
+    <form method="post" class="form form-horizontal">
+        {% csrf_token %}
+        <div class="panel panel-default">
+        <div class="panel-heading"><strong>Commission Cable #{{object.pk}}</strong></div>
+        <div class="panel-body">
+            {% render_field form.template %}
+            {{ form.object }}
+            <a onClick="toggleQrcodeReader();" style="cursor: pointer; cursor: hand;"><i class="glyphicon glyphicon-qrcode"></i> Scan</a>
+            <a id="toggle-flash" onClick="toggleTorch();" style="cursor: pointer; cursor: hand; visibility: hidden;"><i class="glyphicon glyphicon-flash"></i> Toggle Light</a>
+        </div>
+        <div id="qr-reader"></div>
+        </div>
+        
+        <button type="submit" name="_create" class="btn btn-primary">Create</button>
+        <button type="submit" name="_skip" class="btn btn-default">Skip</button>
+        <button type="submit" name="_cancel" class="btn btn-default">Cancel</button>
+    </form>
+    {% endblock %}
+
+{% endblock content_right_page %}
