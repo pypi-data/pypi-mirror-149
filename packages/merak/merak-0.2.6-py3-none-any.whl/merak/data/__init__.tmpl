@@ -1,0 +1,79 @@
+def __bootstrap(pkg_name, modules, pkg_set=None, sep="_"):
+  import copy as _copy
+  from importlib import abc as _imp_abc
+  from importlib import machinery as _imp_mac
+  from importlib import util as _imp_util
+  import sys as _sys
+
+  class _ExtensionLoader(_imp_mac.ExtensionFileLoader):
+    def __init__(self, name, path, fullname, is_package=False):
+      super(_ExtensionLoader, self).__init__(name, path)
+      self._is_package = is_package
+      self._fullname = fullname
+
+    def is_package(self, fullname):
+      return self._is_package
+
+    def exec_module(self, module):
+      insert = self._fullname not in _sys.modules
+      if insert:
+        _sys.modules[self._fullname] = module
+      try:
+        super(_ExtensionLoader, self).exec_module(module)
+      except BaseException:
+        try:
+          if insert: del _sys.modules[self._fullname]
+        except KeyError:
+          pass
+        raise
+
+  # Chooses the right init function
+  class _CythonPackageMetaPathFinder(_imp_abc.MetaPathFinder):
+    def __init__(self, name, modules=None, packages=None, sep="_"):
+      super(_CythonPackageMetaPathFinder, self).__init__()
+      self._prefix = name + "."
+      self._sep = sep
+      self._start = len(self._prefix)
+      self._packages = set(packages or set())
+      self._modules = set(modules or set())
+
+    def _rename(self, name):
+      if name in self._modules: return name
+      idx = name.find(".")
+      if idx == -1: return name
+      ridx = name.rfind(".")
+      pfx = "___" if name[:ridx] not in self._modules else ""
+      return "%s%s%s" % (name[:idx+1], pfx, name[idx+1:].replace(".", self._sep))
+
+    def __eq__(self, other):
+      return (self.__class__.__name__ == other.__class__.__name__ and
+              self._prefix == getattr(other, "_prefix", None) and
+              self._sep == getattr(other, "_sep", None) and
+              self._packages == getattr(other, "_packages", None))
+
+    def __hash__(self):
+      return (hash(self.__class__.__name__) ^
+              hash(self._prefix) ^
+              hash(self._sep) ^
+              hash("".join(sorted(self._packages))))
+
+    def find_spec(self, fullname, path, target=None):
+      if fullname.startswith(self._prefix):
+        name = self._rename(fullname)
+        is_package = fullname in self._packages
+        search = [__file__] if is_package else None
+        loader = _ExtensionLoader(name, __file__, fullname, is_package=is_package)
+        spec = _imp_util.spec_from_file_location(
+            name, loader=loader, submodule_search_locations=search)
+
+        return spec
+
+  # injecting custom finder/loaders into sys.meta_path:
+  finder = _CythonPackageMetaPathFinder(
+      pkg_name, modules=modules, packages=pkg_set, sep=sep)
+  if finder not in _sys.meta_path: _sys.meta_path.append(finder)
+
+
+__bootstrap("{package}", {modules}, {subpackages}, "{sep}")
+
+

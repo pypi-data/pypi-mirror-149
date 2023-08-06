@@ -1,0 +1,33 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import os
+
+import setuptools
+from Cython.Build import cythonize
+
+
+from distutils.command.build_ext import build_ext
+def get_export_symbols_fixed(self, ext):
+  pass  # return [] also does the job!
+
+# replace wrong version with the fixed:
+build_ext.get_export_symbols = get_export_symbols_fixed
+
+PACKAGE_NAME = "{package}"
+
+
+def get_source_files(dirname):
+  return [os.path.join(dirname, f) for f in os.listdir(dirname)
+          if f.endswith(".py")]
+
+
+setuptools.setup(
+    name=PACKAGE_NAME,
+    packages=setuptools.find_packages(),
+    ext_modules=cythonize(setuptools.Extension(
+        name="%s.__init__" % PACKAGE_NAME,
+        sources=get_source_files(PACKAGE_NAME),
+        extra_compile_args=["-DCYTHON_PEP489_MULTI_PHASE_INIT=0"]),
+        compiler_directives={{"language_level": "3"}}))
