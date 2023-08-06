@@ -1,0 +1,31 @@
+name: pikpak-fuse
+version: '0.1.13'
+summary: pikpak网盘 FUSE
+description: |
+  pikpak网盘 FUSE 磁盘挂载
+
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict # use 'strict' once you have the right plugs and slots
+
+base: core20
+
+build-packages:
+  - pkg-config
+  - libfuse3-dev
+
+architectures:
+  - build-on: amd64
+  - build-on: i386
+  - build-on: arm64
+  - build-on: armhf
+
+parts:
+  pikpak-fuse:
+    plugin: rust
+    source: .
+    stage-packages:
+      - fuse3
+
+apps:
+  pikpak-fuse:
+    command: bin/pikpak-fuse

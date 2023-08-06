@@ -1,0 +1,15 @@
+[Unit]
+Description=pikpakDrive FUSE
+After=network.target
+
+[Service]
+Type=simple
+PermissionsStartOnly=true
+ExecStartPre=/bin/mkdir -p /var/run/pikpak-fuse -p /mnt/pikpakDrive
+Environment="REFRESH_TOKEN="
+ExecStart=/usr/bin/pikpak-fuse --allow-other -w /var/run/pikpak-fuse /mnt/pikpakDrive
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
