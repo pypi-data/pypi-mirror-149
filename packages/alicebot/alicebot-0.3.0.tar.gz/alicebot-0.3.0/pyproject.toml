@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "alicebot"
+version = "0.3.0"
+description = "A simply asynchronous python chatbot framework."
+license = "MIT"
+authors = ["st1020 <stone_1020@qq.com>"]
+readme = "README.md"
+homepage = "https://docs.alicebot.dev/"
+repository = "https://github.com/st1020/alicebot"
+documentation = "https://docs.alicebot.dev/"
+keywords = ["bot", "chatbot", "qq", "qqbot", "cqhttp", "coolq"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "~1.9.0"
+aiohttp = "^3.7.0"
+loguru = "^0.5.0"
+
+[tool.poetry.dev-dependencies]
+sophia-doc = { git = "https://github.com/st1020/sophia-doc.git" }
+alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
+alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
+alicebot-adapter-dingtalk = { path = "./packages/alicebot-adapter-dingtalk", develop = true }
+alicebot-adapter-apscheduler = { path = "./packages/alicebot-adapter-apscheduler", develop = true }
+
+[tool.poetry.extras]
+cqhttp = ["alicebot-adapter-cqhttp"]
+mirai = ["alicebot-adapter-mirai"]
+dingtalk = ["alicebot-adapter-dingtalk"]
+apscheduler = ["alicebot-adapter-apscheduler"]
+all = ["alicebot-adapter-cqhttp", "alicebot-adapter-mirai", "alicebot-adapter-dingtalk", "alicebot-adapter-apscheduler"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pydantic-pycharm-plugin]
+ignore-init-method-arguments = true
