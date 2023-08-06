@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: wifipass
+Version: 0.0.5
+Summary: Creates a PDF with a QR code of your wifi password.
+Home-page: https://github.com/phoffmeister/wifiPass
+License: MIT
+Keywords: wifi,QR,password
+Author: Pierre
+Author-email: pierre.git@posteo.de
+Requires-Python: >=3.7
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: Pillow (>=9.1.0,<10.0.0)
+Requires-Dist: fpdf (>=1.7.2,<2.0.0)
+Requires-Dist: qrcode (>=7.3.1,<8.0.0)
+Project-URL: Repository, https://github.com/phoffmeister/wifiPass
+Description-Content-Type: text/markdown
+
+# wifipass
+A tool to create QR codes to share your wifi credentials.
+
+# Prerequisites
+You need to have `python3` and `pip` installed.
+
+# Installing
+```
+pip install wifipass
+```
+
+# Running
+```
+usage: python -m wifipass [-h] [--ssid SSID] [--pw PW] [--out OUT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --ssid SSID           network name
+  --pw PW               network password
+  --out OUT             output filename
+  ```
+  For example to generate a pdf version:
+  ```
+  python -m wifipass --ssid YOUR_SSID_HERE --pw YOUR_PW_HERE --out qr.pdf
+  ```
+
