@@ -1,0 +1,71 @@
+% setdefault('title', 'twottle')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css" type="text/css">
+    <link
+        href="https://css.gg/css?=|calendar-dates|eye|search|time|timer|user-add|user-remove|user|play-button|comment|arrow-top-right-r"
+        rel="stylesheet">
+    <title>{{title}}</title>
+    % if defined('verification'):
+    <script>
+        function getHash() {
+            url = window.location.href.replace('#', '?')
+            window.location = url
+        }
+    </script>
+    % end
+    <script type="text/javascript">
+        function popup(url, channel, params) {
+            newwin = window.open(url, channel, params);
+            if (window.focus) { newwin.focus() }
+            return false;
+        }
+    </script>
+</head>
+
+% if defined('verification'):
+
+<body onload="getHash()">
+    <h1>Caching...</h1>
+</body>
+
+% else:
+
+<body>
+    <div class="page_layout">
+        <div class="navbar">
+            <div class="topnav">
+                <a class="hyperlink" href="/">Home</a>
+                <a class="hyperlink" href="/c">Categories</a>
+                <a class="hyperlink" href="/c/all">Top Streams</a>
+                <a class="hyperlink" href="/watching">Watching</a>
+                <a class="hyperlink" href="/following">Following</a>
+                <a class="hyperlink" href="/settings">Settings</a>
+                <div class="searchbar">
+                    <form action="/search">
+                        <input type="search" name="query" placeholder="Search..." minlength="1" required>
+                        <button class="search"><i class="gg-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="page_content">
+            {{!base}}
+        </div>
+        <div class="footer">
+            <a href="https://github.com/raeedahmed/twottle"><b>GitHub</b></a>
+            <b style="padding-left: 5px; padding-right: 5px;">|</b>
+            <a href="https://pypi.org/project/twottle/"><b>PyPi</b></a>
+            <b style="float: right;">v0.7.0</b>
+        </div>
+</body>
+% end
+
+
+
+
+</html>
