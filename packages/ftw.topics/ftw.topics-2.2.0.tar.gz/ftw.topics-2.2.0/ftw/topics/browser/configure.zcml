@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="ftw.topics">
+
+    <include file="resources.zcml" zcml:condition="installed ftw.theming" />
+
+    <browser:resourceDirectory
+        name="ftw.topics"
+        directory="resources" />
+
+    <browser:page
+        for="ftw.topics.interfaces.ITopicTree"
+        name="topic_tree_view"
+        template="templates/tree.pt"
+        class=".tree.TreeView"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        for="ftw.topics.interfaces.ITopic"
+        name="topic_view"
+        template="templates/topic.pt"
+        class=".topic.TopicView"
+        permission="zope2.View"
+        />
+
+    <!-- Representation Adapters -->
+    <adapter factory=".representation.DefaultRepresentation"
+        name="default_representation"/>
+
+    <adapter
+        zcml:condition="installed ftw.simplelayout"
+        factory=".contentpage.representation.ContentPageRepresentation"
+        name="contentpage_representation"/>
+
+</configure>

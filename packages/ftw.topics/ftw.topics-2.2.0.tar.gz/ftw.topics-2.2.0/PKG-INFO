@@ -1,0 +1,298 @@
+Metadata-Version: 2.1
+Name: ftw.topics
+Version: 2.2.0
+Summary: Create subject trees in Plone
+Home-page: https://github.com/4teamwork/ftw.topics
+Author: 4teamwork AG
+Author-email: mailto:info@4teamwork.ch
+License: GPL2
+Description: ftw.topics
+        ==========
+        
+        This package integrates a subject tree into Plone.
+        
+        Features
+        --------
+        
+        - Dexterity based content types "Topic Tree" and "Topic" for
+          creating a topic tree (subject tree).
+        
+        - The topic-view lists all content referenced the topic.
+        
+        
+        Usage
+        -----
+        
+        - Add ``ftw.topics`` to your buildout configuration:
+        
+        .. code:: ini
+        
+            [instance]
+            eggs +=
+                ftw.topics
+        
+        - Install the default generic import profile.
+        
+        
+        ITopicSupport for Dexterity
+        ---------------------------
+        
+        If you would like to have the topics field on dexterity based types, use
+        the `ITopicSupportSchema` behavior:
+        
+        .. code:: xml
+        
+            <?xml version="1.0"?>
+            <object name="example.conference.presenter" meta_type="Dexterity FTI"
+               xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+               i18n:domain="example.conference">
+        
+                 <!-- enabled behaviors -->
+                 <property name="behaviors">
+                     <element value="ftw.topics.behavior.ITopicSupportSchema" />
+                 </property>
+        
+            </object>
+        
+        
+        plone.restapi support
+        ---------------------
+        
+        If necessary install the [restapi] extra.
+        
+        .. code:: ini
+        
+            [instance]
+            eggs +=
+                ftw.topics [restapi]
+        
+        
+        
+        List all backreferences on a topic.
+        
+        .. code:: http
+        
+            GET /plone/topictree/topic?expand=backreferences HTTP/1.1
+            Accept: application/json
+        
+        
+        Response - check the expanded section under "backreferences"
+        
+        .. code:: http
+        
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+        
+            {
+                "@components": {
+                    "actions": {
+                        "@id": "http://localhost:55001/plone/topictree/topic/@actions"
+                    },
+                    "backreferences": {
+                        "@id": "http://localhost:55001/plone/topictree/topic/@backreferences",
+                        "items": [
+                            {
+                                "@id": "http://localhost:55001/plone/front-page",
+                                "title": "Welcome to Plone"
+                                ...
+                            }
+                        ],
+                        ...
+                    }
+                }
+            }
+        
+        
+        
+        Customizing reference representations
+        -------------------------------------
+        
+        The ``ITopicReferencePresentation`` adapters are responsible for rendering the
+        references on the topic view. The adapters consume all items they know and
+        render them in a section of the view.
+        
+        `ftw.topics` includes an `ITopicReferencePresentation` for rendering content pages
+        and a default adapter for all contents which are not consumed by another adapter.
+        
+        Adding a custom representation adapter is easy:
+        
+        .. code:: python
+        
+            from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+            from ftw.topics.browser.representation import DefaultRepresentation
+            from my.package.interfaces import IMyType
+            from my.package import _
+        
+            class MyRepresentation(DefaultRepresentation):
+                template = ViewPageTemplateFile('my_representation.pt')
+        
+                def consume(self, objects):
+                    for obj in objects:
+                        if IMyType.providedBy(obj):
+                            self.objects.append(obj)
+                        else:
+                            yield obj
+        
+                def title(self):
+                    return _(u'label_my_objects', default=u'My objects')
+        
+                def position(self):
+                    return 50
+        
+        
+        consume()
+            Be sure that you yield all objects which you do not handle in your adapter.
+            They will be passed up the pipeline until another adapter handles them.
+            The last adapter is usually the default representation adapter, which consumes
+            all left over objects.
+        
+        title()
+            Return the title for your section.
+        
+        position()
+            The adapters are ordered by position. The default adapter has the position 1000,
+            the `ftw.contentpage` adapter has the position 100.
+        
+        Register your adapter with ZCML:
+        
+        .. code:: xml
+        
+            <configure xmlns="http://namespaces.zope.org/zope">
+        
+                <adapter
+                    factory=".representation.MyRepresentation"
+                    name="my_representation"
+                    />
+        
+            </configure>
+        
+        Be sure you give the adapter a name, so that it does not conflict with other adapters.
+        
+        
+        Links
+        -----
+        
+        - Github: https://github.com/4teamwork/ftw.topics
+        - Issues: https://github.com/4teamwork/ftw.topics/issues
+        - Pypi: http://pypi.python.org/pypi/ftw.topics
+        - Continuous integration: https://jenkins.4teamwork.ch/search?q=ftw.topics
+        
+        
+        Copyright
+        ---------
+        
+        This package is copyright by `4teamwork <http://www.4teamwork.ch/>`_.
+        
+        ``ftw.topics`` is licensed under GNU General Public License, version 2.
+        
+        Changelog
+        =========
+        
+        
+        2.2.0 (2022-05-06)
+        ------------------
+        
+        - Add restapi support. [mathias.leimgruber]
+        
+        
+        2.1.1 (2020-09-07)
+        ------------------
+        
+        - Make collector more robust if there is a non DX object. [mathias.leimgruber]
+        
+        
+        2.1.0 (2020-01-09)
+        ------------------
+        
+        - Add uninstall profile. [tinagerber]
+        - Add ftw.topics portal_types translations to plone domain. [tinagerber]
+        
+        
+        2.0.0 (2019-10-18)
+        ------------------
+        
+        - Add plone 5.1 support. [busykoala]
+        - Remove ATTopicSupportExtender.
+          Check out https://github.com/4teamwork/ftw.upgrade#inplace-migrator
+          to migrating your types. [busykoala]
+        
+        
+        1.3.1 (2019-06-13)
+        ------------------
+        
+        - Exclude expired and future content from the collected backreferences. [elioschmutz]
+        
+        
+        1.3.0 (2018-07-04)
+        ------------------
+        
+        - Protect the DX topics field with the write permission. [mbaechtold]
+        
+        
+        1.2.1 (2016-09-29)
+        ------------------
+        
+        - Make the topics field optional.
+          [mbaechtold]
+        
+        
+        1.2.0 (2016-09-26)
+        ------------------
+        
+        - Add ftw.referencewidget and use it instad of plone.formwidget.contenttree.
+          [tschanzt]
+        
+        - Add ftw.theming scss with font awsome icons.
+          [mathias.leimgruber]
+        
+        - Fix dexterity behavior and relation collector.
+          [jone]
+        
+        - Restrict versions of some dependencies so they don't pull in Plone 5.
+          [mbaechtold]
+        
+        - Also enable navigation behavior on ftw.topic.Topics.
+          [mathias.leimgruber]
+        
+        
+        1.1.3 (2015-06-15)
+        ------------------
+        
+        - Fix sorting the subtopics alphabetically.
+          [mathias.leimgruber]
+        
+        
+        1.1.2 (2014-11-27)
+        ------------------
+        
+        - Added option to hide backreferences in topics.
+          [lknoefpel]
+        
+        
+        1.1.1 (2014-02-28)
+        ------------------
+        
+        - Nothing changed yet.
+        
+        
+        1.1.0 (2014-02-03)
+        ------------------
+        
+        - Enable IExcludeFromNavigation behavior on topic tree.
+          [mathias.leimgruber]
+        
+        
+        1.0 (2013-05-24)
+        ----------------
+        
+        - Initial implementation.
+        
+Keywords: ftw topics
+Platform: UNKNOWN
+Classifier: Framework :: Plone
+Classifier: Framework :: Plone :: 4.3
+Classifier: Framework :: Plone :: 5.1
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Provides-Extra: restapi
+Provides-Extra: tests
