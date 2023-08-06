@@ -1,0 +1,215 @@
+Metadata-Version: 2.1
+Name: benchopt
+Version: 1.2.0
+Summary: Benchmark toolkit for optimization
+Download-URL: https://github.com/benchopt/benchopt.git
+Maintainer: Thomas Moreau
+Maintainer-email: thomas.moreau@inria.fr
+License: BSD (3-clause)
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: R
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Utilities
+Classifier: Topic :: Software Development :: Libraries
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: click (>=8.0)
+Requires-Dist: joblib
+Requires-Dist: pygithub
+Requires-Dist: mako
+Requires-Dist: psutil
+Requires-Dist: plotly (>=4.12)
+Requires-Dist: pyyaml
+Requires-Dist: line-profiler
+Provides-Extra: doc
+Requires-Dist: numpydoc ; extra == 'doc'
+Requires-Dist: sphinx-bootstrap-theme ; extra == 'doc'
+Requires-Dist: sphinx-click ; extra == 'doc'
+Requires-Dist: sphinx-gallery ; extra == 'doc'
+Requires-Dist: pillow ; extra == 'doc'
+Requires-Dist: scikit-learn ; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: pytest-timeout ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+Requires-Dist: coverage ; extra == 'test'
+
+Benchmark repository for optimization
+=====================================
+
+|Test Status| |Python 3.6+| |codecov|
+
+BenchOpt is a benchmarking suite for optimization algorithms.
+It is built for simplicity, transparency, and reproducibility.
+
+Benchopt is implemented in Python, and can run algorithms
+written in **many programming languages**
+(`example <https://benchopt.github.io/auto_examples/plot_run_benchmark_python_R.html>`_).
+So far, Benchopt has been tested with `Python <https://www.python.org/>`_,
+`R <https://www.r-project.org/>`_, `Julia <https://julialang.org/>`_
+and `C/C++ <https://isocpp.org/>`_ (compiled binaries with a command line interface).
+Programs available via
+`conda <https://docs.conda.io/en/latest/>`_ should be compatible.
+
+BenchOpt is run through a command line interface as described
+in the `API Documentation <https://benchopt.github.io/api.html>`_.
+Replicating an optimization benchmark should
+be **as simple as doing**:
+
+.. code-block::
+
+    conda create -n benchopt python
+    conda activate benchopt
+    pip install benchopt
+    git clone https://github.com/benchopt/benchmark_logreg_l2
+    benchopt install -e benchmark_logreg_l2 -s cd -s sklearn
+    benchopt run -e ./benchmark_logreg_l2 -s cd -s sklearn
+
+Running this command will give you a benchmark plot on l2-regularized
+logistic regression:
+
+.. figure:: https://benchopt.github.io/_images/sphx_glr_plot_run_benchmark_001.png
+   :target: how.html
+   :align: center
+   :scale: 80%
+
+See the `List of optimization problems available`_ below.
+
+Learn how to `create a new benchmark <https://benchopt.github.io/how.html>`_
+using the `benchmark template <https://github.com/benchopt/template_benchmark>`_.
+
+Install
+--------
+
+The command line tool to run the benchmarks can be installed through `pip`. In order to allow `benchopt`
+to automatically install solvers dependencies, the install needs to be done in a `conda` environment.
+
+
+.. code-block::
+
+    conda create -n benchopt python
+    conda activate benchopt
+
+To get the **latest release**, use:
+
+.. code-block::
+
+    pip install benchopt
+
+To get the **latest development version**, use:
+
+.. code-block::
+
+    pip install -U -i https://test.pypi.org/simple/ benchopt
+
+Then, existing benchmarks can be retrieved from git or created locally.
+For instance, the benchmark for Lasso can be retrieved with:
+
+.. code-block::
+
+    git clone https://github.com/benchopt/benchmark_lasso
+
+
+Command line usage
+------------------
+
+To run the Lasso benchmark on all datasets and with all solvers, run:
+
+.. code-block::
+
+    benchopt run --env ./benchmark_lasso
+
+To get more details about the different options, run:
+
+.. code-block::
+
+    benchopt run -h
+
+or read the `API Documentation <https://benchopt.github.io/api.html>`_.
+
+List of optimization problems available
+---------------------------------------
+
+- `Ordinary Least Squares (OLS) <https://github.com/benchopt/benchmark_ols>`_ |Build Status OLS|
+- `Non-Negative Least Squares (NNLS) <https://github.com/benchopt/benchmark_nnls>`_ |Build Status NNLS|
+- `LASSO: L1-regularized least squares <https://github.com/benchopt/benchmark_lasso>`_ |Build Status Lasso|
+- `L2-regularized logistic regression <https://github.com/benchopt/benchmark_logreg_l2>`_ |Build Status LogRegL2|
+- `L1-regularized logistic regression <https://github.com/benchopt/benchmark_logreg_l1>`_ |Build Status LogRegL1|
+- `L2-regularized Huber regression <https://github.com/benchopt/benchmark_huber_l2>`_ |Build Status HuberL2|
+- `L1-regularized quantile regression <https://github.com/benchopt/benchmark_quantile_regression>`_ |Build Status QuantileRegL1|
+- `Linear SVM for binary classification <https://github.com/benchopt/benchmark_linear_svm_binary_classif_no_intercept>`_ |Build Status LinearSVM|
+- `Linear ICA <https://github.com/benchopt/benchmark_linear_ica>`_ |Build Status LinearICA|
+
+.. |Test Status| image:: https://github.com/benchopt/benchopt/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/benchopt/benchopt/actions/workflows/test.yml
+.. |Python 3.6+| image:: https://img.shields.io/badge/python-3.6%2B-blue
+   :target: https://www.python.org/downloads/release/python-360/
+.. |codecov| image:: https://codecov.io/gh/benchopt/benchopt/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/benchopt/benchopt
+
+.. |Build Status OLS| image:: https://github.com/benchopt/benchmark_ols/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_ols/actions
+.. |Build Status NNLS| image:: https://github.com/benchopt/benchmark_nnls/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_nnls/actions
+.. |Build Status Lasso| image:: https://github.com/benchopt/benchmark_lasso/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_lasso/actions
+.. |Build Status LogRegL2| image:: https://github.com/benchopt/benchmark_logreg_l2/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_logreg_l2/actions
+.. |Build Status LogRegL1| image:: https://github.com/benchopt/benchmark_logreg_l1/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_logreg_l1/actions
+.. |Build Status HuberL2| image:: https://github.com/benchopt/benchmark_huber_l2/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_huber_l2/actions
+.. |Build Status QuantileRegL1| image:: https://github.com/benchopt/benchmark_quantile_regression/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_quantile_regression/actions
+.. |Build Status LinearSVM| image:: https://github.com/benchopt/benchmark_linear_svm_binary_classif_no_intercept/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_linear_svm_binary_classif_no_intercept/actions
+.. |Build Status LinearICA| image:: https://github.com/benchopt/benchmark_linear_ica/workflows/Tests/badge.svg
+   :target: https://github.com/benchopt/benchmark_linear_ica/actions
+
+New BSD License
+
+Copyright (c) 2019–2020 The benchopt developers.
+All rights reserved.
+
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  a. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  b. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  c. Neither the name of the Scikit-learn Developers  nor the names of
+     its contributors may be used to endorse or promote products
+     derived from this software without specific prior written
+     permission.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+
+
