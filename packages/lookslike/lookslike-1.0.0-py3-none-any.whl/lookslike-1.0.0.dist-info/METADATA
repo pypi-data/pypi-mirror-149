@@ -1,0 +1,175 @@
+Metadata-Version: 2.1
+Name: lookslike
+Version: 1.0.0
+Summary: Compare dictionaries, lists and other objects convenient and readable
+Home-page: https://gitlab.com/pyfox/lookslike/
+Author: kitsunebi
+Author-email: me@pyfox.net
+License: UNKNOWN
+Project-URL: Bug Tracker, https://gitlab.com/pyfox/lookslike/-/issues
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Lookslike - Simple datatype comparison
+
+Lookslike is a library to simplify comparison of two objects (like numbers) within complex structures (like
+dictionaries) in a simple and readable way.
+
+For example, it can be used to compare JSON data of server responses.
+
+You can use `Like` objects when comparing dictionaries (or lists) for values that don't match exactly.
+
+```python
+from lookslike import Like
+from urllib.request import urlopen
+import json
+
+
+def test_get_user():
+    server_response = json.load(urlopen("http://localhost:8000/api/user?user_id=1"))
+    assert server_response == {'user-name': 'John Doe',
+                               'uuid': Like(str),
+                               'timestamp': Like(int, lambda value: value > 0)}
+```
+
+Lookslike has no external dependencies and less than 100 lines of code with a bit of magic to provide you some sparkle.
+
+## Usage examples
+
+```python
+import re
+from lookslike import Like, utils
+
+# Check for type
+42 == Like(int)  # True
+42 == Like(float)  # False
+
+# Check using regular expressions
+'abc' == Like(re.compile('a.*'))  # True
+'abc' == Like(re.compile('a'))  # False
+123.456 == Like(re.compile(r'\d+\.\d+'))  # True
+
+# Check using custom function
+42 == Like(lambda value: 40 < value < 44)  # True
+
+# Combine multiple checks
+42 == Like(int, lambda value: 40 < value < 44)  # True
+42 == Like(float, lambda value: 40 < value < 44)  # False
+
+# Convert values
+['c', 'b', 'a'] == Like(['a', 'b', 'c'], convert=sorted)  # True
+{'a': 1, 'b': 'not important'} == Like({'a': 1},
+                                       convert=utils.filter_keys(['a']))  # True
+[1, 2, 3, 4, 5] == Like([1, 2, 3], convert=lambda l: [num for num in l if num <= 3])  # True
+
+# Usage in list and dict comparisons
+[1, 2, 3] == [1, Like(int), 3]  # True
+{'a': 1, 'b': 0.5} == {'a': 1, 'b': Like(float, lambda num: 0 <= num <= 1)}  # True
+
+# Complex server response example
+def test_server_response():
+    server_response = {  # This is your test object of course
+        'response_id': 42,
+        'timestamp': 2134567.2355,
+        'pets': ['cat', 'dog', 'chicken'],
+        'number_of_pets': 3,
+        'info_url': 'https://petsdb.info/',
+        'vet name': 'Dr. Murphey',
+        'home': {
+            'home_id': 1242,
+            'address': {
+                'street': 'Rabbit street 42',
+                'city': 'New Bark',
+            }
+        }
+    }
+
+    assert server_response == {
+        'response_id': Like(int),
+        'timestamp': Like(float),
+        'pets': Like(['cat', 'chicken', 'dog'], convert=sorted),
+        'number_of_pets': 3,
+        'info_url': Like(lambda value: value.startswith('https://')),
+        'vet name': Like(re.compile(r'Dr\. .*')),
+        'home': {
+            'home_id': Like(int),
+            'address': Like({'city': 'New Bark'}, convert=utils.filter_keys(['city']))
+        }
+    }  # True
+```
+
+## To consider
+
+**Regular expressions**
+
+When you provide a regex pattern, there are some things to consider:
+
+*Pattern has to match the whole string*
+
+When you provide a regex Pattern, it has to match the whole string. This is to prevent False-positives. For example:
+
+This regex `re.match('a', 'abc')` in Python will find a match. But `'abc' == Like(re.compile('a'))` will be False.
+Instead you have to use
+`'abc' == Like(re.compile('a.*')`
+
+*Comparing strings with bytes does not raise an Exception*
+
+Normally, you will get a TypeError when doing something like this `re.match(b'abc', 'a')`
+However, this `b'abc' == Like(re.compile('a')` will return False instead without raising an exception.
+
+**String representation**
+
+The string representation of `Like` objects changes depending on the last comparison result: If the last result was
+False, the string representation will be '!Like(...)'. This is to make it easier to find non-matching items in logs.
+Names will change in the debugger and e.g. in the AssertionError raised by pytest.
+
+## Other utilities
+
+If you want to compare JSON only and want a tool that is more standardized you can have a look
+at [jsonschema](https://pypi.org/project/jsonschema/).
+
+If you want not only to check, but to convert dictionaries to real Python objects, have a look
+at [pydantic](https://pypi.org/project/pydantic/).
+
+If you want to find the difference of two dictionaries have a look at [deepdiff](https://pypi.org/project/deepdiff/).
+
+
+## Changes
+
+1.0.0
+
+* Don't panic, just move project status to "stable". No breaking changes.
+
+0.9.2
+
+* Add new utility "is_truthy".
+
+0.9.1
+
+* Restructure project
+* Add support for old Python versions (up to 3.3)
+* Change representation of "Like" to "!Like" when last comparison failed. 
+
+0.9
+
+* Add lookslike to PyPI
+
