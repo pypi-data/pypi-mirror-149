@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: nudebomb
+Version: 0.1.0
+Summary: Strip unused languages from mkv files en mass
+Home-page: https://github.com/ajslater/nudebomb
+License: GPL-3.0-only
+Keywords: mkv,movie,video,srt,audio,subtitles
+Author: AJ Slater
+Author-email: aj@slater.net
+Requires-Python: >=3.9,<4.0
+Classifier: Environment :: Console
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Multimedia :: Video :: Conversion
+Requires-Dist: confuse (>=1.7.0,<2.0.0)
+Requires-Dist: pycountry (>=22.3.5,<23.0.0)
+Requires-Dist: python-dateutil (>=2.8.2,<3.0.0)
+Requires-Dist: ruamel.yaml (>=0.17.21,<0.18.0)
+Requires-Dist: termcolor (>=1.1.0,<2.0.0)
+Requires-Dist: treestamps (>=0.1.0,<0.2.0)
+Project-URL: Documentation, https://github.com/ajslater/nudebomb
+Project-URL: Issues, https://github.com/ajslater/nudebomb/issues
+Project-URL: Source, https://github.com/ajslater/nudebomb
+Description-Content-Type: text/markdown
+
+# Nudebomb
+
+The Nudebomb recursively strips matroska media files of unwanted audio and
+subtitle tracks.
+
+## News
+
+You may find user focused nudebomb changes in the [NEWS file](https://github.com/ajslater/nudebomb/tree/NEWS.md).
+
+## Requirements
+
+- MKVToolNix
+- Python3
+
+## Install
+
+    pip install
+
+## Usage
+
+### Posix
+
+    nudebomb -rl eng,fre /mnt/movies
+
+### Windows
+
+    nudebomb -b C:\\Program/ Files\MKVToolNix\mkvmerge.exe -rl eng,jap \\nas\movies
+
+## Config
+
+You may configure Nudebomb options via the command, a yaml config file
+and environment variables.
+
+### Environment variable format
+
+Prefix environment variables with `NUDEBOMB_NUDEBOMB__` and enumerate lists elements:
+
+```sh
+NUDEBOMB_NUDEBOMB__RECURSE=True
+NUDEBOMB_NUDEBOMB__LANGUAGES__0=und
+NUDEBOMB_NUDEBOMB__LANGUAGES__1=eng
+```
+
+## Lang Files
+
+While you may have a primary language, you probably want videos from other countries to keep
+their native language as well. Lang files let you do this.
+
+Lang files are persistent files on disk that nudebomb parses to keep to all languages in
+them in the mkvs in the current directory and all mkvs in sub directories.
+
+Valid lang file names are: 'lang', 'langs', '.lang', or '.langs'
+They include comma separated list of languages to keep like the `-l` option.
+
+e.g. You may have an entire collecttion of different TV shows with a root lang file
+containing the `eng` language. Under that directory you may have a specifi TV show directory
+with lang file containing `jpn`. All mkvs in season directories under that would then
+keep both the `eng` and `jpn` languages, while other TV shows would keep only `eng` languages.
+
+For each mkv file, nudebomb looks up the directory tree for each parent lang file and uses the
+union of all languages found to determine what languages to keep.
+
+### APIs
+
+Langfiles would be obsolete if nudebomb could deterimining native languages for mkv files by
+polling and caching results from major online media databases. It's the right thing to do, but I
+don't care to implement it. Patches or forks welcome.
+
+## Inspiration
+
+Nudebomb is a radical fork of [mkvstrip](https://github.com/willforde/mkvstrip). It adds recursion, lang files, timestamps and more configuration to mkvstrip and fixes some minor bugs.
+
