@@ -1,0 +1,58 @@
+image: python:latest
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - python --version
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r requirements.txt
+
+stages:
+  - build
+  - test
+  - publish
+
+wheels:
+  stage: build
+  tags:
+    - build
+  script: python setup.py bdist_wheel
+  artifacts:
+    paths:
+    - dist/
+
+pytest:
+  stage: test
+  tags:
+    - build
+  script:
+    - pip install .
+    - pytest
+
+publish-release:
+  stage: publish
+  tags:
+    - build
+  script:
+    - pip install --upgrade twine
+    - twine upload -u __token__ -p $PYPI_TOKEN dist/*
+  only:
+    - tags
+
+publish-dev:
+  stage: publish
+  tags:
+    - build
+  script:
+    - pip install --upgrade twine
+    - twine upload --repository-url https://gitlab.inria.fr/api/v4/projects/${CI_PROJECT_ID}/packages/pypi -u gitlab-ci-token -p $CI_JOB_TOKEN dist/*
+  only:
+    - master
