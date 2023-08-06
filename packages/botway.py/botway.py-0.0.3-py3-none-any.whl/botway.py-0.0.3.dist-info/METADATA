@@ -1,0 +1,70 @@
+Metadata-Version: 2.1
+Name: botway.py
+Version: 0.0.3
+Summary: Python client package for Botway.
+Home-page: https://github.com/abdfnx/botway
+Author: abdfnx
+License: MIT
+Project-URL: Issues, https://github.com/abdfnx/botway/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6.0
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+<div align="center">
+  <h1>botway.py</h1>
+	<p>
+		Python client package for Botway.
+	</p>
+	<br />
+	<p>
+		<img alt="PyPI" src="https://img.shields.io/pypi/v/botway.py?logo=python&style=flat-square">
+	</p>
+</div>
+
+```bash
+# pip
+# Linux/macOS
+pip3 install botway.py
+
+# Windows
+pip install botway.py
+
+# pipenv
+pipenv install botway.py
+```
+
+## Usage
+
+> after creating a new python botway project, you need to use your tokens to connect with your bot.
+
+```python
+...
+from botway import GetToken
+
+from telegram import Update, ForceReply
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+...
+def main() -> None:
+	"""Start the bot."""
+	# Create the Updater and pass it your bot's token.
+	updater = Updater(GetToken())
+
+	# Get the dispatcher to register handlers
+	dispatcher = updater.dispatcher
+...
+```
+
+
