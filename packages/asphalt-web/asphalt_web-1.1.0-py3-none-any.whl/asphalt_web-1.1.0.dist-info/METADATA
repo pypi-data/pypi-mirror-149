@@ -1,0 +1,89 @@
+Metadata-Version: 2.1
+Name: asphalt-web
+Version: 1.1.0
+Summary: Web framework integrations for the Asphalt framework
+Author-email: Alex Grönholm <alex.gronholm@nextday.fi>
+License: Apache License 2.0
+Project-URL: Documentation, https://asphalt-web.readthedocs.org/en/latest/
+Project-URL: Source code, https://github.com/asphalt-framework/asphalt-web
+Project-URL: Issue tracker, https://github.com/asphalt-framework/asphalt-web/issues
+Project-URL: Help and support, https://github.com/asphalt-framework/asphalt/wiki/Help-and-support
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Environment :: Web Environment
+Classifier: Framework :: AsyncIO
+Classifier: Typing :: Typed
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: asphalt (~=4.8)
+Requires-Dist: Django (>=3.2) ; (extra == "test" and platform_python_implementation == "CPython") or extra == "doc" or extra == "django"
+Requires-Dist: aiohttp (>=3.8) ; (extra == "test" or extra == "doc" or extra == "aiohttp") and python_version < "3.11"
+Requires-Dist: asgiref (~=3.5) ; extra == "test" or extra == "doc" or extra == "asgi3" or extra == "starlette" or extra == "fastapi" or extra == "django"
+Requires-Dist: uvicorn (>=0.17.6) ; extra == "test" or extra == "doc" or extra == "asgi3" or extra == "starlette" or extra == "fastapi" or extra == "django"
+Requires-Dist: fastapi (>=0.75) ; extra == "test" or extra == "doc" or extra == "fastapi"
+Requires-Dist: starlette (>=0.17) ; extra == "test" or extra == "doc" or extra == "starlette"
+Provides-Extra: aiohttp
+Provides-Extra: django
+Provides-Extra: doc
+Requires-Dist: Sphinx ; extra == 'doc'
+Requires-Dist: sphinx-rtd-theme ; extra == 'doc'
+Requires-Dist: sphinx-autodoc-typehints (>=1.2.0) ; extra == 'doc'
+Requires-Dist: sphinx-tabs (>=3.3.1) ; extra == 'doc'
+Provides-Extra: fastapi
+Provides-Extra: starlette
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: pytest-asyncio ; extra == 'test'
+Requires-Dist: httpx ; extra == 'test'
+Requires-Dist: websockets ; extra == 'test'
+
+.. image:: https://github.com/asphalt-framework/asphalt-web/actions/workflows/test.yml/badge.svg
+  :target: https://github.com/asphalt-framework/asphalt-web/actions/workflows/test.yml
+  :alt: Build Status
+.. image:: https://coveralls.io/repos/github/asphalt-framework/asphalt-web/badge.svg?branch=master
+  :target: https://coveralls.io/github/asphalt-framework/asphalt-web?branch=master
+  :alt: Code Coverage
+.. image:: https://readthedocs.org/projects/asphalt-web/badge/?version=latest
+  :target: https://asphalt-web.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation
+
+This Asphalt framework component provides integrations for various web frameworks,
+enabling them to make use of Asphalt components.
+
+The following web frameworks are catered for:
+
+* ASGI_ 3.0
+* AIOHTTP_
+* Django_
+* FastAPI_
+* Starlette_
+
+WSGI is not supported because Asphalt focuses on asynchronous operation and WSGI is a
+synchronous web application gateway standard.
+
+.. _ASGI: https://asgi.readthedocs.io/
+.. _AIOHTTP: https://docs.aiohttp.org/
+.. _Django: https://www.djangoproject.com/
+.. _FastAPI: https://fastapi.tiangolo.com/
+.. _Starlette: https://www.starlette.io/
+
+Project links
+-------------
+
+* `Documentation <http://asphalt-web.readthedocs.org/en/latest/>`_
+* `Help and support <https://github.com/asphalt-framework/asphalt/wiki/Help-and-support>`_
+* `Source code <https://github.com/asphalt-framework/asphalt-web>`_
+* `Issue tracker <https://github.com/asphalt-framework/asphalt-web/issues>`_
+
+
