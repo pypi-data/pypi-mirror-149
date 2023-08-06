@@ -1,0 +1,73 @@
+Metadata-Version: 2.1
+Name: loki-client
+Version: 0.0.2
+Summary: A Python client interacting with Grafana Loki.
+Home-page: https://github.com/hack-han/loki-client
+Author: hackhan
+Author-email: hackhan@xxx.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/hack-han/loki-client/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# loki-client
+A Python client interacting with Grafana Loki.
+
+# Quickstart
+Install:
+```shell
+pip install loki-client
+```
+
+Usage:
+```python
+# example.py
+from loki_client import LokiClient
+from loki_client import SUPPORTED_DIRECTION
+
+
+loki_url = 'http://localhost:3100'
+loki_client = LokiClient(url=loki_url, disable_ssl=True)
+
+# 1 test ready()
+loki_ready = loki_client.ready()
+if not loki_ready:
+    print('Loki is not ready.')
+    exit(1)
+
+# 2 test query_range_with_context()
+query = r'{host="ubuntu"}|~"error"'
+result = loki_client.query_range_with_context(query=query, context_before=5, context_after=3)
+if result[0]:
+    print(result)
+
+# 3 test post()
+label_dic = {'host': 'windows', 'env': 'test'}
+logs_lst = ['This is line 1', 'This is line 2', 'This is line 3', 'This is line 4']
+result = loki_client.post(label_dic, logs_lst)
+if not result[0]:
+    print(result[1])
+
+# 4 test labels()
+result = loki_client.labels()
+print(result)
+
+# 5 test query_range()
+query = r'{host="ubuntu"}|~"error"'
+result = loki_client.query_range(query, direction=SUPPORTED_DIRECTION[1], limit=10)
+print(result)
+
+if result[0]:
+    print(result[1]['status'])
+    print(result[1]['data']['resultType'])
+
+# 6 test query()
+result = loki_client.query(query, direction=SUPPORTED_DIRECTION[1], limit=10)
+print(result)
+
+
