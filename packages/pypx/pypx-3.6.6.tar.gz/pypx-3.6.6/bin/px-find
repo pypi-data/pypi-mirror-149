@@ -1,0 +1,521 @@
+#!/usr/bin/env python
+#                                                            _
+# PACS ToolKit findscu (and possible movescu) Wrapper
+#
+# (c) 2016-2019 Fetal-Neonatal Neuroimaging & Developmental Science Center
+#                   Boston Children's Hospital
+#
+#              http://childrenshospital.org/FNNDSC/
+#                        dev@babyMRI.org
+#
+
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+
+
+from    argparse            import RawTextHelpFormatter
+from    argparse            import ArgumentParser
+from    terminaltables      import SingleTable
+from    pfmisc._colors      import Colors
+import  json
+import  pypx
+import  socket
+import  pudb
+import  pprint
+
+from    pypx.find           import parser_setup, parser_interpret, parser_JSONinterpret
+
+str_defIP   = [l for l in (
+                [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2]
+                if not ip.startswith("127.")][:1],
+                    [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close())
+                for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
+
+str_name    = "px-find"
+str_version = "3.2.2"
+str_desc    = Colors.CYAN + """
+
+                                   __  _             _ 
+                                  / _|(_)           | |
+             _ __  __  __ ______ | |_  _  _ __    __| |
+            | '_ \ \ \/ /|______||  _|| || '_ \  / _` |
+            | |_) | >  <         | |  | || | | || (_| |
+            | .__/ /_/\_\        |_|  |_||_| |_| \__,_|
+            | |                                        
+            |_|                                        
+
+
+                        PACS ToolKit Wrapper
+                            Query / Find
+
+                       -- version """ + \
+             Colors.YELLOW + str_version + Colors.CYAN + """ --
+
+    ``px-find`` is a module / script that provides functionality for
+    performing a PACS Query operation.
+
+    ``px-find`` is tested against both Orthanc as well as some
+    commercial PACS offerings.
+
+""" + Colors.NO_COLOUR
+
+def synopsis(ab_shortOnly = False):
+    scriptName = os.path.basename(sys.argv[0])
+    shortSynopsis =  Colors.YELLOW + '''
+    NAME
+
+	    %s
+
+        - PACS find (query)
+
+    SYNOPSIS
+
+            _script mode_:
+            px-find                                                 \\
+                [--JSONargs <JSONargStringStructure>]               \\
+                [--db <dblogbasepath>]                              \\
+                [--PACS <PACSkeyServiceID>]                         \\
+                [--swift <swiftKeyServiceID>]                       \\
+                [--CUBE <CUBEkeyServiceID>]                         \\
+                [--aet <AETitle>]                                   \\
+                [--aec <CalledAETitle>]                             \\
+                [--serverIP <PACSserverIP>]                         \\
+                [--serverPort <PACSserverPort>]                     \\
+                [--findscu <findscuAbsolutePath>]                   \\
+                [--movescu <movescuAbsolutePath>]                   \\
+                [--PatientID <MRN>]                                 \\
+                [--PatientName <ExactPatientName>]                  \\
+                [--PatientSex <M_or_F>]                             \\
+                [--StudyDate <YYYY/MM/DD>]                          \\
+                [--ModalitiesInStudy <Modalities>]                  \\
+                [--Modality <ModalityToQuery>]                      \\
+                [--PerformedStationAETitle <StationTitle>]          \\
+                [--StudyDescription <studyDescription>]             \\
+                [--SeriesDescription <seriesDescription>]           \\
+                [--StudyInstanceUID <studyInstanceUID>]             \\
+                [--SeriesInstanceUID <seriesInstanceUID>]           \\
+                [--ProtocolName <ProtocolName>]                     \\
+                [--AcquisitionProtocolName <APName>]                \\
+                [--AcquisitionProtocolDescription <APDescription>]  \\
+                [--AcquisitionProtocolName <APName>]                \\
+                [--then <actionlist>] [--withFeedBack]              \\
+                [--thenArgs JSONargListPerThen]                     \\
+                [--intraSeriesRetrieveDelay <seconds>]              \\
+                [--json]                                            \\
+                [--waitForUserTerminate]                            \\
+                [-x|--desc]                                         \\
+                [-y|--synopsis]                                     \\
+                [--version]                                         \\
+                [--debugToDir <dir>]                                \\
+                [--verbosity <level>]
+
+    ''' % scriptName + Colors.NO_COLOUR
+
+    description = Colors.LIGHT_GREEN + '''
+
+    DESCRIPTION
+
+        ``px-find`` is the main entry point to executing a PACS
+        Query. Optional additional behaviours include requesting
+        a Retrieve and Status -- these latter two behaviours operate
+        on the series space that the find / query returns.
+
+        Typically, the results of the ``px-find`` are piped to
+        a ``px-report`` script for report generation.
+
+    ARGS
+
+        [--JSONargs <JSONargStringStructure>]
+        An alternate mechanism of specifying all the args to this script.
+        Essentially every key/value in the <JSONargStringStructure> can
+        mirror a CLI key/value. The JSONargs is parsed first, so key/values
+        in that structure can be overriden by explicit CLI.
+
+        [--db <dblogbasepath>]
+        A path to the base directory of the DB contents/files that track
+        received files. This is typically the <logDir> of the `px-repack`
+        process that repacks incoming DICOM files. Specifying this path
+        allows `px-find` to access db tables needed to track the number
+        of DICOM files that are received in the case of a 'retrieve'
+        event.
+
+        [--PACS <PACSkeyServiceID>]
+        A key lookup into an smdb data element that defines all the fields
+        required for PACS access. This is pre-instantiated by calling the
+        smdb element a priori. Fields are:
+
+                    "<PACSkeyServiceID>":  {
+                            "aet":      "<AETitle>",
+                            "aec":      "<CalledAETitle>",
+                            "ip":       "<PACSip>",
+                            "port":     "<PACSport>",
+                        }
+
+        [--CUBE <CUBEkeyServiceID>]
+        A key lookup into an smdb data element that defines all the fields
+        required for CUBE access. This is pre-instantiated by calling the
+        smdb element a priori. Fields are:
+
+                    "<CUBEkeyServiceID>":  {
+                            "url":      "<URLofCUBEAPI>",
+                            "username": "<CUBEusername>",
+                            "password": "<CUBEuserpasswd>"
+                        }
+
+        [--swift <swiftKeyServiceID>]
+        A key lookup into an smdb data element that defines all the fields
+        required for swift access. This is pre-instantiated by calling the
+        smdb element a priori. Fields are:
+
+                    "<swiftKeyServiceID>":  {
+                            "ip":       "<IPofSwiftServer>",
+                            "port":     "<PortOfSwiftServer>",
+                            "login":    "<username>:<passwd>"
+                        }
+
+        [--aet <AETitle>]
+        The AETitle of *this* entity.
+
+        [--aec <CalledAETitle>]
+        The called AETitle of *this* entity. Needed for some PACS systems.
+
+        [--serverIP <PACSserverIP>]
+        The IP of the PACS server.
+
+        [--serverPort <PACSserverPort>]
+        The port associated with the PACS server.
+
+        [--executable <findscuAbsolutePath>]
+        The absolute location of the 'findscu' executable.
+
+        [--AccessionNumber <AccessionNumber>]
+        The AccessionNumber to Q/R.
+
+        [--PatientID <MRN>]
+        The patient ID on which to Query.
+
+        [--PatientName <ExactPatientName>]
+        The patient name on which to Query.
+
+        [--PatientSex <M_or_F>]
+        The patient sex (largely irrelevant since open ended searches are
+        not supported by most PACS servers).
+
+        [--StudyDate <YYYY/MM/DD>]
+        Filter results by <studyDate>.
+
+        [--ModalitiesInStudy <Modalities>]
+        Filter by modalities in study.
+
+        [--Modality <Modality>]
+        The modality to filter.
+
+        [--PerformedStationAETitle <StationTitle>]
+        Filter by station ID.
+
+        [--StudyDescription <studyDescription>]
+        Filter by study description.
+
+        [--SeriesDescription <seriesDescription>]
+        Filter by series description.
+
+        [--StudyInstanceUID <studyInstanceUID>]
+        Filter by study instance UID.
+
+        [--SeriesInstanceUID <seriesInstanceUID>]
+        Filter by series instance UID.
+
+        [--ProtocolName <ProtocolName>]
+        Filter by protocol name.
+
+        [--AcquisitionProtocolDescription <APDescription>]
+        Filter by acquisition protocol description.
+
+        [--AcquisitionProtocolName <APName>]
+        Filter by acquisition protocol name.
+
+        [--then <actionlist>]
+        If specified, define an operation to do "next", i.e. after the find
+        has completed. The <actionlist> is a comma separate list of verbs,
+        including but not necessarily limited to
+
+            * "retrieve"    (request the remote PACS to send the
+                             study/series data)
+            * "status"      (ask the internal database on the status
+                             of retrieved study/series data).
+            * "push"        (push study/series data to some destination
+                             node)
+
+        [--thenArgs JSONargListPerThen]
+        If specified, define additional parameters specific to a downstream
+        'then' operation. This is a comma separated string of JSONstrings, each
+        element of which corresponds to a given --then. Obviously the number of
+        JSONstrings MUST correspond to the number of --then operations.
+
+        [--withFeedBack]
+        If specified, provide console level feedback on the next operation as
+        it happens. Note, if part of a chained/piped workflow, the feedback
+        CLI output could corrupt downstream apps, especially if these
+        apps want to consume JSON from stdin. So only use --withFeedBack in
+        cases where additional downstream JSON assuming pipe operations are not
+        pending.
+
+        [--intraSeriesRetrieveDelay <amount>]
+        When operating in a tight loop (with the innermost loop being a per-
+        series loop) and additionally requesting files from an external
+        source (like a PACS), the multiple requests can overwhelm a listening
+        service. Consider that a PACS will transmit a stream of files, and
+        typically on the receiver, for each file, a new python process handler
+        is spawned. This could easily result in many hundreds of handlers
+        being spawned and quickly overwhelm a system.
+
+        This flag introduces a measure of throttling the requests by delaying
+        <amount> after requesting a set of files. If the <amount> is the string
+        'dynamic:<N>' then the throttling is set to the number of images
+        requested divided by <N>. A good value for N here is N = 6, i.e.
+        'dynamic:6'
+
+        [--move]
+        If set and called with [--retrieve], perform a DICOM movescu on the
+        set of filtered SeriesInstanceUIDs using the pypx/move module.
+
+        [--json]
+        If specified, print the JSON structure related to the find event. If
+        piping results to a report module, you MUST specify this.
+
+        [--waitForUserTerminate]
+        If specified, wait at program conclusion for explicit user termination.
+        This is useful in dockerized runs since PACS data might still be
+        in flight when the program ends, and terminating the program then
+        will result in non reception of outstanding data.
+
+        Note, if running in a container, e.g. via PACS_QR.sh, be sure to also
+        specify a '-D' for debugging in conjunction with this flag. The '-D'
+        runs the container in interactive tty mode, allowing for user tty
+        input to be correctly interpreted.
+
+        [-x|--desc]
+        Provide an overview help page.
+
+        [-y|--synopsis]
+        Provide a synopsis help summary.
+
+        [--version]
+        Print internal version number and exit.
+
+        [--debugToDir <dir>]
+        A directory to contain various debugging output -- these are typically
+        JSON object strings capturing internal state. If empty string (default)
+        then no debugging outputs are captured/generated. If specified, then
+        ``pfcon`` will check for dir existence and attempt to create if
+        needed.
+
+        [-v|--verbosity <level>]
+        Set the verbosity level. "0" typically means no/minimal output. Allows for
+        more fine tuned output control as opposed to '--quiet' that effectively
+        silences everything.
+    ''' + Colors.LIGHT_PURPLE + '''
+
+    EXAMPLES
+
+        px-find                                                         \\
+            --aec CHRIS                                                 \\
+            --aet FNNDSC-CHRISDEV                                       \\
+            --serverIP 134.174.12.21                                    \\
+            --serverPort 104                                            \\
+            --PatientID 4777764                                         \\
+            --json                                                      \\
+            --colorize dark                                            |\\
+        px-report                                                       \\
+            --reportTags                                                \\
+            '{
+                "header":
+                {
+                    "study" : [
+                            "PatientName",
+                            "ScanDate",
+                            "AccessionNumber",
+                            "PatientID",
+                            "PatientSex",
+                            "PatientAge",
+                            "PerformedStationAETitle",
+                            "StudyDescription"
+                            ]
+                },
+                "body":
+                {
+                    "series" : [
+                            "SeriesDescription"
+                            ]
+                }
+            }'
+            --printReport tabular --colorize dark
+
+        # Or, more succinctly
+        px-find                                                         \\
+            --aec CHIPS                                                 \\
+            --aec ORTHANC                                               \\
+            --serverIP localhost                                        \\
+            --serverPort 4242                                           \\
+            --json                                                      \\
+            --PatientID LILLA-9731                                     |\\
+        px-report                                                       \\
+            --colorize dark					                            \\
+            --printReport tabular                                       \\
+            --reportHeaderStudyTags 'PatientName,PatientID'
+
+    DOCKERIZED EXAMPLES
+
+        docker run  --rm -ti                                            \\
+            -p 10402:10402                                              \\
+            -v /tmp:/dicom                                              \\
+            fnndsc/pypx                                                 \\
+            --px-find                                                   \\
+            --aet CHIPS                                                 \\
+            --aec ORTHANC                                               \\
+            --serverIP  10.72.76.155                                    \\
+            --serverPort 4242                                           \\
+            --PatientID LILLA-9731                                      \\
+            --colorize dark                                             \\
+            --reportTags                                                \\
+            '{
+                "header":
+                {
+                    "study" : [
+                            "PatientName",
+                            "ScanDate",
+                            "AccessionNumber",
+                            "PatientID",
+                            "PatientSex",
+                            "PatientAge",
+                            "PerformedStationAETitle",
+                            "StudyDescription"
+                            ]
+                },
+                "body":
+                {
+                    "series" : [
+                            "SeriesDescription"
+                            ]
+                }
+            }'
+
+        docker run  --rm -ti                                            \\
+            -p 10402:10402                                              \\
+            -v /tmp:/dicom                                              \\
+            fnndsc/pypx                                                 \\
+            --px-find                                                   \\
+            --aec CHRIS                                                 \\
+            --aet FNNDSC-CHRISDEV                                       \\
+            --serverIP 134.174.12.21                                    \\
+            --serverPort 104                                            \\
+            --PatientID 4777764                                         \\
+            --colorize dark                                             \\
+            --reportTags                                                \\
+            '{
+                "header":
+                {
+                    "study" : [
+                            "PatientName",
+                            "StudyDate",
+                            "AccessionNumber",
+                            "PatientID",
+                            "PatientSex",
+                            "PatientAge",
+                            "PerformedStationAETitle",
+                            "StudyDescription"
+                            ]
+                },
+                "body":
+                {
+                    "series" : [
+                            "SeriesDescription"
+                            ]
+                }
+            }'
+
+    ''' + Colors.NO_COLOUR
+
+    if ab_shortOnly:
+        return shortSynopsis
+    else:
+        return shortSynopsis + description
+
+# pudb.set_trace()
+parser      = parser_setup(str_desc)
+args        = parser_interpret(parser)
+if len(args.JSONargString):
+    # If the user has specified args in the JSONargString, then
+    # interpret this structure.
+    #
+    # NOTE:
+    # This will OVERWRITE any non-JSON args that may have been specified
+    # as per normal. Using the JSONargString is an either-or choice!
+    d_JSONargs  : dict  = json.loads(args.JSONargString)
+    args                = parser_JSONinterpret(parser, d_JSONargs)
+
+if args.desc or args.synopsis:
+    str_help    : str   = ""
+    print(str_desc)
+    if args.desc:
+        str_help     = synopsis(False)
+    if args.synopsis:
+        str_help     = synopsis(True)
+    print(str_help)
+    sys.exit(1)
+
+if args.b_version:
+    print("Version: %s" % str_version)
+    sys.exit(1)
+
+d_args  : dict  = vars(args)
+
+# Return the JSON result as a serialized string:
+d_output = pypx.find(d_args)
+
+if args.verbosity:
+    if args.json:
+        try:
+            print(json.dumps(d_output, indent = 4))
+        except Exception as e:
+            print(json.dumps({
+                'status'    : False,
+                'error'     : '%s' % e
+            }))
+
+if args.b_waitForUserTerminate:
+    l_infoWindow =[
+        [Colors.CYAN                                            +
+        "End of program reached."                               +
+        Colors.NO_COLOUR],
+        [""],
+        [Colors.PURPLE                                          +
+        "If a PACS move/pull/retrieve was requested, not all"   +
+        Colors.NO_COLOUR],
+        [Colors.PURPLE                                          +
+        "image data might have been received since the PACS"    +
+        Colors.NO_COLOUR],
+        [Colors.PURPLE                                          +
+        "operates in an asynchronous manner."                   +
+        Colors.NO_COLOUR],
+        [""],
+        [Colors.PURPLE                                          +
+        "If you are running this process containerized, on"     +
+        Colors.NO_COLOUR],
+        [Colors.PURPLE                                          +
+        "exit the container will close and no additional data"  +
+        Colors.NO_COLOUR],
+        [Colors.PURPLE                                          +
+        "will be received."                                     +
+        Colors.NO_COLOUR],
+        [""],
+        [Colors.BLINK_RED           +
+        "ONLY EXIT IF YOU ARE SURE YOU HAVE RECEIVED ALL IMAGES!" +
+        Colors.NO_COLOUR],
+    ]
+    tb_infoWindow = SingleTable(l_infoWindow)
+    tb_infoWindow.inner_heading_row_border  = False
+    print(tb_infoWindow.table)
+    input("\nHit ENTER now to exit.")
+
+sys.exit(0)

@@ -1,0 +1,275 @@
+#!/usr/bin/env python3
+#                                                            _
+# DICOM storescp exec-on-reception processor
+#
+# (c) 2021 Fetal-Neonatal Neuroimaging & Developmental Science Center
+#                   Boston Children's Hospital
+#
+#              http://childrenshospital.org/FNNDSC/
+#                        dev@babyMRI.org
+#
+
+import      sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from        argparse            import RawTextHelpFormatter
+from        argparse            import ArgumentParser
+from        pfmisc._colors      import Colors
+import      pypx
+from        pypx                import repack
+from        pypx                import register
+
+import      json
+from        pypx.register       import parser_setup, parser_interpret, parser_JSONinterpret
+
+
+import      pudb
+from        pudb.remote         import set_trace
+
+str_name    = "px-register"
+str_version = "3.2.12"
+str_desc    = Colors.CYAN + """
+
+
+                                                  _     _
+                                                 (_)   | |
+                  _ ____  ________ _ __ ___  __ _ _ ___| |_  ___ _ __
+                 | '_ \ \/ /______| '__/ _ \/ _` | / __| __|/ _ \ '__|
+                 | |_) >  <       | | |  __/ (_| | \__ \ |_|  __/ |
+                 | .__/_/\_\      |_|  \___|\__, |_|___/\__|\___|_|
+                 | |                         __/ |
+                 |_|                        |___/
+
+
+                                PACS ToolKit Wrapper
+                                    px-register
+
+                               -- version """ + \
+             Colors.YELLOW + str_version + Colors.CYAN + """ --
+
+    ``px-register`` is used to register files that have been pushed to a
+    CUBE service, i.e. files that are in the ``SERVICES/`` swift storage
+    location.
+
+""" + Colors.NO_COLOUR
+
+def synopsis(ab_shortOnly = False):
+    scriptName = os.path.basename(sys.argv[0])
+    shortSynopsis =  Colors.YELLOW + '''
+    NAME
+
+	    %s
+
+        - Register files in ``SERVICES/`` to a CUBE instance.
+
+    SYNOPSIS
+
+            px-register                                             \\
+                [--JSONargs <JSONargStringStructure>]               \\
+                [--db <dblogbasepath>]                              \\
+                [--xcrdir|-p <xcrdir>]                              \\
+                [--xcrfile|-f <xcrfile>]                            \\
+                [--xcrdirfile <xcrdirfile>]                         \\
+                [--parseAllFilesWithSubStr <substr>]                \\
+                [--localFileList <listOfFiles>]                     \\
+                [--objectFileList <listOfNamesInStorage>]           \\
+                [--logdir|-l <logdir>]                              \\
+                [--CUBE <CUBEkeyServiceID>]                         \\
+                [--CUBEURL <CUBEURL>]                               \\
+                [--CUBEusername <CUBEusername>]                     \\
+                [--CUBEuserpasswd <CUBEuserpasswd>]                 \\
+                [--swiftServicesPACS <PACSname>]                    \\
+                [--cleanup]                                         \\
+                [-x|--desc]                                         \\
+                [-y|--synopsis]                                     \\
+                [--version]                                         \\
+                [--debug]                                           \\
+                [--verbosity <level>]
+
+    ''' % scriptName + Colors.NO_COLOUR
+
+    description = Colors.LIGHT_GREEN + '''
+
+    ARGS
+
+        [--JSONargs <JSONargStringStructure>]
+        An alternate mechanism of specifying all the args to this script.
+        Essentially every key/value in the <JSONargStringStructure> can
+        mirror a CLI key/value. The JSONargs is parsed first, so key/values
+        in that structure can be overriden by explicit CLI.
+
+        [--db <dblogbasepath>]
+        A path to the base directory of the DB contents/files that track
+        received files. This is typically the <logDir> of the `smdb` DB.
+
+        [--upstreamFile]
+        A JSON formatted file containing information to pack into the
+        [--upstream] argument.
+
+        [--upstream <JSONData>]
+        A convenience argument to populate with JSON data for further
+        processing.
+
+        [--localFileList <listOfFiles>]
+        Not passed usually on the CLI but used to store results from
+        upstream JSON compute.
+
+        [--objectFileList <listOfNamesInStorage>]
+        Not passed usually on the CLI but used to store results from
+        upstream JSON compute.
+
+        [--xcrdir|-p <xcrdir>]
+        A directory that contains a DICOM file to process.
+
+        [--xcrfile|-f <xcrfile>]
+        A specific DICOM file in the <xcrdir>.
+
+        [--xcrdirfile <xcrdirfile>]
+        A fully qualified dir and file specifier. If passed, the script
+        will separate into dir and file parts.
+
+        [--parseAllFilesWithSubStr <substr>]
+        If passed, process all the files in the <xcrdir> that contain the
+        <substr> in their filename in one sweep.
+
+        [--logdir|-l <logdir>]
+        The directory containing log files relevant to px-register operation.
+
+        [--CUBE <CUBEkeyServiceID>]
+        A key lookup into an smdb data element that defines all the fields
+        required for CUBE access. This is pre-instantiated by calling the
+        smdb element a priori. Fields are:
+
+                    "<CUBEkeyServiceID>":  {
+                            "url":      "<URLofCUBEAPI>",
+                            "username": "<CUBEusername>",
+                            "password": "<CUBEuserpasswd>"
+                        }
+
+
+        [--CUBEURL <cubeURL>]
+        The URL of the CUBE instance.
+
+        [--CUBEusername <cubeusername>]
+        The name of a CUBE user.
+
+        [--CUBEuserpasswd <cubeuserpassword>]
+        The password for a CUBE user. Note the flag spelling is 'passwd'!
+
+        [--swiftServicesPACS <PACSname>]
+        The name of the specific PACS within SERVICE/PACS to which files will be
+        registered.
+
+        [--json]
+        If specified, print the JSON structure related to the process event. This is
+        useful when used in a pipeline fashion with other px-* modules.
+
+        [--cleanup]
+        If specified, clean up nicely like a good little script should. This
+        removes the originally received DICOM files that are stored in the
+        initial holding directory.
+
+        [-x|--desc]
+        Provide an overview help page.
+
+        [-y|--synopsis]
+        Provide a synopsis help summary.
+
+        [--version]
+        Print internal version number and exit.
+
+        [--debug]
+        If specified, then log any debugging noise also to the <logdir>.
+
+        [-v|--verbosity <level>]
+        Set the verbosity level:
+
+            * "0"   :   no output -- quiet
+            * "1"   :   JSON dump output from the run call
+            * "2"   :   Dump internal intermediary output
+
+
+    DESCRIPTION
+
+        This script and module are used to register files that have been
+        pushed to swift with a CUBE instance.
+
+        The most common mode of operation is as part of pipeline wherein
+        ``px-register`` receives a JSON stream on stdin. This stream is
+        parsed for [--localFileList <list>] and [--objectFileList <list>]
+        and elements in each list correspond with each other.
+
+        The [--localFileList <list>] is needed so that this module can
+        load the corresponding DICOM file to determine its tags and send
+        a subset of the same to CUBE to allow for registration.
+
+        In the absence of the explicit list structure, this module can
+        work off file system directories and files, in which base it will
+        infer the swift push path (by asking the repack module) and then
+        construct its own internal lists.
+
+    NOTE
+
+        It is assumed that files to register have already been pushed to
+        CUBE swift storage, using a pypx-conformant packing structure. If
+        used in a typical pypx pipeline structure then the packing structure
+        that this module uses will be read from pipe-upstream processes.
+
+''' + Colors.PURPLE + '''
+
+    EXAMPLES
+
+        px-register                                                 \\
+                --upstreamFile push.json                            \\
+                --CUBEURL http://localhost:8000/api/v1/             \\
+                --CUBEusername chris                                \\
+                --CUBEuserpasswd chris1234                          \\
+                --swiftServicesPACS BCH                             \\
+                --verbosity 1                                       \\
+                --json                                              \\
+                --logdir /dicom/log                                 \\
+                --debug
+
+''' + Colors.NO_COLOUR
+
+    if ab_shortOnly:
+        return shortSynopsis
+    else:
+        return shortSynopsis + description
+
+
+parser      = parser_setup(str_desc)
+args        = parser_interpret(parser)
+if len(args.JSONargString):
+    # If the user has specified args in the JSONargString, then
+    # interpret this structure.
+    #
+    # NOTE:
+    # This will OVERWRITE any non-JSON args that may have been specified
+    # as per normal. Using the JSONargString is an either-or choice!
+    d_JSONargs  : dict  = json.loads(args.JSONargString)
+    args                = parser_JSONinterpret(parser, d_JSONargs)
+
+
+if args.b_desc or args.b_synopsis:
+    print(str_desc)
+    if args.b_desc:
+        str_help     = synopsis(False)
+    if args.b_synopsis:
+        str_help     = synopsis(True)
+    print(str_help)
+    sys.exit(1)
+
+if args.b_version:
+    print("Version: %s" % str_version)
+    sys.exit(1)
+
+# pudb.set_trace()
+if len(args.upstreamFile):
+    with open(args.upstreamFile, 'r') as f:
+        args.upstream = json.load(f)
+
+d_handler   = register(args)
+
+if args.verbosity:
+    print(json.dumps(d_handler, indent = 4))
