@@ -1,0 +1,28 @@
+language:
+  python
+
+python:
+  - 3.6
+
+services:
+  - docker
+
+install:
+  - ./tools/generate_key_pair.sh
+  - make install
+
+script:
+  - make test
+
+after_success:
+  - coveralls
+
+before_deploy:
+  - bash .travis.sh script
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash .travis.sh push_to_docker
+  on:
+    branch: master
