@@ -1,0 +1,4791 @@
+Metadata-Version: 2.1
+Name: dtale
+Version: 2.3.0
+Summary: Web Client for Visualizing Pandas Objects
+Home-page: https://github.com/man-group/dtale
+Author: MAN Alpha Technology
+Author-email: ManAlphaTech@man.com
+License: LGPL
+Keywords: numeric,pandas,visualization,flask
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+License-File: LICENSE
+Requires-Dist: dash-colorscales
+Requires-Dist: dash-daq
+Requires-Dist: Flask-Compress
+Requires-Dist: future (>=0.14.0)
+Requires-Dist: missingno (<=0.4.2)
+Requires-Dist: pandas
+Requires-Dist: requests
+Requires-Dist: squarify
+Requires-Dist: strsimpy
+Requires-Dist: six
+Requires-Dist: xlrd
+Requires-Dist: lz4 (<=2.2.1) ; python_version < "3.0"
+Requires-Dist: dash-bootstrap-components (<=0.10.5) ; python_version < "3.0"
+Requires-Dist: networkx (==2.2) ; python_version < "3.0"
+Requires-Dist: numpy (==1.16.6) ; python_version < "3.0"
+Requires-Dist: openpyxl (==2.6.4) ; python_version < "3.0"
+Requires-Dist: scikit-learn (==0.20.4) ; python_version < "3.0"
+Requires-Dist: xarray (==0.11.3) ; python_version < "3.0"
+Requires-Dist: et-xmlfile (<=1.0.1) ; python_version < "3.6"
+Requires-Dist: plotly (==4.14.3) ; python_version < "3.6"
+Requires-Dist: seaborn (==0.9.1) ; python_version < "3.6"
+Requires-Dist: Flask (<=1.1.4) ; python_version < "3.7"
+Requires-Dist: itsdangerous (<=1.1.0) ; python_version < "3.7"
+Requires-Dist: kaleido (==0.1.0) ; python_version <= "3.6"
+Requires-Dist: cycler (==0.10.0) ; python_version == "2.7"
+Requires-Dist: dash (==1.21.0) ; python_version == "2.7"
+Requires-Dist: decorator (==4.4.2) ; python_version == "2.7"
+Requires-Dist: kiwisolver (==1.1.0) ; python_version == "2.7"
+Requires-Dist: MarkupSafe (==1.1.1) ; python_version == "2.7"
+Requires-Dist: matplotlib (==2.2.5) ; python_version == "2.7"
+Requires-Dist: pyparsing (==2.4.7) ; python_version == "2.7"
+Requires-Dist: scipy (==1.2.3) ; python_version == "2.7"
+Requires-Dist: statsmodels (==0.10.2) ; python_version == "2.7"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.0"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.0"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.0"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.1"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.1"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.1"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.1"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.1"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.2"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.2"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.2"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.2"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.2"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.3"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.3"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.3"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.3"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.3"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.4"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.4"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.4"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.4"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.4"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.5"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.5"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.5"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.5"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.5"
+Requires-Dist: dash (==2.0.0) ; python_version == "3.6"
+Requires-Dist: kiwisolver (==1.1.0) ; python_version == "3.6"
+Requires-Dist: MarkupSafe (==2.0.1) ; python_version == "3.6"
+Requires-Dist: matplotlib (==3.3.4) ; python_version == "3.6"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.6"
+Requires-Dist: scipy (<=1.5.4) ; python_version == "3.6"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.6"
+Requires-Dist: packaging (<=21.0) ; python_version == "3.7"
+Requires-Dist: scipy (==1.7.3) ; python_version == "3.7"
+Requires-Dist: statsmodels (==0.12.2) ; python_version == "3.7"
+Requires-Dist: lz4 ; python_version > "3.0"
+Requires-Dist: cycler ; python_version > "3.0"
+Requires-Dist: dash-bootstrap-components ; python_version > "3.0"
+Requires-Dist: flask-ngrok ; python_version > "3.0"
+Requires-Dist: scikit-learn (==0.24.2) ; python_version > "3.0"
+Requires-Dist: dash (>=2.0.0) ; python_version > "3.6"
+Requires-Dist: kaleido ; python_version > "3.6"
+Requires-Dist: matplotlib ; python_version > "3.6"
+Requires-Dist: statsmodels ; python_version > "3.7"
+Requires-Dist: networkx ; python_version >= "3.0"
+Requires-Dist: numpy ; python_version >= "3.0"
+Requires-Dist: openpyxl ; python_version >= "3.0"
+Requires-Dist: xarray ; python_version >= "3.0"
+Requires-Dist: et-xmlfile ; python_version >= "3.6"
+Requires-Dist: plotly (>=5.0.0) ; python_version >= "3.6"
+Requires-Dist: ppscore ; python_version >= "3.6"
+Requires-Dist: seaborn ; python_version >= "3.6"
+Requires-Dist: Flask ; python_version >= "3.7"
+Requires-Dist: itsdangerous ; python_version >= "3.7"
+Requires-Dist: scipy ; python_version >= "3.8"
+Provides-Extra: arctic
+Requires-Dist: arctic (<=1.79.4) ; extra == 'arctic'
+Provides-Extra: dash-bio
+Requires-Dist: dash-bio (==0.7.1) ; (python_version == "2.7") and extra == 'dash-bio'
+Requires-Dist: dash-bio ; (python_version > "3.0") and extra == 'dash-bio'
+Provides-Extra: r
+Requires-Dist: rpy2 ; (python_version > "3.0") and extra == 'r'
+Provides-Extra: redis
+Requires-Dist: redislite ; extra == 'redis'
+Provides-Extra: streamlit
+Requires-Dist: streamlit ; extra == 'streamlit'
+Provides-Extra: swifter
+Requires-Dist: swifter ; extra == 'swifter'
+Provides-Extra: tests
+Requires-Dist: ipython (<8.0.0) ; extra == 'tests'
+Requires-Dist: mock ; extra == 'tests'
+Requires-Dist: nbconvert ; extra == 'tests'
+Requires-Dist: pytest ; extra == 'tests'
+Requires-Dist: pytest-cov ; extra == 'tests'
+Requires-Dist: pytest-server-fixtures ; extra == 'tests'
+Requires-Dist: importlib-metadata ; (python_version != "3.6") and extra == 'tests'
+Requires-Dist: importlib-metadata (<=3.7.3) ; (python_version <= "3.6") and extra == 'tests'
+
+|image0|
+
+-  `Live Demo <http://alphatechadmin.pythonanywhere.com>`__
+-  `Animated US COVID-19 Deaths By
+   State <http://alphatechadmin.pythonanywhere.com/dtale/charts/3?chart_type=maps&query=date+%3E+%2720200301%27&agg=raw&map_type=choropleth&loc_mode=USA-states&loc=state_code&map_val=deaths&colorscale=Reds&cpg=false&animate_by=date>`__
+-  `3D Scatter
+   Chart <http://alphatechadmin.pythonanywhere.com/dtale/charts/4?chart_type=3d_scatter&query=&x=date&z=Col0&agg=raw&cpg=false&y=%5B%22security_id%22%5D>`__
+-  `Surface
+   Chart <http://alphatechadmin.pythonanywhere.com/dtale/charts/4?chart_type=surface&query=&x=date&z=Col0&agg=raw&cpg=false&y=%5B%22security_id%22%5D>`__
+-  `Network
+   Analysis <http://alphatechadmin.pythonanywhere.com/dtale/network/5?to=to&from=from&group=route_id&weight=>`__
+
+--------------
+
+|CircleCI| |PyPI Python Versions| |PyPI| |Conda| |ReadTheDocs| |codecov|
+|Downloads| |Open in VS Code|
+
+What is it?
+-----------
+
+D-Tale is the combination of a Flask back-end and a React front-end to
+bring you an easy way to view & analyze Pandas data structures. It
+integrates seamlessly with ipython notebooks & python/ipython terminals.
+Currently this tool supports such Pandas objects as DataFrame, Series,
+MultiIndex, DatetimeIndex & RangeIndex.
+
+Origins
+-------
+
+D-Tale was the product of a SAS to Python conversion. What was
+originally a perl script wrapper on top of SAS’s ``insight`` function is
+now a lightweight web client on top of Pandas data structures.
+
+In The News
+-----------
+
+-  `4 Libraries that can perform EDA in one line of python
+   code <https://towardsdatascience.com/4-libraries-that-can-perform-eda-in-one-line-of-python-code-b13938a06ae>`__
+-  `React Status <https://react.statuscode.com/issues/204>`__
+-  `KDNuggets <https://www.kdnuggets.com/2020/08/bring-pandas-dataframes-life-d-tale.html>`__
+-  `Man Institute <https://www.man.com/maninstitute/d-tale>`__ (warning:
+   contains deprecated functionality)
+-  `Python
+   Bytes <https://pythonbytes.fm/episodes/show/169/jupyter-notebooks-natively-on-your-ipad>`__
+-  `FlaskCon 2020 <https://www.youtube.com/watch?v=BNgolmUWBp4&t=33s>`__
+-  `San Diego
+   Python <https://www.youtube.com/watch?v=fLsGur5YqeE&t=29s>`__
+-  `Medium: towards data
+   science <https://towardsdatascience.com/introduction-to-d-tale-5eddd81abe3f>`__
+-  `Medium: Exploratory Data Analysis – Using
+   D-Tale <https://medium.com/da-tum/exploratory-data-analysis-1-4-using-d-tale-99a2c267db79>`__
+-  `EOD Notes: Using python and dtale to analyze
+   correlations <https://www.google.com/amp/s/eod-notes.com/2020/05/07/using-python-and-dtale-to-analyze-correlations/amp/>`__
+-  `Data Exploration is Now Super Easy w/
+   D-Tale <https://dibyendudeb.com/d-tale-data-exploration-tool/>`__
+-  `Practical Business
+   Python <https://pbpython.com/dataframe-gui-overview.html>`__
+
+Tutorials
+---------
+
+-  `Pip Install Python YouTube
+   Channel <https://m.youtube.com/watch?v=0RihZNdQc7k&feature=youtu.be>`__
+-  `machine_learning_2019 <https://www.youtube.com/watch?v=-egtEUVBy9c>`__
+-  `D-Tale The Best Library To Perform Exploratory Data Analysis Using
+   Single Line Of
+   Code🔥🔥🔥🔥 <https://www.youtube.com/watch?v=xSXGcuiEzUc>`__
+-  `Explore and Analyze Pandas Data Structures w/
+   D-Tale <https://m.youtube.com/watch?v=JUu5IYVGqCg>`__
+-  `Data Preprocessing simplest method
+   🔥 <https://www.youtube.com/watch?v=Q2kMNPKgN4g>`__
+
+## Related Resources
+
+-  `Adventures In Flask While Developing
+   D-Tale <https://github.com/man-group/dtale/blob/master/docs/FlaskCon/FlaskAdventures.md>`__
+-  `Adding Range Selection to
+   react-virtualized <https://github.com/man-group/dtale/blob/master/docs/RANGE_SELECTION.md>`__
+-  `Building Draggable/Resizable
+   Modals <https://github.com/man-group/dtale/blob/master/docs/DRAGGABLE_RESIZABLE_MODALS.md>`__
+-  `Embedding Flask Apps within
+   Streamlit <https://github.com/man-group/dtale/blob/master/docs/EMBEDDED_STREAMLIT.md>`__
+
+Contents
+--------
+
+-  `Where To Get It <#where-to-get-it>`__
+-  `Getting Started <#getting-started>`__
+
+   -  `Python Terminal <#python-terminal>`__
+   -  `As A Script <#as-a-script>`__
+   -  `Jupyter Notebook <#jupyter-notebook>`__
+   -  `Jupyterhub w/ Jupyter Server
+      Proxy <#jupyterhub-w-jupyter-server-proxy>`__
+   -  `Jupyterhub w/
+      Kubernetes <https://github.com/man-group/dtale/blob/master/docs/JUPYTERHUB_KUBERNETES.md>`__
+   -  `Docker Container <#docker-container>`__
+   -  `Google Colab <#google-colab>`__
+   -  `Kaggle <#kaggle>`__
+   -  `Binder <#binder>`__
+   -  `R with Reticulate <#r-with-reticulate>`__
+   -  `Startup with No Data <#startup-with-no-data>`__
+   -  `Command-line <#command-line>`__
+   -  `Custom Command-line Loaders <#custom-command-line-loaders>`__
+   -  `Embedding Within Your Own Flask
+      App <https://github.com/man-group/dtale/blob/master/docs/EMBEDDED_FLASK.md>`__
+   -  `Embedding Within Your Own Django
+      App <https://github.com/man-group/dtale/blob/master/docs/EMBEDDED_DJANGO.md>`__
+   -  `Embedding Within
+      Streamlit <https://github.com/man-group/dtale/blob/master/docs/EMBEDDED_DTALE_STREAMLIT.md>`__
+   -  `Running D-Tale On Gunicorn w/
+      Redis <https://github.com/man-group/dtale/blob/master/docs/GUNICORN_REDIS.md>`__
+   -  `Configuration <https://github.com/man-group/dtale/blob/master/docs/CONFIGURATION.md>`__
+   -  `Authentication <#authentication>`__
+   -  `Predefined Filters <#predefined-filters>`__
+   -  `Using Swifter <#using-swifter>`__
+
+-  `UI <#ui>`__
+
+   -  `Dimensions/Ribbon Menu/Main
+      Menu <#dimensionsribbon-menumain-menu>`__
+   -  `Header <#header>`__
+   -  `Resize Columns <#resize-columns>`__
+   -  `Editing Cells <#editing-cells>`__
+   -  `Copy Cells Into Clipboard <#copy-cells-into-clipboard>`__
+   -  `Main Menu Functions <#main-menu-functions>`__
+
+      -  `XArray Operations <#xarray-operations>`__,
+         `Describe <#describe>`__, `Outlier
+         Detection <#outlier-detection>`__, `Custom
+         Filter <#custom-filter>`__, `Dataframe
+         Functions <#dataframe-functions>`__, `Merge &
+         Stack <#merge-&-stack>`__, `Summarize
+         Data <#summarize-data>`__, `Duplicates <#duplicates>`__,
+         `Missing Analysis <#missing-analysis>`__,
+         `Correlations <#correlations>`__, `Predictive Power
+         Score <#predictive-power-score>`__, `Heat Map <#heat-map>`__,
+         `Highlight Dtypes <#highlight-dtypes>`__, `Highlight
+         Missing <#highlight-missing>`__, `Highlight
+         Outliers <#highlight-outliers>`__, `Highlight
+         Range <#highlight-range>`__, `Low Variance
+         Flag <#low-variance-flag>`__, `Instances <#instances>`__, `Code
+         Exports <#code-exports>`__, `Export CSV <#export-csv>`__, `Load
+         Data & Sample Datasets <#load-data-&-sample-datasets>`__,
+         `Refresh Widths <#refresh-widths>`__, `About <#about>`__,
+         `Theme <#theme>`__, `Reload Data <#reload-data>`__, `Unpin/Pin
+         Menu <#unpinpin-menu>`__, `Language <#language>`__,
+         `Shutdown <#shutdown>`__
+
+   -  `Column Menu Functions <#column-menu-functions>`__
+
+      -  `Filtering <#filtering>`__, `Moving
+         Columns <#moving-columns>`__, `Hiding
+         Columns <#hiding-columns>`__, `Delete <#delete>`__,
+         `Rename <#rename>`__, `Replacements <#replacements>`__,
+         `Lock <#lock>`__, `Unlock <#unlock>`__, `Sorting <#sorting>`__,
+         `Formats <#formats>`__, `Describe (Column
+         Analysis) <#describe-column-analysis>`__
+
+   -  `Charts <#charts>`__
+   -  `Network Viewer <#network-viewer>`__
+   -  `Hotkeys <#hotkeys>`__
+   -  `Menu Functions Depending on Browser
+      Dimensions <#menu-functions-depending-on-browser-dimensions>`__
+
+-  `For Developers <#for-developers>`__
+
+   -  `Cloning <#cloning>`__
+   -  `Running Tests <#running-tests>`__
+   -  `Linting <#linting>`__
+   -  `Formatting JS <#formatting-js>`__
+   -  `Docker Development <#docker-development>`__
+   -  `Adding Language Support <#adding-language-support>`__
+
+-  `Global State/Data
+   Storage <https://github.com/man-group/dtale/blob/master/docs/GLOBAL_STATE.md>`__
+-  `Startup Behavior <#startup-behavior>`__
+-  `Documentation <#documentation>`__
+-  `Dependencies <#dependencies>`__
+-  `Acknowledgements <#acknowledgements>`__
+-  `License <#license>`__
+
+Where To get It
+---------------
+
+The source code is currently hosted on GitHub at:
+https://github.com/man-group/dtale
+
+Binary installers for the latest released version are available at the
+`Python package index <https://pypi.org/project/dtale>`__ and on conda
+using `conda-forge <https://github.com/conda-forge/dtale-feedstock>`__.
+
+.. code:: sh
+
+   # conda
+   conda install dtale -c conda-forge
+   # if you want to also use "Export to PNG" for charts
+   conda install -c plotly python-kaleido
+
+.. code:: sh
+
+   # or PyPI
+   pip install dtale
+
+Getting Started
+---------------
+
+======== =========
+PyCharm  jupyter
+======== =========
+|image9| |image10|
+======== =========
+
+Python Terminal
+~~~~~~~~~~~~~~~
+
+This comes courtesy of PyCharm |image11| Feel free to invoke ``python``
+or ``ipython`` directly and use the commands in the screenshot above and
+it should work
+
+Issues With Windows Firewall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you run into issues with viewing D-Tale in your browser on Windows
+please try making Python public under “Allowed Apps” in your Firewall
+configuration. Here is a nice article: `How to Allow Apps to Communicate
+Through the Windows
+Firewall <https://www.howtogeek.com/howto/uncategorized/how-to-create-exceptions-in-windows-vista-firewall/>`__
+
+Additional functions available programmatically
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+   import dtale
+   import pandas as pd
+
+   df = pd.DataFrame([dict(a=1,b=2,c=3)])
+
+   # Assigning a reference to a running D-Tale process
+   d = dtale.show(df)
+
+   # Accessing data associated with D-Tale process
+   tmp = d.data.copy()
+   tmp['d'] = 4
+
+   # Altering data associated with D-Tale process
+   # FYI: this will clear any front-end settings you have at the time for this process (filter, sorts, formatting)
+   d.data = tmp
+
+   # Shutting down D-Tale process
+   d.kill()
+
+   # using Python's `webbrowser` package it will try and open your server's default browser to this process
+   d.open_browser()
+
+   # There is also some helpful metadata about the process
+   d._data_id  # the process's data identifier
+   d._url  # the url to access the process
+
+   d2 = dtale.get_instance(d._data_id)  # returns a new reference to the instance running at that data_id
+
+   dtale.instances()  # prints a list of all ids & urls of running D-Tale sessions
+
+Duplicate data check
+^^^^^^^^^^^^^^^^^^^^
+
+To help guard against users loading the same data to D-Tale multiple
+times and thus eating up precious memory, we have a loose check for
+duplicate input data. The check runs the following: \* Are row & column
+count the same as a previously loaded piece of data? \* Are the names
+and order of columns the same as a previously loaded piece of data?
+
+If both these conditions are true then you will be presented with an
+error and a link to the previously loaded data. Here is an example of
+how the interaction looks: |image12|
+
+As A Script
+~~~~~~~~~~~
+
+D-Tale can be run as script by adding ``subprocess=False`` to your
+``dtale.show`` command. Here is an example script:
+
+.. code:: python
+
+   import dtale
+   import pandas as pd
+
+   if __name__ == '__main__':
+         dtale.show(pd.DataFrame([1,2,3,4,5]), subprocess=False)
+
+Jupyter Notebook
+~~~~~~~~~~~~~~~~
+
+Within any jupyter (ipython) notebook executing a cell like this will
+display a small instance of D-Tale in the output cell. Here are some
+examples:
+
+============== ========== =========
+``dtale.show`` assignment instance
+============== ========== =========
+|image13|      |image14|  |image15|
+============== ========== =========
+
+If you are running ipython<=5.0 then you also have the ability to adjust
+the size of your output cell for the most recent instance displayed:
+
+|image16|
+
+One thing of note is that a lot of the modal popups you see in the
+standard browser version will now open separate browser windows for
+spacial convienence:
+
+============ ============ ========= =============== =========
+Column Menus Correlations Describe  Column Analysis Instances
+============ ============ ========= =============== =========
+|image17|    |image18|    |image19| |image20|       |image21|
+============ ============ ========= =============== =========
+
+JupyterHub w/ Jupyter Server Proxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+JupyterHub has an extension that allows to proxy port for user,
+`JupyterHub Server
+Proxy <https://github.com/jupyterhub/jupyter-server-proxy>`__
+
+To me it seems like this extension might be the best solution to getting
+D-Tale running within kubernetes. Here’s how to use it:
+
+.. code:: python
+
+   import pandas as pd
+
+   import dtale
+   import dtale.app as dtale_app
+
+   dtale_app.JUPYTER_SERVER_PROXY = True
+
+   dtale.show(pd.DataFrame([1,2,3]))
+
+Notice the command ``dtale_app.JUPYTER_SERVER_PROXY = True`` this will
+make sure that any D-Tale instance will be served with the jupyter
+server proxy application root prefix:
+
+``/user/{jupyter username}/proxy/{dtale instance port}/``
+
+One thing to note is that if you try to look at the ``_main_url`` of
+your D-Tale instance in your notebook it will not include the hostname
+or port:
+
+.. code:: python
+
+   import pandas as pd
+
+   import dtale
+   import dtale.app as dtale_app
+
+   dtale_app.JUPYTER_SERVER_PROXY = True
+
+   d = dtale.show(pd.DataFrame([1,2,3]))
+   d._main_url # /user/johndoe/proxy/40000/dtale/main/1
+
+This is because it’s very hard to promgramatically figure out the
+host/port that your notebook is running on. So if you want to look at
+``_main_url`` please be sure to preface it with:
+
+``http[s]://[jupyterhub host]:[jupyterhub port]``
+
+If for some reason jupyterhub changes their API so that the application
+root changes you can also override D-Tale’s application root by using
+the ``app_root`` parameter to the ``show()`` function:
+
+.. code:: python
+
+   import pandas as pd
+
+   import dtale
+   import dtale.app as dtale_app
+
+   dtale.show(pd.DataFrame([1,2,3]), app_root='/user/johndoe/proxy/40000/`)
+
+Using this parameter will only apply the application root to that
+specific instance so you would have to include it on every call to
+``show()``.
+
+JupyterHub w/ Kubernetes
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Please read this
+`post <https://github.com/man-group/dtale/blob/master/docs/JUPYTERHUB_KUBERNETES.md>`__
+
+Docker Container
+~~~~~~~~~~~~~~~~
+
+If you have D-Tale installed within your docker container please add the
+following parameters to your ``docker run`` command.
+
+**On a Mac**:
+
+.. code:: sh
+
+   docker run -h `hostname` -p 40000:40000
+
+-  ``-h`` this will allow the hostname (and not the PID of the docker
+   container) to be available when building D-Tale URLs
+-  ``-p`` access to port 40000 which is the default port for running
+   D-Tale
+
+**On Windows**:
+
+.. code:: sh
+
+   docker run -p 40000:40000
+
+-  ``-p`` access to port 40000 which is the default port for running
+   D-Tale
+-  D-Tale URL will be http://127.0.0.1:40000/
+
+**Everything Else**:
+
+.. code:: sh
+
+   docker run -h `hostname` --network host
+
+-  ``-h`` this will allow the hostname (and not the PID of the docker
+   container) to be available when building D-Tale URLs
+-  ``--network host`` this will allow access to as many ports as needed
+   for running D-Tale processes
+
+Google Colab
+~~~~~~~~~~~~
+
+This is a hosted notebook site and thanks to Colab’s internal function
+``google.colab.output.eval_js`` & the JS function
+``google.colab.kernel.proexyPort`` users can run D-Tale within their
+notebooks.
+
+**DISCLAIMER:** It is important that you set ``USE_COLAB`` to true when
+using D-Tale within this service. Here is an example:
+
+.. code:: python
+
+   import pandas as pd
+
+   import dtale
+   import dtale.app as dtale_app
+
+   dtale_app.USE_COLAB = True
+
+   dtale.show(pd.DataFrame([1,2,3]))
+
+If this does not work for you try using ``USE_NGROK`` which is described
+in the next section.
+
+Kaggle
+~~~~~~
+
+This is yet another hosted notebook site and thanks to the work of
+`flask_ngrok <https://github.com/gstaff/flask-ngrok>`__ users can run
+D-Tale within their notebooks.
+
+**DISCLAIMER:** It is import that you set ``USE_NGROK`` to true when
+using D-Tale within this service. Here is an example:
+
+.. code:: python
+
+   import pandas as pd
+
+   import dtale
+   import dtale.app as dtale_app
+
+   dtale_app.USE_NGROK = True
+
+   dtale.show(pd.DataFrame([1,2,3]))
+
+Here are some video tutorials of each:
+
++-----------------------+-----------------------+-----------------------+
+| Service               | Tutorial              | Addtl Notes           |
++=======================+=======================+=======================+
+| Google Colab          | |image22|             |                       |
++-----------------------+-----------------------+-----------------------+
+| Kaggle                | |image23|             | make sure you switch  |
+|                       |                       | the “Internet” toggle |
+|                       |                       | to “On” under         |
+|                       |                       | settings of your      |
+|                       |                       | notebook so you can   |
+|                       |                       | install the egg from  |
+|                       |                       | pip                   |
++-----------------------+-----------------------+-----------------------+
+
+It is important to note that using NGROK will limit you to 20
+connections per mintue so if you see this error:
+
+|image24|
+
+Wait a little while and it should allow you to do work again. I am
+actively working on finding a more sustainable solution similar to what
+I did for google colab. :pray:
+
+Binder
+~~~~~~
+
+I have built a repo which shows an example of how to run D-Tale within
+Binder `here <https://github.com/aschonfeld/dtale-binder>`__.
+
+The important take-aways are: \* you must have ``jupyter-server-proxy``
+installed \* look at the ``environment.yml`` file to see how to add it
+to your environment \* look at the ``postBuild`` file for how to
+activate it on startup
+
+R with Reticulate
+~~~~~~~~~~~~~~~~~
+
+I was able to get D-Tale running in R using reticulate. Here is an
+example:
+
+::
+
+   library('reticulate')
+   dtale <- import('dtale')
+   df <- read.csv('https://vincentarelbundock.github.io/Rdatasets/csv/boot/acme.csv')
+   dtale$show(df, subprocess=FALSE, open_browser=TRUE)
+
+Now the problem with doing this is that D-Tale is not running as a
+subprocess so it will block your R console and you’ll lose out the
+following functions: - manipulating the state of your data from your R
+console - adding more data to D-Tale
+
+``open_browser=TRUE`` isn’t required and won’t work if you don’t have a
+default browser installed on your machine. If you don’t use that
+parameter simply copy & paste the URL that gets printed to your console
+in the browser of your choice.
+
+I’m going to do some more digging on why R doesn’t seem to like using
+python subprocesses (not sure if it something with how reticulate
+manages the state of python) and post any findings to this thread.
+
+Here’s some helpful links for getting setup:
+
+reticulate
+
+installing python packages
+
+Startup with No Data
+~~~~~~~~~~~~~~~~~~~~
+
+It is now possible to run D-Tale with no data loaded up front. So simply
+call ``dtale.show()`` and this will start the application for you and
+when you go to view it you will be presented with a screen where you can
+upload either a CSV or TSV file for data.
+
+|image25|
+
+Once you’ve loaded a file it will take you directly to the standard data
+grid comprised of the data from the file you loaded. This might make it
+easier to use this as an on demand application within a container
+management system like kubernetes. You start and stop these on demand
+and you’ll be presented with a new instance to load any CSV or TSV file
+to!
+
+Command-line
+~~~~~~~~~~~~
+
+Base CLI options (run ``dtale --help`` to see all options available)
+
++-----------------------------+----------------------------------------+
+| Prop                        | Description                            |
++=============================+========================================+
+| ``--host``                  | the name of the host you would like to |
+|                             | use (most likely not needed since      |
+|                             | ``socket.gethostname()`` should figure |
+|                             | this out)                              |
++-----------------------------+----------------------------------------+
+| ``--port``                  | the port you would like to assign to   |
+|                             | your D-Tale instance                   |
++-----------------------------+----------------------------------------+
+| ``--name``                  | an optional name you can assign to     |
+|                             | your D-Tale instance (this will be     |
+|                             | displayed in the ``<title>`` &         |
+|                             | Instances popup)                       |
++-----------------------------+----------------------------------------+
+| ``--debug``                 | turn on Flask’s “debug” mode for your  |
+|                             | D-Tale instance                        |
++-----------------------------+----------------------------------------+
+| ``--no-reaper``             | flag to turn off auto-reaping          |
+|                             | subprocess (kill D-Tale instances      |
+|                             | after an hour of inactivity), good for |
+|                             | long-running displays                  |
++-----------------------------+----------------------------------------+
+| ``--open-browser``          | flag to automatically open up your     |
+|                             | server’s default browser to your       |
+|                             | D-Tale instance                        |
++-----------------------------+----------------------------------------+
+| ``--force``                 | flag to force D-Tale to try an kill    |
+|                             | any pre-existing process at the port   |
+|                             | you’ve specified so it can use it      |
++-----------------------------+----------------------------------------+
+
+Loading data from `arctic\ (high performance datastore for pandas
+dataframes) <https://github.com/man-group/arctic>`__ (this requires
+either installing **arctic** or **dtale[arctic]**)
+
+.. code:: bash
+
+   dtale --arctic-host mongodb://localhost:27027 --arctic-library jdoe.my_lib --arctic-node my_node --arctic-start 20130101 --arctic-end 20161231
+
+Loading data from **CSV**
+
+.. code:: bash
+
+   dtale --csv-path /home/jdoe/my_csv.csv --csv-parse_dates date
+
+Loading data from **EXCEL**
+
+.. code:: bash
+
+   dtale --excel-path /home/jdoe/my_csv.xlsx --excel-parse_dates date
+   dtale --excel-path /home/jdoe/my_csv.xls --excel-parse_dates date
+
+Loading data from **JSON**
+
+.. code:: bash
+
+   dtale --json-path /home/jdoe/my_json.json --json-parse_dates date
+
+or
+
+.. code:: bash
+
+   dtale --json-path http://json-endpoint --json-parse_dates date
+
+Loading data from **R Datasets**
+
+.. code:: bash
+
+   dtale --r-path /home/jdoe/my_dataset.rda
+
+Loading data from **SQLite DB Files**
+
+.. code:: bash
+
+   dtale --sqlite-path /home/jdoe/test.sqlite3 --sqlite-table test_table
+
+Custom Command-line Loaders
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Loading data from a **Custom** loader - Using the DTALE_CLI_LOADERS
+environment variable, specify a path to a location containing some
+python modules - Any python module containing the global variables
+LOADER_KEY & LOADER_PROPS will be picked up as a custom loader -
+LOADER_KEY: the key that will be associated with your loader. By default
+you are given **arctic** & **csv** (if you use one of these are your key
+it will override these) - LOADER_PROPS: the individual props available
+to be specified. - For example, with arctic we have host, library, node,
+start & end. - If you leave this property as an empty list your loader
+will be treated as a flag. For example, instead of using all the arctic
+properties we would simply specify ``--arctic`` (this wouldn’t work well
+in arctic’s case since it depends on all those properties) - You will
+also need to specify a function with the following signature
+``def find_loader(kwargs)`` which returns a function that returns a
+dataframe or ``None`` - Here is an example of a custom loader:
+
+.. code:: python
+
+   from dtale.cli.clickutils import get_loader_options
+
+   '''
+     IMPORTANT!!! This global variable is required for building any customized CLI loader.
+     When find loaders on startup it will search for any modules containing the global variable LOADER_KEY.
+   '''
+   LOADER_KEY = 'testdata'
+   LOADER_PROPS = ['rows', 'columns']
+
+
+   def test_data(rows, columns):
+       import pandas as pd
+       import numpy as np
+       import random
+       from past.utils import old_div
+       from pandas.tseries.offsets import Day
+       from dtale.utils import dict_merge
+       import string
+
+       now = pd.Timestamp(pd.Timestamp('now').date())
+       dates = pd.date_range(now - Day(364), now)
+       num_of_securities = max(old_div(rows, len(dates)), 1)  # always have at least one security
+       securities = [
+           dict(security_id=100000 + sec_id, int_val=random.randint(1, 100000000000),
+                str_val=random.choice(string.ascii_letters) * 5)
+           for sec_id in range(num_of_securities)
+       ]
+       data = pd.concat([
+           pd.DataFrame([dict_merge(dict(date=date), sd) for sd in securities])
+           for date in dates
+       ], ignore_index=True)[['date', 'security_id', 'int_val', 'str_val']]
+
+       col_names = ['Col{}'.format(c) for c in range(columns)]
+       return pd.concat([data, pd.DataFrame(np.random.randn(len(data), columns), columns=col_names)], axis=1)
+
+
+   # IMPORTANT!!! This function is required for building any customized CLI loader.
+   def find_loader(kwargs):
+       test_data_opts = get_loader_options(LOADER_KEY, LOADER_PROPS, kwargs)
+       if len([f for f in test_data_opts.values() if f]):
+           def _testdata_loader():
+               return test_data(int(test_data_opts.get('rows', 1000500)), int(test_data_opts.get('columns', 96)))
+
+           return _testdata_loader
+       return None
+
+In this example we simplying building a dataframe with some dummy data
+based on dimensions specified on the command-line: - ``--testdata-rows``
+- ``--testdata-columns``
+
+Here’s how you would use this loader:
+
+.. code:: bash
+
+   DTALE_CLI_LOADERS=./path_to_loaders bash -c 'dtale --testdata-rows 10 --testdata-columns 5'
+
+Authentication
+~~~~~~~~~~~~~~
+
+You can choose to use optional authentication by adding the following to
+your D-Tale ``.ini`` file (`directions
+here <https://github.com/man-group/dtale/blob/master/docs/CONFIGURATION.md>`__):
+
+.. code:: ini
+
+   [auth]
+   active = True
+   username = johndoe
+   password = 1337h4xOr
+
+Or you can call the following:
+
+.. code:: python
+
+   import dtale.global_state as global_state
+
+   global_state.set_auth_settings({'active': True, 'username': 'johndoe', 'password': '1337h4x0r'})
+
+If you have done this before initially starting D-Tale it will have
+authentication applied. If you are adding this after starting D-Tale you
+will have to kill your service and start it over.
+
+When opening your D-Tale session you will be presented with a screen
+like this:
+
+|image26|
+
+From there you can enter the credentials you either set in your ``.ini``
+file or in your call to ``dtale.global_state.set_auth_settings`` and you
+will be brought to the main grid as normal. You will now have an
+additional option in your main menu to logout:
+
+|image27|
+
+Instance Settings
+~~~~~~~~~~~~~~~~~
+
+Users can set front-end properties on their instances programmatically
+in the ``dtale.show`` function or by calling the ``update_settings``
+function on their instance. For example:
+
+.. code:: python
+
+   import dtale
+   import pandas as pd
+
+   df = pd.DataFrame(dict(
+     a=[1,2,3,4,5],
+     b=[6,7,8,9,10],
+     c=['a','b','c','d','e']
+   ))
+   dtale.show(
+     df,
+     locked=['c'],
+     column_formats={'a': {'fmt': '0.0000'}},
+     nan_display='...',
+     background_mode='heatmap-col',
+     sort=[('a','DESC')],
+     vertical_headers=True,
+   )
+
+or
+
+.. code:: python
+
+   import dtale
+   import pandas as pd
+
+   df = pd.DataFrame(dict(
+     a=[1,2,3,4,5],
+     b=[6,7,8,9,10],
+     c=['a','b','c','d','e']
+   ))
+   d = dtale.show(
+     df
+   )
+   d.update_settings(
+     locked=['c'],
+     column_formats={'a': {'fmt': '0.0000'}},
+     nan_display='...',
+     background_mode='heatmap-col',
+     sort=[('a','DESC')],
+     vertical_headers=True,
+   )
+   d
+
+Here’s a short description of each instance setting available:
+
+show_columns
+^^^^^^^^^^^^
+
+A list of column names you would like displayed in your grid. Anything
+else will be hidden.
+
+hide_columns
+^^^^^^^^^^^^
+
+A list of column names you would like initially hidden from the grid
+display.
+
+column_formats
+^^^^^^^^^^^^^^
+
+A dictionary of column name keys and their front-end display
+configuration. Here are examples of the different format configurations:
+\* Numeric: ``{'fmt': '0.00000'}`` \* String: \*
+``{'fmt': {'truncate': 10}}`` truncate string values to no more than 10
+characters followed by an ellipses \* ``{'fmt': {'link': True}}`` if
+your strings are URLs convert them to clickable links \*
+``{'fmt': {'html': True}}`` if your strings are HTML fragments render
+them as HTML \* Date: ``{'fmt': 'MMMM Do YYYY, h:mm:ss a'}`` uses
+`Moment.js
+formatting <https://momentjs.com/docs/#/displaying/format/>`__
+
+nan_display
+^^^^^^^^^^^
+
+Converts any ``nan`` values in your dataframe to this when it is sent to
+the browser (doesn’t actually change the state of your dataframe)
+
+sort
+^^^^
+
+List of tuples which sort your dataframe (EX:
+``[('a', 'ASC'), ('b', 'DESC')]``)
+
+locked
+^^^^^^
+
+List of column names which will be locked to the right side of your grid
+while you scroll to the left.
+
+background_mode
+^^^^^^^^^^^^^^^
+
+A string denoting one of the many background displays available in
+D-Tale. Options are: \* heatmap-all: turn on heatmap for all numeric
+columns where the colors are determined by the range of values over all
+numeric columns combined \* heatmap-col: turn on heatmap for all numeric
+columns where the colors are determined by the range of values in the
+column \* heatmap-col-[column name]: turn on heatmap highlighting for a
+specific column \* dtypes: highlight columns based on it’s data type \*
+missing: highlight any missing values (np.nan, empty strings, strings of
+all spaces) \* outliers: highlight any outliers \* range: highlight
+values for any matchers entered in the “range_highlights” option \*
+lowVariance: highlight values with a low variance
+
+range_highlights
+^^^^^^^^^^^^^^^^
+
+Dictionary of column name keys and range configurations which if the
+value for that column exists then it will be shaded that color. Here is
+an example input:
+
+::
+
+   'a': {
+     'active': True,
+     'equals': {'active': True, 'value': 3, 'color': {'r': 255, 'g': 245, 'b': 157, 'a': 1}}, # light yellow
+     'greaterThan': {'active': True, 'value': 3, 'color': {'r': 80, 'g': 227, 'b': 194, 'a': 1}}, # mint green
+     'lessThan': {'active': True, 'value': 3, 'color': {'r': 245, 'g': 166, 'b': 35, 'a': 1}}, # orange
+   }
+
+vertical_headers
+^^^^^^^^^^^^^^^^
+
+If set to ``True`` then the headers in your grid will be rotated 90
+degrees vertically to conserve width. |image28|
+
+Predefined Filters
+~~~~~~~~~~~~~~~~~~
+
+Users can build their own custom filters which can be used from the
+front-end using the following code snippet:
+
+.. code:: python
+
+   import pandas as pd
+   import dtale
+   import dtale.predefined_filters as predefined_filters
+   import dtale.global_state as global_state
+
+   global_state.set_app_settings(dict(open_predefined_filters_on_startup=True))
+
+   predefined_filters.set_filters([
+       {
+           "name": "A and B > 2",
+           "column": "A",
+           "description": "Filter A with B greater than 2",
+           "handler": lambda df, val: df[(df["A"] == val) & (df["B"] > 2)],
+           "input_type": "input",
+           "default": 1,
+           "active": False,
+       },
+       {
+           "name": "A and (B % 2) == 0",
+           "column": "A",
+           "description": "Filter A with B mod 2 equals zero (is even)",
+           "handler": lambda df, val: df[(df["A"] == val) & (df["B"] % 2 == 0)],
+           "input_type": "select",
+           "default": 1,
+           "active": False,
+       },
+       {
+           "name": "A in values and (B % 2) == 0",
+           "column": "A",
+           "description": "A is within a group of values and B mod 2 equals zero (is even)",
+           "handler": lambda df, val: df[df["A"].isin(val) & (df["B"] % 2 == 0)],
+           "input_type": "multiselect",
+           "default": [1],
+           "active": True,
+       }
+   ])
+
+   df = pd.DataFrame(
+       ([[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12], [13, 14, 15, 16, 17, 18]]),
+       columns=['A', 'B', 'C', 'D', 'E', 'F']
+   )
+   dtale.show(df)
+
+This code illustrates the types of inputs you can have on the front end:
+\* **input**: just a simple text input box which users can enter any
+value they want (if the value specified for ``"column"`` is an int or
+float it will try to convert the string to that data type) and it will
+be passed to the handler \* **select**: this creates a dropdown
+populated with the unique values of ``"column"`` (an asynchronous
+dropdown if the column has a large amount of unique values) \*
+**multiselect**: same as “select” but it will allow you to choose
+multiple values (handy if you want to perform an ``isin`` operation in
+your filter)
+
+Here is a demo of the functionality: |image29|
+
+If there are any new types of inputs you would like available please
+don’t hesitate to submit a request on the “Issues” page of the repo.
+
+Using Swifter
+~~~~~~~~~~~~~
+
+Swifter is a package which will increase performance on any ``apply()``
+function on a pandas series or dataframe. If install the package in your
+virtual environment
+
+.. code:: sh
+
+   pip install swifter
+   # or
+   pip install dtale[swifter]
+
+It will be used for the following operations: - Standard dataframe
+formatting in the main grid & chart display - Column Builders - Type
+Conversions - string hex -> int or float - int or float -> hex - mixed
+-> boolean - int -> timestamp - date -> int - Similarity Distance
+Calculation - Handling of empty strings when calculating missing counts
+- Building unique values by data type in “Describe” popup
+
+Accessing CLI Loaders in Notebook or Console
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+I am pleased to announce that all CLI loaders will be available within
+notebooks & consoles. Here are some examples (the last working if you’ve
+installed ``dtale[arctic]``): -
+``dtale.show_csv(path='test.csv', parse_dates=['date'])`` -
+``dtale.show_csv(path='http://csv-endpoint', index_col=0)`` -
+``dtale.show_excel(path='test.xlsx', parse_dates=['date'])`` -
+``dtale.show_excel(path='test.xls', sheet=)`` -
+``dtale.show_excel(path='http://excel-endpoint', index_col=0)`` -
+``dtale.show_json(path='http://json-endpoint', parse_dates=['date'])`` -
+``dtale.show_json(path='test.json', parse_dates=['date'])`` -
+``dtale.show_r(path='text.rda')`` -
+``dtale.show_arctic(host='host', library='library', node='node', start_date='20200101', end_date='20200101')``
+
+UI
+--
+
+Once you have kicked off your D-Tale session please copy & paste the
+link on the last line of output in your browser |image30|
+
+Dimensions/Ribbon Menu/Main Menu
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The information in the upper right-hand corner gives grid dimensions
+|image31| - lower-left => row count - upper-right => column count
+
+Ribbon Menu - hovering around to top of your browser will display a menu
+items (similar to the ones in the main menu) across the top of the
+screen - to close the menu simply click outside the menu and/or
+dropdowns from the menu
+
+|image32|
+
+Main Menu - clicking the triangle displays the menu of standard
+functions (click outside menu to close it)
+
+|image33|
+
+Header
+~~~~~~
+
+The header gives users an idea of what operations have taken place on
+your data (sorts, filters, hidden columns). These values will be
+persisted across broswer instances. So if you perform one of these
+operations and then send a link to one of your colleagues they will see
+the same thing :)
+
+Notice the “X” icon on the right of each display. Clicking this will
+remove those operations.
+
+When performing multiple of the same operation the description will
+become too large to display so the display will truncate the description
+and if users click it they will be presented with a tooltip where you
+can crop individual operations. Here are some examples:
+
+========= ========= ==============
+Sorts     Filters   Hidden Columns
+========= ========= ==============
+|image34| |image35| |image36|
+========= ========= ==============
+
+Resize Columns
+~~~~~~~~~~~~~~
+
+Currently there are two ways which you can resize columns. \* Dragging
+the right border of the column’s header cell.
+
+|image37|
+
+-  Altering the “Maximum Column Width” property from the ribbon menu.
+
+|image38|
+
+-  **Side Note:** You can also set the ``max_column_width`` property
+   ahead of time in your `global
+   configuration <https://github.com/man-group/dtale/blob/master/docs/CONFIGURATION.md>`__
+   or programmatically using:
+
+.. code:: python
+
+   import dtale.global_state as global_state
+
+   global_state.set_app_settings(dict(max_column_width=100))
+
+Editing Cells
+~~~~~~~~~~~~~
+
+You may edit any cells in your grid (with the exception of the row
+indexes or headers, the ladder can be edited using the
+`Rename <#rename>`__ column menu function).
+
+In order to edit a cell simply double-click on it. This will convert it
+into a text-input field and you should see a blinking cursor. In
+addition to turning that cell into an input it will also display an
+input at the top of the screen for better viewing of long strings. It is
+assumed that the value you type in will match the data type of the
+column you editing. For example:
+
+-  integers -> should be a valid positive or negative integer
+-  float -> should be a valid positive or negative float
+-  string -> any valid string will do
+-  category -> either a pre-existing category or this will create a new
+   category for (so beware!)
+-  date, timestamp, timedelta -> should be valid string versions of each
+-  boolean -> any string you input will be converted to lowercase and if
+   it equals “true” then it will make the cell ``True``, otherwise
+   ``False``
+
+Users can make use of two protected values as well:
+
+-  “nan” -> ``numpy.nan``
+-  “inf” -> ``numpy.inf``
+
+To save your change simply press “Enter” or to cancel your changes press
+“Esc”.
+
+If there is a conversion issue with the value you have entered it will
+display a popup with the specific exception in question.
+
+Here’s a quick demo:
+
+|image39|
+
+Here’s a demo of editing cells with long strings:
+
+|image40|
+
+Copy Cells Into Clipboard
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+========= ========= =========
+Select    Copy      Paste
+========= ========= =========
+|image41| |image42| |image43|
+========= ========= =========
+
+One request that I have heard time and time again while working on
+D-Tale is “it would be great to be able to copy a range of cells into
+excel”. Well here is how that is accomplished: 1) Shift + Click on a
+cell 2) Shift + Click on another cell (this will trigger a popup) 3)
+Choose whether you want to include headers in your copy by clicking the
+checkbox 4) Click Yes 5) Go to your excel workbook and execute Ctrl + V
+or manually choose “Paste” \* You can also paste this into a standard
+text editor and what you’re left with is tab-delimited data
+
+Main Menu Functions
+~~~~~~~~~~~~~~~~~~~
+
+XArray Operations
+^^^^^^^^^^^^^^^^^
+
+-  **Convert To XArray**: If you have are currently viewing a pandas
+   dataframe in D-Tale you will be given this option to convert your
+   data to an ``xarray.Dataset``. It is as simple as selecting one or
+   many columns as an index and then your dataframe will be converted to
+   a dataset (``df.set_index([...]).to_xarray()``) which makes toggling
+   between indexes slices much easier.
+
+|image44|
+
+-  **XArray Dimensions**: If you are currently viewing data associated
+   with an ``xarray.Dataset`` you will be given the ability to toggle
+   which dimension coordinates you’re viewing by clicking this button.
+   You can select values for all, some or none (all data - no filter) of
+   your coordinates and the data displayed in your grid will match your
+   selections. Under the hood the code being executed is as follows:
+   ``ds.sel(dim1=coord1,...).to_dataframe()``
+
+|image45|
+
+Describe
+^^^^^^^^
+
+View all the columns & their data types as well as individual details of
+each column
+
+|image46|
+
++-----------------------+-----------------------+-----------------------+
+| Data Type             | Display               | Notes                 |
++=======================+=======================+=======================+
+| date                  | |image47|             |                       |
++-----------------------+-----------------------+-----------------------+
+| string                | |image48|             | If you have less than |
+|                       |                       | or equal to 100       |
+|                       |                       | unique values they    |
+|                       |                       | will be displayed at  |
+|                       |                       | the bottom of your    |
+|                       |                       | popup                 |
++-----------------------+-----------------------+-----------------------+
+| int                   | |image49|             | Anything with         |
+|                       |                       | standard numeric      |
+|                       |                       | classifications (min, |
+|                       |                       | max, 25%, 50%, 75%)   |
+|                       |                       | will have a nice      |
+|                       |                       | boxplot with the mean |
+|                       |                       | (if it exists)        |
+|                       |                       | displayed as an       |
+|                       |                       | outlier if you look   |
+|                       |                       | closely.              |
++-----------------------+-----------------------+-----------------------+
+| float                 | |image50|             |                       |
++-----------------------+-----------------------+-----------------------+
+
+Outlier Detection
+^^^^^^^^^^^^^^^^^
+
+When viewing integer & float columns in the `“Describe”
+popup <#describe>`__ you will see in the lower right-hand corner a
+toggle for Uniques & Outliers.
+
+========= =========
+Outliers  Filter
+========= =========
+|image51| |image52|
+========= =========
+
+If you click the “Outliers” toggle this will load the top 100 outliers
+in your column based on the following code snippet:
+
+.. code:: python
+
+   s = df[column]
+   q1 = s.quantile(0.25)
+   q3 = s.quantile(0.75)
+   iqr = q3 - q1
+   iqr_lower = q1 - 1.5 * iqr
+   iqr_upper = q3 + 1.5 * iqr
+   outliers = s[(s < iqr_lower) | (s > iqr_upper)]
+
+If you click on the “Apply outlier filter” link this will add an
+addtional “outlier” filter for this column which can be removed from the
+`header <#header>`__ or the `custom filter <#custom-filter>`__ shown in
+picture above to the right.
+
+Custom Filter
+^^^^^^^^^^^^^
+
+Apply a custom pandas ``query`` to your data (link to pandas
+documentation included in popup)
+
+========= =========
+Editing   Result
+========= =========
+|image53| |image54|
+========= =========
+
+You can also see any outlier or column filters you’ve applied (which
+will be included in addition to your custom query) and remove them if
+you’d like.
+
+Context Variables are user-defined values passed in via the
+``context_variables`` argument to dtale.show(); they can be referenced
+in filters by prefixing the variable name with ‘@’.
+
+For example, here is how you can use context variables in a pandas
+query:
+
+.. code:: python
+
+   import pandas as pd
+
+   df = pd.DataFrame([
+     dict(name='Joe', age=7),
+     dict(name='Bob', age=23),
+     dict(name='Ann', age=45),
+     dict(name='Cat', age=88),
+   ])
+   two_oldest_ages = df['age'].nlargest(2)
+   df.query('age in @two_oldest_ages')
+
+And here is how you would pass that context variable to D-Tale:
+``dtale.show(df, context_variables=dict(two_oldest_ages=two_oldest_ages))``
+
+Here’s some nice documentation on the performance of `pandas
+queries <https://pandas.pydata.org/pandas-docs/stable/user_guide/enhancingperf.html#pandas-eval-performance>`__
+
+Dataframe Functions
+^^^^^^^^^^^^^^^^^^^
+
+|image55|
+
+This video shows you how to build the following: - Numeric:
+adding/subtracting two columns or columns with static values - Bins:
+bucketing values using pandas cut & qcut as well as assigning custom
+labels - Dates: retrieving date properties (hour, weekday, month…) as
+well as conversions (month end) - Random: columns of data type (int,
+float, string & date) populated with random uniformly distributed
+values. - Type Conversion: switch columns from one data type to another,
+fun. :smile:
+
+Merge & Stack
+^^^^^^^^^^^^^
+
+|image56|
+
+This feature allows users to merge or stack (vertically concatenate)
+dataframes they have loaded into D-Tale. They can also upload additional
+data to D-Tale while wihin this feature. The demo shown above goes over
+the following actions: - Editing of parameters to either a pandas merge
+or stack (vertical concatenation) of dataframes - Viewing direct
+examples of each from the pandas documentation - Selection of dataframes
+- Uploading of additional dataframes from an excel file - Viewing code &
+resulting data from a merge or stack
+
+Summarize Data
+^^^^^^^^^^^^^^
+
+This is very powerful functionality which allows users to create a new
+data from currently loaded data. The operations currently available are:
+- **Aggregation**: consolidate data by running different aggregations on
+columns by a specific index - **Pivot**: this is simple wrapper around
+`pandas.Dataframe.pivot <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.pivot.html>`__
+and
+`pandas.pivot_table <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.pivot_table.html>`__
+- **Transpose**: transpose your data on a index (be careful dataframes
+can get very wide if your index has many unique values)
+
+============ =========
+Function     Data
+============ =========
+No Reshaping |image57|
+|image58|    |image59|
+|image60|    |image61|
+|image62|    |image63|
+|image64|    |image65|
+============ =========
+
+|image66|
+
+Duplicates
+^^^^^^^^^^
+
+Remove duplicate columns/values from your data as well as extract
+duplicates out into separate instances.
+
+The folowing screen shots are for a dataframe with the following data:
+|image67|
+
++---------------------+-----------------------------+------------------+
+| Function            | Description                 | Preview          |
++=====================+=============================+==================+
+| **Remove Duplicate  | Remove any columns that     | |image68|        |
+| Columns**           | contain the same data as    |                  |
+|                     | another and you can either  |                  |
+|                     | keep the first, last or     |                  |
+|                     | none of these columns that  |                  |
+|                     | match this criteria. You    |                  |
+|                     | can test which columns will |                  |
+|                     | be removed by clicking the  |                  |
+|                     | “View Duplicates” button.   |                  |
++---------------------+-----------------------------+------------------+
+| **Remove Duplicate  | Remove any columns with the | |image69|        |
+| Column Names**      | same name (name comparison  |                  |
+|                     | is case-insensitive) and    |                  |
+|                     | you can either keep the     |                  |
+|                     | first, last or none of      |                  |
+|                     | these columns that match    |                  |
+|                     | this criteria. You can test |                  |
+|                     | which columns will be       |                  |
+|                     | removed by clicking the     |                  |
+|                     | “View Duplicates” button.   |                  |
++---------------------+-----------------------------+------------------+
+| **Remove Duplicate  | Remove any rows from your   | |image70|        |
+| Rows**              | dataframe where the values  |                  |
+|                     | of a subset of columns are  |                  |
+|                     | considered duplicates. You  |                  |
+|                     | can choose to keep the      |                  |
+|                     | first, last or none of the  |                  |
+|                     | rows considered duplicated. |                  |
++---------------------+-----------------------------+------------------+
+| **Show Duplicates** | Break any duplicate rows    | |image71|        |
+|                     | (based on a subset of       |                  |
+|                     | columns) out into another   |                  |
+|                     | dataframe viewable in your  |                  |
+|                     | D-Tale session. You can     |                  |
+|                     | choose to view all          |                  |
+|                     | duplicates or select        |                  |
+|                     | specific groups based on    |                  |
+|                     | the duplicated value.       |                  |
++---------------------+-----------------------------+------------------+
+
+Missing Analysis
+^^^^^^^^^^^^^^^^
+
+Display charts analyzing the presence of missing (NaN) data in your
+dataset using the
+`missingno <https://github.com/ResidentMario/missingno>`__ pacakage. You
+can also open them in a tab by themselves or export them to a static PNG
+using the links in the upper right corner. You can also close the side
+panel using the ESC key.
+
+========== =========
+Chart      Sample
+========== =========
+Matrix     |image72|
+Bar        |image73|
+Heatmap    |image74|
+Dendrogram |image75|
+========== =========
+
+Charts
+^^^^^^
+
+Build custom charts based off your data(powered by
+`plotly/dash <https://github.com/plotly/dash>`__).
+
+-  The Charts will open in a tab because of the fact there is so much
+   functionality offered there you’ll probably want to be able to
+   reference the main grid data in the original tab
+-  To build a chart you must pick a value for X & Y inputs which
+   effectively drive what data is along the X & Y axes
+
+   -  If you are working with a 3-Dimensional chart (heatmap, 3D
+      Scatter, Surface) you’ll need to enter a value for the Z axis as
+      well
+
+-  Once you have entered all the required axes a chart will be built
+-  If your data along the x-axis (or combination of x & y in the case of
+   3D charts) has duplicates you have three options:
+
+   -  Specify a group, which will create series for each group
+   -  Specify an aggregation, you can choose from one of the following:
+      Count, First, Last, Mean, Median, Minimum, Maximum, Standard
+      Deviation, Variance, Mean Absolute Deviation, Product of All
+      Items, Sum, Rolling
+
+      -  Specifying a “Rolling” aggregation will also require a Window &
+         a Computation (Correlation, Count, Covariance, Kurtosis,
+         Maximum, Mean, Median, Minimum, Skew, Standard Deviation, Sum
+         or Variance)
+      -  For heatmaps you will also have access to the “Correlation”
+         aggregation since viewing correlation matrices in heatmaps is
+         very useful. This aggregation is not supported elsewhere
+
+   -  Specify both a group & an aggregation
+
+-  You now have the ability to toggle between different chart types:
+   line, bar, pie, wordcloud, heatmap, 3D scatter & surface
+-  If you have specified a group then you have the ability between
+   showing all series in one chart and breaking each series out into its
+   own chart “Chart per Group”
+
+Here are some examples:
+
+================== ========= ===============
+Chart Type         Chart     Chart per Group
+================== ========= ===============
+line               |image76| |image77|
+bar                |image78| |image79|
+stacked            |image80| |image81|
+pie                |image82| 
+wordcloud          |image83| |image84|
+heatmap            |image85| 
+3D scatter         |image86| 
+surface            |image87| 
+Maps (Scatter GEO) |image88| 
+Maps (Choropleth)  |image89| 
+================== ========= ===============
+
+Y-Axis Toggling
+
+Users now have the ability to toggle between 3 different behaviors for
+their y-axis display: - *Default*: selecting this option will use the
+default behavior that comes with plotly for your chart’s y-axis -
+*Single*: this allows users to set the range of all series in your chart
+to be on the same basis as well as making that basis (min/max) editable
+- *Multi*: this allows users to give each series its own y-axis and
+making that axis’ range editable
+
+Here’s a quick tutorial: |image90|
+
+And some screenshots:
+
+========= ========= =========
+Default   Single    Multi
+========= ========= =========
+|image91| |image92| |image93|
+========= ========= =========
+
+With a bar chart that only has a single Y-Axis you have the ability to
+sort the bars based on the values for the Y-Axis
+
+========= =========
+Pre-sort  Post-sort
+========= =========
+|image94| |image95|
+========= =========
+
+**Popup Charts**
+
+Viewing multiple charts at once and want to separate one out into its
+own window or simply move one off to the side so you can work on
+building another for comparison? Well now you can by clicking the
+“Popup” button :smile:
+
+**Copy Link**
+
+Want to send what you’re looking at to someone else? Simply click the
+“Copy Link” button and it will save a pre-populated chart URL into your
+clipboard. As long as your D-Tale process is still running when that
+link is opened you will see your original chart.
+
+**Exporting Charts**
+
+You can now export your dash charts (with the exception of Wordclouds)
+to static HTML files which can be emailed to others or saved down to be
+viewed at a later time. The best part is that all of the javascript for
+plotly is embedded in these files so the nice zooming, panning, etc is
+still available! :boom:
+
+**Exporting CSV**
+
+I’ve been asked about being able to export the data that is contained
+within your chart to a CSV for further analysis in tools like Excel.
+This button makes that possible.
+
+OFFLINE CHARTS
+~~~~~~~~~~~~~~
+
+Want to run D-Tale in a jupyter notebook and build a chart that will
+still be displayed even after your D-Tale process has shutdown? Now you
+can! Here’s an example code snippet show how to use it:
+
+::
+
+   import dtale
+
+   def test_data():
+       import random
+       import pandas as pd
+       import numpy as np
+
+       df = pd.DataFrame([
+           dict(x=i, y=i % 2)
+           for i in range(30)
+       ])
+       rand_data = pd.DataFrame(np.random.randn(len(df), 5), columns=['z{}'.format(j) for j in range(5)])
+       return pd.concat([df, rand_data], axis=1)
+
+   d = dtale.show(test_data())
+   d.offline_chart(chart_type='bar', x='x', y='z3', agg='sum')
+
+|image96|
+
+**Pro Tip: If generating offline charts in jupyter notebooks and you run
+out of memory please add the following to your command-line when
+starting jupyter**
+
+``--NotebookApp.iopub_data_rate_limit=1.0e10``
+
+**Disclaimer: Long Running Chart Requests**
+
+If you choose to build a chart that requires a lot of computational
+resources then it will take some time to run. Based on the way Flask &
+plotly/dash interact this will block you from performing any other
+request until it completes. There are two courses of action in this
+situation:
+
+1) Restart your jupyter notebook kernel or python console
+2) Open a new D-Tale session on a different port than the current
+   session. You can do that with the following command:
+   ``dtale.show(df, port=[any open port], force=True)``
+
+If you miss the legacy (non-plotly/dash) charts, not to worry! They are
+still available from the link in the upper-right corner, but on for a
+limited time… Here is the documentation for those: `Legacy
+Charts <https://github.com/man-group/dtale/blob/master/docs/LEGACY_CHARTS.md>`__
+
+**Your Feedback is Valuable**
+
+This is a very powerful feature with many more features that could be
+offered (linked subplots, different statistical aggregations, etc…) so
+please submit issues :)
+
+Network Viewer
+^^^^^^^^^^^^^^
+
+This tool gives users the ability to visualize directed graphs. For the
+screenshots I’ll beshowing for this functionality we’ll be working off a
+dataframe with the following data:
+
+|image97|
+
+Start by selecting columns containing the “To” and “From” values for the
+nodes in you network and then click “Load”: |image98|
+
+You can also see instructions on to interact with the network by
+expanding the directions section by clicking on the header “Network
+Viewer” at the top. You can also view details about the network provided
+by the package `networkx <https://github.com/networkx>`__ by clicking
+the header “Network Analysis”. |image99|
+
+Select a column containing weighting for the edges of the nodes in the
+“Weight” column and click “Load”: |image100|
+
+Select a column containing group information for each node in the “From”
+column by populating “Group” and then clicking “Load”: |image101|
+
+Perform shortest path analysis by doing a Shift+Click on two nodes:
+|image102|
+
+View direct descendants of each node by clicking on it: |image103|
+
+You can zoom in on nodes by double-clicking and zoom back out by
+pressing “Esc”.
+
+Correlations
+^^^^^^^^^^^^
+
+Shows a pearson correlation matrix of all numeric columns against all
+other numeric columns - By default, it will show a grid of pearson
+correlations (filtering available by using drop-down see 2nd table of
+screenshots) - If you have a date-type column, you can click an
+individual cell and see a timeseries of pearson correlations for that
+column combination - Currently if you have multiple date-type columns
+you will have the ability to toggle between them by way of a drop-down -
+Furthermore, you can click on individual points in the timeseries to
+view the scatter plot of the points going into that correlation - Within
+the scatter plot section you can also view the details of the PPS for
+those data points in the chart by hovering over the number next to “PPS”
+
+========== ========== ========== ==========
+Matrix     PPS        Timeseries Scatter
+========== ========== ========== ==========
+|image104| |image105| |image106| |image107|
+========== ========== ========== ==========
+
+============= ============= ====================
+Col1 Filtered Col2 Filtered Col1 & Col2 Filtered
+============= ============= ====================
+|image108|    |image109|    |image110|
+============= ============= ====================
+
+When the data being viewed in D-Tale has date or timestamp columns but
+for each date/timestamp vlaue there is only one row of data the behavior
+of the Correlations popup is a little different - Instead of a
+timeseries correlation chart the user is given a rolling correlation
+chart which can have the window (default: 10) altered - The scatter
+chart will be created when a user clicks on a point in the rollign
+correlation chart. The data displayed in the scatter will be for the
+ranges of dates involved in the rolling correlation for that date.
+
+========== ============
+Data       Correlations
+========== ============
+|image111| |image112|
+========== ============
+
+Predictive Power Score
+^^^^^^^^^^^^^^^^^^^^^^
+
+Predictive Power Score (using the package
+`ppscore <https://github.com/8080labs/ppscore>`__) is an asymmetric,
+data-type-agnostic score that can detect linear or non-linear
+relationships between two columns. The score ranges from 0 (no
+predictive power) to 1 (perfect predictive power). It can be used as an
+alternative to the correlation (matrix). WARNING: This could take a
+while to load.
+
+This page works similar to the `Correlations <#correlations>`__ page but
+uses the PPS calcuation to populate the grid and by clicking on cells
+you can view the details of the PPS for those two columns in question.
+
+|image113|\ \|\ |image114|
+
+Heat Map
+^^^^^^^^
+
+This will hide any non-float or non-int columns (with the exception of
+the index on the right) and apply a color to the background of each
+cell.
+
+-  Each float is renormalized to be a value between 0 and 1.0
+-  You have two options for the renormalization
+
+   -  **By Col**: each value is calculated based on the min/max of its
+      column
+   -  **Overall**: each value is caluclated by the overall min/max of
+      all the non-hidden float/int columns in the dataset
+
+-  Each renormalized value is passed to a color scale of red(0) -
+   yellow(0.5) - green(1.0) |image115|
+
+Turn off Heat Map by clicking menu option you previously selected one
+more time
+
+Highlight Dtypes
+^^^^^^^^^^^^^^^^
+
+This is a quick way to check and see if your data has been categorized
+correctly. By clicking this menu option it will assign a specific
+background color to each column of a specific data type.
+
+======== ========= ===== ========== ==== ====== ======
+category timedelta float int        date string bool
+======== ========= ===== ========== ==== ====== ======
+purple   orange    green light blue pink white  yellow
+======== ========= ===== ========== ==== ====== ======
+
+|image116|
+
+Highlight Missing
+^^^^^^^^^^^^^^^^^
+
+-  Any cells which contain ``nan`` values will be highlighted in yellow.
+-  Any string column cells which are empty strings or strings consisting
+   only of spaces will be highlighted in orange.
+-  ❗will be prepended to any column header which contains missing
+   values.
+
+|image117|
+
+Highlight Outliers
+^^^^^^^^^^^^^^^^^^
+
+Highlight any cells for numeric columns which surpass the upper or lower
+bounds of a `custom outlier computation <#outlier-detection>`__. \*
+Lower bounds outliers will be on a red scale, where the darker reds will
+be near the maximum value for the column. \* Upper bounds outliers will
+be on a blue scale, where the darker blues will be closer to the minimum
+value for the column. \* ⭐ will be prepended to any column header which
+contains outliers.
+
+|image118|
+
+Highlight Range
+^^^^^^^^^^^^^^^
+
+Highlight any range of numeric cells based on three different criteria:
+\* equals \* greater than \* less than
+
+You can activate as many of these criteria as you’d like nad they will
+be treated as an “or” expression. For example,
+``(x == 0) or (x < -1) or (x > 1)``
+
+========== ==========
+Selections Output
+========== ==========
+|image119| |image120|
+========== ==========
+
+Low Variance Flag
+^^^^^^^^^^^^^^^^^
+
+Show flags on column headers where both these conditions are true: \*
+Count of unique values / column size < 10% \* Count of most common value
+/ Count of second most common value > 20
+
+Here’s an example of what this will look like when you apply it:
+|image121|\ \|\ |image122|
+
+Code Exports
+^^^^^^^^^^^^
+
+*Code Exports* are small snippets of code representing the current state
+of the grid you’re viewing including things like: - columns built -
+filtering - sorting
+
+Other code exports available are: - Describe (Column Analysis) -
+Correlations (grid, timeseries chart & scatter chart) - Charts built
+using the Chart Builder
+
+|image123|
+
+====================== ===========
+Type                   Code Export
+====================== ===========
+Main Grid              |image124|
+Histogram              |image125|
+Describe               |image126|
+Correlation Grid       |image127|
+Correlation Timeseries |image128|
+Correlation Scatter    |image129|
+Charts                 |image130|
+====================== ===========
+
+Export CSV
+^^^^^^^^^^
+
+Export your current data to either a CSV or TSV file:
+
+|image131|
+
+Load Data & Sample Datasets
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+So either when starting D-Tale with no pre-loaded data or after you’ve
+already loaded some data you now have the ability to load data or choose
+from some sample datasets directly from the GUI:
+
+|image132|
+
+Here’s the options at you disposal: \* Load a CSV/TSV file by dragging a
+file to the dropzone in the top or select a file by clicking the
+dropzone \* Load a CSV/TSV or JSON directly from the web by entering a
+URL (also throw in a proxy if you are using one) \* Choose from one of
+our sample datasets: \* US COVID-19 data from NY Times (updated daily)
+\* Script breakdowns of popular shows Seinfeld & The Simpsons \* Movie
+dataset containing release date, director, actors, box office, reviews…
+\* Video games and their sales \* pandas.util.testing.makeTimeDataFrame
+
+Instances
+^^^^^^^^^
+
+This will give you information about other D-Tale instances are running
+under your current Python process.
+
+For example, if you ran the following script:
+
+.. code:: python
+
+   import pandas as pd
+   import dtale
+
+   dtale.show(pd.DataFrame([dict(foo=1, bar=2, biz=3, baz=4, snoopy_D_O_double_gizzle=5)]))
+   dtale.show(pd.DataFrame([
+       dict(a=1, b=2, c=3, d=4),
+       dict(a=2, b=3, c=4, d=5),
+       dict(a=3, b=4, c=5, d=6),
+       dict(a=4, b=5, c=6, d=7)
+   ]))
+   dtale.show(pd.DataFrame([range(6), range(6), range(6), range(6), range(6), range(6)]), name="foo")
+
+This will make the **Instances** button available in all 3 of these
+D-Tale instances. Clicking that button while in the first instance
+invoked above will give you this popup:
+
+|image133|
+
+The grid above contains the following information: - Process: timestamp
+when the process was started along with the name (if specified in
+``dtale.show()``) - Rows: number of rows - Columns: number of columns -
+Column Names: comma-separated string of column names (only first 30
+characters, hover for full listing) - Preview: this button is available
+any of the non-current instances. Clicking this will bring up left-most
+5X5 grid information for that instance - The row highlighted in green
+signifys the current D-Tale instance - Any other row can be clicked to
+switch to that D-Tale instance
+
+Here is an example of clicking the “Preview” button:
+
+|image134|
+
+About
+^^^^^
+
+This will give you information about what version of D-Tale you’re
+running as well as if its out of date to whats on PyPi.
+
+========== ===========
+Up To Date Out Of Date
+========== ===========
+|image135| |image136|
+========== ===========
+
+Refresh Widths
+^^^^^^^^^^^^^^
+
+Mostly a fail-safe in the event that your columns are no longer lining
+up. Click this and should fix that
+
+Theme
+^^^^^
+
+Toggle between light & dark themes for your viewing pleasure (only
+affects grid, not popups or charts).
+
+========== ==========
+Light      Dark
+========== ==========
+|image137| |image138|
+========== ==========
+
+Reload Data
+^^^^^^^^^^^
+
+Force a reload of the data from the server for the current rows being
+viewing in the grid by clicking this button. This can be helpful when
+viewing the grid from within another application like jupyter or nested
+within another website.
+
+Unpin/Pin Menu
+^^^^^^^^^^^^^^
+
+If you would like to keep your menu pinned to the side of your grid all
+times rather than always having to click the triaangle in the upper
+left-hand corner simply click this button. It is persisted back to the
+server so that it can be applied to all piece of data you’ve loaded into
+your session and beyond refreshes.
+
+Language
+^^^^^^^^
+
+|image139|
+
+I am happy to announce that D-Tale now supports both English & Chinese
+(there is still more of the translation to be completed but the
+infrastructure is there). And we are happy to add support for any other
+languages. Please see instruction on how,
+`here <#adding-language-support>`__.
+
+Shutdown
+^^^^^^^^
+
+Pretty self-explanatory, kills your D-Tale session (there is also an
+auto-kill process that will kill your D-Tale after an hour of
+inactivity)
+
+Column Menu Functions
+~~~~~~~~~~~~~~~~~~~~~
+
+|image140|
+
+Filtering
+^^^^^^^^^
+
+|image141|
+
+These interactive filters come in 3 different types: String, Numeric &
+Date. Note that you will still have the ability to apply custom filters
+from the “Filter” popup on the main menu, but it will get applied in
+addition to any column filters.
+
++---------+--------------+------------------------+-------------------+
+| Type    | Filter       | Data Types             | Features          |
++=========+==============+========================+===================+
+| String  | |image142|   | strings & booleans     | The ability to    |
+|         |              |                        | select multiple   |
+|         |              |                        | values based on   |
+|         |              |                        | what exists in    |
+|         |              |                        | the column.       |
+|         |              |                        | Notice the “Show  |
+|         |              |                        | Missing Only”     |
+|         |              |                        | toggle, this will |
+|         |              |                        | only show up if   |
+|         |              |                        | your column has   |
+|         |              |                        | nan values        |
++---------+--------------+------------------------+-------------------+
+| Date    | |image143|   | dates                  | Specify a range   |
+|         |              |                        | of dates to       |
+|         |              |                        | filter on based   |
+|         |              |                        | on start & end    |
+|         |              |                        | inputs            |
++---------+--------------+------------------------+-------------------+
+| Numeric | |image144|   | ints & floats          | For integers the  |
+|         |              |                        | “=” will be       |
+|         |              |                        | similar to        |
+|         |              |                        | strings where you |
+|         |              |                        | can select        |
+|         |              |                        | multiple values   |
+|         |              |                        | based on what     |
+|         |              |                        | exists in the     |
+|         |              |                        | column. You also  |
+|         |              |                        | have access to    |
+|         |              |                        | other operands:   |
+|         |              |                        | <,>,<=,>=,() -    |
+|         |              |                        | “Range exclusve”, |
+|         |              |                        | [] - “Range       |
+|         |              |                        | inclusive”.       |
++---------+--------------+------------------------+-------------------+
+
+Moving Columns
+^^^^^^^^^^^^^^
+
+|image145|
+
+All column movements are saved on the server so refreshing your browser
+won’t lose them :ok_hand:
+
+Hiding Columns
+^^^^^^^^^^^^^^
+
+|image146|
+
+All column movements are saved on the server so refreshing your browser
+won’t lose them :ok_hand:
+
+Delete
+^^^^^^
+
+As simple as it sounds, click this button to delete this column from
+your dataframe.
+
+Rename
+^^^^^^
+
+Update the name of any column in your dataframe to a name that is not
+currently in use by your dataframe.
+
+|image147|
+
+Replacements
+^^^^^^^^^^^^
+
+This feature allows users to replace content on their column directly or
+for safer purposes in a brand new column. Here are the options you have:
+
++------------------+--------------------+-----------------+------------+
+| Type             | Data Types         | Description     | Menu       |
++==================+====================+=================+============+
+| Value(s)         | all                | Replace         | |image148| |
+|                  |                    | specific values |            |
+|                  |                    | in a column     |            |
+|                  |                    | with raw        |            |
+|                  |                    | values, output  |            |
+|                  |                    | from another    |            |
+|                  |                    | column or an    |            |
+|                  |                    | aggregation on  |            |
+|                  |                    | your column     |            |
++------------------+--------------------+-----------------+------------+
+| Spaces Only      | strings            | Replace string  | |image149| |
+|                  |                    | values          |            |
+|                  |                    | consisting only |            |
+|                  |                    | of spaces with  |            |
+|                  |                    | raw values      |            |
++------------------+--------------------+-----------------+------------+
+| Contains         | strings            | Replace string  | |image150| |
+| Char/Substring   |                    | values          |            |
+|                  |                    | containing a    |            |
+|                  |                    | specific        |            |
+|                  |                    | character or    |            |
+|                  |                    | substring       |            |
++------------------+--------------------+-----------------+------------+
+| Scikit-Learn     | numeric            | Replace missing | |image151| |
+| Imputer          |                    | values with the |            |
+|                  |                    | output of using |            |
+|                  |                    | different       |            |
+|                  |                    | Scikit-Learn    |            |
+|                  |                    | imputers like   |            |
+|                  |                    | iterative, knn  |            |
+|                  |                    | & simple        |            |
++------------------+--------------------+-----------------+------------+
+
+Here’s a quick demo: |image152|
+
+Lock
+^^^^
+
+Adds your column to “locked” columns - “locked” means that if you scroll
+horizontally these columns will stay pinned to the right-hand side -
+this is handy when you want to keep track of which date or security_id
+you’re looking at - by default, any index columns on the data passed to
+D-Tale will be locked
+
+Unlock
+^^^^^^
+
+Removed column from “locked” columns
+
+Sorting
+^^^^^^^
+
+Applies/removes sorting (Ascending/Descending/Clear) to the column
+selected
+
+*Important*: as you add sorts they sort added will be added to the end
+of the multi-sort. For example:
+
+========================= ================
+Action                    Sort
+========================= ================
+click “a”                 
+sort asc                  a (asc)
+click “b”                 a (asc)
+sort desc                 a (asc), b(desc)
+click “a”                 a (asc), b(desc)
+sort None                 b(desc)
+sort desc                 b(desc), a(desc)
+click “X” on sort display 
+========================= ================
+
+Formats
+^^^^^^^
+
+Apply simple formats to numeric values in your grid
+
+======= ========== ==========
+Type    Editing    Result
+======= ========== ==========
+Numeric |image153| |image154|
+Date    |image155| |image156|
+String  |image157| |image158|
+======= ========== ==========
+
+For all data types you have the ability to change what string is ued for
+display.
+
+For numbers here’s a grid of all the formats available with -123456.789
+as input:
+
+============= ==============
+Format        Output
+============= ==============
+Precision (6) -123456.789000
+Thousands Sep -123,456.789
+Abbreviate    -123k
+Exponent      -1e+5
+BPS           -1234567890BPS
+Red Negatives -123457
+============= ==============
+
+For strings you can apply the follwoing formats: \* **Truncation:**
+truncate long strings to a certain number of characters and replace with
+an allipses “…” and see the whole value on hover. \* **Hyperlinks:** If
+your column is comprised of URL strings you can make them hyperlinks
+which will open a new tab
+
+Describe (Column Analysis)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Based on the data type of a column different charts will be shown. This
+side panel can be closed using the ‘X’ button in the upper right or by
+pressing the ESC key.
+
+================= ================================= ==========
+Chart             Data Types                        Sample
+================= ================================= ==========
+Box Plot          Float, Int, Date                  |image159|
+Histogram         Float, Int                        |image160|
+Value Counts      Int, String, Bool, Date, Category |image161|
+Word Value Counts String                            |image162|
+Category          Float                             |image163|
+Geolocation\*     Int, Float                        |image164|
+Q-Q Plot          Int, Float, Date                  |image165|
+================= ================================= ==========
+
+**Histogram** can be displayed in any number of bins (default: 20),
+simply type a new integer value in the bins input
+
+**Value Count** by default, show the top 100 values ranked by frequency.
+If you would like to show the least frequent values simply make your
+number negative (-10 => 10 least frequent value)
+
+**Value Count w/ Ordinal** you can also apply an ordinal to your **Value
+Count** chart by selecting a column (of type int or float) and applying
+an aggregation (default: sum) to it (sum, mean, etc…) this column will
+be grouped by the column you’re analyzing and the value produced by the
+aggregation will be used to sort your bars and also displayed in a line.
+Here’s an example:
+
+|image166|
+
+**Word Value Count** you can analyze string data by splitting each
+record by spaces to see the counts of each word. This chart has all the
+same functions available as “Value Counts”. In addition, you can select
+multiple “Cleaner” functions to be applied to your column before
+building word values. These functions will perform operations like
+removing punctuation, removing numeric character & normalizing accent
+characters.
+
+**Category (Category Breakdown)** when viewing float columns you can
+also see them broken down by a categorical column (string, date, int,
+etc…). This means that when you select a category column this will then
+display the frequency of each category in a line as well as bars based
+on the float column you’re analyzing grouped by that category and
+computed by your aggregation (default: mean).
+
+**Geolocation** when your data contains latitude & longitude then you
+can view the coverage in a plotly scattergeo map. In order to have
+access this chart your dataframe must have at least one of each of these
+types of columns: \* “lat” must be contained within the lower-cased
+version of the column name and values be between -90 & 90 \* “lon” must
+be contained within the lower-cased version of the column name and
+values be between -180 & 180
+
+Hotkeys
+~~~~~~~
+
+These are key combinations you can use in place of clicking actual
+buttons to save a little time:
+
++-------------+-------------------------------------------------------+
+| Keymap      | Action                                                |
++=============+=======================================================+
+| ``shift+m`` | Opens main menu\*                                     |
++-------------+-------------------------------------------------------+
+| ``shift+d`` | Opens “Describe” page\*                               |
++-------------+-------------------------------------------------------+
+| ``shift+f`` | Opens “Custom Filter”\*                               |
++-------------+-------------------------------------------------------+
+| ``shift+b`` | Opens “Build Column”\*                                |
++-------------+-------------------------------------------------------+
+| ``shift+c`` | Opens “Charts” page\*                                 |
++-------------+-------------------------------------------------------+
+| ``shift+x`` | Opens “Code Export”\*                                 |
++-------------+-------------------------------------------------------+
+| ``esc``     | Closes any open modal window or side panel & exits    |
+|             | cell editing                                          |
++-------------+-------------------------------------------------------+
+
+``*`` Does not fire if user is actively editing a cell.
+
+Menu Functions Depending on Browser Dimensions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Depending on the dimensions of your browser window the following buttons
+will not open modals, but rather separate browser windows: Correlations,
+Describe & Instances (see images from `Jupyter
+Notebook <#jupyter-notebook>`__, also Charts will always open in a
+separate browser window)
+
+For Developers
+--------------
+
+Cloning
+~~~~~~~
+
+Clone the code (git clone ssh://git@github.com:manahl/dtale.git), then
+start the backend server:
+
+.. code:: bash
+
+   $ git clone ssh://git@github.com:manahl/dtale.git
+   # install the dependencies
+   $ python setup.py develop
+   # start the server
+   $ dtale --csv-path /home/jdoe/my_csv.csv --csv-parse_dates date
+
+You can also run dtale from PyDev directly.
+
+You will also want to import javascript dependencies and build the
+source (all javascript code resides in the ``frontend`` folder):
+
+.. code:: bash
+
+   $ cd frontend
+   $ npm install
+   # 1) a persistent server that serves the latest JS:
+   $ npm run watch
+   # 2) or one-off build:
+   $ npm run build
+
+Running tests
+~~~~~~~~~~~~~
+
+The usual npm test command works:
+
+::
+
+   $ npm test
+
+You can run individual test files:
+
+::
+
+   $ npm run test -- static/__tests__/dtale/DataViewer-base-test.jsx
+
+Linting
+~~~~~~~
+
+You can lint all the JS and CSS to confirm there’s nothing obviously
+wrong with it:
+
+.. code:: bash
+
+   $ npm run lint
+
+You can also lint individual JS files:
+
+.. code:: bash
+
+   $ npm run lint-js-file -s -- static/dtale/DataViewer.jsx
+
+Formatting JS
+~~~~~~~~~~~~~
+
+You can auto-format code as follows:
+
+.. code:: bash
+
+   $ npm run format
+
+Docker Development
+~~~~~~~~~~~~~~~~~~
+
+You can build python 27-3 & run D-Tale as follows:
+
+.. code:: bash
+
+   $ yarn run build
+   $ docker-compose build dtale_2_7
+   $ docker run -it --network host dtale_2_7:latest
+   $ python
+   >>> import pandas as pd
+   >>> df = pd.DataFrame([dict(a=1,b=2,c=3)])
+   >>> import dtale
+   >>> dtale.show(df)
+
+Then view your D-Tale instance in your browser using the link that gets
+printed
+
+You can build python 36-1 & run D-Tale as follows:
+
+.. code:: bash
+
+   $ yarn run build
+   $ docker-compose build dtale_3_6
+   $ docker run -it --network host dtale_3_6:latest
+   $ python
+   >>> import pandas as pd
+   >>> df = pd.DataFrame([dict(a=1,b=2,c=3)])
+   >>> import dtale
+   >>> dtale.show(df)
+
+Then view your D-Tale instance in your browser using the link that gets
+printed
+
+Adding Language Support
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Currently D-Tale support both english & chinese but other languages will
+gladly be supported. To add another language simply open a pull request
+with the following: - cake a copy & translate the values in the
+following JSON english JSON files and save them to the same locations as
+each file -
+`Back-End <https://github.com/man-group/dtale/blob/master/dtale/translations/en.json>`__
+-
+`Front-End <https://github.com/man-group/dtale/blob/master/static/translations/en.json>`__
+- please make the name of these files the name of the language you are
+adding (currently english -> en, chinese -> cn) - be sure to keep the
+keys in english, that is important
+
+Looking forward to what languages come next! :smile:
+
+Global State/Data Storage
+-------------------------
+
+If D-Tale is running in an environment with multiple python processes
+(ex: on a web server running
+`gunicorn <https://github.com/benoitc/gunicorn>`__) it will most likely
+encounter issues with inconsistent state. Developers can fix this by
+configuring the system D-Tale uses for storing data. Detailed
+documentation is available here: `Data Storage and managing Global
+State <https://github.com/man-group/dtale/blob/master/docs/GLOBAL_STATE.md>`__
+
+Startup Behavior
+----------------
+
+Here’s a little background on how the ``dtale.show()`` function works: -
+by default it will look for ports between 40000 & 49000, but you can
+change that range by specifying the environment variables DTALE_MIN_PORT
+& DTALE_MAX_PORT - think of sessions as python consoles or jupyter
+notebooks
+
+1) Session 1 executes ``dtale.show(df)`` our state is:
+
+======= ===== =============== ===================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== ===================================
+1       40000 1               http://localhost:40000/dtale/main/1
+======= ===== =============== ===================================
+
+2) Session 1 executes ``dtale.show(df)`` our state is:
+
+======= ===== =============== =======================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =======================================
+1       40000 1,2             http://localhost:40000/dtale/main/[1,2]
+======= ===== =============== =======================================
+
+2) Session 2 executes ``dtale.show(df)`` our state is:
+
+======= ===== =============== =======================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =======================================
+1       40000 1,2             http://localhost:40000/dtale/main/[1,2]
+2       40001 1               http://localhost:40001/dtale/main/1
+======= ===== =============== =======================================
+
+3) Session 1 executes ``dtale.show(df, port=40001, force=True)`` our
+   state is:
+
+======= ===== =============== =========================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =========================================
+1       40001 1,2,3           http://localhost:40001/dtale/main/[1,2,3]
+======= ===== =============== =========================================
+
+4) Session 3 executes ``dtale.show(df)`` our state is:
+
+======= ===== =============== =========================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =========================================
+1       40001 1,2,3           http://localhost:40001/dtale/main/[1,2,3]
+3       40000 1               http://localhost:40000/dtale/main/1
+======= ===== =============== =========================================
+
+5) Session 2 executes ``dtale.show(df)`` our state is:
+
+======= ===== =============== =========================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =========================================
+1       40001 1,2,3           http://localhost:40001/dtale/main/[1,2,3]
+3       40000 1               http://localhost:40000/dtale/main/1
+2       40002 1               http://localhost:40002/dtale/main/1
+======= ===== =============== =========================================
+
+6) Session 4 executes ``dtale.show(df, port=8080)`` our state is:
+
+======= ===== =============== =========================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =========================================
+1       40001 1,2,3           http://localhost:40001/dtale/main/[1,2,3]
+3       40000 1               http://localhost:40000/dtale/main/1
+2       40002 1               http://localhost:40002/dtale/main/1
+4       8080  1               http://localhost:8080/dtale/main/1
+======= ===== =============== =========================================
+
+7) Session 1 executes ``dtale.get_instance(1).kill()`` our state is:
+
+======= ===== =============== =======================================
+Session Port  Active Data IDs URL(s)
+======= ===== =============== =======================================
+1       40001 2,3             http://localhost:40001/dtale/main/[2,3]
+3       40000 1               http://localhost:40000/dtale/main/1
+2       40002 1               http://localhost:40002/dtale/main/1
+4       8080  1               http://localhost:8080/dtale/main/1
+======= ===== =============== =======================================
+
+7) Session 5 sets DTALE_MIN_RANGE to 30000 and DTALE_MAX_RANGE 39000 and
+   executes ``dtale.show(df)`` our state is:
+
+======= ===== ================= =======================================
+Session Port  Active Data ID(s) URL(s)
+======= ===== ================= =======================================
+1       40001 2,3               http://localhost:40001/dtale/main/[2,3]
+3       40000 1                 http://localhost:40000/dtale/main/1
+2       40002 1                 http://localhost:40002/dtale/main/1
+4       8080  1                 http://localhost:8080/dtale/main/1
+5       30000 1                 http://localhost:30000/dtale/main/1
+======= ===== ================= =======================================
+
+Documentation
+-------------
+
+Have a look at the `detailed
+documentation <https://dtale.readthedocs.io>`__.
+
+Dependencies
+------------
+
+-  Back-end
+
+   -  dash
+   -  dash_daq
+   -  Flask
+   -  Flask-Compress
+   -  flask-ngrok
+   -  Pandas
+   -  plotly
+   -  scikit-learn
+   -  scipy
+   -  xarray
+   -  arctic [extra]
+   -  redis [extra]
+   -  rpy2 [extra]
+
+-  Front-end
+
+   -  react-virtualized
+   -  chart.js
+
+Acknowledgements
+----------------
+
+D-Tale has been under active development at `Man
+Numeric <http://www.numeric.com/>`__ since 2019.
+
+Original concept and implementation: `Andrew
+Schonfeld <https://github.com/aschonfeld>`__
+
+Contributors:
+
+-  `Phillip Dupuis <https://github.com/phillipdupuis>`__
+-  `Fernando Saravia Rajal <https://github.com/fersarr>`__
+-  `Dominik Christ <https://github.com/DominikMChrist>`__
+-  `Reza Moshksar <https://github.com/reza1615>`__
+-  `Bertrand Nouvel <https://github.com/bnouvelbmll>`__
+-  `Chris Boddy <https://github.com/cboddy>`__
+-  `Jason Holden <https://github.com/jasonkholden>`__
+-  `Tom Taylor <https://github.com/TomTaylorLondon>`__
+-  `Wilfred Hughes <https://github.com/Wilfred>`__
+-  Mike Kelly
+-  `Vincent Riemer <https://github.com/vincentriemer>`__
+-  `Youssef Habchi <http://youssef-habchi.com/>`__ - title font
+-  … and many others …
+
+Contributions welcome!
+
+License
+-------
+
+D-Tale is licensed under the GNU LGPL v2.1. A copy of which is included
+in `LICENSE <LICENSE>`__
+
+.. |image0| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Title.png
+   :target: https://github.com/man-group/dtale
+.. |CircleCI| image:: https://circleci.com/gh/man-group/dtale.svg?style=shield&circle-token=4b67588a87157cc03b484fb96be438f70b5cd151
+   :target: https://circleci.com/gh/man-group/dtale
+.. |PyPI Python Versions| image:: https://img.shields.io/pypi/pyversions/dtale.svg
+   :target: https://pypi.python.org/pypi/dtale/
+.. |PyPI| image:: https://img.shields.io/pypi/v/dtale
+   :target: https://pypi.org/project/dtale/
+.. |Conda| image:: https://img.shields.io/conda/v/conda-forge/dtale
+   :target: https://anaconda.org/conda-forge/dtale
+.. |ReadTheDocs| image:: https://readthedocs.org/projects/dtale/badge
+   :target: https://dtale.readthedocs.io
+.. |codecov| image:: https://codecov.io/gh/man-group/dtale/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/man-group/dtale
+.. |Downloads| image:: https://pepy.tech/badge/dtale
+   :target: https://pepy.tech/project/dtale
+.. |Open in VS Code| image:: https://open.vscode.dev/badges/open-in-vscode.svg
+   :target: https://open.vscode.dev/man-group/dtale
+.. |image9| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/gifs/dtale_demo_mini.gif
+.. |image10| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/gifs/dtale_ipython.gif
+.. |image11| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Python_Terminal.png
+.. |image12| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Duplicate_data.png
+.. |image13| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/ipython1.png
+.. |image14| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/ipython2.png
+.. |image15| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/ipython3.png
+.. |image16| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/ipython_adjust.png
+.. |image17| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Column_menu.png
+.. |image18| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/correlations_popup.png
+.. |image19| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/describe_popup.png
+.. |image20| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/histogram_popup.png
+.. |image21| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/instances_popup.png
+.. |image22| image:: http://img.youtube.com/vi/pOYl2M1clIw/0.jpg
+   :target: http://www.youtube.com/watch?v=pOYl2M1clIw
+.. |image23| image:: http://img.youtube.com/vi/8Il-2HHs2Mg/0.jpg
+   :target: http://www.youtube.com/watch?v=8Il-2HHs2Mg
+.. |image24| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/ngrok_limit.png
+.. |image25| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/no_data.png
+.. |image26| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/login.png
+.. |image27| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/logout.png
+.. |image28| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/vertical_headers.png
+.. |image29| image:: http://img.youtube.com/vi/8mryVxpxjM4/0.jpg
+   :target: http://www.youtube.com/watch?v=8mryVxpxjM4
+.. |image30| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Browser1.png
+.. |image31| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Info_cell.png
+.. |image32| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Ribbon_menu.png
+.. |image33| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Info_menu_small.png
+.. |image34| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/header/sorts.PNG
+.. |image35| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/header/filters.PNG
+.. |image36| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/header/hidden.PNG
+.. |image37| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/gifs/resize_columns_w_drag.gif
+.. |image38| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/gifs/resize_columns_max_width.gif
+.. |image39| image:: http://img.youtube.com/vi/MY5w0m_4IAc/0.jpg
+   :target: http://www.youtube.com/watch?v=MY5w0m_4IAc
+.. |image40| image:: http://img.youtube.com/vi/3p9ltzdBaDQ/0.jpg
+   :target: http://www.youtube.com/watch?v=3p9ltzdBaDQ
+.. |image41| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/select_range1.png
+.. |image42| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/select_range2.png
+.. |image43| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/select_range3.png
+.. |image44| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/xarray_indexes.png
+.. |image45| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/xarray_dimensions.png
+.. |image46| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Describe.png
+.. |image47| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Describe_date.png
+.. |image48| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Describe_string.png
+.. |image49| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Describe_int.png
+.. |image50| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Describe_float.png
+.. |image51| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/outliers.png
+.. |image52| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/outlier_filter.png
+.. |image53| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Filter_apply.png
+.. |image54| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Post_filter.png
+.. |image55| image:: http://img.youtube.com/vi/G6wNS9-lG04/0.jpg
+   :target: http://www.youtube.com/watch?v=G6wNS9-lG04
+.. |image56| image:: http://img.youtube.com/vi/ignDS6OaGVQ/0.jpg
+   :target: http://www.youtube.com/watch?v=ignDS6OaGVQ
+.. |image57| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/original_data.png
+.. |image58| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/agg_col.png
+.. |image59| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/agg_col_data.png
+.. |image60| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/agg_func.png
+.. |image61| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/agg_func_data.png
+.. |image62| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/pivot.png
+.. |image63| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/pivot_data.png
+.. |image64| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/transpose.png
+.. |image65| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/reshape/transpose_data.png
+.. |image66| image:: http://img.youtube.com/vi/fYsxogXKZ2c/0.jpg
+   :target: http://www.youtube.com/watch?v=fYsxogXKZ2c
+.. |image67| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/duplicates/data.png
+.. |image68| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/duplicates/columns.png
+.. |image69| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/duplicates/columns_names.png
+.. |image70| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/duplicates/rows.png
+.. |image71| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/duplicates/show.png
+.. |image72| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/missingno/matrix.png
+.. |image73| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/missingno/bar.png
+.. |image74| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/missingno/heatmap.png
+.. |image75| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/missingno/dendrogram.png
+.. |image76| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/line.png
+.. |image77| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/line_pg.png
+.. |image78| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/bar.png
+.. |image79| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/bar_pg.png
+.. |image80| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/stacked.png
+.. |image81| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/stacked_pg.png
+.. |image82| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/pie.png
+.. |image83| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/wordcloud.png
+.. |image84| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/wordcloud_pg.png
+.. |image85| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/heatmap.png
+.. |image86| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/3d_scatter.png
+.. |image87| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/surface.png
+.. |image88| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/scattergeo.png
+.. |image89| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/choropleth.png
+.. |image90| image:: http://img.youtube.com/vi/asblF-rAACY/0.jpg
+   :target: http://www.youtube.com/watch?v=asblF-rAACY
+.. |image91| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/axis_toggle/default.PNG
+.. |image92| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/axis_toggle/single.PNG
+.. |image93| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/axis_toggle/multi.PNG
+.. |image94| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/bar_presort.png
+.. |image95| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/charts/bar_postsort.png
+.. |image96| image:: http://img.youtube.com/vi/DseSmc3fZvc/0.jpg
+   :target: http://www.youtube.com/watch?v=DseSmc3fZvc
+.. |image97| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/data.png
+.. |image98| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_to_from.png
+.. |image99| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_expanded.png
+.. |image100| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_weight.png
+.. |image101| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_group.png
+.. |image102| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_shortest_path.png
+.. |image103| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/network/network_descendants.png
+.. |image104| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations.png
+.. |image105| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_pps.png
+.. |image106| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_ts.png
+.. |image107| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_scatter.png
+.. |image108| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_col1.png
+.. |image109| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_col2.png
+.. |image110| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Correlations_both.png
+.. |image111| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/rolling_corr_data.png
+.. |image112| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/rolling_corr.png
+.. |image113| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/rolling_corr_data.png
+.. |image114| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/pps.png
+.. |image115| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Heatmap.png
+.. |image116| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_dtypes.png
+.. |image117| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_missing.png
+.. |image118| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_outliers.png
+.. |image119| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_range_selections.png
+.. |image120| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_range_output.png
+.. |image121| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/highlight_range_selections.png
+.. |image122| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/low_variance.png
+.. |image123| image:: http://img.youtube.com/vi/6CkKgpv3d6I/0.jpg
+   :target: http://www.youtube.com/watch?v=6CkKgpv3d6I
+.. |image124| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/main.png
+.. |image125| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/histogram.png
+.. |image126| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/describe.png
+.. |image127| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/main.png
+.. |image128| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/corr_ts.png
+.. |image129| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/corr_scatter.png
+.. |image130| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/code_export/charts.png
+.. |image131| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/export_csv.png
+.. |image132| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/load_data.png
+.. |image133| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Instances.png
+.. |image134| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Instances_preview.png
+.. |image135| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/About-up-to-date.png
+.. |image136| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/About-out-of-date.png
+.. |image137| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/theme/light.png
+.. |image138| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/theme/dark.png
+.. |image139| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/chinese_dtale.png
+.. |image140| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Col_menu.png
+.. |image141| image:: http://img.youtube.com/vi/8zo5ZiI1Yzo/0.jpg
+   :target: http://www.youtube.com/watch?v=8zo5ZiI1Yzo
+.. |image142| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/filters/string.PNG
+.. |image143| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/filters/dates.PNG
+.. |image144| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/filters/numeric.PNG
+.. |image145| image:: http://img.youtube.com/vi/We4TH477rRs/0.jpg
+   :target: http://www.youtube.com/watch?v=We4TH477rRs
+.. |image146| image:: http://img.youtube.com/vi/ryZT2Lk_YaA/0.jpg
+   :target: http://www.youtube.com/watch?v=ryZT2Lk_YaA
+.. |image147| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/rename.png
+.. |image148| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/replacements_value.png
+.. |image149| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/replacements_spaces.png
+.. |image150| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/replacements_strings.png
+.. |image151| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/replacements_sklearn.png
+.. |image152| image:: http://img.youtube.com/vi/GiNFRtcpIt8/0.jpg
+   :target: http://www.youtube.com/watch?v=GiNFRtcpIt8
+.. |image153| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Formatting_apply.png
+.. |image154| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Post_formatting.png
+.. |image155| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Formatting_date_apply.png
+.. |image156| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Post_date_formatting.png
+.. |image157| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Formatting_string_apply.png
+.. |image158| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/Post_string_formatting.png
+.. |image159| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/boxplot.png
+.. |image160| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/histogram.PNG
+.. |image161| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/value_counts.PNG
+.. |image162| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/word_value_counts.png
+.. |image163| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/category.PNG
+.. |image164| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/geolocation.PNG
+.. |image165| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/qq.png
+.. |image166| image:: https://raw.githubusercontent.com/aschonfeld/dtale-media/master/images/analysis/value_counts_ordinal.PNG
+
+Changelog
+---------
+
+2.3.0 (2022-5-3)
+~~~~~~~~~~~~~~~~
+
+-  Added the ability to export correlations or PPS heatmaps to PNG
+-  `#653 <https://github.com/man-group/dtale/issues/653>`__: added
+   “**version**” entry to dtale module
+
+.. _section-1:
+
+2.2.0 (2022-3-23)
+~~~~~~~~~~~~~~~~~
+
+-  `#601 <https://github.com/man-group/dtale/issues/601>`__: added
+   update_id functionality
+-  `#649 <https://github.com/man-group/dtale/issues/649>`__: fixed
+   incorrect property in pivot opertaions
+
+.. _section-2:
+
+2.1.2 (2022-3-15)
+~~~~~~~~~~~~~~~~~
+
+-  `#617 <https://github.com/man-group/dtale/issues/617>`__: file
+   loading on windows
+-  `#643 <https://github.com/man-group/dtale/issues/643>`__: correlation
+   grid dropdown display
+-  `#646 <https://github.com/man-group/dtale/issues/646>`__: initial
+   show/hide grid display
+
+.. _section-3:
+
+2.1.0 (2022-3-13)
+~~~~~~~~~~~~~~~~~
+
+-  `#617 <https://github.com/man-group/dtale/issues/617>`__: HTML
+   Exports of data grid
+-  Added option for JSONL line files in json-loader
+-  `#643 <https://github.com/man-group/dtale/issues/643>`__: updated how
+   selected columns get passed to correlation scatter charts
+-  `#642 <https://github.com/man-group/dtale/issues/642>`__: updates for
+   merge screen
+-  `#641 <https://github.com/man-group/dtale/issues/641>`__: fixed
+   histogram label precision
+-  `#614 <https://github.com/man-group/dtale/issues/614>`__: display
+   D-Tale by name
+-  `#612 <https://github.com/man-group/dtale/issues/612>`__: fixed bug
+   with replacing strings
+-  `#602 <https://github.com/man-group/dtale/issues/602>`__: update any
+   date columns to have naive timezone
+-  `#607 <https://github.com/man-group/dtale/issues/607>`__: display of
+   chinese characters in missingno plots
+-  `#606 <https://github.com/man-group/dtale/issues/606>`__: stringify
+   tuple column names
+
+.. _section-4:
+
+2.0.0 (2022-2-20)
+~~~~~~~~~~~~~~~~~
+
+-  Typescript conversion of frontend code
+
+.. _section-5:
+
+1.61.1 (2021-11-17)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#600 <https://github.com/man-group/dtale/issues/600>`__: persist
+   selected chart across columns in describe popup
+-  `#597 <https://github.com/man-group/dtale/issues/597>`__: fix for
+   aggregate function on “Summarize Data”
+
+.. _section-6:
+
+1.61.0 (2021-11-15)
+~~~~~~~~~~~~~~~~~~~
+
+-  replaced querystring package with URLSearchParams
+-  `#595 <https://github.com/man-group/dtale/issues/595>`__: probability
+   histograms
+-  `#589 <https://github.com/man-group/dtale/issues/589>`__: pareto
+   chart
+-  updates for babel ES2020 support
+
+.. _section-7:
+
+1.60.2 (2021-11-3)
+~~~~~~~~~~~~~~~~~~
+
+-  `#594 <https://github.com/man-group/dtale/issues/594>`__: fix for
+   editing cells while using redislite
+
+.. _section-8:
+
+1.60.1 (2021-10-31)
+~~~~~~~~~~~~~~~~~~~
+
+-  updates for “Time Series Analysis” with aggregation
+
+.. _section-9:
+
+1.60.0 (2021-10-31)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#591 <https://github.com/man-group/dtale/issues/591>`__: load
+   parquet from UI
+-  `#590 <https://github.com/man-group/dtale/issues/590>`__: parquet
+   export
+-  `#533 <https://github.com/man-group/dtale/issues/533>`__: Time Series
+   Analysis
+-  `#537 <https://github.com/man-group/dtale/issues/537>`__: moved
+   “Resample” to the “Dataframe Functions” popup]
+
+.. _section-10:
+
+1.59.1 (2021-10-15)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#583 <https://github.com/man-group/dtale/issues/583>`__: allow for
+   “vertical_headers” to be set from dtale.show
+
+.. _section-11:
+
+1.59.0 (2021-10-15)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#581 <https://github.com/man-group/dtale/issues/581>`__: Binder
+   proxy handling updates
+-  `#583 <https://github.com/man-group/dtale/issues/583>`__: vertical
+   column headers
+-  front-end package upgrades
+
+.. _section-12:
+
+1.58.3 (2021-10-4)
+~~~~~~~~~~~~~~~~~~
+
+-  updated dash-bio to an optional dependency
+
+.. _section-13:
+
+1.58.2 (2021-10-3)
+~~~~~~~~~~~~~~~~~~
+
+-  fix for ``background_mode`` in ``dtale.show``
+
+.. _section-14:
+
+1.58.1 (2021-10-2)
+~~~~~~~~~~~~~~~~~~
+
+-  re-pinned dash to 2.0.0
+
+.. _section-15:
+
+1.58.0 (2021-10-2)
+~~~~~~~~~~~~~~~~~~
+
+-  `#568 <https://github.com/man-group/dtale/issues/568>`__: range
+   highlight updates
+-  `#566 <https://github.com/man-group/dtale/issues/566>`__: clustergram
+   charts
+-  `#578 <https://github.com/man-group/dtale/issues/578>`__: dataset
+   correlations error
+-  `#576 <https://github.com/man-group/dtale/issues/576>`__:
+   dash_core_components and dash_html_component import updates
+-  `#579 <https://github.com/man-group/dtale/issues/579>`__: fix for
+   pandas.Series.between FutureWarning
+-  `#577 <https://github.com/man-group/dtale/issues/577>`__: specifying
+   backgrounds programmatically
+
+.. _section-16:
+
+1.57.0 (2021-9-22)
+~~~~~~~~~~~~~~~~~~
+
+-  `#565 <https://github.com/man-group/dtale/issues/565>`__: allow
+   “chart per group” display in scatter charts
+-  `#564 <https://github.com/man-group/dtale/issues/564>`__: geometric
+   mean aggregation in “Summarize Data”
+-  `#559 <https://github.com/man-group/dtale/issues/559>`__: lock
+   columns from config, highlight rows, move filters to custom filter,
+   nan display
+-  `#560 <https://github.com/man-group/dtale/issues/560>`__: Add “Gage
+   R&R” computation
+-  `#558 <https://github.com/man-group/dtale/issues/558>`__: added
+   “Filtered” toggle to “Variance Report”
+-  `#561 <https://github.com/man-group/dtale/issues/561>`__: Modify
+   behaviour for finding free port
+
+.. _section-17:
+
+1.56.0 (2021-8-31)
+~~~~~~~~~~~~~~~~~~
+
+-  `#557 <https://github.com/man-group/dtale/issues/557>`__: allow
+   filters to be applied to the “Describe” page
+-  `#555 <https://github.com/man-group/dtale/issues/555>`__
+
+   -  added option to specify default sort in config/show/CLI
+   -  predefined filter updates
+
+-  `#552 <https://github.com/man-group/dtale/issues/552>`__: added query
+   engine toggle
+-  `#553 <https://github.com/man-group/dtale/issues/553>`__: boolean
+   chart axis ticks
+-  `#554 <https://github.com/man-group/dtale/issues/554>`__: dash
+   callback input update
+
+.. _section-18:
+
+1.55.0 (2021-8-17)
+~~~~~~~~~~~~~~~~~~
+
+-  `#553 <https://github.com/man-group/dtale/issues/553>`__: charts with
+   boolean values as y or z axes
+-  `#552 <https://github.com/man-group/dtale/issues/552>`__: exceptions
+   with unsigned integers and NA values
+-  `#548 <https://github.com/man-group/dtale/issues/548>`__: updated
+   popups to redirects when in vscode
+-  fixed client-side bug with “rename” function
+
+.. _section-19:
+
+1.54.1 (2021-8-11)
+~~~~~~~~~~~~~~~~~~
+
+-  `#549 <https://github.com/man-group/dtale/issues/549>`__: fix for
+   grouping charts by multiple columns
+
+.. _section-20:
+
+1.54.0 (2021-8-6)
+~~~~~~~~~~~~~~~~~
+
+-  `#545 <https://github.com/man-group/dtale/issues/545>`__: added
+   “concatenate” & “replace” string column builders
+-  updated lodash loading to use tree-shaking
+-  `#544 <https://github.com/man-group/dtale/issues/544>`__: fixed issue
+   with loading missingno plots
+-  used plotly.js partial distribution to lower egg size
+
+.. _section-21:
+
+1.53.0 (2021-7-28)
+~~~~~~~~~~~~~~~~~~
+
+-  updated “Charts” page to handle dark-mode
+-  `#539 <https://github.com/man-group/dtale/issues/539>`__: “Substring”
+   & “Split By Character” column builders
+-  `#542 <https://github.com/man-group/dtale/issues/542>`__: fixed bug
+   with finding missings in categorical data
+-  `#543 <https://github.com/man-group/dtale/issues/543>`__: added
+   “group by” to cumulative sum builder
+-  Portuguese translation
+-  Fixes for long string tooltips
+
+.. _section-22:
+
+1.52.0 (2021-7-10)
+~~~~~~~~~~~~~~~~~~
+
+-  `#529 <https://github.com/man-group/dtale/issues/529>`__: resample
+   timeseries
+-  `#532 <https://github.com/man-group/dtale/issues/532>`__: shift and
+   expanding builders
+-  `#525 <https://github.com/man-group/dtale/issues/525>`__: bin range
+   on x-axis
+-  `#526 <https://github.com/man-group/dtale/issues/526>`__: targeted
+   histogram tooltip
+-  updated simpsons dataset to make use of image display
+
+.. _section-23:
+
+1.51.0 (2021-7-5)
+~~~~~~~~~~~~~~~~~
+
+-  `#531 <https://github.com/man-group/dtale/issues/531>`__:
+   re-organizing column builder buttons
+-  `#530 <https://github.com/man-group/dtale/issues/530>`__: typo in
+   rolling code snippet
+-  `#528 <https://github.com/man-group/dtale/issues/528>`__: feature
+   analysis
+-  `#534 <https://github.com/man-group/dtale/issues/534>`__: pinned
+   missingno less than or equal to 0.4.2
+-  `#523 <https://github.com/man-group/dtale/issues/523>`__: upgraded to
+   plotly 5
+-  Row height resize functionality
+-  `#522 <https://github.com/man-group/dtale/issues/522>`__: sorting
+   target values in histogram tooltip
+
+.. _section-24:
+
+1.50.1 (2021-6-24)
+~~~~~~~~~~~~~~~~~~
+
+-  `#520 <https://github.com/man-group/dtale/issues/520>`__: additional
+   code export update
+
+.. _section-25:
+
+1.50.0 (2021-6-23)
+~~~~~~~~~~~~~~~~~~
+
+-  `#515 <https://github.com/man-group/dtale/issues/515>`__: adding
+   dataframe.index() to chart axis
+-  `#520 <https://github.com/man-group/dtale/issues/520>`__: wrong
+   indent in chart code export
+-  `#519 <https://github.com/man-group/dtale/issues/519>`__: display raw
+   HTML
+-  `#518 <https://github.com/man-group/dtale/issues/518>`__: cumulative
+   sum builder
+-  `#517 <https://github.com/man-group/dtale/issues/517>`__: keep less
+   correlated columns
+-  `#514 <https://github.com/man-group/dtale/issues/514>`__: targeted
+   histogram fixes
+-  `#493 <https://github.com/man-group/dtale/issues/493>`__:
+   Correlations grid sorting
+-  `#505 <https://github.com/man-group/dtale/issues/505>`__: Filtering
+   enhancements
+-  `#484 <https://github.com/man-group/dtale/issues/484>`__: renamed
+   “Percentage Count” to “Count (Percentage)”
+-  `#503 <https://github.com/man-group/dtale/issues/503>`__: add
+   separate option for “Clean Column” to main menu
+
+.. _section-26:
+
+1.49.0 (2021-6-9)
+~~~~~~~~~~~~~~~~~
+
+-  bump css-what from 5.0.0 to 5.0.1
+-  added the ability to toggle the display of all columns when heatmap
+   is turned on
+-  `#491 <https://github.com/man-group/dtale/issues/491>`__: overlapping
+   histogram chart
+-  bump ws from 7.4.5 to 7.4.6
+-  Updates
+
+   -  `#509 <https://github.com/man-group/dtale/issues/509>`__:
+      resizable side panel width
+   -  `#495 <https://github.com/man-group/dtale/issues/495>`__: CSV
+      loading dialog
+   -  height of “Exponential Smoothing” in column builders
+   -  code snippet fixes
+   -  cleaner updates
+
+.. _section-27:
+
+1.48.0 (2021-5-28)
+~~~~~~~~~~~~~~~~~~
+
+-  `#504 <https://github.com/man-group/dtale/issues/504>`__: fix for
+   toggling between unique row & word values
+-  `#502 <https://github.com/man-group/dtale/issues/502>`__: updated
+   “cleaning” column builder to allow for inplace updates
+-  `#501 <https://github.com/man-group/dtale/issues/501>`__: updates to
+   describe window labels
+-  `#500 <https://github.com/man-group/dtale/issues/500>`__: cleaning
+   “Remove Numbers” code snippet fix
+-  `#488 <https://github.com/man-group/dtale/issues/488>`__: string
+   encoding for correlations
+-  `#484 <https://github.com/man-group/dtale/issues/484>`__: fixed for
+   percentage count chart aggregation
+-  Correlation Scatter Updates:
+
+   -  `#486 <https://github.com/man-group/dtale/issues/486>`__: make 15K
+      point limitation correlations scatter an editable setting
+   -  `#487 <https://github.com/man-group/dtale/issues/487>`__: fix for
+      non-unique column exception in correlation scatter
+
+-  `#480 <https://github.com/man-group/dtale/issues/480>`__: flexible
+   branding
+-  `#485 <https://github.com/man-group/dtale/issues/485>`__: Adjustable
+   height on Correlation grid
+
+.. _section-28:
+
+1.47.0 (2021-5-21)
+~~~~~~~~~~~~~~~~~~
+
+-  `#477 <https://github.com/man-group/dtale/issues/477>`__: Excel-style
+   cell editing at top of screen
+
+   -  UI input for “Maximum Column Width”
+
+-  JS package upgrades
+-  refactored how sphinx documentation is built
+
+.. _section-29:
+
+1.46.0 (2021-5-11)
+~~~~~~~~~~~~~~~~~~
+
+-  `#475 <https://github.com/man-group/dtale/issues/475>`__: fixes for
+   DtaleRedis issues
+-  `#140 <https://github.com/man-group/dtale/issues/140>`__: additional
+   string column filters
+-  refactored draggable column resizing to be more performant
+-  added dependency on nbformat
+-  updated Sphinx documentation building to only run on master builds of
+   python3.9
+
+   -  Also pinned jinja2 to 2.11.3 when building
+
+.. _section-30:
+
+1.45.0 (2021-5-5)
+~~~~~~~~~~~~~~~~~
+
+-  `#472 <https://github.com/man-group/dtale/issues/472>`__: maximum
+   column width
+-  `#471 <https://github.com/man-group/dtale/issues/471>`__: predefined
+   filters
+
+   -  `#473 <https://github.com/man-group/dtale/issues/473>`__: fixed
+      column filters
+   -  refactored settings (sortInfo, columnFilters, outlierFilters,
+      predefinedFilters) to be stored in redux
+   -  fixed issues with pinned main menu
+
+.. _section-31:
+
+1.44.1 (2021-4-27)
+~~~~~~~~~~~~~~~~~~
+
+-  `#470 <https://github.com/man-group/dtale/issues/470>`__: editing
+   cells for column names with special characters
+
+.. _section-32:
+
+1.44.0 (2021-4-26)
+~~~~~~~~~~~~~~~~~~
+
+-  `#465 <https://github.com/man-group/dtale/issues/465>`__: optional
+   authentication
+-  `#467 <https://github.com/man-group/dtale/issues/467>`__: fixed
+   column menu issues when name has special characters
+-  `#466 <https://github.com/man-group/dtale/issues/466>`__: convert
+   complex data to strings
+-  added “head” & “tail” load types for chart data sampling
+
+.. _section-33:
+
+1.43.0 (2021-4-18)
+~~~~~~~~~~~~~~~~~~
+
+-  `#463 <https://github.com/man-group/dtale/issues/463>`__: skew &
+   kurtosis on filtered data
+-  Moved Correlations & PPS to side panel
+-  Added “Show/Hide Columns” side-panel
+-  `#462 <https://github.com/man-group/dtale/issues/462>`__: Graphs slow
+   with big data
+
+.. _section-34:
+
+1.42.1 (2021-4-12)
+~~~~~~~~~~~~~~~~~~
+
+-  added ESC button handler for closing the side panel
+
+.. _section-35:
+
+1.42.0 (2021-4-11)
+~~~~~~~~~~~~~~~~~~
+
+-  Added missingno chart display
+-  added new side panel for viewing describe data
+
+   -  updated how requirements files are loaded in setup.py
+   -  added cleanup function to instance object
+   -  added animation for display of hidden/filter/sort info row
+
+-  `#306 <https://github.com/man-group/dtale/issues/306>`__: ribbon menu
+
+.. _section-36:
+
+1.41.1 (2021-3-30)
+~~~~~~~~~~~~~~~~~~
+
+-  `#458 <https://github.com/man-group/dtale/issues/458>`__: fix for
+   killing D-Tale sessions in jupyter_server_proxy
+-  `#378 <https://github.com/man-group/dtale/issues/378>`__: add
+   cleaning functions to chart inputs
+
+.. _section-37:
+
+1.41.0 (2021-3-26)
+~~~~~~~~~~~~~~~~~~
+
+-  `#390 <https://github.com/man-group/dtale/issues/390>`__: funnel
+   charts
+-  `#255 <https://github.com/man-group/dtale/issues/255>`__: extended
+   chart aggregations
+
+.. _section-38:
+
+1.40.2 (2021-3-21)
+~~~~~~~~~~~~~~~~~~
+
+-  `#454 <https://github.com/man-group/dtale/issues/454>`__: fixed issue
+   with parenthesis & percent symbols in column names
+
+.. _section-39:
+
+1.40.1 (2021-3-16)
+~~~~~~~~~~~~~~~~~~
+
+-  hotfix for chart code exports of category column analysis
+
+.. _section-40:
+
+1.40.0 (2021-3-16)
+~~~~~~~~~~~~~~~~~~
+
+-  moved “Open In New Tab” button
+-  `#135 <https://github.com/man-group/dtale/issues/135>`__: refactored
+   column analysis code and updated code exports to include plotly
+   charts
+
+.. _section-41:
+
+1.39.0 (2021-3-14)
+~~~~~~~~~~~~~~~~~~
+
+-  resizable columns
+-  updated how click loader options are found
+-  Added loader for r datasets (``*.rda`` files)
+-  updating the language menu option to list options dynamically
+
+.. _section-42:
+
+1.38.0 (2021-3-10)
+~~~~~~~~~~~~~~~~~~
+
+-  `#452 <https://github.com/man-group/dtale/issues/452>`__: handling of
+   column names with periods & spaces as well as long names
+-  updated styling of windows to match that of Charts
+-  `#448 <https://github.com/man-group/dtale/issues/448>`__: set default
+   value of “ignore_duplicate” to True
+-  `#442 <https://github.com/man-group/dtale/issues/442>`__: Dash
+   Updates
+
+   -  Split charts by y-axis values if there are multiple
+   -  Saving charts off and building new ones
+   -  Toggling which piece of data you’re viewing
+   -  Toggling language nav menu
+
+-  Instances popup changes
+
+   -  updated preview to use DataPreview
+   -  updated display of “memory usage” to numeral.js
+
+.. _section-43:
+
+1.37.1 (2021-3-6)
+~~~~~~~~~~~~~~~~~
+
+-  Updated MANIFEST.in to include requirements.txt
+
+.. _section-44:
+
+1.37.0 (2021-3-5)
+~~~~~~~~~~~~~~~~~
+
+-  `#445 <https://github.com/man-group/dtale/issues/445>`__: updated URL
+   paths to handle when D-Tale is running with jupyter server proxy
+-  `#315 <https://github.com/man-group/dtale/issues/315>`__:
+   Internationalization (supports english & chinese currently)
+-  `#441 <https://github.com/man-group/dtale/pull/441>`__: Add option to
+   ‘pin’ the menu to the screen as a fixed side panel
+-  `#434 <https://github.com/man-group/dtale/issues/434>`__
+
+   -  updated scatter plot date header to be generated server-side
+   -  updated scatter plot generation in correlations to use date index
+      rather than date value for filtering
+
+-  update setup.py to load dependencies from requirements.txt
+-  `#437 <https://github.com/man-group/dtale/pull/437>`__: optional
+   memory usage optimization and show mem usage
+
+.. _section-45:
+
+1.36.0 (2021-2-18)
+~~~~~~~~~~~~~~~~~~
+
+-  `#428 <https://github.com/man-group/dtale/pull/428>`__: Turn
+   global_state into interfaces
+-  `#434 <https://github.com/man-group/dtale/issues/434>`__: Additional
+   PPS formatting
+-  `#433 <https://github.com/man-group/dtale/issues/433>`__: fixed
+   exception message display in merge UI
+-  `#432 <https://github.com/man-group/dtale/issues/432>`__: updated
+   calls to “get_instance” in merge code snippets
+-  `#431 <https://github.com/man-group/dtale/issues/431>`__: fixed
+   stacking code example
+-  `#430 <https://github.com/man-group/dtale/issues/430>`__: replace
+   empty strings with nans when converting dates to timestamp floats
+
+.. _section-46:
+
+1.35.0 (2021-2-14)
+~~~~~~~~~~~~~~~~~~
+
+-  `#261 <https://github.com/man-group/dtale/issues/261>`__: Merging &
+   Stacking UI
+
+.. _section-47:
+
+1.34.0 (2021-2-7)
+~~~~~~~~~~~~~~~~~
+
+-  `#423 <https://github.com/man-group/dtale/issues/423>`__: y-axis
+   scale toggle
+-  `#422 <https://github.com/man-group/dtale/issues/422>`__: sheet
+   selection on excel uploads
+-  `#421 <https://github.com/man-group/dtale/issues/421>`__:
+   replacements not replacing zeroes
+
+.. _section-48:
+
+1.33.1 (2021-2-1)
+~~~~~~~~~~~~~~~~~
+
+-  `#420 <https://github.com/man-group/dtale/issues/420>`__: Added
+   python2.7 support back
+-  `#416 <https://github.com/man-group/dtale/issues/416>`__: aggregating
+   charts by “first” or “last”
+-  `#415 <https://github.com/man-group/dtale/issues/415>`__: fix display
+   of heatmap option on main menu when column heatap on
+
+.. _section-49:
+
+1.33.0 (2021-1-31)
+~~~~~~~~~~~~~~~~~~
+
+-  Excel Uploads
+-  Removed python2.7 support from code
+-  CI Updates:
+
+   -  updated JS workflow to use latest node image
+   -  dropped support for python 2.7 and added support for python 3.9
+
+-  Jest test refactoring
+-  `#415 <https://github.com/man-group/dtale/issues/415>`__: single
+   column heatmap
+-  `#414 <https://github.com/man-group/dtale/issues/414>`__: exporting
+   charts using “top_bars”
+-  `#413 <https://github.com/man-group/dtale/issues/413>`__: Q-Q Plot
+-  `#411 <https://github.com/man-group/dtale/issues/411>`__: updates for
+   column analysis warnings
+-  `#412 <https://github.com/man-group/dtale/issues/412>`__: histogram
+   for date columns
+-  `#404 <https://github.com/man-group/dtale/issues/404>`__: fixes for
+   group input display on floats and data frequencies
+
+.. _section-50:
+
+1.32.1 (2021-1-25)
+~~~~~~~~~~~~~~~~~~
+
+-  `#408 <https://github.com/man-group/dtale/issues/408>`__:
+   modifications to exponential smoothing column builder UI
+-  `#405 <https://github.com/man-group/dtale/issues/405>`__: removed
+   cleaners from non-string columns)
+-  `#404 <https://github.com/man-group/dtale/issues/404>`__: fixed bug
+   with missing group selection dropdown on strings)
+-  `#406 <https://github.com/man-group/dtale/issues/406>`__: handling
+   for duplicate bins
+
+.. _section-51:
+
+1.32.0 (2021-1-24)
+~~~~~~~~~~~~~~~~~~
+
+-  `#396 <https://github.com/man-group/dtale/issues/396>`__: added
+   kurtosis to date column descriptions and fixed issue with sequential
+   diffs hanging around for previous columns
+-  `#397 <https://github.com/man-group/dtale/issues/397>`__: group type
+   & bin type (frequency/width) options for charts
+-  Updated pandas query building to use backticks for extreme column
+   names
+-  Node tooltips and URL history building for Network Viewer
+-  `#399 <https://github.com/man-group/dtale/issues/399>`__: better
+   titles for groups in charts
+-  `#393 <https://github.com/man-group/dtale/issues/393>`__: rolling &
+   exponential smoothing column builders
+-  `#401 <https://github.com/man-group/dtale/issues/401>`__: option to
+   show top values in bar charts
+
+.. _section-52:
+
+1.31.0 (2021-1-16)
+~~~~~~~~~~~~~~~~~~
+
+-  `#387 <https://github.com/man-group/dtale/issues/387>`__: calculate
+   skew on date columns converted to millisecond integers
+-  `#386 <https://github.com/man-group/dtale/issues/386>`__: bugfixes
+   with “Rows w/ numeric” & “Rows w/ hidden”
+-  `#389 <https://github.com/man-group/dtale/issues/389>`__: added more
+   precision to KDE values
+-  update Network Viewer to allow for URL parameter passing of to, from,
+   group & weight
+-  `#343 <https://github.com/man-group/dtale/issues/343>`__: buttons to
+   load sequential diffs for different sorts
+-  `#376 <https://github.com/man-group/dtale/issues/376>`__: added bins
+   option to charts for float column groupings
+-  `#345 <https://github.com/man-group/dtale/issues/345>`__: geolocation
+   analysis
+-  `#370 <https://github.com/man-group/dtale/issues/370>`__: toggle to
+   turn off auto-loading of charts
+-  `#330 <https://github.com/man-group/dtale/issues/330>`__: data slope
+   column builder
+-  additional documentation
+
+.. _section-53:
+
+1.30.0 (2021-1-3)
+~~~~~~~~~~~~~~~~~
+
+-  fixed dependency issues with 27-3 build and pandas 1.2.0 test
+   failures
+-  `#379 <https://github.com/man-group/dtale/issues/379>`__: issue with
+   skew description
+-  `#346 <https://github.com/man-group/dtale/issues/346>`__: updated
+   mapbox description
+-  `#381 <https://github.com/man-group/dtale/issues/381>`__: Network
+   Analysis sub-page
+-  `#361 <https://github.com/man-group/dtale/issues/361>`__: Network
+   Display
+-  fixed styling of Dash modals
+
+.. _section-54:
+
+1.29.1 (2020-12-24)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#228 <https://github.com/man-group/dtale/issues/228>`__: additional
+   documentation on how to run in docker
+-  `#344 <https://github.com/man-group/dtale/issues/344>`__: Updates to
+   sorting of unique values as well as display of word value count raw
+   values
+-  `#374 <https://github.com/man-group/dtale/issues/374>`__: fixed issue
+   displaying “NaN” string values in chart group options
+-  `#373 <https://github.com/man-group/dtale/issues/373>`__: only use
+   group values in mapbox if mapbox group column(s) has been specified
+-  `#367 <https://github.com/man-group/dtale/issues/367>`__: rows with
+   hidden characters
+-  `#372 <https://github.com/man-group/dtale/issues/372>`__: updated
+   labels for First/Last aggregations and added “Remove Duplicates”
+   option
+-  `#368 <https://github.com/man-group/dtale/issues/368>`__: updated “No
+   Aggregation” to be default aggregationfor charts
+-  `#369 <https://github.com/man-group/dtale/issues/369>`__: x-axis
+   count wordclouds
+-  `#366 <https://github.com/man-group/dtale/issues/366>`__: additional
+   hyphen added to “Replace Hyphens w/ Space” cleaner
+-  `#365 <https://github.com/man-group/dtale/issues/365>`__: fixed
+   display issues with KDE
+
+.. _section-55:
+
+1.29.0 (2020-12-22)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#363 <https://github.com/man-group/dtale/issues/363>`__: show/hide
+   columns on load
+-  `#348 <https://github.com/man-group/dtale/issues/348>`__: sub-date
+   map animation fix
+-  `#347 <https://github.com/man-group/dtale/issues/347>`__: display
+   items loaded in “Load” slider
+-  `#349 <https://github.com/man-group/dtale/issues/349>`__: additional
+   duplicates handling in chart builders
+-  node-notifier depdabot alert
+-  `#351 <https://github.com/man-group/dtale/issues/351>`__: added KDE
+   to histograms in column analysis
+-  package upgrades
+-  `#350 <https://github.com/man-group/dtale/issues/350>`__: x-axis
+   column selection no longer required for charts
+
+   -  if there is no selection then the default index of (1, 2, …, N)
+      will be used in its place
+
+-  `#356 <https://github.com/man-group/dtale/issues/356>`__: “replace
+   hyphens” cleaner and cleaners added to “Value Counts” analysis
+-  `#358 <https://github.com/man-group/dtale/issues/358>`__: addition
+   skew/kurtosis display
+-  `#357 <https://github.com/man-group/dtale/issues/357>`__: cleaner for
+   hidden characters
+-  `#359 <https://github.com/man-group/dtale/issues/358>`__:
+   repositioned skew/kurt in describe
+-  `#359 <https://github.com/man-group/dtale/issues/359>`__: moved
+   “Variance Report” option up in column menu
+-  `#360 <https://github.com/man-group/dtale/issues/360>`__: updates to
+   string describe labels
+-  fixed issues with draggable/resizable modals
+
+.. _section-56:
+
+1.28.1 (2020-12-16)
+~~~~~~~~~~~~~~~~~~~
+
+-  updated modals to be resizable (re-resizable)
+
+.. _section-57:
+
+1.28.0 (2020-12-14)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#354 <https://github.com/man-group/dtale/issues/354>`__: fix for
+   building data ids greater than 10
+-  `#343 <https://github.com/man-group/dtale/issues/343>`__: remove nan
+   & nat values from sequential diff analysis
+-  `#342 <https://github.com/man-group/dtale/issues/342>`__: column
+   cleaner descriptions
+-  `#340 <https://github.com/man-group/dtale/issues/340>`__: add column
+   cleaners to “Word Value Counts” analysis chart
+-  `#341 <https://github.com/man-group/dtale/issues/341>`__: NLTK
+   stopword cleaner updates
+-  `#338 <https://github.com/man-group/dtale/issues/338>`__: removing
+   nan values from string metrics
+-  `#334 <https://github.com/man-group/dtale/issues/334>`__:
+   skew/kurtosis summary
+-  Updated modals to be movable (react-draggable)
+-  build(deps): bump ini from 1.3.5 to 1.3.7
+-  Notify iframe parent of updates
+
+.. _section-58:
+
+1.27.0 (2020-12-9)
+~~~~~~~~~~~~~~~~~~
+
+-  fixed bug with bar chart animations
+-  `#335 <https://github.com/man-group/dtale/issues/336>`__: addition
+   string metrics for Describe popup
+-  `#336 <https://github.com/man-group/dtale/issues/336>`__: sqlite
+   loader
+-  `#333 <https://github.com/man-group/dtale/issues/333>`__: sequential
+   diffs in describe popup
+-  `#332 <https://github.com/man-group/dtale/issues/332>`__: adding
+   “word counts” to Describe popup]
+-  `#329 <https://github.com/man-group/dtale/issues/329>`__: diff()
+   column builder
+-  added highlight.js & upgraded react-syntax-highlighter
+
+.. _section-59:
+
+1.26.0 (2020-12-5)
+~~~~~~~~~~~~~~~~~~
+
+-  `#325 <https://github.com/man-group/dtale/issues/325>`__: Plotly
+   export chart colors
+-  fixed highlight.js dependabot warning
+-  `#326 <https://github.com/man-group/dtale/issues/326>`__: trendline
+   with datetime data
+-  `#327 <https://github.com/man-group/dtale/issues/327>`__: fixed
+   issues with cleaner deselection
+-  `#273 <https://github.com/man-group/dtale/issues/273>`__: Predictive
+   Power Score
+
+.. _section-60:
+
+1.25.0 (2020-11-30)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#323 <https://github.com/man-group/dtale/issues/323>`__: precision
+   setting for all float columns
+-  `#265 <https://github.com/man-group/dtale/issues/265>`__: column
+   cleaners
+-  `#322 <https://github.com/man-group/dtale/issues/322>`__: colorscales
+   not being included in chart exports and colorscales added to surface
+   charts
+-  `#148 <https://github.com/man-group/dtale/issues/148>`__: random
+   sampling in charts
+
+.. _section-61:
+
+1.24.0 (2020-11-23)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#295 <https://github.com/man-group/dtale/issues/295>`__: check for
+   swifter when executing apply functions
+-  Reworked the display of the “Instances” popup
+-  fixed issue with serving static assets when using “app_root”
+
+.. _section-62:
+
+1.23.0 (2020-11-21)
+~~~~~~~~~~~~~~~~~~~
+
+-  Added better handling for ``open_browser``
+-  `#319 <https://github.com/man-group/dtale/issues/319>`__: fix for
+   loading xarray dimensions
+-  Added support for embedding D-Tale within Streamlit
+
+.. _section-63:
+
+1.22.1 (2020-11-15)
+~~~~~~~~~~~~~~~~~~~
+
+-  additional updates to how int/float hex conversions work
+
+.. _section-64:
+
+1.22.0 (2020-11-14)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#317 <https://github.com/man-group/dtale/issues/317>`__: convert
+   int/float to hexadecimal
+-  Copy Columns/Rows to clipboard using Shift+Click & Ctrl+Click
+-  Added “items” function to global state mechanisms
+-  `#296 <https://github.com/man-group/dtale/issues/296>`__: heatmap
+   doesn’t respect current filters
+
+.. _section-65:
+
+1.21.1 (2020-11-8)
+~~~~~~~~~~~~~~~~~~
+
+-  Additional fixes for #313 & #302
+
+   -  Handling for partial ``.ini`` files
+   -  Handling for dictionary inputs w/ non-iterable values
+
+.. _section-66:
+
+1.21.0 (2020-11-6)
+~~~~~~~~~~~~~~~~~~
+
+-  `#313 <https://github.com/man-group/dtale/issues/313>`__: support for
+   numpy.array, lists & dictionaries
+-  `#302 <https://github.com/man-group/dtale/issues/302>`__:
+   configuration file for default options
+-  Removal of legacy charting code & updating flask route to plotly dash
+   charts from ``/charts`` to ``/dtale/charts``
+-  Update to how routes are overriden so it will work with gunicorn
+-  Documentation
+
+   -  running within gunicorn
+   -  embedding in another Flask or Django app
+   -  configuration settings
+
+.. _section-67:
+
+1.20.0 (2020-11-1)
+~~~~~~~~~~~~~~~~~~
+
+-  `#311 <https://github.com/man-group/dtale/issues/311>`__: png chart
+   exports and fix for trandlines in exports
+-  Added the option to switch grid to “Dark Mode”
+
+.. _section-68:
+
+1.19.2 (2020-10-25)
+~~~~~~~~~~~~~~~~~~~
+
+-  Documentation updates & better formatting of sample dataset buttons
+-  bugfixes for loading empty dtale in a notebook and chart display in
+   embedded app demo
+
+.. _section-69:
+
+1.19.1 (2020-10-24)
+~~~~~~~~~~~~~~~~~~~
+
+-  Load CSV/TSV/JSON from the web as well as some sample datasets
+-  `#310 <https://github.com/man-group/dtale/issues/310>`__: handling
+   for nan in ordinal & label encoders
+
+.. _section-70:
+
+1.19.0 (2020-10-23)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#123 <https://github.com/man-group/dtale/issues/123>`__: selecting a
+   range of cells to paste into excel
+-  Documentation on embedding D-Tale in another Flask app
+-  bugfix for altering single y-axis ranges when x-axis is non-numeric
+-  `#272 <https://github.com/man-group/dtale/issues/272>`__: encoders
+   for categorical columns
+
+.. _section-71:
+
+1.18.2 (2020-10-17)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#305 <https://github.com/man-group/dtale/issues/305>`__: Show
+   Duplicates column(s) label
+-  `#304 <https://github.com/man-group/dtale/issues/304>`__: Link to
+   Custom Filter from Column Menu
+-  `#301 <https://github.com/man-group/dtale/issues/301>`__: Normalized
+   Similarity
+-  `#289 <https://github.com/man-group/dtale/issues/289>`__: Show
+   Duplicates query bug & scrollable duplicate groups
+
+.. _section-72:
+
+1.18.1 (2020-10-16)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#299 <https://github.com/man-group/dtale/issues/299>`__: Value
+   counts not matching top unique values in Column Analysis
+-  `#298 <https://github.com/man-group/dtale/issues/298>`__: Standardize
+   column builder bug
+-  `#297 <https://github.com/man-group/dtale/issues/297>`__: Similarity
+   bugs
+-  `#290 <https://github.com/man-group/dtale/issues/290>`__: show top 5
+   values with highest frequency in describe details
+-  `#288 <https://github.com/man-group/dtale/issues/288>`__: Add
+   Duplicates popup to Column Menu
+
+.. _section-73:
+
+1.18.0 (2020-10-15)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#282 <https://github.com/man-group/dtale/issues/282>`__: additional
+   exception handling for overriding routes
+-  `#271 <https://github.com/man-group/dtale/issues/271>`__:
+   standardized column builder
+-  `#282 <https://github.com/man-group/dtale/issues/282>`__: better
+   support for using D-Tale within another Flask application
+-  `#270 <https://github.com/man-group/dtale/issues/270>`__: filter
+   outliers from column menu
+-  allow users to start D-Tale without loading data
+-  `#264 <https://github.com/man-group/dtale/issues/264>`__: similarity
+   column builder
+-  `#286 <https://github.com/man-group/dtale/issues/286>`__: column
+   description lag after type conversion
+
+.. _section-74:
+
+1.17.0 (2020-10-10)
+~~~~~~~~~~~~~~~~~~~
+
+-  `#269 <https://github.com/man-group/dtale/issues/269>`__: column
+   based range highlighting
+-  `#268 <https://github.com/man-group/dtale/issues/268>`__: better
+   button labels for inplace vs. new column
+-  `#283 <https://github.com/man-group/dtale/issues/283>`__:
+   triple-quote formatting around queries in code exports
+-  `#266 <https://github.com/man-group/dtale/issues/266>`__: string
+   concatenation string builder
+-  `#267 <https://github.com/man-group/dtale/issues/267>`__: Column
+   discretion UI
+-  Fix: Pandas throws error when converting numeric column names to
+   string.
+
+.. _section-75:
+
+1.16.0 (2020-10-4)
+~~~~~~~~~~~~~~~~~~
+
+-  `#263 <https://github.com/man-group/dtale/issues/263>`__: word value
+   counts
+-  `#262 <https://github.com/man-group/dtale/issues/262>`__: duplicate
+   values
+-  `#274 <https://github.com/man-group/dtale/issues/274>`__: URL
+   linkouts
+
+.. _section-76:
+
+1.15.2 (2020-9-4)
+~~~~~~~~~~~~~~~~~
+
+-  hotfix to move HIDE_SHUTDOWN & GITHUB_FORK to ``dtale`` module
+
+.. _section-77:
+
+1.15.1 (2020-9-3)
+~~~~~~~~~~~~~~~~~
+
+-  hotfix to expose HIDE_SHUTDOWN & GITHUB_FORK from
+   ``dtale.global_state``
+
+.. _section-78:
+
+1.15.0 (2020-9-3)
+~~~~~~~~~~~~~~~~~
+
+-  `#248 <https://github.com/man-group/dtale/issues/248>`__: Added
+   ‘minPeriods’ & the rolling means (multi-value per date) dateframes
+   for Correlations popup
+-  `#254 <https://github.com/man-group/dtale/issues/254>`__: Options to
+   hide shutdown and turn off cell editing
+-  `#244 <https://github.com/man-group/dtale/issues/244>`__: Treemap
+   charts
+
+.. _section-79:
+
+1.14.1 (2020-8-20)
+~~~~~~~~~~~~~~~~~~
+
+-  `#252 <https://github.com/man-group/dtale/issues/252>`__: Describe
+   shows proper values, but repeats ‘Total Rows:’ heading instead of
+   proper headings
+
+.. _section-80:
+
+1.14.0 (2020-8-19)
+~~~~~~~~~~~~~~~~~~
+
+-  `#243 <https://github.com/man-group/dtale/issues/243>`__: column menu
+   descriptions
+-  `#247 <https://github.com/man-group/dtale/issues/247>`__: code export
+   compilation error fixes
+-  `#242 <https://github.com/man-group/dtale/issues/242>`__: type
+   conversion column menu option & auto-column names on “Build Column”
+-  `#235 <https://github.com/man-group/dtale/issues/235>`__: nan
+   formatting
+
+.. _section-81:
+
+1.13.0 (2020-8-13)
+~~~~~~~~~~~~~~~~~~
+
+-  `#231 <https://github.com/man-group/dtale/issues/231>`__: “Lock Zoom”
+   button on 3D Scatter & Surface charts for locking camera on
+   animations
+-  global & instance-level flag to turn off cell editing
+-  added the ability to upload CSVs
+-  upgraded prismjs
+-  `#234 <https://github.com/man-group/dtale/issues/234>`__: update to
+   line animations so that you can lock axes and highlight last point
+-  `#233 <https://github.com/man-group/dtale/issues/233>`__: add
+   candlestick charts
+-  `#241 <https://github.com/man-group/dtale/issues/241>`__: total
+   counts vs. count (non-nan) in describe
+-  `#240 <https://github.com/man-group/dtale/issues/240>`__: force
+   convert to float
+-  `#239 <https://github.com/man-group/dtale/issues/239>`__: converting
+   mixed columns
+-  `#237 <https://github.com/man-group/dtale/issues/237>`__: updated
+   “Pivot” reshaper to always using pivot_table
+-  `#236 <https://github.com/man-group/dtale/issues/236>`__: “inplace” &
+   “drop_index” parameters for memory optimization and parquet loader
+-  `#229 <https://github.com/man-group/dtale/issues/229>`__: added
+   histogram sample chart to bins column builder
+
+.. _section-82:
+
+1.12.1 (2020-8-5)
+~~~~~~~~~~~~~~~~~
+
+-  better axis display on heatmaps
+-  handling for column filter data on “mixed” type columns
+-  “title” parameter added for offline charts
+-  heatmap drilldowns on animations
+-  bugfix for refreshing custom geojson charts
+
+.. _section-83:
+
+1.12.0 (2020-8-1)
+~~~~~~~~~~~~~~~~~
+
+-  added better notification for when users view Category breakdowns in
+   “Column Analysis” & “Describe”
+-  fixed code snippets in “Numeric” column builder when no operation is
+   selected
+-  fixed code exports for transform, winsorixe & z-score normalize
+   column builders
+-  added colorscale option to 3D Scatter charts
+-  added “Animate By” to Heatmaps
+-  initial chart drilldown functionality (histogram, bar)
+-  fixed bug with code exports on transform, winsorize & z-score
+   normalize column builders
+-  updated labeling & tooltips on histogram charts
+-  npm package upgrades
+
+.. _section-84:
+
+1.11.0 (2020-7-23)
+~~~~~~~~~~~~~~~~~~
+
+-  updated column filters so that columns with more than 500 unique
+   values are loaded asynchronously as with AsyncSelect
+-  added code export to Variance report
+-  added z-score normalize column builder
+
+.. _section-85:
+
+1.10.0 (2020-7-21)
+~~~~~~~~~~~~~~~~~~
+
+-  `#223 <https://github.com/man-group/dtale/issues/223>`__:
+   six.collections.abc import errors in Google Colab
+-  `#135 <https://github.com/man-group/dtale/issues/135>`__: added
+   plotly chart construction to code exports
+-  `#192 <https://github.com/man-group/dtale/issues/192>`__: Variance
+   Report & flag toggle
+-  npm package upgrades
+-  added “winsorize” column builder
+
+.. _section-86:
+
+1.9.2 (2020-7-12)
+~~~~~~~~~~~~~~~~~
+
+-  `#127 <https://github.com/man-group/dtale/issues/127>`__: add “Column
+   Analysis” to “Describe”
+-  `#85 <https://github.com/man-group/dtale/issues/85>`__: hotkeys
+
+.. _section-87:
+
+1.9.1 (2020-7-3)
+~~~~~~~~~~~~~~~~
+
+-  `#213 <https://github.com/man-group/dtale/issues/213>`__: Support for
+   koalas dataframes
+-  `#214 <https://github.com/man-group/dtale/issues/214>`__: fix for
+   USE_COLAB (colab proxy endpoint injection)
+
+.. _section-88:
+
+1.9.0 (2020-7-3)
+~~~~~~~~~~~~~~~~
+
+-  added the ability to build columns using transform
+-  added USE_COLAB for accessing D-Tale within google colab using their
+   proxy
+-  `#211 <https://github.com/man-group/dtale/issues/211>`__: Code export
+   doesnt work on google colab
+
+.. _section-89:
+
+1.8.19 (2020-6-28)
+~~~~~~~~~~~~~~~~~~
+
+-  backwards compatibility of ‘colorscale’ URL parameters in charts
+-  dropping of NaN locations/groups in choropleth maps
+
+.. _section-90:
+
+1.8.18 (2020-6-28)
+~~~~~~~~~~~~~~~~~~
+
+-  `#150 <https://github.com/man-group/dtale/issues/150>`__: replace
+   colorscale dropdown with component from dash-colorscales
+-  added the ability to choose been ols & lowess trendlines in scatter
+   charts
+-  `#83 <https://github.com/man-group/dtale/issues/83>`__: allow for
+   names to be used in url strings for data_id
+
+.. _section-91:
+
+1.8.17 (2020-6-18)
+~~~~~~~~~~~~~~~~~~
+
+-  `#151 <https://github.com/man-group/dtale/issues/151>`__: allow users
+   to load custom topojson into choropleth maps
+
+.. _section-92:
+
+1.8.16 (2020-6-7)
+~~~~~~~~~~~~~~~~~
+
+-  `#200 <https://github.com/man-group/dtale/issues/200>`__: support for
+   xarray
+
+.. _section-93:
+
+1.8.15 (2020-5-31)
+~~~~~~~~~~~~~~~~~~
+
+-  `#202 <https://github.com/man-group/dtale/issues/202>`__: maximum
+   recursion errors when using Pyzo IDE
+
+.. _section-94:
+
+1.8.14 (2020-5-31)
+~~~~~~~~~~~~~~~~~~
+
+-  `#168 <https://github.com/man-group/dtale/issues/168>`__: updated
+   default colorscale for heatmaps to be Jet
+-  `#152 <https://github.com/man-group/dtale/issues/152>`__: added
+   scattermapbox as a valid map type
+-  `#136 <https://github.com/man-group/dtale/issues/136>`__: Fill
+   missing values
+-  `#86 <https://github.com/man-group/dtale/issues/86>`__: column
+   replacements for values
+-  `#87 <https://github.com/man-group/dtale/issues/87>`__: highlight
+   ranges of numeric cells
+
+.. _section-95:
+
+1.8.13 (2020-5-20)
+~~~~~~~~~~~~~~~~~~
+
+-  `#193 <https://github.com/man-group/dtale/issues/193>`__: Support for
+   JupyterHub Proxy
+
+.. _section-96:
+
+1.8.12 (2020-5-15)
+~~~~~~~~~~~~~~~~~~
+
+-  `#196 <https://github.com/man-group/dtale/issues/196>`__: dataframes
+   that have datatime indexes without a name
+-  Added the ability to apply formats to all columns of same dtype
+
+.. _section-97:
+
+1.8.11 (2020-5-3)
+~~~~~~~~~~~~~~~~~
+
+-  `#196 <https://github.com/man-group/dtale/issues/191>`__: improving
+   outlier filter suggestions
+-  `#190 <https://github.com/man-group/dtale/issues/190>`__: hide
+   “Animate” inputs when “Percentage Sum” or “Percentage Count”
+   aggregations are used
+-  `#189 <https://github.com/man-group/dtale/issues/189>`__: hide
+   “Barsort” when grouping is being applied
+-  `#187 <https://github.com/man-group/dtale/issues/187>`__: missing &
+   outlier tooltip descriptions on column headers
+-  `#186 <https://github.com/man-group/dtale/issues/186>`__: close
+   “Describe” tab after clicking “Update Grid”
+-  `#122 <https://github.com/man-group/dtale/issues/122>`__: editable
+   cells
+-  npm package upgrades
+-  circleci build script refactoring
+
+.. _section-98:
+
+1.8.10 (2020-4-26)
+~~~~~~~~~~~~~~~~~~
+
+-  `#184 <https://github.com/man-group/dtale/issues/184>`__: “nan” not
+   showing up for numeric columns
+-  `#181 <https://github.com/man-group/dtale/issues/181>`__: percentage
+   sum/count charts
+-  `#179 <https://github.com/man-group/dtale/issues/179>`__:
+   confirmation for column deletion
+-  `#176 <https://github.com/man-group/dtale/issues/176>`__: highlight
+   background of outliers/missing values
+-  `#175 <https://github.com/man-group/dtale/issues/175>`__: column
+   renaming
+-  `#174 <https://github.com/man-group/dtale/issues/174>`__: moved
+   “Describe” popup to new browser tab
+-  `#173 <https://github.com/man-group/dtale/issues/173>`__: wider
+   column input box for GroupBy in “Summarize Data” popup
+-  `#172 <https://github.com/man-group/dtale/issues/172>`__: allowing
+   groups to be specified in 3D scatter
+-  `#170 <https://github.com/man-group/dtale/issues/170>`__: filter
+   “Value” dropdown for maps to only int or float columns
+-  `#164 <https://github.com/man-group/dtale/issues/164>`__: show
+   information about missing data in “Describe” popup
+
+.. _section-99:
+
+1.8.9 (2020-4-18)
+~~~~~~~~~~~~~~~~~
+
+-  updated correlations & “Open Popup” to create new tabs instead
+-  test fixes for dash 1.11.0
+-  added python 3.7 & 3.8 support
+
+.. _section-100:
+
+1.8.8 (2020-4-9)
+~~~~~~~~~~~~~~~~
+
+-  `#144 <https://github.com/man-group/dtale/issues/144>`__: Changing
+   data type
+
+.. _section-101:
+
+1.8.7 (2020-4-8)
+~~~~~~~~~~~~~~~~
+
+-  `#137 <https://github.com/man-group/dtale/issues/137>`__: Outliers in
+   the description window
+-  `#141 <https://github.com/man-group/dtale/issues/141>`__: Currency
+   Symbole for column Format
+-  `#156 <https://github.com/man-group/dtale/issues/156>`__: heat map
+-  `#160 <https://github.com/man-group/dtale/issues/160>`__: Option to
+   filter out outliers from charts
+-  `#161 <https://github.com/man-group/dtale/issues/161>`__: Syntax
+   error in 1.8.6
+-  `#162 <https://github.com/man-group/dtale/issues/162>`__: chart map
+   animation errors with aggrigations
+-  `#163 <https://github.com/man-group/dtale/issues/163>`__: Fix scale
+   for animation mode in the chart
+
+1.8.6 [hotfix] (2020-4-5)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  updates to setup.py to include images
+
+.. _hotfix-2020-4-5-1:
+
+1.8.5 [hotfix] (2020-4-5)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  fixed bug with column calculation for map inputs
+-  `#149 <https://github.com/man-group/dtale/issues/149>`__: Icon for
+   Map charts
+
+.. _hotfix-2020-4-5-2:
+
+1.8.4 [hotfix] (2020-4-5)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  update to setup.py to include missing static topojson files
+-  `#145 <https://github.com/man-group/dtale/issues/145>`__: Choropleth
+   Map
+
+.. _section-102:
+
+1.8.3 (2020-4-4)
+~~~~~~~~~~~~~~~~
+
+-  `#143 <https://github.com/man-group/dtale/issues/143>`__: scattergeo
+   map chart UI changes
+-  updated offline chart generation of maps to work without loading
+   topojson from the web
+-  fix to allow correlations timeseries to handle when date columns jump
+   between rolling & non-rolling
+-  added slider to animation and added animation to maps
+-  fixes for IE 11 compatibility issues
+-  labeling changes for “Reshape” popup
+-  added grouping to maps
+
+.. _section-103:
+
+1.8.2 (2020-4-1)
+~~~~~~~~~~~~~~~~
+
+-  `#129 <https://github.com/man-group/dtale/issues/129>`__: show dtype
+   when hovering over header in “Highlight Dtypes” mode and description
+   tooltips added to main menu
+-  made “No Aggregation” the default aggregation in charts
+-  bugfix for line charts with more than 15000 points
+-  updated “Value Counts” & “Category Breakdown” to return top on
+   initial load
+-  `#118 <https://github.com/man-group/dtale/issues/118>`__: added
+   scattergeo & choropleth maps
+-  `#121 <https://github.com/man-group/dtale/issues/121>`__: added “not
+   equal” toggle to filters
+-  `#132 <https://github.com/man-group/dtale/issues/132>`__: updated
+   resize button to “Refresh Widths”
+-  added “Animate” toggle to scatter, line & bar charts
+-  `#131 <https://github.com/man-group/dtale/issues/131>`__: changes to
+   “Reshape Data” window
+-  `#130 <https://github.com/man-group/dtale/issues/130>`__: updates to
+   pivot reshaper
+-  `#128 <https://github.com/man-group/dtale/issues/128>`__: additional
+   hover display of code snippets for column creation
+-  `#112 <https://github.com/man-group/dtale/issues/112>`__: updated
+   “Group” selection to give users the ability to select group values
+
+.. _section-104:
+
+1.8.1 (2020-3-29)
+~~~~~~~~~~~~~~~~~
+
+-  `#92 <https://github.com/man-group/dtale/issues/92>`__: column
+   builders for random data
+-  `#84 <https://github.com/man-group/dtale/issues/84>`__: highlight
+   columns based on dtype
+-  `#111 <https://github.com/man-group/dtale/issues/111>`__: fix for
+   syntax error in charts code export
+-  `#113 <https://github.com/man-group/dtale/issues/113>`__: updates to
+   “Value Counts” chart in “Column Analysis” for number of values and
+   ordinal entry
+-  `#114 <https://github.com/man-group/dtale/issues/114>`__: export data
+   to CSV/TSV
+-  `#116 <https://github.com/man-group/dtale/issues/116>`__: upodated
+   styling for github fork link so “Code Export” is partially clickable
+-  `#119 <https://github.com/man-group/dtale/issues/119>`__: fixed bug
+   with queries not being passed to functions
+-  `#120 <https://github.com/man-group/dtale/issues/120>`__: fix to
+   allow duplicate x-axis entries in bar charts
+-  added “category breakdown” in column analysis popup for float columns
+-  fixed bug where previous “show missing only” selection was not being
+   recognized
+
+.. _section-105:
+
+1.8.0 (2020-3-22)
+~~~~~~~~~~~~~~~~~
+
+-  `#102 <https://github.com/man-group/dtale/issues/102>`__: interactive
+   column filtering for string, date, int, float & bool
+-  better handling for y-axis management in charts. Now able to toggle
+   between default, single & multi axis
+-  increased maximum groups to 30 in charts and updated error messaging
+   when it surpasses that for easier filter creation
+-  bugfix for date string width calculation
+-  updated sort/filter/hidden header so that you can now click values
+   which will trigger a tooltip for removing individual values
+-  updated Filter popup to be opened as separate window when needed
+
+.. _section-106:
+
+1.7.15 (2020-3-9)
+~~~~~~~~~~~~~~~~~
+
+-  `#105 <https://github.com/man-group/dtale/issues/105>`__: better
+   error handling for when JS files are missing
+-  `#103 <https://github.com/man-group/dtale/issues/103>`__: pinned
+   Flask to be >= 1.0.0
+-  Updated file exporting to no longer use ``flask.send_file`` since
+   that doesn’t play nice with WSGI
+
+.. _section-107:
+
+1.7.14 (2020-3-7)
+~~~~~~~~~~~~~~~~~
+
+-  Hotfix for “Reshape” popup when forwarding browser to new data
+   instances
+
+.. _section-108:
+
+1.7.13 (2020-3-7)
+~~~~~~~~~~~~~~~~~
+
+-  New data storage mechanisms available: Redis, Shelve
+-  `#100 <https://github.com/man-group/dtale/issues/100>`__: turned off
+   data limits on charts by using WebGL
+-  `#99 <https://github.com/man-group/dtale/issues/99>`__: graceful
+   handling of issue calculating min/max information for Describe popup
+-  `#91 <https://github.com/man-group/dtale/issues/91>`__: reshaping of
+   data through usage of aggregations, pivots or transposes
+-  Export chart to HTML
+-  Export chart dat to CSV
+-  Offline chart display for use within notebooks
+-  Removal of data from the Instances popup
+-  Updated styling of charts to fit full window dimensions
+
+.. _section-109:
+
+1.7.12 (2020-3-1)
+~~~~~~~~~~~~~~~~~
+
+-  added syntax highlighting to code exports with
+   react-syntax-highlighting
+-  added arctic integration test
+-  updated Histogram popup to “Column Analysis” which allows for the
+   following
+
+   -  Histograms -> integers and floats
+   -  Value Counts -> integers, strings & dates
+
+.. _section-110:
+
+1.7.11 (2020-2-27)
+~~~~~~~~~~~~~~~~~~
+
+-  hotfix for dash custom.js file missing from production webpack build
+   script
+
+.. _section-111:
+
+1.7.10 (2020-2-27)
+~~~~~~~~~~~~~~~~~~
+
+-  `#75 <https://github.com/man-group/dtale/issues/75>`__: added code
+   snippet functionality to the following:
+
+   -  main grid, histogram, correlations, column building & charts
+
+-  exposed CLI loaders through the following functions dtale.show_csv,
+   dtale.show_json, dtale.show_arctic
+
+   -  build in such a way that it is easy for custom loaders to be
+      exposed as well
+
+-  `#82 <https://github.com/man-group/dtale/issues/82>`__: pinned
+   ``future`` package to be >= 0.14.0
+
+.. _section-112:
+
+1.7.9 (2020-2-24)
+~~~~~~~~~~~~~~~~~
+
+-  support for google colab
+-  `#71 <https://github.com/man-group/dtale/issues/71>`__: Filter &
+   Formats popups no longer have smooth transition from top of screen
+-  `#72 <https://github.com/man-group/dtale/issues/72>`__: Column Menu
+   cutoff on last column of wide dataframes
+-  `#73 <https://github.com/man-group/dtale/issues/73>`__: Describe
+   popup does full refresh when clicking rows in dtype grid
+
+.. _section-113:
+
+1.7.8 (2020-2-22)
+~~~~~~~~~~~~~~~~~
+
+-  `#77 <https://github.com/man-group/dtale/issues/77>`__: removal of
+   multiprocessed timeouts
+
+.. _section-114:
+
+1.7.7 (2020-2-22)
+~~~~~~~~~~~~~~~~~
+
+-  centralized global state
+
+.. _section-115:
+
+1.7.6 (2020-2-21)
+~~~~~~~~~~~~~~~~~
+
+-  allowing the usage of context variables within filters
+-  `#64 <https://github.com/man-group/dtale/issues/64>`__: handling for
+   loading duplicate data to dtale.show
+-  updated dtale.instances() to print urls rather than show all
+   instances
+-  removal of Dash “Export to png” function
+-  passing data grid queries to chart page as default
+-  added sys.exit() to the thread that manages the reaper
+
+.. _section-116:
+
+1.7.5 (2020-2-20)
+~~~~~~~~~~~~~~~~~
+
+-  hotfix for KeyError loading metadata for columns with min/max
+   information
+
+.. _section-117:
+
+1.7.4 (2020-2-20)
+~~~~~~~~~~~~~~~~~
+
+-  `#63 <https://github.com/man-group/dtale/issues/63>`__: filtering
+   columns with special characters in name
+-  added json_loader CLI options
+-  updated moving/locking of columns to be persisted to back-end as well
+   as front-end
+-  added the ability to show/hide columns
+-  `#61 <https://github.com/man-group/dtale/issues/61>`__: added column
+   builder popup
+
+.. _section-118:
+
+1.7.3 (2020-2-13)
+~~~~~~~~~~~~~~~~~
+
+-  added the ability to move columns left or right as well as to the
+   front
+-  added formatting capabilities for strings & dates
+-  persist formatting settings to popup on reopening
+-  bugfix for width-calculation on formatting change
+
+.. _section-119:
+
+1.7.2 (2020-2-12)
+~~~~~~~~~~~~~~~~~
+
+-  60 timeout handling around chart requests
+-  pre-loaded charts through URL search strings
+-  pandas query examples in Filter popup
+
+.. _section-120:
+
+1.7.1 (2020-2-7)
+~~~~~~~~~~~~~~~~
+
+-  added pie, 3D scatter & surface charts
+-  updated popups to be displayed when the browser dimensions are too
+   small to host a modal
+-  removed Swagger due to its lack up support for updated dependencies
+
+.. _section-121:
+
+1.7.0 (2020-1-28)
+~~~~~~~~~~~~~~~~~
+
+-  redesign of charts popup to use plotly/dash
+-  `#55 <https://github.com/man-group/dtale/issues/55>`__: raise
+   exception when data contains duplicate column names
+-  heatmap integration
+-  combination of "_main.jsx" files into one for spacial optimization
+-  `#15 <https://github.com/man-group/dtale/issues/15>`__: made arctic
+   an “extra” dependency
+
+.. _section-122:
+
+1.6.10 (2020-1-12)
+~~~~~~~~~~~~~~~~~~
+
+-  better front-end handling of dates for charting as to avoid timezone
+   issues
+-  the ability to switch between sorting any axis in bar charts
+
+.. _section-123:
+
+1.6.9 (2020-1-9)
+~~~~~~~~~~~~~~~~
+
+-  bugfix for timezone issue around passing date filters to server for
+   scatter charts in correlations popup
+
+.. _section-124:
+
+1.6.8 (2020-1-9)
+~~~~~~~~~~~~~~~~
+
+-  additional information about how to use Correlations popup
+-  handling of all-nan data in charts popup
+-  styling issues on popups (especially Histogram)
+-  removed auto-filtering on correlation popup
+-  scatter point color change
+-  added chart icon to cell that has been selected in correlation popup
+-  responsiveness to scatter charts
+-  handling of links to ‘main’,‘iframe’ & ‘popup’ missing data_id
+-  handling of ‘inf’ values when getting min/max & describe data
+-  added header to window popups (correlations, charts, …) and a link
+   back to the grid
+-  added egg building to cirleci script
+-  correlation timeseries chart hover line
+
+.. _section-125:
+
+1.6.7 (2020-1-3)
+~~~~~~~~~~~~~~~~
+
+-  `#50 <https://github.com/man-group/dtale/issues/50>`__: updates to
+   rolling correlation functionality
+
+.. _section-126:
+
+1.6.6 (2020-1-2)
+~~~~~~~~~~~~~~~~
+
+-  `#47 <https://github.com/man-group/dtale/issues/47>`__: selection of
+   multiple columns for y-axis
+-  updated histogram bin selection to be an input box for full
+   customization
+-  better display of timestamps in axis ticks for charts
+-  sorting of bar charts by y-axis
+-  `#48 <https://github.com/man-group/dtale/issues/48>`__: scatter
+   charts in chart builder
+-  “nunique” added to list of aggregations
+-  turned on “threaded=True” for app.run to avoid hanging popups
+-  `#45 <https://github.com/man-group/dtale/issues/45>`__: rolling
+   computations as aggregations
+-  Y-Axis editor
+
+.. _section-127:
+
+1.6.5 (2019-12-29)
+~~~~~~~~~~~~~~~~~~
+
+-  test whether filters entered will return no data and block the user
+   from apply those
+-  allow for group values of type int or float to be displayed in charts
+   popup
+-  timeseries correlation values which return ‘nan’ will be replaced by
+   zero for chart purposes
+-  update ‘distribution’ to ‘series’ on charts so that missing dates
+   will not show up as ticks
+-  added “fork on github” flag for demo version & links to github/docs
+   on “About” popup
+-  limited lz4 to <= 2.2.1 in python 27-3 since latest version is no
+   longer supported
+
+.. _section-128:
+
+1.6.4 (2019-12-26)
+~~~~~~~~~~~~~~~~~~
+
+-  testing of hostname returned by ``socket.gethostname``, use
+   ‘localhost’ if it fails
+-  removal of flask dev server banner when running in production
+   environments
+-  better handling of long strings in wordclouds
+-  `#43 <https://github.com/man-group/dtale/issues/43>`__: only show
+   timeseries correlations if datetime columns exist with multiple
+   values per date
+
+.. _section-129:
+
+1.6.3 (2019-12-23)
+~~~~~~~~~~~~~~~~~~
+
+-  updated versions of packages in yarn.lock due to issue with chart.js
+   box & whisker plots
+
+.. _section-130:
+
+1.6.2 (2019-12-23)
+~~~~~~~~~~~~~~~~~~
+
+-  `#40 <https://github.com/man-group/dtale/issues/40>`__: loading
+   initial chart as non-line in chart builder
+-  `#41 <https://github.com/man-group/dtale/issues/41>`__: double
+   clicking cells in correlation grid for scatter will cause chart not
+   to display
+-  “Open Popup” button for ipython iframes
+-  column width resizing on sorting
+-  additional int/float descriptors (sum, median, mode, var, sem, skew,
+   kurt)
+-  wordcloud chart type
+
+.. _section-131:
+
+1.6.1 (2019-12-19)
+~~~~~~~~~~~~~~~~~~
+
+-  bugfix for url display when running from command-line
+
+.. _section-132:
+
+1.6.0 (2019-12-19)
+~~~~~~~~~~~~~~~~~~
+
+-  charts integration
+
+   -  the ability to look at data in line, bar, stacked bar & pie charts
+   -  the ability to group & aggregate data within the charts
+
+-  direct ipython iframes to correlations & charts pages with
+   pre-selected inputs
+-  the ability to access instances from code by data id
+   ``dtale.get_instance(data_id)``
+-  view all active data instances ``dtale.instances()``
+
+.. _section-133:
+
+1.5.1 (2019-12-12)
+~~~~~~~~~~~~~~~~~~
+
+-  conversion of new flask instance for each ``dtale.show`` call to
+   serving all data associated with one parent process under the same
+   flask instance unless otherwise specified by the user (the ``force``
+   parameter)
+
+.. _section-134:
+
+1.5.0 (2019-12-02)
+~~~~~~~~~~~~~~~~~~
+
+-  ipython integration
+
+   -  ipython output cell adjustment
+   -  column-wise menu support
+   -  browser window popups for: Correlations, Coverage, Describe,
+      Histogram & Instances
+
+.. _section-135:
+
+1.4.1 (2019-11-20)
+~~~~~~~~~~~~~~~~~~
+
+-  `#32 <https://github.com/man-group/dtale/issues/32>`__: unpin
+   jsonschema by moving flasgger to ``extras_require``
+
+.. _section-136:
+
+1.4.0 (2019-11-19)
+~~~~~~~~~~~~~~~~~~
+
+-  Correlations Pearson Matrix filters
+-  “name” display in title tab
+-  “Heat Map” toggle
+-  dropped unused “Flask-Caching” requirement
+
+.. _section-137:
+
+1.3.7 (2019-11-12)
+~~~~~~~~~~~~~~~~~~
+
+-  Bug fixes for:
+
+   -  `#28 <https://github.com/man-group/dtale/issues/28>`__:
+      “Instances” menu option will now be displayed by default
+   -  `#29 <https://github.com/man-group/dtale/issues/29>`__: add hints
+      to how users can navigate the correlations popup
+   -  add “unicode” as a string classification for column width
+      calculation
+
+.. _section-138:
+
+1.3.6 (2019-11-08)
+~~~~~~~~~~~~~~~~~~
+
+-  Bug fixes for:
+
+   -  choose between ``pandas.corr`` & ``numpy.corrcoef`` depending on
+      presence of NaNs
+   -  hide timeseries correlations when date columns only contain one
+      day
+
+.. _section-139:
+
+1.3.5 (2019-11-07)
+~~~~~~~~~~~~~~~~~~
+
+-  Bug fixes for:
+
+   -  duplicate loading of histogram data
+   -  string serialization failing when mixing ``future.str`` & ``str``
+      in scatter function
+
+.. _section-140:
+
+1.3.4 (2019-11-07)
+~~~~~~~~~~~~~~~~~~
+
+-  updated correlation calculation to use ``numpy.corrcoef`` for
+   performance purposes
+-  github rebranding from manahl -> man-group
+
+.. _section-141:
+
+1.3.3 (2019-11-05)
+~~~~~~~~~~~~~~~~~~
+
+-  hotfix for failing test under certain versions of ``future`` package
+
+.. _section-142:
+
+1.3.2 (2019-11-05)
+~~~~~~~~~~~~~~~~~~
+
+-  Bug fixes for:
+
+   -  display of histogram column information
+   -  reload of hidden “processes” input when loading instances data
+   -  correlations json failures on string conversion
+
+.. _section-143:
+
+1.3.1 (2019-10-29)
+~~~~~~~~~~~~~~~~~~
+
+-  fix for incompatible str types when directly altering state of data
+   in running D-Tale instance
+
+.. _section-144:
+
+1.3.0 (2019-10-29)
+~~~~~~~~~~~~~~~~~~
+
+-  ``webbrowser`` integration (the ability to automatically open a
+   webbrowser upon calling ``dtale.show()``)
+-  flag for hiding the “Shutdown” button for long-running demos
+-  “Instances” navigator popup for viewing all activate D-Tale instances
+   for the current python process
+
+.. _section-145:
+
+1.2.0 (2019-10-24)
+~~~~~~~~~~~~~~~~~~
+
+-  `#20 <https://github.com/man-group/dtale/issues/13>`__: fix for data
+   being overriden with each new instance
+-  `#21 <https://github.com/man-group/dtale/issues/13>`__: fix for
+   displaying timestamps if they exist
+-  calling ``show()`` now returns an object which can alter the state of
+   a process
+
+   -  accessing/altering state through the ``data`` property
+   -  shutting down a process using the ``kill()`` function
+
+.. _section-146:
+
+1.1.1 (2019-10-23)
+~~~~~~~~~~~~~~~~~~
+
+-  `#13 <https://github.com/man-group/dtale/issues/13>`__: fix for
+   auto-detection of column widths for strings and floats
+
+.. _section-147:
+
+1.1.0 (2019-10-08)
+~~~~~~~~~~~~~~~~~~
+
+-  IE support
+-  **Describe** & **About** popups
+-  Custom CLI support
+
+.. _section-148:
+
+1.0.0 (2019-09-06)
+~~~~~~~~~~~~~~~~~~
+
+-  Initial public release
+
+
