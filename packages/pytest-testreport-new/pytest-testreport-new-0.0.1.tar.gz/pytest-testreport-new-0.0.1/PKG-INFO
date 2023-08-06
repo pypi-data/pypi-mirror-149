@@ -1,0 +1,74 @@
+Metadata-Version: 2.1
+Name: pytest-testreport-new
+Version: 0.0.1
+Summary: UNKNOWN
+Maintainer: testreport
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Pytest
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Testing
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pytest-testreport
+
+### 1、pytest-testreport介绍
+
+pytest-testreport-new是一个针对pytest的生成html报告的插件，基于开源工具pytest-testreport的修改，使用起来非常简单，安装好pytest-testreport-new之后，运行用例时加上参数即可生成报告
+
+###### 注意点：如果安装了pytest-html这个插件，请先卸载，不然会有冲突
+
+##### 使用案例：
+
+- ###### 命令行执行： pytest 运行测试时加上参数--report 指定报告文件名
+
+    ```shell
+    # 指定报告文件名
+    pytest --report=report.html
+    
+    #其他配置参数
+    --title=指定报告标题
+    --tester=指定报告中的测试者
+    --desc = 指定报告中的项目描述
+    
+    # 同时使用多个参数
+    pytest --report=report.html --title=测试报告 --tester=测试菜鸟 --desc=项目描述
+    ```
+    
+- ###### pytest.main执行
+
+    ```shell
+    import pytest
+    
+    pytest.main(['--report=musen.html',
+                 '--title=测试报告标题',
+                 '--tester=tester',
+                 '--desc=报告描述信息'])
+    ```
+
+    
+
+### 2、安装pytest-testreport
+
+pytest-testreport是基于python3.6开发的，安装前请确认你的python版本>3.6
+
+安装命令
+
+```pip install pytest-testreport-new```
+
+
+
