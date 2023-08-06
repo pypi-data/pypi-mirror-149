@@ -1,0 +1,115 @@
+Metadata-Version: 2.1
+Name: Lespy
+Version: 0.1.2
+Summary: A small and robust micro Python framework for building simple and solid web apps.
+Author: Natan Santos
+Author-email: natansantosapps@gmail.com
+License: MIT
+Project-URL: Source, https://github.com/natanfeitosa/lespy/
+Project-URL: Tracker, https://github.com/natanfeitosa/lespy/issues/
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Internet :: WWW/HTTP :: WSGI
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: coverage ; extra == 'test'
+
+# LESPY
+
+[![GitHub stars](https://img.shields.io/github/stars/natanfeitosa/lespy.svg)](https://github.com/natanfeitosa/lespy/stargazers)
+[![Pytest Actions Status](https://github.com/natanfeitosa/lespy/actions/workflows/pytest.yml/badge.svg)](https://github.com/natanfeitosa/lespy/actions)
+[![GitHub license](https://img.shields.io/github/license/natanfeitosa/lespy.svg)](https://github.com/natanfeitosa/lespy/blob/main/LICENSE)
+![PyPI](https://img.shields.io/pypi/v/lespy.svg)
+[![PyPI download month](https://img.shields.io/pypi/dm/lespy.svg)](https://pypi.org/project/lespy/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/lespy.svg)](https://pypi.python.org/pypi/lespy/)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/lespy.svg)
+
+## Overview 
+A small and robust micro Python framework for building simple and solid web apps.
+
+## Quick start
+> DEMO: You can see a working examples [here](./examples).
+
+### Instalation
+
+Via PIP (recommended):
+
+```bash
+pip install lespy
+```
+
+Via Poetry:
+```bash
+poetry add lespy
+```
+
+Via GitHub:
+
+```bash
+git clone https://github.com/natanfeitosa/lespy.git && cd lespy && pip install .
+```
+
+### Creating a simple app
+
+In your `main.py` file import the `App` class from `lespy`
+```python
+from lespy import App
+```
+
+Now instantiate the App class and pass it a name
+```python
+app = App('first_app')
+```
+
+Now we need to create a route with the GET method
+```python
+@app.get('/')
+def home(request):
+    return 'Hello world'
+```
+
+Yes, it's that simple.
+
+### Running the app
+
+**_With the simple server included:_**
+> This is a simple implementation, do not use for production environment.
+
+First import the `run` method
+```python
+from lespy import run
+```
+
+Now let's use the method passing the App instance
+```python
+if __name__ == '__main__':
+    run(app)
+```
+
+Now, just run our python file, and if everything went well, just access in <http://localhost:3000>.
+
+**_With Gunicorn:_**
+
+```bash
+$ gunicorn main:app
+```
+
+
