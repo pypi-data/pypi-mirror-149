@@ -1,0 +1,133 @@
+
+- name: Bootstrap directord
+  hosts: all
+  gather_facts: False
+  any_errors_fatal: true
+  become: true
+  vars:
+    directord_development_env: true
+  tasks:
+    - name: Development setup block
+      block:
+      - name: Specifying a destination path
+        copy:
+          src: "{{ item }}"
+          dest: "/opt/{{ item | basename }}"
+        loop:
+        - "{{ playbook_dir }}/dev-setup.sh"
+      - name: Execute development script
+        command: "bash /opt/dev-setup.sh"
+      when:
+        - directord_development_env | bool
+    - name: Production setup block
+      block:
+      - name: Specifying a destination path
+        copy:
+          src: "{{ item }}"
+          dest: "/opt/{{ item | basename }}"
+        loop:
+        - "{{ playbook_dir }}/prod-setup.sh"
+      - name: Execute development script
+        command: "bash /opt/prod-setup.sh"
+      when:
+        - not directord_development_env | bool
+
+- name: Start directord server
+  hosts: directord_server
+  gather_facts: False
+  any_errors_fatal: true
+  become: true
+  vars:
+    directord_development_env: true
+    # For now, all installations of directord are assumed to be within a virtual environment.
+    directord_bin_path: "{{ directord_development_env | bool | ternary('/opt/directord/bin', '/opt/directord/bin') }}"
+  tasks:
+    - name: Generate curve keys
+      command: "{{ directord_bin_path }}/directord --driver zeromq server --zmq-generate-keys"
+    - name: Specifying a destination path
+      fetch:
+        src: "{{ item }}"
+        dest: "/tmp/{{ item | basename }}"
+        flat: yes
+      loop:
+      - /etc/directord/private_keys/client.key_secret
+      - /etc/directord/public_keys/client.key
+      - /etc/directord/public_keys/server.key
+    - name: Setup directord server service unit
+      command: "{{ directord_bin_path }}/directord-server-systemd"
+    - name: Load directord server service unit
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: directord-server.service
+
+- name: Start directord clients
+  hosts: directord_clients
+  gather_facts: False
+  any_errors_fatal: true
+  become: true
+  tags:
+    - directord-client
+  vars:
+    directord_development_env: true
+    # For now, all installations of directord are assumed to be within a virtual environment.
+    directord_bin_path: "{{ directord_development_env | bool | ternary('/opt/directord/bin', '/opt/directord/bin') }}"
+  handlers:
+    - name: Key cleanup
+      fetch:
+        src: "{{ item }}"
+        dest: "/tmp/{{ item | basename }}"
+        flat: yes
+      delegate_to: localhost
+      loop:
+      - /tmp/client.key_secret
+      - /tmp/client.key
+      - /tmp/server.key
+  tasks:
+    - name: Ensure key directordies exists
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+      - /etc/directord
+      - /etc/directord/private_keys
+      - /etc/directord/public_keys
+    - name: Copy secret keys
+      copy:
+        src: "/tmp/client.key_secret"
+        dest: "/etc/directord/private_keys/client.key_secret"
+      notify: Key cleanup
+    - name: Copy public keys
+      copy:
+        src: "{{ item }}"
+        dest: "/etc/directord/public_keys/{{ item | basename }}"
+      loop:
+        - /tmp/client.key
+        - /tmp/server.key
+      notify: Key cleanup
+    - name: Read the directord config file
+      slurp:
+        path: /etc/directord/config.yaml
+      register: config
+    - name: extract the data
+      set_fact:
+        directord_config: "{{ config['content'] | b64decode | from_yaml }}"
+    - name: Write the directord config file
+      copy:
+        content: >-
+          {{
+            directord_config | combine(
+              {
+                'zmq_server_address': hostvars[groups['directord_server'][0]]['ansible_host'],
+                'zmq_curve_encryption': true
+              }
+            ) | to_nice_yaml
+          }}
+        dest: /etc/directord/config.yaml
+    - name: Setup directord client service unit
+      command: "{{ directord_bin_path }}/bin/directord-client-systemd"
+    - name: Load directord client service unit
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: directord-client.service

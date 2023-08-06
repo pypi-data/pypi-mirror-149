@@ -1,0 +1,14 @@
+# This orchestration will deploy a MySQL (MariaDB) server.
+#
+---
+
+- jobs:
+  - ARG: mysql_root_password SuperSecrete
+  - RUN: --stdout-arg mysql_host ip -o r g 1 | awk '{print $7}'
+  - RUN: --stdout-arg directord_hostname hostname
+  - RUN: --skip-cache dnf -y install mariadb mariadb-server
+  - RUN: systemctl enable mariadb.service
+  - RUN: systemctl start mariadb.service
+  - RUN: mysql -e "UPDATE mysql.user SET Password = PASSWORD('{{ mysql_root_password }}') WHERE User = 'root'"
+  - RUN: mysql -e "FLUSH PRIVILEGES"
+  - RUN: mysql -u root -p{{ mysql_root_password }} -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION"
