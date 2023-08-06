@@ -1,0 +1,111 @@
+[tool.poetry]
+name = "nautobot-golden-config"
+version = "v1.0.1"
+description = "A plugin for configuration on nautobot"
+authors = ["Network to Code, LLC", "<opensource@networktocode.com>"]
+
+license = "Apache-2.0"
+
+readme = "README.md"
+homepage = "https://github.com/nautobot/nautobot-plugin-golden-config"
+repository = "https://github.com/nautobot/nautobot-plugin-golden-config"
+documentation = "https://github.com/nautobot/nautobot-plugin-golden-config"
+keywords = ["nautobot", "nautobot-plugin"]
+include = [
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md",
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+packages = [
+    { include = "nautobot_golden_config" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+deepdiff = "^5.5.0"
+django-pivot = "^1.8.1"
+matplotlib = "^3.3.2"
+nautobot-plugin-nornir = ">=0.9.7"
+nautobot = ">=1.2.0"
+
+[tool.poetry.dev-dependencies]
+bandit = "*"
+black = {version="^21.10b0", python="^3.6.2"}
+django-debug-toolbar = "*"
+flake8 = "*"
+invoke = "*"
+pydocstyle = "*"
+pylint = "*"
+pylint-django = "*"
+yamllint = "*"
+Markdown = {version="*", python="^3.6.2"}
+
+
+[tool.black]
+line-length = 120
+target-version = ['py36']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | settings.py     # This is where you define files that should not be stylized by black
+          # the root of the project
+)
+'''
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.master]
+# Include the pylint_django plugin to avoid spurious warnings about Django patterns
+load-plugins="pylint_django"
+
+# Don't cache data for later comparisons
+persistent="no"
+
+# Don't raise alarms if args/kwargs has an issue, as may be required, just as a decorator
+ignored-argument-names="args|kwargs"
+
+# ignore files that should not be linted
+ignore=["jinja_filters.py"]
+
+[tool.pylint.basic]
+# No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
+no-docstring-rgx="^(_|test_|Meta$)"
+
+[tool.pylint.messages_control]
+# Line length is enforced by Black, so pylint doesn't need to check it.
+# Pylint and Black disagree about how to format multi-line arrays; Black wins.
+disable = """,
+    line-too-long,
+    bad-continuation,
+    too-few-public-methods,
+    duplicate-code,
+    """
+
+[tool.pylint.miscellaneous]
+# Don't flag TODO as a failure, let us commit with things that still need to be done in the code
+notes = """,
+    FIXME,
+    XXX,
+    """
