@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="testing">
+
+<head>
+</head>
+
+<body>
+
+<img src=""
+     alt="Some alt"
+     title="Some title"
+     i18n:attributes="alt some_alt; title title_some_alt" />
+
+
+<p i18n:translate="">Buzz</p>
+
+<span i18n:translate="">
+    <div i18n:name="foo"></div>
+
+    <div i18n:name="with-dash-and_underscore"></div>
+</span>
+
+<p i18n:translate="text_buzz">Buzz</p>
+
+<p i18n:translate="text_buzz">Buzzer</p>
+
+<p metal:use-macro="somemacro">Dummy</p>
+
+<p tal:replace="something">Dumbo</p>
+
+<p i18n:translate="spacing">
+    Space <br /> before and after.
+</p>
+
+<li i18n:translate="spacing_strong">
+    Please press your browser's <strong>Back</strong> button to try again.
+</li>
+
+<tal:block i18n:translate="">Job started at <span i18n:name="datetime"
+tal:replace="now">Now</span> by user <span i18n:name="userid"
+tal:replace="options/userid">Userid</span>.</tal:block>
+
+<span i18n:translate=""><tt>domain</tt> is one of the <em>local domains</em>:</span>
+
+<form>
+<input type="submit" value="Dig this" i18n:attributes="value dig_this"/>
+</form>
+
+<!-- Swich/case is chameleon only.  Not supported by zope.tal. -->
+<ul tal:define="items python:['one', 'two', 'three']"
+    tal:switch="len(items) % 2">
+  <li tal:case="True" i18n:translate="">odd</li>
+  <li tal:case="False" i18n:translate="">even</li>
+</ul>
+
+<input checked type="checkbox" name="friendly_type_name:list"
+       i18n:attributes="value"
+       value="Test for issue 15, html5 attributes without value" />
+
+<div tal:define="patterns python:{'data-something': 'chameleon-only-again'}"
+     tal:attributes="python:patterns" />
+
+<!-- Some tests for the find-untranslated command. -->
+<span tal:replace="nothing">
+  find-untranslated should not complain about content that will be
+  tal-replaced.
+</span>
+<span tal:content="something">
+  find-untranslated should not complain about content that will be
+  filled by tal-content.
+</span>
+<span tal:condition="nothing">
+  find-untranslated should not complain about content that has a
+  tal-condition that is nothing.
+</span>
+<tal:comment replace="nothing">
+  find-untranslated should not complain about tal-content that will be
+  replaced.
+</tal:comment>
+<tal:comment content="something">
+  find-untranslated should not complain about tal-content that will be
+  filled by tal-content.
+</tal:comment>
+<tal:comment condition="nothing">
+  find-untranslated should not complain about tal-content that has a
+  tal-condition that is nothing.
+</tal:comment>
+
+</body>
+</html>
