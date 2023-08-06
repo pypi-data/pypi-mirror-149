@@ -1,0 +1,3 @@
+from je_matplotlib_wrapper.barh.barh_tkinter import set_tkinter_embed_matplotlib_barh
+from je_matplotlib_wrapper.save_as_png import save_as_png
+from je_matplotlib_wrapper.barh.barh_tkinter import make_barh_graph
