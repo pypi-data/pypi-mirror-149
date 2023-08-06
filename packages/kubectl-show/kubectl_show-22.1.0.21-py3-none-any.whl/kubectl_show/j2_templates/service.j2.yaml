@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ _name or 'nginx-example' }}
+  {% if _namespace -%}
+  namespace: {{ _namespace }}
+  {%- endif %}
+spec:
+  selector:
+    app: {{ _name or 'nginx-example' }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http
+  type: NodePort
