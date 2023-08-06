@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: lagrange-polynomial
+Version: 0.0.1
+Summary: Lagrange polynomials over finite fields
+Home-page: https://github.com/fionn/lagrange-polynomial
+Author: Fionn Fitzmaurice
+License: UNKNOWN
+Project-URL: Source Code, https://github.com/fionn/lagrange-polynomial
+Project-URL: Changelog, https://github.com/fionn/lagrange-polynomial/tags
+Project-URL: Documentation, https://github.com/fionn/lagrange-polynomial/blob/master/README.md
+Project-URL: Bug Tracker, https://github.com/fionn/lagrange-polynomial/issues
+Project-URL: PyPI, https://pypi.org/project/lagrange-polynomial/
+Project-URL: Download, https://github.com/fionn/lagrange-polynomial/archive/refs/heads/master.zip
+Keywords: lagrange polynomials,interpolation
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pylint ; extra == 'dev'
+Requires-Dist: mypy ; extra == 'dev'
+Requires-Dist: coverage ; extra == 'dev'
+
+# Lagrange Polynomials
+
+Module to generate Lagrange polynomials over integers for 1-dimensional data.
+This is generally useful for interpolation.
+
+## Installation
+
+Install with `pip`.
+
+## Usage
+
+### Example
+
+```python
+from lagrange_polynomial import LagrangePolynomial
+
+xs = range(100)
+ys = [f(x) for x in xs]          # For some function f
+
+lp = LagrangePolynomial(xs, ys)  # Instantiate a polynomial with sequences of
+                                 # x- and y-coordinates.
+
+for x in xs:
+    assert ys[x] == lp(x)        # Polynomial will intersect original points
+    coefficient = lp.basis[0](x) # Get the 0th basis vector at x
+```
+
+### Interface
+
+The `LagrangePolynomial` class takes two equally-sized sequences and an optional integer _p_.
+The instance is a Lagrange polynomial _L_: _x_ -> _L_(_x_) over GF(_p_). If _p_ is not provided, it defaults to the 8<sup>th</sup> Mersenne prime _M_<sub>31</sub>.
+
+It has a `basis` property, a `LagrangeBasis` object subclassing `Sequence`.
+Each element _ℓⱼ_ indexed by integers _j_ in `range(len(xs))` is a function taking _x_ to its _j_<sup>th</sup> basis vector _ℓⱼ_(_x_).
+
+## Test
+
+Test with `make test`.
+
+
