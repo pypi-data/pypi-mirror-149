@@ -1,0 +1,24 @@
+[console_scripts]
+pymap = pymap.main:main
+
+[pymap.admin.handlers]
+mailbox = pymap.admin.handlers.mailbox:MailboxHandlers
+server = pymap.admin.handlers.system:SystemHandlers
+user = pymap.admin.handlers.user:UserHandlers
+
+[pymap.backend]
+dict = pymap.backend.dict:DictBackend
+maildir = pymap.backend.maildir:MaildirBackend
+redis = pymap.backend.redis:RedisBackend [redis]
+
+[pymap.filter]
+sieve = pymap.sieve:SieveCompiler [sieve]
+
+[pymap.service]
+admin = pymap.admin:AdminService [admin]
+imap = pymap.imap:IMAPService
+managesieve = pymap.sieve.manage:ManageSieveService [sieve]
+swim = pymap.cluster.swim:SwimService [swim]
+
+[pymap.token]
+macaroon = pymap.token.macaroon:MacaroonTokens [macaroon]
