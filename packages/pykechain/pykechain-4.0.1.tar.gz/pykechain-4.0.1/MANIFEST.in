@@ -1,0 +1,24 @@
+include LICENSE
+include CONTRIBUTING.rst
+include CHANGELOG.rst
+include CHANGELOG-v2-and-older.rst
+include requirements.txt
+include tox.ini
+include mypy.ini
+include .env.template
+include Pipfile
+include pykechain/py.typed
+
+graft tests
+graft docs
+prune docs/_build
+
+global-exclude *.pyc
+global-exclude .ipynb_checkpoints/*
+exclude *.sh
+exclude requirements-ci.txt
+exclude *-OFF
+exclude *.yml
+exclude *.yaml
+exclude .editorconfig
+exclude .secrets.baseline
