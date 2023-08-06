@@ -1,0 +1,118 @@
+Metadata-Version: 2.1
+Name: pymongolite
+Version: 0.1.3
+Summary: 
+Author: yehoyada
+Author-email: yehoyada.sht@gmail.com
+Requires-Python: >=3.8,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: blist (>=1.3.6,<2.0.0)
+Description-Content-Type: text/markdown
+
+# mongolite 
+Lite mongodb engine in python  
+
+[![Run Tests](https://github.com/hvuhsg/mongolite/actions/workflows/test.yml/badge.svg)](https://github.com/hvuhsg/mongolite/actions/workflows/test.yml)  
+
+---
+
+```commandline
+pip install pymongolite
+```
+
+## Examples
+
+```python
+from pymongolite import MongoClient
+
+with MongoClient(dirpath="~/my_db_dir", database="my_db") as client:
+    db = client.get_default_database()
+    collection = db.get_collection("users")
+
+    collection.insert_one({"name": "yoyo"})
+    collection.update_one({"name": "yoyo"}, {"$set": {"age": 20}})
+    user = collection.find_one({"age": 20})
+    print(user) # -> {"_id": ObjectId(...), "name": "yoyo", "age": 20}
+```
+
+```python
+from pymongolite import MongoClient
+
+client = MongoClient(dirpath="~/my_db_dir", database="my_db")
+
+db = client.get_default_database()
+collection = db.get_collection("users")
+
+collection.insert_one({"name": "yoyo"})
+collection.update_one({"name": "yoyo"}, {"$set": {"age": 20}})
+user = collection.find_one({"age": 20})
+print(user) # -> {"_id": ObjectId(...), "name": "yoyo", "age": 20}
+
+client.close()
+```
+
+#### Indexes
+```python
+from pymongolite import MongoClient
+
+client = MongoClient(dirpath="~/my_db_dir", database="my_db")
+
+db = client.get_default_database()
+collection = db.get_collection("users")
+
+# Make query with name faster
+collection.create_index({"name": 1})
+
+collection.insert_one({"name": "yoyo"})
+collection.update_one({"name": "yoyo"}, {"$set": {"age": 20}})
+user = collection.find_one({"age": 20})
+print(user) # -> {"_id": ObjectId(...), "name": "yoyo", "age": 20}
+
+indexes = collection.get_indexes()
+print(indexes)  # -> [{'id': UUID('8bb4cac8-ae52-4fff-9e69-9f36a99956cd'), 'field': 'age', 'type': 1, 'size': 1}]
+
+client.close()
+```
+
+## Support
+The goal of this project is to create sqlite version for mongodb
+
+For now the library is supporting:
+- insert_many / insert_one
+- update_many / update_one
+    - $set
+    - $unset
+    - $inc
+    - $addToSet
+      - $each
+    - $push
+      - $each
+      - $sort
+      - $slice
+    - $pull
+- find / find_one
+    - field matching
+    - $eq
+    - $ne
+    - $gt / $gte
+    - $lt / $lte
+    - $not
+    - $and
+    - $or
+    - $nor
+    - $exists
+    - $in
+    - $nin
+    - filter fields
+- replace_many / replace_one
+- create_collection
+- get_collection
+- drop_collection
+- create_database
+- drop_database
+- thread safety
+- replaceable storage engine
+
