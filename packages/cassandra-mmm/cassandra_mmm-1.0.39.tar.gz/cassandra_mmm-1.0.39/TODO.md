@@ -1,0 +1,18 @@
+# TODO
+- [x] Automatizzare Nevergrad
+- [ ] helper che mi dice tutte le funzioni per ogni cartella con breve descrizione
+- [x] passare ai modelli l'array delle colonne e non X (che sarebbe df[array colonne])
+- [ ] Rendere piu semplice la funzione budget allocator
+- [x] Aggiungere alla funzione mainnested la possibilità di un modello logLog
+- [x] Costruire funzione per fare il grafico della saturation
+- [x] Sostituire i valori dell'adstock nel decomp_df con i valori della saturazione applicata direttamente alla spesa
+- [x] Rinominare show_saturation_curves in show_trendline_curves
+- [x] Aggiungere parametro Size per settare train/test dimnensioni
+- [x] Fixare Budget Allocator -> Passare i valori di Spesa normali, saturarli nella funzione (ddel Budget Allocator) e bella
+- [ ] show_relationship_between_variables -> show_only_one non da importanza a plot_for_line, è come se facessi ogni feature con conversions e non conversions con tutte le feautres
+- [ ] nevergrad_model -> valutare che magari ci sta options dentro hyperparameters dict e quindi non ripasso force coeffs
+- [x] show share of spend vs share of effect
+- [x] show decomposition della response
+- [ ] show mape nrmse e rsq sia su train che su test
+- [ ] return test da nevergrad 
+- [ ] inserire rssd come metrica
