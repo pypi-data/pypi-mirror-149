@@ -1,0 +1,58 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Import Old Bird clips</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Import Old Bird Clips</h2>
+
+    <p>
+        Imports short audio files created by the Old Bird Tseep and Thrush
+        detectors into a Vesper archive.
+    </p>
+
+    <p>
+        This command searches each of the specified directories recursivaly for
+        audio files (currently just .wav files). For each audio file it finds,
+        the command tries to parse information about a clip from the file's path
+        and contents, and if successful imports the clip into the archive. The
+        command copies each imported audio file into the archive, so if you
+        subsequently delete the original file it will have no effect on the
+        archive.
+    </p>
+
+    <p>
+        The command adds recordings to the archive as needed to cover the nights
+        for which clips are imported. Each recording extends from 8:30 pm to
+        5:30 am on its night, and has one channel. The created recordings have
+        no audio data, only metadata.
+    </p>
+
+    <p>
+        You can specify default directory paths via the
+        <span style="font-family: monospace;">import_old_bird_clips_defaults</span>
+        preference. The start and end dates are each optional.
+    </p>
+
+    <form class="form" role="form" action="{% url 'import-old-bird-clips' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.paths|block_form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Import</button>
+
+    </form>
+
+{% endblock main %}

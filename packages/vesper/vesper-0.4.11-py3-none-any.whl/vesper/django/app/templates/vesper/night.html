@@ -1,0 +1,90 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title></title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/clip-album.css' %}">
+
+    {% load vesper_extras %}
+
+    {% if not error_message %}
+        <script type="module">
+            import { init } from "{% static 'vesper/view/clip-album.js' %}";
+            init({
+                'clipFilter': {
+            	        'stationMicName': '{{station_mic_name|escapejs}}',
+            	        'detectorName': '{{detector_name|escapejs}}',
+            	        'classification': '{{classification|escapejs}}',
+                        'tag': '{{tag|escapejs}}',
+            	        'date': '{{date}}'
+                },
+                'solarEventTimes': {{solar_event_times_json|safe}},
+                'recordings': {{recordings_json|safe}},
+                'clips': {{clips_json|safe}},
+                'timeZoneName': '{{time_zone_name|escapejs}}',
+                'pageNum': {{page_num}},
+                'settingsPresets': {{settings_presets_json|safe}},
+                'settingsPresetPath': "{{settings_preset_path|default_if_none:''|escapejs}}",
+                'keyBindingsPresets': {{commands_presets_json|safe}},
+                'keyBindingsPresetPath': "{{commands_preset_path|default_if_none:''|escapejs}}",
+                'archiveReadOnly':  {{archive_read_only|yesno:"true,false"}}
+            });
+        </script>
+    {% endif %}
+
+{% endblock head %}
+
+{% block main %}
+
+    {% if error_message %}
+    
+        <div id="error-div">
+            {{error_message|safe}}
+        </div>
+
+    {% else %}
+    
+        {% include "vesper/set-clip-filter-modal.html" %}
+        {% include "vesper/clip-album-set-presets-modal.html" %}
+        {% include "vesper/clip-album-go-to-page-modal.html" %}
+     
+        <div id="title-div">
+        
+            <h4 id="title"></h4>
+        
+            <div id="title-buttons">
+            
+                {% include "vesper/clip-album-title-buttons.html" %}
+
+                <div class="dropdown title-dropdown">
+                
+                    <button id="moreButton" type="button" class="title-button" data-bs-toggle="dropdown" title="More" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi-three-dots-vertical title-button-icon"></i>
+                    </button>
+                    
+                    <ul class="dropdown-menu" aria-labelledby="moreButton">
+                        <li><a id="go-to-page-anchor" class="dropdown-item title-dropdown-anchor" href="#go-to-page" data-bs-toggle="modal" data-bs-target="#go-to-page-modal">Go to page...</a></li>
+                        <li><a id="go-to-next-date-anchor" class="dropdown-item title-dropdown-anchor">Go to next date</a></li>
+                        <li><a id="go-to-previous-date-anchor" class="dropdown-item title-dropdown-anchor">Go to previous date</a></li>
+                        <li><a id="go-to-clip-calendar-anchor" class="dropdown-item title-dropdown-anchor">Go to clip calendar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a id="set-presets-anchor" class="dropdown-item title-dropdown-anchor" href="#set-presets" data-bs-toggle="modal" data-bs-target="#set-presets-modal">Set presets...</a></li>
+                    </ul>
+                                    
+                </div>
+                
+            </div>
+            
+            <div id="rug-plot"></div>
+            
+        </div>
+    
+        <div id="clips"></div>
+        
+        <!-- div id='footer'></div> -->
+
+    {% endif %}
+
+{% endblock main %}

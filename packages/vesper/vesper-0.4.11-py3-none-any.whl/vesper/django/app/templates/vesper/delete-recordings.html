@@ -1,0 +1,51 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Delete recordings</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/command-form.css' %}">
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Delete recordings</h2>
+
+    <p>
+        Deletes the specified recordings from this Vesper archive.
+    </p>
+
+    {% include "vesper/recordings-specification-message.html" %}
+
+    <p>
+        All data associated with the recordings except for their audio
+        files (if present) are deleted from the archive, including their
+        metadata and all of their clips, including the clips' audio files
+        (if present), annotations, and tags.
+    </p>
+
+    {% include "vesper/command-executes-as-job-message.html" %}
+
+    <p class="warning">
+        You can delete a lot of recordings, clips, and associated data
+        with this command, and your changes cannot be undone, so proceed
+        with caution!
+    </p>
+
+    <form class="form" role="form" action="{% url 'delete-recordings' %}" method="post">
+
+        {% csrf_token %}
+        
+        {{ form.stations|block_form_element }}
+        {{ form.start_date|form_element }}
+        {{ form.end_date|form_element }}
+
+        <button type="submit" class="btn btn-primary form-spacing command-form-spacing">Delete</button>
+
+    </form>
+
+{% endblock main %}

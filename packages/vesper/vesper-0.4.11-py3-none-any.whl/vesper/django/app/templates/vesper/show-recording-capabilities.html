@@ -1,0 +1,35 @@
+{% extends 'vesper/base.html' %}
+
+{% block head %}
+
+    <title>Show recording capabilities</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'vesper/view/show-recording-capabilities.css' %}">
+    <script src="{% static 'vesper/view/show-recording-capabilities.js' %}"></script>
+
+    {% load vesper_extras %}
+
+{% endblock head %}
+
+{% block main %}
+
+    <h2>Show recording capabilities</h2>
+        
+    <p>
+        Shows the recording capabilities of the selected audio input device.
+    </p>
+
+    <label for="devices-select">Audio input device:</label>
+
+    <select id="devices-select">
+        <!-- This select is populated by JavaScript. -->
+    </select>
+
+    <p></p>
+
+    <table border='1' id='table'>
+        <!-- This table is populated by JavaScript. -->
+    </table>
+
+{% endblock main %}

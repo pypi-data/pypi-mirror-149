@@ -1,0 +1,133 @@
+@import 'title-buttons.css';
+
+#main-div {
+  text-align: center;
+}
+
+#error-div {
+  display: inline-block;
+  text-align: left;
+}
+
+#title-div {
+  display: inline-block;
+}
+
+#title {
+  display: inline-block;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+@media screen and (max-width: 767px) {
+  #title {
+    text-align: center;
+  }
+}
+
+.calendar {
+    
+    /*
+     * Set the `calendar` class width to:
+     *
+     *     3 * <month-days width> + 3 * <month spacing>
+     *
+     * where <month-days width> is specified in the `month-days` class
+     * below and <month spacing> is the desired spacing between months,
+     * i.e. twice the desired horizontal month padding.
+     */
+    width: 1140px;        /* 3 * 210 + 3 * 170 */
+    
+    margin: auto;
+    
+}
+
+.period {
+}
+
+.period-name {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 767px) {
+  .period-name {
+    text-align: center;
+  }
+}
+
+.period-rule {
+}
+
+.month {
+}
+
+.month-name {
+  text-align: center;
+}
+
+.month-days {
+    
+  display: flex;
+  flex-wrap: wrap;
+  
+  /*
+   * Set the `month-days` class width to seven times the day width,
+   * specified in the `day` class below.
+   */
+  width: 210px;
+  
+  /*
+   * Set the `month-days` class height to six times the day height,
+   * specified in the `day` class below.
+   */
+  height: 180px;
+  
+  margin: auto;
+  
+}
+
+.day {
+    
+  /*
+   * Note that changes to the `width`, `height`, and/or `line-height`
+   * properties of the `day` class necessitate changes to `month-days`
+   * and/or and/or `calendar` class properties. See comments in those
+   * classes for details.
+   */
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  
+  text-align: center;
+  position: relative;
+  
+}
+
+.circle {
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.day-num {
+  color: black;
+  font-size: .9em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;    /* Put dates on top of circles. */
+  text-decoration: none;
+}
+
+.day-num:hover, .day-num:active {
+    text-decoration: underline;
+}
+
+.day-num:visited {
+  color: white;
+}
