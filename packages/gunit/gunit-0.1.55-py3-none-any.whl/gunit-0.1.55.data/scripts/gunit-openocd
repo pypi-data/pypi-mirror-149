@@ -1,0 +1,19 @@
+#!python
+
+import argparse
+from gunit import GUnit
+
+# Argument parsing
+parser = argparse.ArgumentParser(description="Execute GUnit tests using a client for OpenOCD GDB server.")
+
+parser.add_argument('server_url', metavar='URL', type=str, help='Address to the OpenOCD GDB server')
+parser.add_argument('-d', '--destination', type=str, default='.', help='The path where the output will be generated')
+parser.add_argument('-g', '--gdb', type=str, default='arm-none-eabi-gdb', help='GDB client used by GUnit')
+parser.add_argument('test_binary', metavar='BIN', type=str, help='Path to the binary of GUnit test suite')
+
+args = parser.parse_args()
+
+# Actual GUnit stuff
+gunit = GUnit.openOCD(args.server_url, args.destination, args.gdb)
+gunit.test(args.test_binary)
+gunit.junit()

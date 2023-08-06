@@ -1,0 +1,14 @@
+#!python
+
+import argparse
+from gunit import GUnit
+
+# Argument parsing
+parser = argparse.ArgumentParser(description="Get the list of unit tests that are required to be compiled. Does not include the root file.")
+parser.add_argument('root', metavar='R', type=str, help='Path to the main unit test')
+
+args = parser.parse_args()
+
+# Actual GUnit stuff
+tests = GUnit.cascade(args.root)
+print(' '.join(tests))
