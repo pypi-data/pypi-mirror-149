@@ -1,0 +1,588 @@
+CHANGES
+=======
+
+* Update from\_torch.py
+* added test for PeriodicExponential
+* added to init file
+* added periodic exponential method
+* using non-cached property as otherwise failing for Python 3.7
+* Remove tau\_mem as a parameter from IAF
+* from\_model takes same parameters as IAF
+
+v0.3.3
+------
+
+* update SNN synops tutorial
+* make SNNSynopsCounter work as a loss function
+* add first version of synops counter tutorial notebook
+* additional parameter added to reset network
+* additional parameter added to reset stateful layer
+* fixes state recording issue in ExpLeak
+* Update README.md
+
+v0.3.2
+------
+
+* Rename remaining threshold arguments to spike\_threshold for more consistency
+
+v0.3.1
+------
+
+* Update ci-pipeline.yml
+* Update requirements.txt
+
+v0.3.0
+------
+
+* add basic parameter printing in \_\_repr\_\_
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* update layer docstrings and release notes
+* add new record\_states feature
+* small update to activations tutorial notebook
+* update tutorial notebooks
+* change functional ALIF behaviour so that v\_mem is not reset beneath 0 after a spike
+* update neuron\_model plots
+* add tutorial about activations
+* remove ActivationFunction class and split into separate parameters spike\_fn, reset\_fn and surrogate\_grad\_fn in all layers
+* update neuron\_models notebook
+* make tau\_syn in IAF more generic and turn off grads for tau\_mem in IAF
+* fix warnings about redundant docstrings in sphinx
+* blacken whole repo
+* refactor activation module
+* reintroduce does\_spike property
+* renamed threshold\_low to min\_v\_mem
+* make IAF inherit directly from LIF
+* Update README.md
+* fix some imports
+* tutorial notebook that plots different neuron models
+* update ExpLeak neuron
+* remove does\_spike and change default representation
+* make ExpLeak directly inherit from LIF with activation\_fn=None
+* change default surrogate gradient fn to SingleExponential
+* move SqueezeMixin class to reshape.py
+* change MNIST class names in tutorials so that they point to same data. Prevent multiple download on RTD server
+* update documentation
+* exclude dist from git
+* Update README.md
+* Update README.md
+* bug fixes for inclusion of threshold\_low
+* added threshold\_low for IAF and LIF and corresponding test
+* added logo with white background
+* fundamentals added and notebooks fixed with new api
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* updated training with bptt section
+* wip
+* Update ci-pipeline.yml
+* add link to Sinabs-DynapCNN
+* show version number in title
+* Update ci-pipeline.yml
+* update layer api description in docs
+* remove input layer and regroup pooling and to\_spike layers
+* update sphinx config
+* update about info
+* Delete .gitlab-ci.yml
+* Delete CONTRIBUTING.md
+* Delete CHANGELOG.md
+* Update .readthedocs.yaml
+* Update .readthedocs.yaml
+* update quickstart notebook
+* Update README.md
+* Update ci-pipeline.yml
+* Update requirements.txt
+* Update ci-pipeline.yml
+* Update ci-pipeline.yml
+* move requirements for test
+* first version of ci pipeline script
+* update gitlab ci script
+* blacken some layers
+* add parameter norm\_input to LIF layer, re-use lif functional forward call in IAF layers with alpha=1.0, add firing\_rate to spiking layers
+* minor changes to activation docs
+* add convenience FlattenTime / UnflattenTime layers
+* rework weight transfer tutorial
+* various docs updates, refurbishing install page, adding differences page,..
+* layer docstring updates
+* docs api update
+* more docs file restructuring
+* moving files around in the docs folder
+* added new sinabs logo done by @DylanMuir
+* moved files in doc/ up one level
+* Unit tests for copying uninitialized layers. Makes sure that #25 is resolved
+* Add 'does\_spike' property
+* Fix float precision issue
+* Remove backend conversion
+* Unify param\_dict shape entry
+* Make sure tau is converted to float
+* Rename to exodus
+* Add MaxSpike activation
+* Make sure tau\_leak is converted to float
+* remove deprecated layers
+* blackened tests and added one test for multiple taus in LIF
+* fix previous commit
+* Scale exp surr. grad width with threshold
+* Matching definition of exponential surrogate gradient with slayer
+* minor change in variable name
+* Exponential surrogate gradient
+* remove the use of UninitializedBuffer because introduced in PyTorch 1.9 and therefore not compatible with PyTorch LTS (long term support) v1.8.1
+* tau\_mem for LIF neurons is now always calculated on CPU and transferred to original device, for better numerical comparison with SLAYER LIF layer
+* only zero gradients if state is initialised
+
+v0.2.1
+------
+
+* added pip install
+* added requirements
+* Fixed path to conf.py in readthedocs config file
+* added rtd yaml file
+* split spike detection from reset mechanism in ALIF to be compatible with LSNN paper
+* update docstrings
+* add new squeeze layer mixin
+* make ALIF membrane decay test pass
+* bug fixes
+* change update order in ALIF
+* add grad\_scale to MultiGaussian surrogate grad function
+* add missing import for MultiGaussian surrogate grad function
+* update SingleSpike mechanism to spike when v\_mem >= threshold instead of >
+* update ALIF activation function attribute
+* initialise threshold state as b0 for ALIF classes
+* fix init\_states when 2 inputs of different shapes are supplied
+* refactor and test reset\_states function
+* return copy of states in reset mechanisms rather than in-place modification
+* replace state dict that is passed to torch.autograd function and also test backward passes
+* fix issue with MembraneReset mechanism
+* added tests for initialisation with specific shape
+* when resetting, reset on the right device
+* merge dev branch back into feature branch
+* properly separate layer business from activation function thresholds
+* fix device issues with recurrent layers
+* revert back to an additional ALIFActivationFunction that passes state['threshold'] instead of self.spike\_threshold to spike\_fn
+* remove custom ALIF spike generation function and move threshold state to ActivationFunction.spike\_threshold
+* deactivate ONNX tests for now
+* fix error where state would not be initialised on the right device
+* make network class tests pass
+* make backend tests pass
+* remove class factories for recurrency and Squeezing completely and just use nn.Flatten and Unflatten in the future
+* move Quantize functions to activation module
+* update leaky layers and make all copy tests pass
+* make LIFRecurrent inherit from LIF
+* add Squeeze Module instead of constructing squeeze classes for every layer
+* remove debugging print statement
+* include LIFRecurrent module and functional forward call for recurrent layers
+* update deepcopy method
+* update docstrings for activations and leaky layers
+* refactor IAF layers
+* add MultiGaussian surr grad fn
+* update the ResetMechanism docstrings
+* refactor ALIF layer
+* ALIF refactoring WIP
+* remove old threshold API and traces of SpikingLayer
+* make reset functions classes
+* rename InputLayer file
+* delete SpikingLayer
+* refactored ExpLeak layer
+* remove Activation class and now have option to specify different surrogate gradients
+* rename states to state in LIF
+* can initialise shape
+* break apart activation function into separate spike\_fn, reset\_fn and surrogate\_grad\_fn
+* fix initialisation of states if input size changes
+* Enable changing backends for ExpLayer
+* use a functional forward method in LIF
+* minor change in update to i\_syn
+* make deepcopy work with weird i\_syn no\_grad exception
+* refactoring together with Sadique
+* include activation functions for reset and subtract + forward pass tests for those
+* tau\_syn can now be None instead of empty parameter
+* can now choose to train alphas or not
+* update lif tests
+* first stab at breaking out activation function
+* Fixes issues in to\_backend methods if a backend requires a specific device
+* Fixes issues in to\_backend methods if a backend requires a specific device
+* Address issue #17 and fix some minor issues with torch.exp
+* bug fixes with deep copy in dev
+* fix \_param\_dict for pack\_dims.py
+* wip
+* use list of output spikes that is stacked at the end rather than reserving memory upfront
+* update ALIF execution order
+* update documentation for leaky layers
+* recurrent ALIF layers
+* modify order of threshold update update, then spiking within one time step in LIF neuron
+* use taus instead of alphas for leaky layers
+* change state variable to v\_mem
+* Fix default window in threshold functions
+* Remove unnecessary line of code in iaf\_bptt.py
+* Lift unwanted strict dependency on sinabs-slayer
+* to\_backend method in network class
+* Alif deepcopy works
+* Add unit tests for switching backends and for deepcopying
+* Switching between backends works now, even if other backend has not been imported
+* update Quantization and Thresholding tools docs
+* minor documentation update
+* deepcopy now works; \_param\_dict -> get\_neuron\_params() LIF added to \_\_init\_\_ file
+* Add StatefulLayer (WIP)
+* update recurrent module to make it a class factory, which can be combined with Squeeze layers
+* renamed LSNN layer back again to ALIF but keep Bellec implementation
+* black formatted some layers
+* add RecurrentModule to abstract away recurrent layers
+* update LSNN layer
+* update recurrent LIF layer
+* remove ABC from SpikingLayer
+* rename ALIF to LSNN layer
+* minimum of torch 1.8 for torch.div with rounding\_mode param
+* update leaky layers and their tests
+* fix tests
+* Synops support for average pooling layers -> Synopcounter now works correctly when average pooling layers are used
+* divide threshold adaptation by tau\_threshold to isolate the effect of time constants and not current over time
+* replace tau parameters such as tau\_mem and tau\_threshold with respective alpha versions
+* squash warning message about floor division by changing to recommended method
+* update LeakyExp tests
+* update docstring in LIF layer
+* fix ExpLeak layer + lif/alif tests
+* rename input tensor for gpu
+* re-add unit-test for normalize\_weights
+* add GPU tensor support for normalize\_weights method
+* no more parameter overrides for alif and lif neurons
+* zero grad tests for ALIF/LIF and replace in-place operation
+* update LIF and ALIF docstrings
+* add tests for LIF/ALIF current integration, membrane decay and threshold decay
+* update LIF and ALIF documentation
+* rename spike\_threshold to resting\_threshold
+* update Quantize, StochasticRounding to fix Pytorch warning
+* replace instantiated ThresholdReset autograd methods with static call, as recommended by pytorch
+* lif and alif layer update
+* ALIF: reuse LIF forward call and just change some of the functions that are called from it
+* reuse detect\_spikes function in ALIF layer
+* add initial version of adaptive LIF layer
+* rework LIF layer and add first tests for it
+* specify threshold type as tensor
+* skeleton code
+* Updates and fixes
+* Minor changes
+* minor documentation typo fixes and some clarifications
+* Unit test for from\_torch with num\_timesteps
+* Added test to check on initialization with batch\_size
+* wip
+* Slight refactoring: More methods in SpikingLayer
+* Fix zero\_grad test
+* Test new zero\_grad method
+* Added generic zero\_grad method to SpikingLayer class
+* override zero\_grad instead of separate method detach\_state\_grad
+* Add unit test. Rename detach\_state\_grads to detach\_state\_grad for consistency with no\_grad
+* Method for detaching state gradients without resetting
+* Random reset into sensible value range
+* Fix output shape
+* Do not transpose data in IAF.forward
+* Remove Squeeze/Unsqueeze helper classes
+* Add missing spiking\_layer module. Minor renaming of squeeze classes
+* Make sure that Squeeze layers are registered as subclasses of Squeeze class
+* Change data format of iaf input: Batch dimension is first. Always implicitly expect a batch dimension
+* IAF expects batch and time separated. IAFSqueeze for old behavior with squeezed dimensions
+* move name\_list acquiring from plot\_comparison() into compare\_activations()
+* Fix sinabs.network.Network.plot\_comparison() not work correctly for nested ANN and make it only plot Spiking layers' comparison-plot
+* Added LIF base class
+* Sub class for flatten batch/time + separate class for IAF
+* Added meta class for IAFLayer #5
+* added test
+* speeds up total power use using the new method
+* added total synops counter that doesnt use pandas
+* speeds up pandas use in synops count, big advantage
+* Name convert\_torch\_ann
+* necessary change in notebook
+* updated docs
+* added docs
+* bug fixed
+* synopcounter tests, changed network and from\_torch accordingly
+* moved counter function
+* SNNSynopCounter class
+* Fix from\_torch method when model contains a ReLU that is not child of a Sequential
+* m2r changed to m2r2
+* swapped dimensions with batch, default batch None
+* Documentation added and method name renamed to normalize\_weights
+* Smart weight rescaling added
+* fixed cuda issues on from torch, added test
+* Changed aiCTX references to SynSense
+* membrane reset implementation, removed layer name
+* Equation rendering in docs fixed
+* Doc front page changed to README
+* Added documentation pipeline for testing doc generation
+* Setup tools integration for sphinx documentation
+* Martino added to authors
+* Theme changed to rtd
+* added a detach() call
+* changed network removing no\_grad
+* working bptt notebook
+* twine deploy conditional on env variable
+* Added condition on env variable to pypi\_deploy
+* Add another pipeline that shouldn't execute
+* WIP bptt notebook
+* CI Lint corrections
+* Added test for CI pipeline
+* Link to contributing.md file fixed
+* Description file content type updated
+* Description file content type updated
+* Update description type to markdown
+* Update development status
+* Updated Classifiers
+
+v0.2.0
+------
+
+* Threshold gradient scaled by threshold (Bug fix)
+* updated docs, removed exclude\_negative\_spikes from fromtorch (no effect)
+* test requirements separated
+* added coverage
+* temporary solution for onnx
+* temporary solution for onnxruntime
+* amended test requirements to include onnxruntime
+* trying to trigger CI
+* Updated MNIST notebook
+* Instructions for testing added
+* \_\_version\_\_ specified from pbr
+* Cleaned up setup.py and requirements with pbr
+* added coverage tools
+* removed network utilities not needed
+* updated tests using pathlib
+* added some network tests
+* WIP on functional docstrings
+* removed old stuff from network summary
+* update gitignore
+* notebook docs updated (WIP)
+* fix docs for input shape in from\_torch, removed depency of Network on legacy layers
+* removed deprecated arguments of from\_torch
+* cleaned up keras in docs
+* removed input shape from spiking which caused bugs, and output\_shape from inputlayer
+* change dummy input to device, calculate layer-wise output size
+* Updated URL
+* Keras-related stuff all removed
+* removed pandas from layers
+* removed and updated keras tests
+* removed summary; device not determined automatically in from\_torch
+* removed old tests
+* Fixed relative imports
+* Added deprecation warning
+* Moved layers around, added deprecation
+* Moved neuromorphicrelu, quantize, sumpool to separate files, functions to functional
+* Unit test for adding spiking output in 'from\_model'
+* Enable adding spiking layer to sequential model in from\_torch function
+* Version bump
+* removed bad choice
+* removed unnecessary calls to print
+* fixed bug in old version
+* and again
+* More updates to deepcopy
+* Second deepcopy argument
+* Added tentative deepcopy
+* added ugly workaround to samna-torch crash problem
+* bugfix: reset\_states in network
+* Refactored keras\_model -> analog\_model
+* Added tool to compute output shapes
+* correct device for spiking layers
+* added tentative synops support
+* version number updated
+* updated file paths in tests
+* threshold methods updated, onnnx conversion works now
+* wip:added test for equivalence
+* fixed bug from\_torch was doing nothing
+* model build method separately added
+* changed default membrane subtract to Threshold, as in IAF. implemented in from\_torch
+* updated documentation
+* fixed bug in from\_torch; negative spikes no longer supported
+* onnx support for threshold operation
+* updated test; removed dummy input shape
+* added warnings for unsupported operations
+* Input shape optional and neurons dynamically allocated
+* from\_torch completely rewritten (WIP)
+* wip: from\_torch refractoring
+* marked all torch layer wrappers to deprecated
+* Depricated TorchLayer added
+* merged master to bptt\_devel
+
+v0.1.dev7
+---------
+
+* install m2r with hotfix for new version of sphinx
+* changed membrane\_subtract and reset defaults, some cleanup
+* added test to compare iaf implementations
+* added dummy test file intended for bptt layer
+* sumpool layer stride is None bug
+* updated version number
+* added support for batch mode operation
+* added conversion of flatten and linear to convolutions
+* provided default implementation of iaf\_bptt to passthrough
+* SpikingLayer with learning added to layers without default import
+* SpikingLayer attributes membrane\_subtract and membrane\_reset as properties to avoid that both are None at the same time
+* threshold function fix, bptt mnist example with spiking layer in notebook
+* threshold functions used in forward iaf method for bptt
+* added differentiable threshold functions
+* bugfix related to sumpool
+* added synopscount to master
+* added documentation synopcounter and sumpool
+* added new layers to docs
+* Added analogue sumpool layer
+* added two  layers by qian
+* updated summary function for iaf\_tc
+* added synoploss and refactored
+* added classifiers to setup.py
+* fixed typos in setup.py
+* updated setup file
+* updated branch to master for pypi deployment
+* fixed reference to rockpool in tag
+* upload to pypi and tags in readme file
+* version bump for test
+* direct execute with twine
+* typo fix
+* added tags of the runner
+* pypi build triggered on pip branch
+* removed trailing line
+* ci script to upload to test pypi
+* wip: adding pip support for sinabs
+* added option to only reproduce current instead of spikes
+* added clear buffer method
+* pew workon to pew ls
+* added pew to documentation
+* round on stochastic rounding eval mode
+* stochastic rounding only during learning
+* added stochastic rounding option to NeuromorphicReLU
+* added normalization level to sig2spike layer
+* updated documentation structure and pipenv tutorial
+* modified iaf tc's expecte dims to be [t, ch]
+* merged changes from master
+* fixed missing module sinabs.from\_keras
+* fixed tensorflow version 1.15
+* fixed tensorflow version in ci script
+* added tensorflow install to ci script
+* typo fix
+* force install torch
+* updated documentation for from\_keras
+* added pipfile
+* moved all from keras methods to from\_keras.py
+* added doc string
+* added rescaling of biases to from\_torch
+* breaking change to Sig2SpikeLayer
+* time steps computed based on dimensions of synaptic output
+* functioning code for spiking model
+* renamed TorchLayer to Layer, TDS to TemporalConv1d
+* added kernel shape for tds layer
+* fixed cuda imports in tests
+* merged master
+* updated notebook with a full run time output
+* added mnist\_cnn weight matrix for the examples to run smoothly
+* example of from\_torch Lenet 5
+* example of from\_torch Lenet 5
+* lenet example from\_torch, and in Chinese
+* missing import added
+* quantize layers are not called by name any more
+* supported avgpool with different kernel sizes
+* added some documentation, quantize now does nothing
+* fix linear layer and add sumpool layer to from\_torch
+* clean up maxpooling2d
+* clean up maxpoooling2d
+* fix maxpooling spike\_count error
+* fix maxpooling spike\_count error
+* implemented quantization
+* load DynapSumPool and DynapConv2dSynop from pytorch
+* added flag to exclude negative spikes
+* added support for neuromorphicrelu
+* updated setup file to specify tensorflow version dependency
+* Some minor changes
+* fixes summary
+* threshold management in from torch
+* functionalities added to torch vonverter
+* line-height fixed in h1
+* added intro to snns notebook documentation
+* merge errors fixed in init file
+* synops to cpu
+* fixes needed for summary and synops
+* merged init file
+* init file merged
+* overwrote forward method
+* removed detach()
+* all self.spikes\_number are numbers only and detached now
+* fixed incorrect variable name for weights
+* added SpikingLinearLayer
+* doc string corrections
+* fixed test following small refactor
+* fixed documentation
+* allowed threshold\_low setting
+* added documentation
+* added YOLO layer and converted converter
+* converter uses Sequential and Network instead of ModuleList
+* merged latest version (PR) or no\_spike\_tracking
+* iaf layers do not save spikes
+* fixed loss return with flag
+* trivial merge of no spike tracking
+* removed status caching and sum(0)
+* merged no spike tracking but test not fixed
+* iaf layers do not save spikes
+* changed copying strategy to avoid warnings
+* Sadique worked on clearing cache on iaf forward()
+* img\_to\_spk fix
+* small improvements to spkconverter
+* linear imgtospk
+* spike converter from torch and test
+* remove unwanted prints
+* small changes useful for yolo
+* implemented linear mode for conv2d
+* changes to synaptic output
+* implemented spike generation layer from analog signals
+* fixed causal convolutions and padding
+* implemented delay buffer
+* added initial code for time delayed spiking layer
+* added image to spike conversion layer
+* added conv1d to the documentation
+* added conv1d layer
+* updated notebooks in examples
+* conversion from markdown fixed
+* added link to gitlab pages in readme
+* documentation added to pages
+* updated branch for testing and building
+* fixed path to build folder
+* pip upgrade command missing pip
+* added gitlab CI script
+* state to cuda device
+* license notice updated in setup file
+* layers submodule added to setupfile
+* fixed calls to np load with allow\_pickle arg
+* added conv3d layer
+* initial code
+* merged
+* fixed typos in readme
+
+v0.1.0
+------
+
+* fixed version number
+* removed contrib branch
+* added initial text for contributions file
+* updated mirror url
+* Added contact text
+* added contributing file
+* added license text to readme
+* added AGPL license notice to all files in library
+* added LeNet 5 example
+* default neuron parameters updated to work out of the box
+* added convtranspose2d layer
+* abstract class SpikingLayer added to documentation
+* iaf code moved to abstract class
+* summary added to layer base class
+* summary modified
+* update example to generate and readout spike trains
+* max pooling keras
+* restored readme text
+* added readme in docs folder
+* added license AGPL
+* auto rescale multiple average pooling in row
+* fix quantizing nBits for weights and threshold
+* softmax means ReLU for inference and fix auto-rescaling
+* push test
+* push test
+* summary modified
+* added build to gitignore list
+* typos in readme
+* updated documentation file structure
+* Initial file commit
+* Initial commit
