@@ -1,0 +1,63 @@
+Metadata-Version: 2.1
+Name: digdaglog2sql
+Version: 0.0.1
+Summary: Extract SQLs from digdag log
+License: Apache-2.0
+Author: Aki Ariga
+Author-email: chezou@gmail.com
+Maintainer: Aki Ariga
+Maintainer-email: chezou@gmail.com
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Requires-Dist: click (>=8.1.3,<9.0.0)
+Requires-Dist: taskipy (>=1.10.1,<2.0.0)
+Requires-Dist: tdworkflow (>=0.6.0,<0.7.0)
+Description-Content-Type: text/markdown
+
+# digdaglog2sql
+
+## Install
+
+```sh
+pip install --user digdaglog2sql
+```
+
+or,
+
+```sh
+$ python -m venv .venv
+$ source .venv/bin/activate
+(.venv)$ pip install digdaglog2sql
+```
+
+## Usage
+
+```sh
+$ digdaglog2sql --help
+Usage: digdaglog2sql [OPTIONS]
+
+Options:
+  --input FILENAME               Option is mutually exclusive with session_id,
+                                 site.
+  --session-id INTEGER           Session ID of workflow. Option is mutually
+                                 exclusive with input.
+  --site [us|jp|eu01|ap02|ap03]  Option is mutually exclusive with input.
+  --output FILENAME              [required]
+  --drop-cdp-db                  If true, drop cdp_audience_xxx DB name.
+  --help                         Show this message and exit.
+```
+
+You can use log file on local environment.
+
+```sh
+digdaglog2sql --input workflow-log.txt --output output.sql
+```
+
+Or, you can use Session ID of Treasure Workflow.
+
+```sh
+digdaglog2sql --session-id 12345 --site us --output output.sql
+```
+
