@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmitosheet_private=self.webpackChunkmitosheet_private||[]).push([[568],{1568:(e,a,t)=>{t.r(a),t.d(a,{ExampleModel:()=>p.ExampleModel,ExampleView:()=>p.ExampleView,MODULE_NAME:()=>l.o,MODULE_VERSION:()=>l.Y,default:()=>s});var l=t(8657),p=t(7005);const s=t(4304).default}}]);
