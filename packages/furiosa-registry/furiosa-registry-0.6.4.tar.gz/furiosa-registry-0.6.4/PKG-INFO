@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: furiosa-registry
+Version: 0.6.4
+Summary: Furiosa Registry
+Home-page: https://furiosa.ai
+Author: FuriosaAI Inc.
+Author-email: pkg@furiosa.ai
+License: Apache License 2.0
+Project-URL: Documentation, https://docs.furiosa.ai
+Project-URL: Bug Tracker, https://github.com/furiosa-ai/furiosa-sdk/issues
+Project-URL: Source Code, https://github.com/furiosa-ai/furiosa-sdk
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: ==3.*,~=3.7
+Description-Content-Type: text/markdown
+Provides-Extra: s3
+
+Furiosa Registry
+----------------
+
+Furiosa Registry defines `Model` which allows client to communicate with several types of registries.
+
+## Getting started
+
+**Install**
+
+```sh
+pip install furiosa-registry
+```
+
+**List up available models**
+
+```python
+import furiosa.common.thread as synchronous
+import furiosa.registry as registry
+
+
+# Repository where to load models from.
+repository = "https://github.com/furiosa-ai/furiosa-artifacts"
+
+# List up the available artifacts.
+models: List[registry.Model] = synchronous(registry.list)(repository)
+
+for model in models:
+    print(model.name)
+```
+
+**Load models**
+
+```python
+import furiosa.common.thread as synchronous
+import furiosa.registry as registry
+
+
+# Repository where to load models from.
+repository = "https://github.com/furiosa-ai/furiosa-artifacts"
+
+models: registry.Model = synchronous(registry.load)(uri=repository, name="MLCommonsResNet50")
+
+# Access the model
+print(model.name)
+print(model.version)
+print(model.metadata.description)
+```
+
+**Print documentation about a model**
+
+```python
+import furiosa.common.thread as synchronous
+import furiosa.registry as registry
+
+
+# Repository where to load models from.
+repository = "https://github.com/furiosa-ai/furiosa-artifacts"
+
+print(registry.help(repository, "MLCommonsResNet50"))
+```
+
+## Development
+
+**Generate artfiact JSON schema from pydantic model definition.**
+
+When you changed model schema, you can generate modified schema via
+
+```sh
+python -c 'from furiosa.registry import Model;\
+            print(Model.schema_json(indent=2), file=open("model_schema.json", "w"))'
+```
+
+See `model_schema.json`
+
+
