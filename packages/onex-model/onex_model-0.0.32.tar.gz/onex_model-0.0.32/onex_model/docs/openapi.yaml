@@ -1,0 +1,1648 @@
+components:
+  responses: {}
+  schemas:
+    GlobalNamedObject:
+      type: object
+      properties:
+        name:
+          description: |-
+            Unique identifier for an object
+          type: string
+          format: global-unique
+    Error.Details:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error.Item'
+    Warning.Details:
+      type: object
+      properties:
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error.Item'
+    Error.Item:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+        detail:
+          type: string
+    Config:
+      description: |-
+        ONEx experiments configuration.
+      type: object
+      properties:
+        hosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Host'
+        fabric:
+          $ref: '#/components/schemas/Fabric'
+        dataflow:
+          $ref: '#/components/schemas/Dataflow'
+        chaos:
+          $ref: '#/components/schemas/Chaos'
+        insights:
+          $ref: '#/components/schemas/Insights'
+        layer1_profiles:
+          description: |-
+            A list of Layer 1 settings profiles
+          type: array
+          items:
+            $ref: '#/components/schemas/L1SettingsProfile'
+    Host:
+      required:
+      - address
+      - name
+      properties:
+        name:
+          description: |-
+            The name, uniquely identifying the host
+          type: string
+        address:
+          description: |-
+            The test address of the host
+          type: string
+        prefix:
+          description: |-
+            The prefix of the host
+          type: integer
+          default: 24
+        l1_profile_name:
+          description: |
+            The layer 1 settings profile associated with the host/front panel port.
+
+            x-constraint:
+            - ../l1settings/l1_profiles.yaml#/components/schemas/L1SettingsProfile/properties/name
+          type: string
+          x-constraint:
+          - ../l1settings/l1_profiles.yaml#/components/schemas/L1SettingsProfile/properties/name
+    Fabric:
+      type: object
+      properties:
+        choice:
+          type: string
+          enum:
+          - clos
+        clos:
+          $ref: '#/components/schemas/Fabric.Clos'
+        qos_profiles:
+          description: |-
+            A list of Quality of Service (QoS) profiles
+          type: array
+          items:
+            $ref: '#/components/schemas/Fabric.QosProfile'
+    Fabric.Clos:
+      description: "An emulation of a multistage switch topology. When folded, results\
+        \ in a topology with (up to) 3 tiers identified as \nspine, pod and tor tier."
+      type: object
+      properties:
+        spine:
+          $ref: '#/components/schemas/Fabric.Spine'
+        pods:
+          description: |-
+            The pods in the topology.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fabric.Pod'
+        host_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/SwitchHostLink'
+        pod_profiles:
+          description: |-
+            A list of pod profiles
+          type: array
+          items:
+            $ref: '#/components/schemas/Fabric.PodProfile'
+        tor_profiles:
+          description: |-
+            A list of ToR switch profiles
+          type: array
+          items:
+            $ref: '#/components/schemas/Fabric.TorProfile'
+        parallel_fabric_count:
+          description: "Number of parallel fabrics (aka fabric colors). Spine and\
+            \ pod switches \nare fully meshed within a fabric"
+          type: integer
+          default: 1
+    Fabric.Spine:
+      type: object
+      properties:
+        count:
+          description: |-
+            The number of spines to be created with each spine sharing the same
+            downlink_ecmp_mode and qos_profile_name properties.
+          type: integer
+          default: 1
+        downlink_ecmp_mode:
+          description: "The algorithm for packet distribution over ECMP links.\n-\
+            \ random_spray randomly puts each packet on an ECMP member links \n- hash_3_tuple\
+            \ is a 3 tuple hash of ipv4 src, dst, protocol\n- hash_5_tuple is static_hash_ipv4_l4\
+            \ but a different resulting RTAG7 hash mode"
+          type: string
+          enum:
+          - random_spray
+          - hash_3_tuple
+          - hash_5_tuple
+        qos_profile_name:
+          description: |
+            The name of a qos profile shared by the spines.
+
+            x-constraint:
+            - #/components/schemas/QosProfile/properties/name
+          type: string
+          x-constraint:
+          - '#/components/schemas/QosProfile/properties/name'
+    Fabric.Pod:
+      type: object
+      properties:
+        count:
+          description: |-
+            The number of pods that will share the same profile
+          type: integer
+          default: 1
+        pod_profile_name:
+          description: |
+            The pod profile associated with the pod(s).
+
+            x-constraint:
+            - #/components/schemas/PodProfile/properties/name
+          type: string
+          x-constraint:
+          - '#/components/schemas/PodProfile/properties/name'
+    Fabric.PodProfile:
+      type: object
+      properties:
+        name:
+          description: |-
+            Uniquely identifies a pod profile
+          type: string
+        pod_switch:
+          $ref: '#/components/schemas/Fabric.PodSwitch'
+        tors:
+          description: |-
+            The ToRs in the pod
+          type: array
+          items:
+            $ref: '#/components/schemas/Fabric.Tor'
+        pod_to_spine_oversubscription:
+          description: |-
+            Oversubscription ratio of the pod switches
+          type: string
+    Fabric.PodSwitch:
+      type: object
+      properties:
+        count:
+          type: integer
+          default: 1
+        uplink_ecmp_mode:
+          description: "The algorithm for packet distribution over ECMP links.\n-\
+            \ random_spray randomly puts each packet on an ECMP member links \n- hash_3_tuple\
+            \ is a 3 tuple hash of ipv4 src, dst, protocol\n- hash_5_tuple is static_hash_ipv4_l4\
+            \ but a different resulting RTAG7 hash mode"
+          type: string
+          enum:
+          - random_spray
+          - hash_3_tuple
+          - hash_5_tuple
+        downlink_ecmp_mode:
+          description: "The algorithm for packet distribution over ECMP links.\n-\
+            \ random_spray randomly puts each packet on an ECMP member links \n- hash_3_tuple\
+            \ is a 3 tuple hash of ipv4 src, dst, protocol\n- hash_5_tuple is static_hash_ipv4_l4\
+            \ but a different resulting RTAG7 hash mode"
+          type: string
+          enum:
+          - random_spray
+          - hash_3_tuple
+          - hash_5_tuple
+        qos_profile_name:
+          description: |
+            The name of a qos profile associated with the switches in this pod.
+
+            x-constraint:
+            - #/components/schemas/QosProfile/properties/name
+          type: string
+          x-constraint:
+          - '#/components/schemas/QosProfile/properties/name'
+    Fabric.Tor:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: |-
+            number of ToR switches that will share the same profile
+          default: 1
+        tor_profile_name:
+          description: |
+            The names of ToR profiles associated with the ToR switch(es)
+
+            x-constraint:
+            - #/components/schemas/TorProfile/properties/name
+          type: string
+          x-constraint:
+          - '#/components/schemas/TorProfile/properties/name'
+    Fabric.TorProfile:
+      type: object
+      properties:
+        name:
+          type: string
+        tor_mode:
+          description: |-
+            ToR switch mode
+          type: string
+          enum:
+          - layer2
+          - layer3
+        uplink_ecmp_mode:
+          description: "The algorithm for packet distribution over ECMP links.\n-\
+            \ random_spray randomly puts each packet on an ECMP member links \n- hash_3_tuple\
+            \ is a 3 tuple hash of ipv4 src, dst, protocol\n- hash_5_tuple is static_hash_ipv4_l4\
+            \ but a different resulting RTAG7 hash mode"
+          type: string
+          enum:
+          - random_spray
+          - hash_3_tuple
+          - hash_5_tuple
+        qos_profile_name:
+          description: |
+            The name of a qos profile associated with the ToR switch(es)
+
+            x-constraint:
+            - #/components/schemas/QosProfile/properties/name
+          type: string
+          x-constraint:
+          - '#/components/schemas/QosProfile/properties/name'
+        tor_to_pod_oversubscription:
+          $ref: '#/components/schemas/Fabric.TorProfile.Oversubscription'
+    Fabric.TorProfile.Oversubscription:
+      description: |-
+        The oversubscription of the ToR switch(es)
+      type: object
+      properties:
+        ratio:
+          type: string
+        mode:
+          type: string
+          enum:
+          - use_host_capacity
+          - use_fabric_host_links
+          default: use_host_capacity
+        host_capacity:
+          type: integer
+          default: 1
+    Fabric.QosProfile:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        ingress_admission:
+          $ref: '#/components/schemas/Fabric.QosProfile.IngressAdmission'
+        scheduler:
+          $ref: '#/components/schemas/Fabric.QosProfile.Scheduler'
+        packet_classification:
+          $ref: '#/components/schemas/Fabric.QosProfile.PacketClassification'
+        wred:
+          $ref: '#/components/schemas/Fabric.QosProfile.Wred'
+        pfc:
+          $ref: '#/components/schemas/Fabric.QosProfile.Pfc'
+    Fabric.QosProfile.IngressAdmission:
+      type: object
+      properties:
+        reserved_buffer_bytes:
+          description: |-
+            Buffer space (in bytes) reserved for each port that this Qos profile applies to
+          type: integer
+          default: 0
+        shared_buffer_bytes:
+          description: |-
+            Amount of shared buffer space (in bytes) available
+          type: integer
+          default: 0
+        priority_list:
+          description: |-
+            List of priorities for which the buffer sizes should be applied
+          type: array
+          items:
+            type: string
+            default: '0'
+    Fabric.QosProfile.Scheduler:
+      type: object
+      properties:
+        scheduler_mode:
+          description: "The queue scheduling discipline "
+          type: string
+          enum:
+          - strict_priority
+          - weighted_round_robin
+        weight_list:
+          description: |-
+            A list of egress queue weights for weighted round robin scheduler mode
+          type: array
+          items:
+            type: integer
+    Fabric.QosProfile.PacketClassification:
+      type: object
+      properties:
+        map_dscp_to_traffic_class:
+          $ref: '#/components/schemas/Fabric.QosProfile.PacketClassification.Map'
+        map_traffic_class_to_queue:
+          $ref: '#/components/schemas/Fabric.QosProfile.PacketClassification.Map'
+    Fabric.QosProfile.PacketClassification.Map:
+      type: object
+      additionalProperties:
+        type: string
+    Fabric.QosProfile.Wred:
+      description: |-
+        WRED (weighted random early detection) configuration
+      type: object
+      properties:
+        queue_list:
+          description: |-
+            List of queues for which WRED is enabled
+          type: array
+          items:
+            type: integer
+            default: 0
+        ecn_marking_enabled:
+          type: boolean
+          default: false
+        min_threshold_bytes:
+          description: |-
+            Egress queue threshold beyond which packets will be droppes or marked
+          type: integer
+          default: 1
+        max_threshold_bytes:
+          description: |-
+            Egress queue threshold beyond which packets will be droppes or marked
+          type: integer
+          default: 2
+        max_probability_percent:
+          description: |-
+            Probability of dropping/marking packets at max threshold
+          type: integer
+          default: 100
+    Fabric.QosProfile.Pfc:
+      description: |-
+        PFC (Priority based flow control) configuration
+      required:
+      - priority_list
+      - headroom_buffer_bytes
+      - resume_threshold_bytes
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: false
+        priority_list:
+          type: array
+          items:
+            type: integer
+        headroom_buffer_bytes:
+          description: |-
+            Headroom buffer per PFC priority
+          type: integer
+        resume_threshold_bytes:
+          description: |-
+            Space required before sending Resume frame
+          type: integer
+    SwitchHostLink:
+      type: object
+      description: |-
+        The ingress point of a host which is the index of a spine, pod or tor switch.
+      required:
+      - host_name
+      properties:
+        host_name:
+          type: string
+          x-constraint:
+          - '#components/schemas/Host/properties/name'
+          description: |
+            TBD
+
+            x-constraint:
+            - #components/schemas/Host/properties/name
+        host_type:
+          description: |-
+            Optional host type, if fabric is rendered on physical box.
+            - external for hosts/servers physically connected to front panel ports
+            - internal_traffic_sink for an emulated server that acts as a traffic sink (i.e. packets sent to its IP address will be routed through the emulated fabric)
+          type: string
+          enum:
+          - external
+          - internal_traffic_sink
+          default: external
+        front_panel_port:
+          type: integer
+          description: |-
+            Optional front panel port number, if fabric is rendered on physical box
+        choice:
+          type: string
+          enum:
+          - spine
+          - pod
+          - tor
+          default: tor
+        spine:
+          description: "One based index of the spine switch based on the number of\
+            \ spines \nconfigured in the clos topology."
+          type: integer
+          minimum: 1
+        pod:
+          $ref: '#/components/schemas/SwitchHostLink.SwitchRef'
+        tor:
+          $ref: '#/components/schemas/SwitchHostLink.SwitchRef'
+    SwitchHostLink.SwitchRef:
+      description: |-
+        Location of the switch based on pod and switch index
+      type: object
+      properties:
+        pod_index:
+          description: |-
+            One-based index of the pod based on the number of pods in the fabric
+          type: integer
+          default: 1
+          minimum: 1
+        switch_index:
+          description: |-
+            One-based index of the pod or ToR switch in the indicated pod
+          type: integer
+          default: 1
+          minimum: 1
+    Dataflow:
+      type: object
+      properties:
+        host_management:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataflow.HostManagement'
+        workload:
+          description: |-
+            The workload items making up the dataflow
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataflow.WorkloadItem'
+        flow_profiles:
+          description: |-
+            foo
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataflow.FlowProfile'
+    Dataflow.FlowProfile:
+      type: object
+      required:
+      - name
+      - data_size
+      properties:
+        name:
+          type: string
+        data_size:
+          type: integer
+        l2_protocol_choice:
+          description: |-
+            layer2 protocol selection
+          type: string
+          enum:
+          - ethernet
+        ethernet:
+          $ref: '#/components/schemas/Dataflow.FlowProfile.Ethernet'
+        l4_protocol_choice:
+          description: |-
+            layer4 protocol selection
+          type: string
+          enum:
+          - tcp
+          - udp
+        ip:
+          $ref: '#/components/schemas/Dataflow.FlowProfile.Ip'
+        tcp:
+          $ref: '#/components/schemas/Dataflow.FlowProfile.Tcp'
+        udp:
+          $ref: '#/components/schemas/Dataflow.FlowProfile.Udp'
+    Dataflow.FlowProfile.Ethernet:
+      type: object
+      properties:
+        mtu:
+          type: integer
+          description: |-
+            Maximum Transmission Unit
+          default: 1500
+    Dataflow.FlowProfile.Ip:
+      type: object
+      properties:
+        dscp:
+          type: integer
+          description: |-
+            differentiated services code point
+    Dataflow.FlowProfile.Tcp:
+      type: object
+      properties:
+        congestion_algorithm:
+          default: cubic
+          description: |-
+            The TCP congestion algorithm:
+            bbr - Bottleneck Bandwidth and Round-trip propagation time
+            dctcp - Data center TCP
+            cubic - cubic window increase function
+            reno - TCP New Reno
+          type: string
+          enum:
+          - bbr
+          - dctcp
+          - cubic
+          - reno
+        initcwnd:
+          description: |-
+            initial congestion window
+          type: integer
+        send_buf:
+          description: |-
+            send buffer size
+          type: integer
+        receive_buf:
+          description: |-
+            receive buffer size
+          type: integer
+        delayed_ack:
+          description: |-
+            delayed acknowledgment
+          type: integer
+        selective_ack:
+          description: |-
+            selective acknowledgment
+          type: boolean
+        min_rto:
+          description: |-
+            minimum retransmission timeout
+          type: integer
+        mss:
+          type: integer
+          description: |-
+            Maximum Segment Size
+          default: 1500
+        ecn:
+          description: |-
+            early congestion notification
+          type: boolean
+        enable_timestamp:
+          description: |-
+            enable tcp timestamping
+          type: boolean
+        destination_port:
+          $ref: '#/components/schemas/L4PortRange'
+        source_port:
+          $ref: '#/components/schemas/L4PortRange'
+    L4PortRange:
+      description: |-
+        Layer4 protocol source or destination port values
+      type: object
+      properties:
+        choice:
+          description: |-
+            None
+          type: string
+          enum:
+          - single_value
+          - range
+        single_value:
+          $ref: '#/components/schemas/L4PortRange.SingleValue'
+        range:
+          $ref: '#/components/schemas/L4PortRange.Range'
+    L4PortRange.SingleValue:
+      type: object
+      properties:
+        value:
+          type: integer
+          default: 1
+    L4PortRange.Range:
+      type: object
+      properties:
+        start_value:
+          type: integer
+          default: 1
+        increment:
+          type: integer
+          default: 1
+          minimum: 1
+    Dataflow.FlowProfile.Udp:
+      type: object
+    Dataflow.WorkloadItem:
+      type: object
+      required:
+      - name
+      - choice
+      properties:
+        name:
+          description: |-
+            uniquely identifies the workload item
+          type: string
+        choice:
+          description: |-
+            The type of workflow item
+          type: string
+          enum:
+          - scatter
+          - gather
+          - all_reduce
+          - loop
+          - compute
+          - broadcast
+          - all_to_all
+        scatter:
+          $ref: '#/components/schemas/Dataflow.ScatterWorkload'
+        gather:
+          $ref: '#/components/schemas/Dataflow.GatherWorkload'
+        loop:
+          $ref: '#/components/schemas/Dataflow.LoopWorkload'
+        compute:
+          $ref: '#/components/schemas/Dataflow.ComputeWorkload'
+        all_reduce:
+          $ref: '#/components/schemas/Dataflow.AllReduceWorkload'
+        broadcast:
+          $ref: '#/components/schemas/Dataflow.BroadcastWorkload'
+        all_to_all:
+          $ref: '#/components/schemas/Dataflow.AlltoallWorkload'
+    Dataflow.ScatterWorkload:
+      type: object
+      properties:
+        sources:
+          description: |-
+            list of host names, indicating the originator of the data
+          type: array
+          items:
+            type: string
+        destinations:
+          description: |-
+            list of host names, indicating the destination of the data
+          type: array
+          items:
+            type: string
+        flow_profile_name:
+          description: |-
+            flow profile reference
+          type: string
+    Dataflow.BroadcastWorkload:
+      type: object
+      properties:
+        sources:
+          description: |-
+            list of host names, indicating the originator of the data
+          type: array
+          items:
+            type: string
+        destinations:
+          description: |-
+            list of host names, indicating the destination of the data
+          type: array
+          items:
+            type: string
+        flow_profile_name:
+          description: |-
+            flow profile reference
+          type: string
+    Dataflow.GatherWorkload:
+      type: object
+      properties:
+        sources:
+          description: |-
+            list of host names, indicating the originator of the data
+          type: array
+          items:
+            type: string
+        destinations:
+          description: |-
+            list of host names, indicating the destination of the data
+          type: array
+          items:
+            type: string
+        flow_profile_name:
+          description: |-
+            flow profile reference
+          type: string
+    Dataflow.AllReduceWorkload:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: string
+        flow_profile_name:
+          description: |-
+            flow profile reference
+          type: string
+        type:
+          description: |-
+            type of all reduce
+          type: string
+          enum:
+          - ring
+          - tree
+          - butterfly
+          default: ring
+    Dataflow.AlltoallWorkload:
+      type: object
+      description: |-
+        creates full-mesh flows between all nodes
+      properties:
+        nodes:
+          type: array
+          items:
+            type: string
+        flow_profile_name:
+          description: |-
+            flow profile reference
+          type: string
+    Dataflow.ComputeWorkload:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: string
+        choice:
+          description: |-
+            type of compute
+          type: string
+          enum:
+          - simulated
+        simulated:
+          $ref: '#/components/schemas/Dataflow.SimulatedComputeWorkload'
+    Dataflow.SimulatedComputeWorkload:
+      type: object
+      properties:
+        duration:
+          description: |-
+            duration of the simulated compute workload in seconds
+          type: number
+    Dataflow.LoopWorkload:
+      type: object
+      properties:
+        iterations:
+          description: |-
+            number of iterations in the loop
+          type: integer
+        children:
+          description: |-
+            list of workload items that are executed in this loop
+          type: array
+          items:
+            $ref: '#/components/schemas/Dataflow.WorkloadItem'
+    Dataflow.HostManagement:
+      type: object
+      description: |-
+        auxillary host information needed to run dataflow experiments
+      required:
+      - host_name
+      properties:
+        host_name:
+          type: string
+          x-constraint:
+          - '#components/schemas/Host/properties/name'
+          description: |
+            TBD
+
+            x-constraint:
+            - #components/schemas/Host/properties/name
+        nic_rx_buffer:
+          type: integer
+          description: |-
+            RX buffer size in bytes
+        nic_tx_buffer:
+          type: integer
+          description: |-
+            TX buffer size in bytes
+        nic_speed:
+          type: integer
+          description: |-
+            configured link speed Mbps (e.g. 100000 for 100G)
+        management_address:
+          type: string
+          description: |-
+            Hostname or address of management interface of a server running dataflow traffic
+        nic_name:
+          type: string
+          description: |-
+            unique idenfier for the network interface card (nic), e.g. "eth1"
+    Chaos:
+      type: object
+      description: |-
+        Configuration of chaos experiments
+      properties:
+        background_traffic:
+          $ref: '#/components/schemas/Chaos.BackgroundTraffic'
+        drop_frames:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chaos.DropFrames'
+    Chaos.DropFrames:
+      type: object
+      description: |-
+        Configures an emulated link to periodically drop frames for a percentage of the specified time interval
+      required:
+      - name
+      - link
+      properties:
+        name:
+          type: string
+          description: |-
+            Uniquely identifies a drop frames config entry
+        link:
+          type: string
+          description: |-
+            Emulated link name, e.g. Link S.1/2
+        mode:
+          type: string
+          description: |-
+            Mode to express the duration in which frames are dropped, either a percentage of the specified time interval or the min possible time
+          enum:
+          - percentage_time
+          - min_time
+          default: percentage_time
+        percentage:
+          type: number
+          description: |-
+            Percentage value, ignored if type is min_time
+          default: 5
+        interval:
+          type: integer
+          description: |-
+            Interval of time (seconds)
+          default: 1
+    Chaos.BackgroundTraffic:
+      type: object
+      properties:
+        flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chaos.BackgroundTraffic.Flow'
+    Chaos.BackgroundTraffic.Flow:
+      type: object
+      properties:
+        name:
+          type: string
+        injection_port:
+          type: string
+          description: |-
+            Emulated port name, e.g. Spine Switch 1 Port 1
+        choice:
+          type: string
+          enum:
+          - stateless
+        stateless:
+          $ref: '#/components/schemas/Chaos.BackgroundTraffic.Flow.Stateless'
+    Chaos.BackgroundTraffic.Flow.Stateless:
+      type: object
+      properties:
+        rate:
+          type: integer
+          description: |-
+            Transmission rate specified as a percentage of the injection port speed
+        transmission_mode:
+          type: string
+          enum:
+          - continuous
+          - burst
+          default: continuous
+        packet:
+          $ref: '#/components/schemas/Chaos.BackgroundTraffic.Flow.Stateless.Packet'
+        burst:
+          $ref: '#/components/schemas/Chaos.BackgroundTraffic.Flow.Stateless.Burst'
+    Chaos.BackgroundTraffic.Flow.Stateless.Packet:
+      type: object
+      properties:
+        src_address:
+          description: |-
+            source IP address
+          type: string
+        dst_address:
+          description: |-
+            destination IP address
+          type: string
+        src_port:
+          type: integer
+          description: |-
+            Layer 4 source port
+          maximum: 65535
+          default: 1024
+        dst_port:
+          type: integer
+          description: |-
+            Layer 4 destination port
+          maximum: 65535
+          default: 1024
+        size:
+          type: integer
+          description: |-
+            total packet size
+          minimum: 64
+          default: 1000
+        l4_protocol:
+          type: string
+          description: |-
+            Layer 4 transport protocol
+          enum:
+          - tcp
+          - udp
+        ds_field:
+          $ref: '#/components/schemas/Chaos.BackgroundTraffic.Flow.Stateless.Packet.DsField'
+    Chaos.BackgroundTraffic.Flow.Stateless.Packet.DsField:
+      type: object
+      description: |-
+        Differentiated Services or Traffic Class field
+      properties:
+        dscp:
+          description: |-
+            Differentiated Service CodePoint filed
+          type: integer
+          minimum: 0
+          maximum: 63
+          default: 0
+        ecn:
+          description: |-
+            Explicit Congestion Notification field
+          type: integer
+          minimum: 0
+          maximum: 3
+          default: 0
+    Chaos.BackgroundTraffic.Flow.Stateless.Burst:
+      type: object
+      properties:
+        transmit_duration:
+          type: integer
+        transmit_gap:
+          type: integer
+        unit:
+          type: string
+          enum:
+          - ms
+          default: ms
+    Insights:
+      type: object
+      description: |-
+        Configuration of insights providing methods
+      properties:
+        port_mirroring:
+          type: array
+          items:
+            $ref: '#/components/schemas/Insights.PortMirroring'
+    Insights.PortMirroring:
+      type: object
+      required:
+      - name
+      - source_port
+      - destination_port
+      properties:
+        name:
+          type: string
+          description: |-
+            Uniquely identifies a port port_mirroring entry
+        source_port:
+          type: string
+          description: |-
+            Emulated port name, e.g. Spine Switch 1 Port 1 to be mirrored
+        destination_port:
+          type: integer
+          description: |-
+            Front panel port number of an external host, e.g. 32 on which to mirror
+        mirror_type:
+          type: string
+          enum:
+          - ingress_frames
+          - egress_frames
+          default: ingress_frames
+    L1SettingsProfile:
+      type: object
+      properties:
+        name:
+          description: |-
+            Uniquely identifies a layer 1 settings profile
+          type: string
+        link_speed:
+          description: |-
+            Link speed
+          type: string
+          enum:
+          - speed_100_gbps
+          - speed_200_gbps
+          - speed_50_gbps
+          default: speed_100_gbps
+        choice:
+          type: string
+          enum:
+          - autonegotiation
+          - manual
+          default: autonegotiation
+        autonegotiation:
+          $ref: '#/components/schemas/L1SettingsProfile.Autonegotiation'
+        manual:
+          $ref: '#/components/schemas/L1SettingsProfile.Manual'
+    L1SettingsProfile.Autonegotiation:
+      type: object
+      properties:
+        advertise_fec:
+          type: boolean
+          default: true
+    L1SettingsProfile.Manual:
+      type: object
+      properties:
+        fec_mode:
+          type: string
+          enum:
+          - reed_solomon
+          - firecode
+          - kp4
+          default: reed_solomon
+    State:
+      type: object
+      properties:
+        chaos:
+          $ref: '#/components/schemas/State.Chaos'
+    State.Chaos:
+      type: object
+      properties:
+        drop_frames:
+          type: array
+          items:
+            $ref: '#/components/schemas/State.Chaos.DropFrames'
+        background_traffic:
+          type: array
+          items:
+            $ref: '#/components/schemas/State.Chaos.BackgroundTraffic'
+    State.Chaos.BackgroundTraffic:
+      type: object
+      required:
+      - state
+      - flow_names
+      properties:
+        flow_names:
+          description: |
+            The names of flows to which the transmit state will be applied to.
+
+            x-constraint:
+            - ../chaos/background_traffic.yaml/components/schemas/Flow/properties/name
+          type: array
+          items:
+            type: string
+          x-constraint:
+          - ../chaos/background_traffic.yaml/components/schemas/Flow/properties/name
+        state:
+          type: string
+          enum:
+          - started
+          - stopped
+    State.Chaos.DropFrames:
+      type: object
+      required:
+      - state
+      - config_names
+      properties:
+        config_names:
+          description: |
+            The names of the drop frams configs to which the transmit state will be applied to.
+
+            x-constraint:
+            - ../chaos/chaos.yaml/components/schemas/DropFrames/properties/name
+          type: array
+          items:
+            type: string
+          x-constraint:
+          - ../chaos/chaos.yaml/components/schemas/DropFrames/properties/name
+        state:
+          type: string
+          enum:
+          - started
+          - stopped
+    Metrics.Request:
+      type: object
+      properties:
+        port_metrics:
+          $ref: '#/components/schemas/PortMetrics.Request'
+    Metrics.Response:
+      type: object
+      properties:
+        port_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/PortMetrics.Response'
+    PortMetrics.Request:
+      type: object
+      properties:
+        choice:
+          type: string
+          enum:
+          - port_names
+          - front_panel_ports
+        port_names:
+          description: |-
+            Emulated ports names for which metrics are being requested. If empty metrics for all ports will be returned.
+          type: array
+          items:
+            type: string
+        front_panel_ports:
+          description: |-
+            Front panel ports for which metrics are being requested. If empty metrics for all ports will be returned.
+          type: array
+          items:
+            type: integer
+        select_metrics:
+          description: |-
+            Filters port metrics to be returned
+          type: array
+          items:
+            type: string
+            enum:
+            - link_status
+            - frames_transmitted_all
+            - frames_transmitted_multicast
+            - frames_transmitted_unicast
+            - frames_transmitted_broadcast
+            - frames_transmitted_length_64
+            - frames_transmitted_length_65_127
+            - frames_transmitted_length_128_255
+            - frames_transmitted_length_256_511
+            - frames_transmitted_length_512_1023
+            - frames_transmitted_length_1024_1518
+            - frames_transmitted_length_1519_2047
+            - frames_transmitted_length_2048_4095
+            - bytes_transmitted_all
+            - frames_transmitted_ecn_marked
+            - frames_transmitted_priority_pause
+            - frames_transmitted_pause
+            - frames_received_all
+            - frames_received_multicast
+            - frames_received_unicast
+            - frames_received_broadcast
+            - frames_received_length_64
+            - frames_received_length_65_127
+            - frames_received_length_128_255
+            - frames_received_length_256_511
+            - frames_received_length_512_1023
+            - frames_received_length_1024_1518
+            - frames_received_length_1519_2047
+            - frames_received_length_2048_4095
+            - bytes_received_all
+            - frames_received_errors
+            - frames_received_pause
+            - frames_received_priority_pause
+            - frames_dropped_egress
+            - frames_dropped_ingress
+            - per_egress_queue_metrics
+            - per_priority_group_metrics
+            - flow_counter_metrics
+    PortMetrics.Response:
+      type: object
+      required:
+      - port_name
+      - metrics
+      properties:
+        port_name:
+          type: string
+          description: |-
+            Emulated port name
+        config:
+          $ref: '#/components/schemas/PortConfig'
+        metrics:
+          $ref: '#/components/schemas/PortMetrics'
+    PortMetrics:
+      type: object
+      description: |-
+        Port metrics
+      properties:
+        link_status:
+          type: string
+          enum:
+          - link_up
+          - link_down
+          - unknown
+        frames_transmitted_all:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_multicast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_unicast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_broadcast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_64:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_65_127:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_128_255:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_256_511:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_512_1023:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_1024_1518:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_1519_2047:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_length_2048_4095:
+          type: integer
+          format: int64
+          minimum: 0
+        bytes_transmitted_all:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_ecn_marked:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_priority_pause:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_transmitted_pause:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_all:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_multicast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_unicast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_broadcast:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_64:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_65_127:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_128_255:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_256_511:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_512_1023:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_1024_1518:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_1519_2047:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_length_2048_4095:
+          type: integer
+          format: int64
+          minimum: 0
+        bytes_received_all:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_errors:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_pause:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_received_priority_pause:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_dropped_egress:
+          type: integer
+          format: int64
+          minimum: 0
+        frames_dropped_ingress:
+          type: integer
+          format: int64
+          minimum: 0
+        per_egress_queue_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerEgressQueueMetrics'
+        per_priority_group_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerPriorityGroupMetrics'
+        flow_counter_metrics:
+          $ref: '#/components/schemas/FlowCounterMetrics'
+    PerEgressQueueMetrics:
+      type: object
+      required:
+      - queue_number
+      properties:
+        queue_number:
+          type: integer
+          minimum: 0
+        egress_buffer_reserved_usage_current:
+          type: integer
+          format: int64
+          minimum: 0
+        egress_buffer_total_usage_peak:
+          type: integer
+          format: int64
+          minimum: 0
+        multicast_buffer_total_usage_peak:
+          type: integer
+          format: int64
+          minimum: 0
+    PerPriorityGroupMetrics:
+      type: object
+      required:
+      - priority_group
+      properties:
+        priority_group:
+          type: integer
+          minimum: 0
+        ingress_buffer_reserved_usage_current:
+          type: integer
+          format: int64
+          minimum: 0
+        ingress_buffer_shared_usage_peak:
+          type: integer
+          format: int64
+          minimum: 0
+    FlowCounterMetrics:
+      type: object
+      properties:
+        per_background_traffic_flow:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowCounterMetrics.PerBackgroundTrafficFlow'
+    FlowCounterMetrics.PerBackgroundTrafficFlow:
+      type: object
+      required:
+      - flow_name
+      properties:
+        flow_name:
+          type: string
+        frames_transmitted:
+          type: integer
+          format: int64
+          minimum: 0
+    PortConfig:
+      description: |-
+        Port configuration information.
+      type: object
+      properties:
+        front_panel_port:
+          description: |-
+            The corresponding front panel port, if any.
+          type: integer
+        autoneg_mode:
+          type: string
+          enum:
+          - enabled
+          - disabled
+        fec_mode:
+          type: string
+        speed:
+          type: string
+          enum:
+          - speed_100_gbps
+          - speed_200_gbps
+          - speed_50_gbps
+        tx_switch:
+          description: |-
+            The emulated device to which the port belongs to
+          type: string
+        rx_switch:
+          description: |-
+            The emulated device to which the port is connected to
+          type: string
+        connected_to:
+          description: |-
+            The host to which a front-panel port is connected to
+          type: string
+        link_name:
+          description: |-
+            Name of the emulated port link
+          type: string
+        meta:
+          description: |-
+            Metadata
+          type: string
+openapi: 3.0.3
+info:
+  title: ONEx API
+  description: |-
+    The Open Network Experiments API and Data Models
+  version: 0.0.1
+  contact:
+    x-info: "Any feedback such as bugs/enhancements/questions regarding the \nONEx\
+      \ data models is welcomed by using the contact url."
+    url: https://github.com/onex/models/issues
+  license:
+    name: MIT
+servers:
+- url: https://{hostname}:{port}/{basePath}
+  variables:
+    hostname:
+      default: 0.0.0.0
+    port:
+      default: '443'
+    basePath:
+      default: /onex/api/v1
+paths:
+  /config:
+    put:
+      tags:
+      - Configuration
+      operationId: set_config
+      description: |-
+        Sets the ONEx configuration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
+      responses:
+        '400':
+          description: |-
+            error 4xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '500':
+          description: |-
+            error 5xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '200':
+          description: |-
+            Success with possible warnings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warning.Details'
+    get:
+      tags:
+      - Configuration
+      operationId: get_config
+      description: |-
+        Gets the ONEx configuration.
+      responses:
+        '200':
+          description: |-
+            Current ONEx fabric configuration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        '400':
+          description: |-
+            error 4xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '500':
+          description: |-
+            error 5xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+  /state:
+    put:
+      tags:
+      - State
+      operationId: set_state
+      description: |-
+        Updates the state of ONEx configured experiment(s).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/State'
+      responses:
+        '400':
+          description: |-
+            error 4xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '500':
+          description: |-
+            error 5xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '200':
+          description: |-
+            Success with possible warnings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warning.Details'
+    get:
+      tags:
+      - State
+      operationId: get_state
+      description: |-
+        Gets the state of ONEx configured experiments.
+      responses:
+        '200':
+          description: |-
+            Current ONEx experiment(s) state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/State'
+        '400':
+          description: |-
+            error 4xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '500':
+          description: |-
+            error 5xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+  /metrics/fabric:
+    get:
+      tags:
+      - Metrics
+      operationId: get_metrics
+      description: |-
+        Gets the requested fabric metrics.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Metrics.Request'
+      responses:
+        '200':
+          description: |-
+            Current ONEx fabric metrics.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metrics.Response'
+        '400':
+          description: |-
+            error 4xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
+        '500':
+          description: |-
+            error 5xx
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error.Details'
