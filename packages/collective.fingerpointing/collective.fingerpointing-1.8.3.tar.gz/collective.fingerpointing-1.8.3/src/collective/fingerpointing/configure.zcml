@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="collective.fingerpointing">
+
+  <five:registerPackage package="." />
+  <i18n:registerTranslations directory="locales" />
+
+  <include package="Products.CMFCore" file="permissions.zcml" />
+
+  <permission
+      id="collective.fingerpointing.Setup"
+      title="collective.fingerpointing: Setup"
+      />
+
+  <permission
+      id="collective.fingerpointing.viewauditlog"
+      title="collective.fingerpointing: View Audit Log"
+      />
+
+  <include package=".browser" />
+  <include package=".subscribers" />
+
+  <include file="profiles.zcml" />
+
+</configure>

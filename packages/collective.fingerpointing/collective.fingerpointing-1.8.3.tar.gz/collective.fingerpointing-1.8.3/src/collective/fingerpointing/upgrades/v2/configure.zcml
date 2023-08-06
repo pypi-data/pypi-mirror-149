@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="collective.fingerpointing">
+
+  <genericsetup:upgradeSteps
+      source="1"
+      destination="2"
+      profile="collective.fingerpointing:default">
+
+    <genericsetup:upgradeStep
+        title="Update control panel configlet"
+        description="Configlet must be accesible by Site Administrator role."
+        handler=".update_configlet"
+        />
+
+    <genericsetup:upgradeStep
+        title="Update user actions"
+        description="Add action to view audit log if user has permission."
+        handler=".update_user_actions"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

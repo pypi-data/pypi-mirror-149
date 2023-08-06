@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="collective.fingerpointing">
+
+  <browser:resourceDirectory
+      name="collective.fingerpointing"
+      directory="static"
+      layer="collective.fingerpointing.interfaces.IBrowserLayer"
+      />
+
+  <browser:page
+      name="fingerpointing-settings"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class="collective.fingerpointing.controlpanel.FingerPointingSettingsControlPanel"
+      permission="collective.fingerpointing.Setup"
+      />
+
+  <browser:page
+      name="fingerpointing-audit-log"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class="collective.fingerpointing.browser.logview.LogView"
+      template="logview.pt"
+      permission="collective.fingerpointing.viewauditlog"
+      />
+
+</configure>
