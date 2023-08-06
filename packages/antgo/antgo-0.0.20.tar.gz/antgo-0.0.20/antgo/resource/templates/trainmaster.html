@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TRAIN MASTER</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel = "stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/static/antgo.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.form/4.2.2/jquery.form.min.js"></script>
+    <script>
+        function TrialTable(id, rows, cols){
+            var layout_table = {};
+            var _id = id;
+            var _rows = rows;
+            var _cols = cols;
+
+            layout_table.append = function (r,c,node) {
+                var cell_id = 'table-{id}-{r}{c}'.format({id: _id, r: r, c: c});
+                // 1.step clear
+                $('#'+cell_id).empty();
+                // 2.step append
+                $('#'+cell_id).append(node);
+            }
+            layout_table.text = function (r, c, text){
+                var cell_id = 'table-{id}-{r}{c}'.format({id: _id, r: r, c: c});
+                $('#'+cell_id).text(text);
+            }
+
+            layout_table.create = function(container) {
+                var table_div = $('<div id="{id}-layout"></div>'.format({id: _id}));
+                var table_div_body = $('<table class="no-border"></table>');
+                table_div_body.append($('<thead><tr><th>#</th><th>name</th><th>time</th><th>status</th><th>value</th><th>configure</th><th>experiment</th></tr></thead>'));
+                var table_bbody = $('<tbody id="table-{id}"></tbody>'.format({id: _id}));
+
+                for (var r = 0; r < _rows; ++r) {
+                    var item = $('<tr></tr>');
+                    for (var c = 0; c < _cols; ++c) {
+                        item.append('<td id="table-{id}-{r}{c}"></td>'.format({id: id, r: r, c: c}));
+                    }
+
+                    table_bbody.append(item);
+                }
+
+                table_div_body.append(table_bbody);
+                table_div.append(table_div_body);
+
+                container.append(table_div)
+            }
+
+            return layout_table
+        }
+
+        function upload_json_callback(data){
+            var obj = eval('('+data+')');
+            var file_name = obj['file'];
+            $('#upload_json').attr('file_name', file_name);
+            alert('success to upload architecture file '+file_name)
+        }
+
+        var hyperparameter_table_obj = null;
+        var hyperparameter_table_rows = 0;
+
+        $(document).ready(function(){
+            $('tr[name=study]').each(function(){
+                $(this).on('click', function(){
+                    var study_name = $(this).attr('study_name');
+                    $.post('/study/get/', {
+                        'study_name': study_name
+                    }, function(data, status){
+                        if(status == 'success'){
+                            $('#trail_list').empty();
+
+                            var obj = eval('('+data+')');
+                            var trial_num = obj.length;
+                            var table = TrialTable('trial_table', trial_num, 7);
+                            table.create($('#trail_list'));
+
+                            for(var i in obj){
+                                var trial_name = obj[i]['trial_name'];
+                                var trial_created_time = obj[i]['trial_created_time'];
+                                var trial_status = obj[i]['trial_status'];
+                                var trial_objective_value = obj[i]['trial_objective_value'];
+
+                                table.append(i, 0, '<p>{0}</p>'.format(i));
+                                table.append(i, 1, '<p>{0}</p>'.format(trial_name));
+                                table.append(i, 2, '<p>{0}</p>'.format(trial_created_time));
+                                table.append(i, 3, '<p>{0}</p>'.format(trial_status));
+                                table.append(i, 4, '<p>{0}</p>'.format(trial_objective_value));
+                                table.append(i, 5, '<a href="javascript:void(0)" name="download_configure" study_name={0} trial_name={1}><span class="badge">download</span></a>'.format(study_name, trial_name))
+                                table.append(i, 6, '<a href="javascript:void(0)" name="download_experiment" study_name={0} trial_name={1}><span class="badge">download</span></a>'.format(study_name, trial_name))
+                            }
+
+                            $('a[name=download_configure]').each(function(){
+                                $(this).on('click', function(){
+                                    var study_name = $(this).attr('study_name');
+                                    var trial_name = $(this).attr('trial_name');
+                                    window.location.href = "/trial/download/{0}/{1}/configure/".format(study_name, trial_name);
+                                })
+                            })
+
+                            $('a[name=download_experiment]').each(function(){
+                                $(this).on('click', function(){
+                                    var trial_name = $(this).attr('trial_name');
+                                    window.location.href = "http://experiment.mltalker.com/{0}.tar.gz".format(trial_name);
+                                })
+                            })
+
+                            $('#trail_modal').modal();
+                        }
+                    })
+                })
+            })
+
+            $('a[name=studyop]').each(function(){
+                $(this).on('click', function(event){
+                    var study_name = $(this).parent().parent().attr('study_name');
+                    var btn = $(this);
+                    $.post('/study/startorstop/', {
+                        'study_name': study_name
+                    }, function(data, status){
+                        var obj = eval('('+data+')');
+                        if(status == 'success'){
+                            if(obj['status'] == "ok"){
+                                if(obj['study_status'] == 'stop'){
+                                    btn.find('span').text("start")
+                                    btn.parent().parent().find("th[name=status]").text("stop")
+                                }
+                                else{
+                                    btn.find('span').text("stop")
+                                    btn.parent().parent().find("th[name=status]").text("running")
+                                }
+                            }
+                        }
+                    })
+
+                    event.stopPropagation();
+                })
+            })
+
+            $('a[name=studydel]').each(function(){
+                $(this).on('click', function(event){
+                    var study_name = $(this).parent().parent().attr('study_name');
+                    var tr = $(this).parent().parent();
+                    $.post('/study/delete/', {
+                        'study_name': study_name
+                    }, function(data, status){
+                        tr.remove()
+                    })
+
+                    event.stopPropagation()
+                })
+            })
+
+            $('#study_submit').on('click', function () {
+                var study_name = $('#study_name').val();
+                var study_goal = $('#study_goal').find("option:selected").text();
+                var study_max_trials = $('#study_maxtrials').val();
+                var study_max_time = $('#study_maxtime').val();
+                var study_hyperparameter_search = $("#study_hyperparameter_search").find("option:selected").attr('data');
+                var study_architecture_search = $("#study_architecture_search").find("option:selected").attr('data');
+                // var study_default_architecture = $('#upload_json').attr('file_name');
+                var architecture_search_params = {};
+                $('input[name=searchspace_param]').each(function(){
+                    var name = $(this).attr('key');
+                    var value = $(this).val();
+
+                    architecture_search_params[name] = value;
+                })
+                if($('#upload_json').html() != undefined){
+                    architecture_search_params['graph'] = $('#upload_json').attr('file_name');
+                }
+
+                var study_architecture_search_params_str = '';
+                if(Object.keys(architecture_search_params).length > 0){
+                    study_architecture_search_params_str = JSON.stringify(architecture_search_params);
+                }
+
+                var study_hyperparameters = [];
+                $('input[name=hyparameter_name]').each(function(){
+                    var p_name = $(this).val();
+                    var p_type = $(this).parent().parent().find('select[name=hyparameter_type]').find("option:selected").text()
+                    var p_scaling = $(this).parent().parent().find('select[name=hyparameter_scaling]').find("option:selected").text()
+                    var p_params = $(this).parent().parent().find('input[name=hyparameter_params]').val();
+
+                    study_hyperparameters.push({'parameterName': p_name,
+                                                'type': p_type,
+                                                'scalingType': p_scaling,
+                                                'params': p_params})
+                })
+                var study_hyperparameters_str = '';
+                if(study_hyperparameters.length > 0){
+                    study_hyperparameters_str = JSON.stringify(study_hyperparameters);
+                }
+
+                $.post('/study/add/', {
+                    'study_name': study_name,
+                    'study_goal': study_goal,
+                    'study_max_trials': study_max_trials,
+                    'study_max_time': study_max_time,
+                    'study_hyperparameter_search': study_hyperparameter_search,
+                    'study_hyperparameters': study_hyperparameters_str,
+                    'study_architecture_search': study_architecture_search,
+                    'study_architecture_search_params': study_architecture_search_params_str,
+                }, function(data, status){
+                    alert('success to add ' + study_name);
+                }).fail(function(data, status) {
+                    alert(data.responseText);
+                  })
+            })
+
+            $('#study_architecture_search').change(function(){
+                var searchspace_name = $(this).find('option:selected').attr('data');
+                $.post('/searchspace/get/', {
+                    'searchspace': searchspace_name,
+                }, function(data, status){
+                    var data_dict = eval('('+data+')');
+                    var params_num = Object.keys(data_dict).length;
+                    $('#searchspace_block').empty();
+                    if($('#demo_browser_form').html() != undefined){
+                        $('#demo_browser_form').remove();
+                    }
+
+                    if(params_num == 0){
+                        return;
+                    }
+
+                    var lt = LayoutTable('searchspace_params_table', params_num, 2)
+                    lt.create($('#searchspace_block'));
+                    var row_id = 0;
+                    for(var k in data_dict){
+                        var v = data_dict[k];
+
+                        if(k == 'graph'){
+                            // add file update button
+                            lt.append(row_id, 0, '<p>graph</p>')
+                            lt.append(row_id, 1, '<button id="upload_json" class="btn btn-default btn-blue-to-white" type="button" file_name="">upload</button>')
+                            demoUserBrowser(upload_json_callback, 'upload_json','.json');
+                        }
+                        else{
+                            lt.append(row_id, 0, '<p>{0}</p>'.format(k));
+                            lt.append(row_id, 1, '<input type="text" name=searchspace_param key="{0}" value="{1}">'.format(k, v))
+                        }
+
+                        row_id += 1;
+                    }
+
+                }).fail(function(data, status){
+                    alert(searchspace_name + "dont support")
+                })
+            })
+
+            $('#study_hyperparameter_search').change(function () {
+                var hyperparameter_alg_name = $(this).find('option:selected').attr('data');
+                // clear
+                $('#hyperparameter_block').empty();
+                hyperparameter_table_obj = null;
+                hyperparameter_table_rows = 0;
+
+                if(hyperparameter_alg_name != ''){
+                    // create table
+                    hyperparameter_table_obj = LayoutTable('hyperparameter_table', 1, 4);
+                    hyperparameter_table_obj.create2($('#hyperparameter_block'), ["name", "type", "scaling", "params"]);
+                    hyperparameter_table_obj.append(0, 0, '<input type="text" name="hyparameter_name">');
+                    // hyperparameter_table_obj.append(0, 1, '<input type="text" name=hyparameter_type>');
+                    hyperparameter_table_obj.append(0, 1, '<form role="form"><div class="form-group"><select class="form-control" name="hyparameter_type" style="width: 100px;"><option>DOUBLE</option><option>INTEGER</option><option>DISCRETE</option><option>CATEGORICAL</option></select></div></form>');
+                    // hyperparameter_table_obj.append(0, 2, '<input type="text" name=hyparameter_scaling>');
+                    hyperparameter_table_obj.append(0, 2, '<form role="form"><div class="form-group"><select class="form-control" name="hyparameter_scaling" style="width: 100px;"><option>LINEAR</option></select></div></form>');
+                    hyperparameter_table_obj.append(0, 3, '<input type="text" name="hyparameter_params">');
+
+                    hyperparameter_table_rows = 1;
+                }
+            })
+
+            $('#study_add_hyperparameter').on('click', function(){
+                if(hyperparameter_table_obj != null){
+                    hyperparameter_table_obj.extend_rows(1)
+                    hyperparameter_table_obj.append(hyperparameter_table_rows, 0,'<input type="text" name="hyparameter_name">');
+                    // hyperparameter_table_obj.append(hyperparameter_table_rows, 1, '<input type="text" name=hyparameter_type>');
+                    hyperparameter_table_obj.append(hyperparameter_table_rows, 1, '<form role="form"><div class="form-group"><select class="form-control" name="hyparameter_type" style="width: 100px;"><option>DOUBLE</option><option>INTEGER</option><option>DISCRETE</option><option>CATEGORICAL</option></select></div></form>');
+                    // hyperparameter_table_obj.append(hyperparameter_table_rows, 2, '<input type="text" name=hyparameter_scaling>');
+                    hyperparameter_table_obj.append(hyperparameter_table_rows, 2, '<form role="form"><div class="form-group"><select class="form-control" name="hyparameter_scaling" style="width: 100px;"><option>LINEAR</option></select></div></form>');
+                    hyperparameter_table_obj.append(hyperparameter_table_rows, 3, '<input type="text" name=hyparameter_params>');
+                    hyperparameter_table_rows += 1;
+                }
+            })
+
+            $('a[name=studyvis]').each(function(){
+                $(this).on('click', function(event){
+                    var study_name = $(this).parent().attr('study_name');
+                    $.get('/study/{0}/vis/'.format(study_name), {
+                        'study_name': study_name,
+                    }, function(data, status){
+                        var data_obj = eval('('+data+')');
+                        var img_url = data_obj['url'];
+
+                        $('#study_show_vis_img').attr('src', '/static/{0}'.format(img_url));
+                        $('#study_show_modal').modal()
+                    })
+
+                    event.stopPropagation()
+                })
+            })
+
+            $('a[name=studydownload]').each(function(){
+                $(this).on('click', function(event){
+                    var study_name = $(this).parent().attr('study_name');
+                    window.location.href = "/study/download/{0}/experiment/".format(study_name);
+                    event.stopPropagation()
+                })
+            })
+        })
+
+    </script>
+
+    <style>
+        .banner {
+            background: url(/static/banner.png)no-repeat;
+            min-height: 300px;
+            background-size: cover;
+            position: relative;
+        }
+        .logo h1 {
+            font-size: 70px;
+            color: #ffffff;
+        }
+        .demo-headline{
+            max-width: 75rem;
+            margin-left: auto;
+            margin-right: auto;
+            color: #505050;;
+            margin-top: 20px;
+        }
+        .demo-headline::after {
+            clear: both;
+        }
+
+        .demo-headline::before, .demo-headline::after {
+            content: ' ';
+            display: table;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        .demo-box{
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+            margin-bottom: 50px;
+                color: #505050;
+        }
+        .demo-box::after {
+            clear: both;
+        }
+
+        .demo-box::before, .demo-box::after {
+            content: ' ';
+            display: table;
+        }
+        .column, .columns {
+            width: 100%;
+            float: left;
+            padding-left: .9375rem;
+            padding-right: .9375rem;
+        }
+        .centered-text-with-hr {
+            position: relative;
+            text-align: center;
+            z-index: 1;
+        }
+        .centered-text-with-hr:after {
+            -ms-transform: translate(0,-50%);
+            -o-transform: translate(0,-50%);
+            -webkit-transform: translate(0,-50%);
+            transform: translate(0,-50%);
+            border-left: 1px solid #dedede;
+            border-right: 1px solid #dedede;
+            border-top: 1px solid #dedede;
+            content: '';
+            display: block;
+            height: 24px;
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            z-index: -1;
+        }
+        .centered-text-with-hr span {
+            background-color: #fff;
+            padding: 0 12px;
+        }
+        p {
+            font-size: 15px;
+            margin: 12px 0;
+        }
+        .text-heading6 {
+            font-weight: 400;
+            /* font-size: 16px; */
+            /* line-height: 1.5; */
+            /* margin: 0 0 12px; */
+        }
+
+    table th {
+        font-size: 14px;
+        font-weight: 700;
+        min-width: 60px;
+        padding: 12px;
+        vertical-align: top;
+    }
+    table td, table th {
+        padding: 12px 6px;
+        vertical-align: top;
+    }
+    table th {
+        font-size: 14px;
+        font-weight: 700;
+        text-align: inherit;
+    }
+    td, th {
+        padding: 0;
+    }
+
+            .btn-white-to-blue{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        font-family: 'Atlas Grotesk',sans-serif;
+        color: #6F7175;
+        font-weight: bolder;
+        font-size: 15px;
+        text-decoration: none;
+        padding: 5px 10px;
+        background-color: #FFF;
+        border: 1px solid #DEDFE0;
+        border-radius: 4px;
+        cursor: pointer;
+        letter-spacing:0px;
+        text-align: center;
+    }
+    .btn-white-to-blue:hover{
+        color: #20BEFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #FFF;
+    }
+    .btn-white-to-blue:active{
+        color: #20BEFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #FFF;
+    }
+
+    .btn-white-to-blue:focus{
+        color: #20BEFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #FFF;
+    }
+    .btn-white-to-blue:visited{
+        color: #20BEFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #FFF;
+    }
+
+    .btn-blue-to-white{
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        font-family: 'Atlas Grotesk',sans-serif;
+        font-weight: bolder;
+        font-size: 15px;
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        letter-spacing:0px;
+        text-align: center;
+
+        color: #20BEFF;
+        border: 1px solid #20BEFF;
+        background-color: #FFF;
+    }
+
+
+    .btn-blue-to-white:hover{
+        color: #FFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #20BEFF;
+    }
+    .btn-blue-to-white:active{
+        color: #FFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #20BEFF;
+    }
+    .btn-blue-to-white:focus{
+        color: #FFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #20BEFF;
+    }
+    .btn-blue-to-white:visited{
+        color: #FFF;
+        text-decoration: none;
+        border: 1px solid #20BEFF;
+        background-color: #20BEFF;
+    }
+            form [type='file'] {
+         opacity: 0;
+         position: absolute;
+         top: auto;
+         left: -10000px;
+         width: 1px;
+         height: 1px;
+        overflow: hidden;
+    }
+    </style>
+</head>
+
+<div class="modal fade" id="study_show_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+            <img src="" id="study_show_vis_img" style="width: 100%;height: 100%;">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<div class="modal fade" id="trail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="trail_title">TRIAL</h4>
+            </div>
+            <div class="modal-body">
+            <div id="trail_list"></div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+
+<body>
+    <div class="banner">
+        <div class="container">
+            <div class="banner-main">
+                 <div class="logo wow bounceInLeft animated" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: bounceInLeft;">
+                    <h1>ANTGO</h1>
+                 </div>
+                <div class="wqdelementEditBox wqdAnimatedos" style="visibility: visible;" data-emptytexttemplate="title3">
+                    <h2 class="wqd-text-title2" style="text-align: center;">
+                        <font color="#ffffff" style="size: 40px">AUTOML SERVER</font>
+                    </h2>
+                </div>
+              <div class="clearfix"> </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="demo-headline">
+            <div class="column medium-10 medium-centered large-8 large-centered text-center">
+                <p>AUTOML PAGE</p>
+            </div>
+            <div class="demo-box">
+              <p class="centered-text-with-hr text-heading6">
+                  <span>Running Study Instances</span>
+              </p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Study Name</th>
+                      <th scope="col">Created Time</th>
+                      <th scope="col">Completed Trial</th>
+                      <th scope="col">Uncompleted Trail</th>
+                      <th scope="col">Error Trail</th>
+                      <th scope="col">Objective Value</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Show</th>
+                      <th scope="col">Download</th>
+                      <th scope="col">Operator</th>
+                      <th scope="col">Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for s in automl['study'] %}
+                    <tr study_name="{{s['name']}}" name="study">
+                        <th scope="row">{{s['index']}}</th>
+                        <th>{{s['name']}}</th>
+                        <th>{{s['created_time']}}</th>
+                        <th>{{s['completed_trial']}}</th>
+                        <th>{{s['uncompleted_trial']}}</th>
+                        <th>{{s['error_trial']}}</th>
+                        <th>{{s['objective_value']}}</th>
+                        <th name="status">{{s['status']}}</th>
+                        <th study_name="{{s['name']}}"> <a href="javascript:void(0)" name="studyvis"><span class="badge">show</span></a></th>
+                        <th study_name="{{s['name']}}"> <a href="javascript:void(0)" name="studydownload"><span class="badge">Download</span></a></th>
+                        <th>
+                            {%if s['status'] == 'running'%}
+                                <a href="javascript:void(0)" name="studyop"><span class="badge">stop</span></a>
+                            {%elif s['status'] == 'stop'%}
+                                <a href="javascript:void(0)" name="studyop"><span class="badge">start</span></a>
+                            {%else%}
+                                completed
+                            {%end%}
+                        </th>
+                        <th>
+                            <a href="javascript:void(0)" name="studydel"><span class="badge">delete</span></a>
+                        </th>
+                    </tr>
+                    {% end %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="demo-headline">
+        <div class="demo-box">
+          <p class="centered-text-with-hr text-heading6">
+              <span>Study Configure</span>
+          </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">name</th>
+                        <th scope="col">value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>StudyName</td>
+                        <td><input type="text" id="study_name"></td>
+                    </tr>
+                    <tr>
+                        <td>Goal</td>
+                        <td>
+                            <form role="form">
+                              <div class="form-group">
+                                <select class="form-control" id="study_goal" style="width: 150px;">
+                                    <option>MAXIMIZE</option>
+                                    <option>MINIMIZE</option>
+                                </select>
+                              </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>MaxTrials</td>
+                        <td><input type="number" id="study_maxtrials"/></td>
+                    </tr>
+                    <tr>
+                        <td>MaxTime</td>
+                        <td><input type="number" id="study_maxtime"></td>
+                    </tr>
+                    <tr>
+                        <td>HyperParameterSearch<a href="javascript:void(0)" id="study_add_hyperparameter"><span class="badge">+</span></a></td>
+                        <td>
+                            <form role="form">
+                              <div class="form-group">
+                                <select class="form-control" id="study_hyperparameter_search" style="width: 150px;">
+                                  <option name="hyperparameter" data="">-</option>
+                                    {% for s in automl['hyperparameter'] %}
+                                    <option name="hyperparameter" data="{{s}}">{{s}}</option>
+                                    {% end %}
+                                </select>
+                              </div>
+                            </form>
+                            <div id="hyperparameter_block">
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ArchitectureSearchSpace</td>
+                        <td>
+                            <form role="form">
+                              <div class="form-group">
+                                <select class="form-control" id="study_architecture_search" style="width: 150px;">
+                                    <option name="searchspace" data="">-</option>
+                                    {% for s in automl['searchspace'] %}
+                                    <option name="searchspace" data="{{s}}">{{s}}</option>
+                                    {% end %}
+                                </select>
+                              </div>
+                            </form>
+                            <div id="searchspace_block">
+
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+           <button id="study_submit" class="btn btn-default btn-blue-to-white" type="button" style="margin-right: 10px;margin-left: 10px;">Add Study</button>
+        </div>
+        </div>
+    </div>
+    <div class="container">
+    <footer class="site-footer">
+        <div class="site-footer__content">
+            <div class="site-footer__copyright">
+                <span>© 2018 Antgo Inc</span>
+            </div>
+        </div>
+    </footer>
+    </div>
+</body>
+</html>
