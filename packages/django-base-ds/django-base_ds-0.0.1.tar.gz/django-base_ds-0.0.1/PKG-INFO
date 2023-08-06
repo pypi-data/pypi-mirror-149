@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: django-base_ds
+Version: 0.0.1
+Summary: base part for demiansoft
+Home-page: https://www.demiansoft.com
+Author: hyungjin kim
+Author-email: hj3415@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://pypi.org/project/util-demian/
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+django-base_ds
+==========
+
+django-base_ds is a Django app to use for demiansoft. 
+
+Quick start
+------------
+
+1. Add "base" to your INSTALLED_APPS setting like this
+```python
+INSTALLED_APPS = [
+    ...
+    'base',
+]
+```
+
+2. 코드를 넣고자 하는 위치에 다음을 추가 한다.
+```html
+{% load base_tags %}
+
+{% make_seo %}
+{% make_vendor %}
+```
+
+* context example
+```python
+context = {
+    "theme": "mentor_ds",
+    "seo": {
+        "company_name": "MyEnglish",
+        "url": "myenglishkr.com",
+        "small_title": "1:1 Speaking Practice",
+        "desc": "강남구 서초동 교대 반포 법조타운 위치 내인생치과의 홈페이지, 삼성서울병원 구강외과 전문의 진료",
+        "keywords": "내인생치과, 반포대로치과, 교대교정치과, 반포치과, 서초치과, 서초동치과, 교대역치과 "
+    },
+}
+```
+
+
