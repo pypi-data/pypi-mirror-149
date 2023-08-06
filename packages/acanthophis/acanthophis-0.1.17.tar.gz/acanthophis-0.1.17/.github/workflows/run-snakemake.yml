@@ -1,0 +1,41 @@
+name: Workflow CI
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  runsnkmk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: setup-conda
+        uses: s-weigand/setup-conda@v1.0.5
+        with:
+          activate-conda: true
+          update-conda: true
+          conda-channels: "defaults,conda-forge,bioconda,kdm801"
+      
+      - name: Install conda deps
+        run: |
+          conda install mamba pip
+          mamba env update -n base -f example/environment.yml
+          python3 -m pip install -e .
+      
+      - name: Setup demo
+        run: |
+          pushd example
+          acanthophis-init --yes
+          snakemake --snakefile Snakefile.generate-rawdata -j 4 --use-conda --conda-frontend mamba
+          popd
+
+      - name: Run Snakemake
+        run: |
+          pushd example
+          snakemake --snakefile Snakefile -j 4 --use-conda --conda-frontend mamba
+          popd
+
