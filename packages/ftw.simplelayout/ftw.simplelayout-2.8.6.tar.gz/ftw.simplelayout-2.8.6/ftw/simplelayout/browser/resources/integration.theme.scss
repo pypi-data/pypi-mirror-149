@@ -1,0 +1,784 @@
+/* This file is only used when ftw.theming is installed. */
+
+@include portal-type-font-awesome-icon(ftw-simplelayout-contentpage, list-alt);
+@include portal-type-font-awesome-icon(ftw-simplelayout-filelistingblock, list);
+@include portal-type-font-awesome-icon(ftw-simplelayout-galleryblock, picture-o);
+@include portal-type-font-awesome-icon(ftw-simplelayout-listingblock, list-ul);
+@include portal-type-font-awesome-icon(ftw-simplelayout-textblock, paragraph);
+@include portal-type-font-awesome-icon(ftw-simplelayout-videoblock, film);
+
+@include ie-only(".sl-can-edit .ftw-simplelayout-videoblock .sl-block-content") {
+  @include fix-iframe-cursor();
+}
+
+@include ie-only(".sl-can-edit .ftw-simplelayout-videoblock .sl-block-content iframe") {
+  @include fix-iframe-hover();
+}
+
+.golden-ratio {
+  $golden-ratio: 61.803398875%;
+  $gutter-width-relative: ($gutter-width / $max-width-page * 100%);
+  $large-part: $golden-ratio - ($gutter-width-relative / 2);
+  $small-part: 100 - $golden-ratio - ($gutter-width-relative / 2);
+
+  width: 100%;
+
+  @media #{$screen-XXS} {
+    .sl-column {
+      &:nth-child(1) {
+        width: $large-part;
+        margin-right: $gutter-width-relative;
+      }
+
+      &:nth-child(2) {
+        width: $small-part;
+      }
+    }
+
+    &.layout-reverse .sl-column {
+
+      &:nth-child(1) {
+        width: $small-part;
+      }
+
+      &:nth-child(2) {
+        width: $large-part;
+      }
+    }
+  }
+}
+
+.layout13 {
+  $gutter-width-relative: ($gutter-width / $max-width-page * 100%);
+  $large-part: (25% - $gutter-width-relative + ($gutter-width-relative / 4)) * 3 + ($gutter-width-relative * 2);
+  $small-part: 25% - $gutter-width-relative + ($gutter-width-relative / 4);
+
+  .sl-column {
+    @media #{$screen-XXS} {
+      &:nth-child(1) {
+        width: $large-part;
+      }
+
+      &:nth-child(2) {
+        width: $small-part;
+      }
+    }
+  }
+
+  &.layout-reverse .sl-column {
+
+    &:nth-child(1) {
+      width: $small-part;
+    }
+
+    &:nth-child(2) {
+      width: $large-part;
+    }
+  }
+}
+
+.layout112 {
+  .sl-column {
+    &:nth-child(1) {
+      @include floatgrid(4);
+    }
+
+    &:nth-child(2) {
+      @include floatgrid(4);
+    }
+
+    &:nth-child(3) {
+      @include floatgrid(2, $offset: 1);
+    }
+  }
+
+  &.layout-reverse .sl-column {
+    $gutter-width-relative: $gutter-width / $max-width-page * 100%;
+    @include floatgrid(4, $offset: 3);
+
+    &:nth-child(1) {
+      @include floatgrid(2);
+    }
+
+    // floatgrid is no yet (flex)ible enough :-)
+    @media #{$screen-XXS} {
+      &:nth-child(2){
+        margin-right: $gutter-width-relative;
+      }
+      &:nth-child(3){
+        margin-right: 0;
+      }
+
+    }
+
+  }
+}
+
+.layout121 {
+  .sl-column {
+    @include floatgrid(4, $offset: 3);
+
+    &:nth-child(2) {
+      @include floatgrid(2, $offset: 1);
+    }
+  }
+}
+
+.sl-image {
+  width: 100%;
+  position: relative;
+
+  &.left {
+    @include screen-small() {
+      float: left;
+    }
+  }
+  &.right {
+    @include screen-small() {
+      float: right;
+    }
+  }
+  &.sl_textblock_small{
+    @include screen-small() {
+      width: 25%;
+    }
+  }
+  &.sl_textblock_middle {
+    @include screen-small() {
+      width: 50%;
+    }
+  }
+  img {
+    vertical-align: middle;
+  }
+}
+
+.icons-on .sl-image .imageContainer {
+    position:relative;
+}
+
+.icons-on .sl-image .colorboxLink{
+  @extend .fa-expand;
+  @extend .fa-icon;
+
+  &:before {
+    color: white;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    font-size: 1.5em;
+    background: rgb(0,0,0);
+    opacity: 0.5;
+    border-radius: 2px;
+    padding: 2px 0px 1px 0px;
+  }
+
+  &:hover:before {
+    opacity: 1;
+  }
+}
+
+.ui-sortable-disabled .sl-layout:hover .sl-toolbar-layout {
+  opacity: 0;
+}
+
+.sl-block-content {
+  @include clearfix();
+  .sl-image {
+    margin-bottom: $margin-paragraph-vertical;
+
+    .image-caption {
+      text-align: center;
+    }
+    @include screen-small() {
+      &.left {
+        margin-right: $margin-paragraph-vertical;
+      }
+
+      &.right {
+        margin-left: $margin-paragraph-vertical;
+      }
+    }
+  }
+}
+
+// Listingblock
+.sl-block.ftw-simplelayout-filelistingblock {
+  table {
+    tr {
+      th {
+        white-space: nowrap;
+        text-align: left;
+        &.header-getObjSize {
+          text-align: right;
+        }
+      }
+      td {
+
+        text-align: left;
+
+        &.column-modified {
+          white-space: nowrap;
+        }
+
+        &.column-portal_type {
+          white-space: nowrap;
+        }
+
+        &.column-getObjSize {
+          white-space: nowrap;
+        }
+
+        &.column-id {
+          white-space: nowrap;
+        }
+
+        img {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+.sl-block {
+  @include clearfix();
+  width: 100%;
+  opacity: 1;
+  transition: opacity .2s, background .2s;
+  position: relative;
+  float: left;
+  margin-bottom: $margin-vertical;
+  &.titleOnly {
+    margin-bottom: 0;
+  }
+  &.ui-sortable-helper {
+    opacity: .8;
+  }
+  &:hover .sl-toolbar-block {
+    opacity: 1;
+    visibility: visible;
+  }
+  &.dropped {
+    @include animation(fade, 1s ease-in-out)
+  }
+  .iFrameFix {
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    opacity: 0.001;
+    z-index: $zindex-overlay;
+    background-color: $color-content-background;
+  }
+}
+
+.sl-block-dragging {
+  .sl-column {
+    border: 1px dashed $color-text;
+    .sl-alias-block .sl-column {
+      border: 0;
+    }
+  }
+}
+
+.sl-layout {
+    @include clearfix();
+    width: 100%;
+    opacity: 1;
+    position: relative;
+    transition: background .2s;
+    float: left;
+    .block-placeholder {
+        background-color: $color-gray-dark;
+        width: 100%;
+        min-height: 98px;
+        float: left;
+        margin-bottom: $margin-vertical;
+    }
+    &.ui-sortable-helper {
+        opacity: .9;
+        background-color: $color-white;
+        box-shadow: $box-shadow-secondary;
+        padding: 5px;
+    }
+    &:hover .sl-toolbar-layout {
+        visibility: visible;
+    }
+}
+
+.sl-column {
+  float: left;
+  background: $color-content-background;
+}
+
+@for $x from 1 through $columns {
+  .sl-col-#{$x} {
+    @include floatgrid($x);
+  }
+}
+
+.sl-layout-dragging {
+  .sl-simplelayout {
+    border: 1px dashed $color-text;
+    padding: $padding-horizontal;
+    &.disabled {
+      box-shadow: none;
+    }
+  }
+  .sl-layout {
+    border: 1px dashed $color-text;
+
+    .sl-alias-block .sl-layout {
+      border: 0;
+    }
+  }
+  .sl-simplelayout.sl-can-edit {
+    .sl-column:empty {
+      border: none;
+    }
+  }
+}
+
+.sl-simplelayout {
+  @include clearfix();
+  z-index: 0;
+  display: block;
+  width: 100%;
+  float: left;
+  .layout-placeholder {
+    background-color: $color-gray-dark;
+    border: 1px solid $color-gray-dark;
+    margin-bottom: $margin-vertical;
+    width: 100%;
+    min-height: 100px;
+    float: left;
+  }
+  .draggableHelper {
+    // Needs to be important, since jquery.ui always sets the height style attr on the helper element.
+    // Check http://bugs.jqueryui.com/ticket/4345
+    height: 100px !important;
+    width: 100px !important;
+    background-color: $color-gray-dark;
+    box-shadow: $box-shadow-secondary;
+  }
+  .limitIndicator {
+    position: absolute;
+    width: 100%;
+    padding: $padding-vertical;
+    background-color: rgba(white, 0.9);
+    .description {
+      font-size: 0.8em;
+    }
+    &.softLimitIndicator {
+      border: 1px solid $color-warning;
+    }
+    &.hardLimitIndicator {
+      border: 1px solid $color-danger;
+    }
+  }
+}
+
+$editbar-height: $line-height-base + 2 * $padding-vertical;
+
+ul[class^="sl-toolbar"] {
+  @include list();
+  @include print() {
+    display: none !important;
+  }
+
+  position: absolute;
+  top: 0;
+  right: -$editbar-height;
+  white-space: nowrap;
+  background-color: $color-text;
+  visibility: hidden;
+  border-radius: $border-radius-primary;
+  z-index: $zindex-base + 10;
+  li {
+    text-align: center;
+    > a {
+      width: $editbar-height;
+      height: $editbar-height;
+      background-size: $font-size-medium;
+      background-position: center;
+      padding: 0;
+      cursor: pointer;
+      border-bottom: 1px solid lighten($color-text, 5%);
+      &.textButton {
+        text-decoration: none;
+        font-weight: bold;
+        width: auto;
+        padding-left: $padding-horizontal !important;
+        padding-right: $padding-horizontal !important;
+      }
+    }
+
+    &:last-child {
+      > a {
+        border: 0;
+      }
+    }
+  }
+  &.horizontal {
+    @include list-horizontal();
+    right: 0;
+    top: -$editbar-height;
+    height: $editbar-height;
+    li {
+      display: inline-block;
+      float: none;
+
+      > a {
+        border-bottom: 0;
+        border-right: 1px solid lighten($color-text, 5%);
+      }
+
+      &:last-child {
+        > a {
+          border: 0;
+        }
+      }
+    }
+  }
+}
+
+.simplelayout-initialized body {
+  @include screen-small() {
+    padding-right: $editbar-height;
+  }
+}
+
+.sl-toolbox {
+  @include noselect();
+  @include screen-small() {
+    display: table;
+  }
+
+  @include print() {
+    display: none !important;
+  }
+
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  z-index: $zindex-base;
+  display: none;
+  background: $color-text;
+
+  span {
+    @extend .fa-icon;
+    // Needs to be set because the icons looks bold without this attribute.
+    // See http://caniuse.com/#search=font-smooth for more information
+    -webkit-font-smoothing: antialiased;
+    display: table-cell;
+    vertical-align: middle;
+    &:before {
+      margin: 0 !important;
+    }
+  }
+
+  .blocks span {
+    @extend .fa-cube;
+  }
+  .layouts span {
+    @extend .fa-th;
+  }
+
+  > div {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  a {
+    display: table;
+    color: darken($color-text-inverted, 20%);
+    background-color: $color-text;
+    width: 100%;
+    box-sizing: border-box;
+    direction: rtl;
+    text-align: center;
+    border-bottom: 1px solid lighten($color-text, 5%);
+    box-sizing:content-box;
+    position: relative;
+    width: $editbar-height;
+    height: $editbar-height;
+
+    &.ui-draggable-dragging {
+      box-shadow: $box-shadow-secondary;
+    }
+
+    &:before {
+      content: "";
+      display: inline-block;
+      height: 100%;
+      width: 2px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    // Drag hint when clicking a block without dragging.
+    &:after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: block;
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      right: 50%;
+      margin-right: -5px;
+      margin-top: -5px;
+    }
+
+    &:hover {
+      cursor: pointer;
+      color: $color-text-inverted;
+      text-decoration: none;
+      &:before {
+        background-color: $color-edit;
+      }
+      > .description {
+        visibility: visible;
+      }
+    }
+
+    &.hintDropped {
+      &:after {
+        background-color: $color-edit;
+        transition: transform 300ms, opacity 300ms;
+        transform: scale(20);
+        opacity: 0;
+      }
+    }
+  }
+
+  .description {
+    direction: ltr;
+    white-space: nowrap;
+    text-align: right;
+    background-color: $color-text;
+    padding: $padding-vertical / 2 $padding-horizontal / 2;
+    color: $color-text-inverted;
+    border-radius: $border-radius-primary;
+    float: right;
+    visibility: hidden;
+    position: absolute;
+    font-weight: normal;
+    margin-top: ($padding-vertical / 2 + 1em) / 4;
+    margin-right: $margin-horizontal;
+  }
+
+  .sl-toolbox-header {
+    @include auto-text-color($color-edit);
+    background-color: $color-edit;
+    border: 0;
+    &:before {
+      background-color: $color-edit;
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  .ui-sortable-helper {
+    width: 1em !important;
+    height: auto !important;
+  }
+
+}
+
+// If user is permitted to edit the simplelayout page
+.sl-simplelayout.sl-can-edit {
+  .sl-alias-block {
+    .sl-block:hover {
+      box-shadow: none;
+    }
+    .sl-layout:hover {
+      box-shadow: none;
+    }
+  }
+  min-height: 100px;
+  .sl-layout {
+    @include transition(box-shadow .3s ease-out);
+    min-height: 100px;
+    margin-bottom: $margin-vertical;
+
+    &:hover {
+      @include boxshadow(0 0 20px 0 $color-edit);
+    }
+  }
+  .sl-column {
+    min-height: 100px;
+    &:empty {
+      border: 1px dashed $color-text;
+    }
+  }
+  .sl-block {
+    @include transition(box-shadow .3s ease-out);
+    min-height: 98px;
+    &:hover {
+      @include boxshadow(0 0 20px 0 $color-edit);
+    }
+    &.hidden {
+      @include boxshadow(0 0 20px 0 $color-warning);
+    }
+  }
+}
+
+.galleryblockImageWrapper {
+  margin-bottom: $margin-vertical;
+  > a {
+    display: block;
+    img {
+      vertical-align: middle;
+      margin: 0;
+    }
+  }
+}
+
+@for $x from 1 through $columns {
+  .sl-col-#{$x} .galleryblockImageWrapper {
+    @if $x <= 4 {
+      @include floatgrid(4 / $x, $by-index: false);
+    } @else {
+      @include floatgrid(1, $by-index: false);
+    }
+  }
+}
+
+.SimplelayoutPortlet .galleryblockImageWrapper {
+  @include floatgrid(1, $by-index: false);
+}
+
+.SimplelayoutPortlet {
+
+  .sl-can-edit {
+    &.sl-simplelayout {
+      min-height: 100px;
+    }
+    .sl-layout {
+      min-height: 100px;
+    }
+   .sl-column {
+    min-height: 100px;
+      &:empty {
+        border: 1px dashed $color-text;
+        margin-bottom: $margin-vertical;
+      }
+    }
+  }
+}
+
+.sl-ajax {
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  padding-right: 1em;
+}
+
+.overlay-open body {
+  overflow: hidden;
+  .imageCropperWrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    #image-cropper-validation-message-container > div{
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      padding: $padding-vertical;
+      background-color: rgba(white, 0.9);
+      border: 1px solid;
+      border-top: none;
+      border-right: none;
+      z-index: 10;
+      .icon {
+        font-size: $font-size-h1;
+        margin-right: $margin-horizontal;
+      }
+      .description {
+        font-size: 0.8em;
+      }
+      &.softLimit {
+        border-color: $color-warning;
+        .icon {
+          color: $color-warning;
+        }
+      }
+      &.hardLimit {
+        border-color: $color-danger;
+        .icon {
+          color: $color-danger;
+        }
+      }
+    }
+    .imageCropperContent {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      > img {
+        display: none
+      }
+    }
+    .imageCropperControls {
+      display: flex;
+      justify-content: felx-start;
+      .sl-toolbar-image-cropper {
+        visibility: visible;
+        position: relative;
+        top: 0;
+        margin: 0 $margin-horizontal $margin-vertical / 2;
+        li.active {
+          background-color: lighten($color-text, 5%);
+        }
+        a {
+          border-right: none;
+        }
+      }
+    }
+    .imageCropperFooter {
+      margin-top: $margin-vertical;
+    }
+  }
+}
+
+.plone-modal-backdrop {
+  z-index: $zindex-modal !important;
+}
+
+// Prevent FOUC when manually setting the video dimensions
+.sl-youtube-video {
+  visibility: hidden;
+}
+
+@include keyframes(fade) {
+  0%   { background-color: transparent; }
+  50%   { background-color: #fff3a5; }
+  100% { background-color: transparent; }
+}
+
+
+/*
+   TinyMCE: Disable "anchor"-tab in link dialog because this dialog only support
+   anchors within the same TinyMCE instance, but we need to be able to select
+   anchors from other blocks.
+   In order to select anchors, select the page in the regular "internal" tab,
+   and then select the anchor.
+*/
+#plonebrowser #anchor_link {
+  display: none;
+}
+
+// Fixes a bug in the file-selector widget. See IImageCropping behavior
+// schmea interface for more information.
+#formfield-form-widgets-IImageCropping-cropped_image {
+  display: none;
+}

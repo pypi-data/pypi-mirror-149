@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="ftw.simplelayout">
+
+    <include package="plone.behavior" file="meta.zcml" />
+
+    <plone:behavior
+        title="Simplelayout page"
+        description="Simplelayout page marker behavior"
+        provides="ftw.simplelayout.interfaces.ISimplelayout"
+        />
+
+    <plone:behavior
+        title="Simplelayout block behavior"
+        description="Simplelayout block content marker"
+        provides="ftw.simplelayout.interfaces.ISimplelayoutBlock"
+        />
+
+    <plone:behavior
+        title="Contentpage show title behavior"
+        description="Adds checkbox to hide title of a contentpage"
+        provides="ftw.simplelayout.interfaces.IContentPageShowTitle"
+        />
+
+    <adapter
+        factory=".indexer.BlockSearchableTextIndexer"
+        provides="collective.dexteritytextindexer.IDynamicTextIndexExtender"
+        name="ISimplelayout"
+        />
+
+    <plone:behavior
+        title="Hide block"
+        description="Adds an option to (visually) hide a block"
+        provides="ftw.simplelayout.contenttypes.behaviors.IHiddenBlock"
+        />
+
+</configure>
