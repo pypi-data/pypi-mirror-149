@@ -1,0 +1,178 @@
+{% extends "abstracts/base.jinja" %}
+{% block title %}Maloja - {{ info.artist }}{% endblock %}
+
+{% import 'snippets/links.jinja' as links %}
+{% import 'partials/awards_artist.jinja' as awards %}
+
+{% block scripts %}
+	<script src="/rangeselect.js"></script>
+	<script src="/edit.js"></script>
+{% endblock %}
+
+{% set artist = filterkeys.artist %}
+{% set info = db.artist_info(artist=artist) %}
+
+{% set credited = info.get('replace') %}
+{% set included = info.get('associated') %}
+{% set initialrange ='month' %}
+
+
+{% if credited is not none %}
+	{% set competes = false %}
+{% else %}
+	{% set credited = artist %}
+	{% set competes = true %}
+{% endif %}
+
+
+{% set encodedartist = mlj_uri.uriencode({'artist':artist}) %}
+
+{% block icon_bar %}
+	{% if adminmode %}
+		{% include 'icons/edit.jinja' %}
+		{% include 'icons/merge.jinja' %}
+		{% include 'icons/merge_mark.jinja' %}
+		{% include 'icons/merge_cancel.jinja' %}
+		<script>showValidMergeIcons();</script>
+	{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<script>
+	const entity_id = {{ info.id }};
+	const entity_type = 'artist';
+	const entity_name = {{ artist | tojson }};
+</script>
+
+
+
+<table class="top_info">
+	<tr>
+		<td class="image">
+			{% if adminmode %}
+			<div
+				class="changeable-image" data-uploader="b64=>upload('{{ encodedartist }}',b64)"
+				style="background-image:url('{{ images.get_artist_image(artist) }}');"
+				title="Drag & Drop to upload new image"
+			></div>
+			{% else %}
+			<div style="background-image:url('{{ images.get_artist_image(artist) }}');">
+			</div>
+			{% endif %}
+		</td>
+		<td class="text">
+			<h1 id="main_entity_name" class="headerwithextra">{{ info.artist }}</h1>
+				{% if competes %}<span class="rank"><a href="/charts_artists?max=100">#{{ info.position }}</a></span>{% endif %}
+				<br/>
+				{% if competes and included %}
+					<span>associated: {{ links.links(included) }}</span>
+				{% elif not competes %}
+					<span>Competing under {{ links.link(credited) }} (#{{ info.position }})</span>
+				{% endif %}
+
+			<p class="stats">
+				<a href="{{ mlj_uri.create_uri("/scrobbles",filterkeys) }}">{{ info['scrobbles'] }} Scrobbles</a>
+			</p>
+
+
+
+
+			{% if competes %}
+				{{ awards.medals(info) }}
+				{{ awards.topweeks(info) }}
+			{% endif %}
+			{{ awards.certs(artist) }}
+
+
+		</td>
+	</tr>
+</table>
+
+
+<h2><a href='{{ mlj_uri.create_uri("/charts_tracks",filterkeys) }}'>Top Tracks</a></h2>
+
+
+{% with amountkeys={"perpage":15,"page":0} %}
+{% include 'partials/charts_tracks.jinja' %}
+{% endwith %}
+
+<br/>
+
+<table class="twopart">
+
+	<tr>
+		<td>
+			<h2 class="headerwithextra"><a href='{{ mlj_uri.create_uri("/pulse",filterkeys) }}'>Pulse</a></h2>
+			<br/>
+			{% for r in xranges %}
+			<span
+				onclick="showRangeManual('pulse','{{ r.identifier }}')"
+				class="stat_selector_pulse selector_pulse_{{ r.identifier }}"
+				style="{{ 'opacity:0.5;' if initialrange==r.identifier else '' }}">
+				{{ r.localisation }}
+			</span>
+			{% if not loop.last %}|{% endif %}
+			{% endfor %}
+
+      		<br/><br/>
+
+			{% for r in xranges %}
+
+			<span
+				class="stat_module_pulse pulse_{{ r.identifier }}"
+				style="{{ 'display:none;' if initialrange!=r.identifier else '' }}"
+				>
+
+			{% with limitkeys={"since":r.firstrange},delimitkeys={'step':r.identifier,'trail':1} %}
+			{% include 'partials/pulse.jinja' %}
+			{% endwith %}
+			</span>
+
+			{% endfor %}
+		</td>
+		<td>
+			<!-- We use the same classes / function calls here because we want it to switch together with pulse -->
+			<h2 class="headerwithextra"><a href='{{ mlj_uri.create_uri("/performance",{'artist':credited}) }}'>Performance</a></h2>
+			{% if not competes %}<span class="afterheader">of {{ links.link(credited) }}</span>
+			{% endif %}
+			<br/>
+
+			{% for r in xranges %}
+				<span
+					onclick="showRangeManual('pulse','{{ r.identifier }}')"
+					class="stat_selector_pulse selector_pulse_{{ r.identifier }}"
+					style="{{ 'opacity:0.5;' if initialrange==r.identifier else '' }}">
+					{{ r.localisation }}
+				</span>
+				{% if not loop.last %}|{% endif %}
+			{% endfor %}
+
+      		<br/><br/>
+
+			{% for r in xranges %}
+
+			<span
+				class="stat_module_pulse pulse_{{ r.identifier }}"
+				style="{{ 'display:none;' if initialrange!=r.identifier else '' }}"
+				>
+
+			{% with filterkeys={'artist':credited},limitkeys={"since":r.firstrange},delimitkeys={'step':r.identifier,'trail':1} %}
+			{% include 'partials/performance.jinja' %}
+			{% endwith %}
+			</span>
+
+			{% endfor %}
+
+		</td>
+	</tr>
+</table>
+
+
+<h2><a href='{{ mlj_uri.create_uri("/scrobbles",filterkeys) }}'>Last Scrobbles</a></h2>
+
+{% with amountkeys = {"perpage":15,"page":0} %}
+{% include 'partials/scrobbles.jinja' %}
+{% endwith %}
+
+{% endblock %}
