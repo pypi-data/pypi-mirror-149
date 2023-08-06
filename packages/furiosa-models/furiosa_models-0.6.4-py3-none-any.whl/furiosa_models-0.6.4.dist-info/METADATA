@@ -1,0 +1,53 @@
+Metadata-Version: 2.1
+Name: furiosa-models
+Version: 0.6.4
+Summary: Furiosa Models
+Home-page: https://furiosa.ai
+Author: FuriosaAI Inc.
+Author-email: pkg@furiosa.ai
+License: Apache License 2.0
+Project-URL: Documentation, https://docs.furiosa.ai
+Project-URL: Bug Tracker, https://github.com/furiosa-ai/furiosa-sdk/issues
+Project-URL: Source Code, https://github.com/furiosa-ai/furiosa-sdk
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: ==3.*,~=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: furiosa-common (>=0.6.3)
+Requires-Dist: furiosa-registry (>=0.6.3)
+
+Furiosa Models
+==============
+
+Furiosa models provides ready to use deeplearning models provided by FuriosaAI.
+
+## Available models
+
+- MLCommonsResNet50
+- MLCommonsMobileNet
+- MLCommonsSSDResNet34
+
+## Usage
+
+```python
+import asyncio
+
+from furiosa.registry import Model
+from furiosa.models.vision import MLCommonsResNet50
+
+
+model: Model = asyncio.run(MLCommonsResNet50())
+```
+
+
