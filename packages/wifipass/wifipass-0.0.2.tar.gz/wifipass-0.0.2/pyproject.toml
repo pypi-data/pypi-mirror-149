@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "wifipass"
+version = "0.0.2"
+description = "Creates a PDF with a QR code of your wifi password."
+authors = ["Pierre <pierre.git@posteo.de>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["wifi", "QR", "password"]
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+fpdf = "^1.7.2"
+qrcode = "^7.3.1"
+Pillow = "^9.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+
+[tool.poetry.scripts]
+wifiPass = 'wifiPass:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
