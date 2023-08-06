@@ -1,0 +1,103 @@
+import hashlib
+import time
+import uuid
+
+import requests
+from pygls.lsp.types import (
+    Location,
+    MessageType,
+    Position,
+    Range,
+    TextEdit,
+    WorkspaceEdit,
+    WorkDoneProgressBegin,
+    WorkDoneProgressEnd,
+    WorkDoneProgressReport,
+)
+from pygls.server import LanguageServer
+
+from . import buildout
+from .types import UpdateMD5SumCommandParams
+
+
+async def update_md5sum(
+    ls: LanguageServer,
+    params: UpdateMD5SumCommandParams,
+) -> None:
+  profile = await buildout.open(ls, params.document.uri)
+  assert isinstance(profile, buildout.BuildoutProfile)
+  section = profile[params.section_name]
+  url = profile.resolve_value(params.section_name, "url")
+
+  token = str(uuid.uuid4())
+  await ls.progress.create_async(token)
+  ls.progress.begin(
+      token,
+      WorkDoneProgressBegin(
+          # XXX explicitly pass kind to workaround pygls issue
+          # https://github.com/openlawlibrary/pygls/issues/231
+          kind='begin',
+          cancellable=True,  # TODO actually support cancellation
+          title=f"Updating md5sum for {url}",
+      ))
+
+  start = time.time()
+  m = hashlib.md5()
+  resp = requests.get(url, stream=True)
+  if not resp.ok:
+    ls.show_message(
+        f"Could not update md5sum: {url} had status code {resp.status_code}",
+        MessageType.Error,
+    )
+    ls.progress.end(token, WorkDoneProgressEnd(kind='end'))
+    return
+
+  download_total_size = int(resp.headers.get('content-length', '-1'))
+  downloaded_size = 0
+  for chunk in resp.iter_content(2 << 14):
+    m.update(chunk)
+    downloaded_size += len(chunk)
+
+    elapsed_time = time.time() - start
+    percentage = (downloaded_size / download_total_size * 100)
+    ls.progress.report(
+        token,
+        WorkDoneProgressReport(
+            kind='report',
+            message=f"{percentage:0.2f}% in {elapsed_time:0.2f}s",
+            percentage=percentage,
+        ))
+
+  hexdigest = m.hexdigest()
+
+  if 'md5sum' in section:
+    md5sum_location = section['md5sum'].location
+    new_text = " " + hexdigest
+  else:
+    # if no md5sum option in profile, insert a line just below url
+    url_location = section['url'].location
+    md5sum_location = Location(
+        uri=url_location.uri,
+        range=Range(
+            start=Position(
+                line=url_location.range.start.line + 1,
+                character=0,
+            ),
+            end=Position(
+                line=url_location.range.start.line + 1,
+                character=0,
+            ),
+        ),
+    )
+    new_text = f"md5sum = {hexdigest}\n"
+
+  ls.progress.end(token, WorkDoneProgressEnd(kind='end'))
+  ls.apply_edit(
+      WorkspaceEdit(
+          changes={
+              md5sum_location.uri:
+              [TextEdit(
+                  range=md5sum_location.range,
+                  new_text=new_text,
+              )]
+          }))
