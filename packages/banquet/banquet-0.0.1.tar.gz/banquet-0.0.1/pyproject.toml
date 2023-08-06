@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "banquet"
+version = "0.0.1"
+description = "CLI tool for working with OpenAPI and Lambda functions"
+authors = ["Nick Snell <nick.snell@manypets.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/boughtbymany/banquet"
+repository = "https://github.com/boughtbymany/banquet"
+documentation = "https://github.com/boughtbymany/banquet"
+keywords = [
+  "OpenAPI",
+  "HTTP",
+  "Deverlopment Server",
+  "AWS Lambda"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Utilities"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PyYAML = "6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "6.2.5"
+invoke = "1.7.0"
+black = "22.3.0"
+isort = "5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+banquet = "banquet.bin:cli"
