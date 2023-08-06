@@ -1,0 +1,189 @@
+Metadata-Version: 2.1
+Name: grizzly-loadtester
+Version: 2.3.0
+Summary: Traffic generator based on locust and behave.
+Home-page: https://biometria-se.github.io/grizzly
+Author: biometria
+Author-email: opensource@biometria.se
+License: MIT
+Project-URL: Documentation, https://biometria-se.github.io/grizzly/
+Project-URL: Code, https://github.com/biometria-se/grizzly/
+Project-URL: Tracker, https://github.com/Biometria-se/grizzly/issues
+Keywords: locust,behave,load,loadtest,performance,traffic generator
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: aenum (==3.1.8)
+Requires-Dist: azure-core (<1.23.0)
+Requires-Dist: azure-servicebus (>=7.6.0)
+Requires-Dist: azure-storage-blob (>=12.9.0)
+Requires-Dist: behave (>=1.2.6)
+Requires-Dist: influxdb (>=5.3.1)
+Requires-Dist: Jinja2 (>=3.0.3)
+Requires-Dist: jsonpath-ng (>=1.5.3)
+Requires-Dist: locust (==2.8.6)
+Requires-Dist: lxml (>=4.8.0)
+Requires-Dist: mypy-extensions (>=0.4.3)
+Requires-Dist: opencensus-ext-azure (>=1.1.1)
+Requires-Dist: paramiko (>=2.9.2)
+Requires-Dist: python-dateutil (>=2.8.2)
+Requires-Dist: pyzmq (>=22.3.0)
+Requires-Dist: typing-extensions (<4.0.0,>=3.10.0)
+Requires-Dist: PyYAML (<6.0.0,>=5.3.0)
+Requires-Dist: setproctitle (>=1.2.2)
+Requires-Dist: tzdata (>=2022.1)
+Requires-Dist: backports.zoneinfo (>=0.2.1) ; python_version < "3.9"
+Provides-Extra: ci
+Requires-Dist: build (>=0.7.0) ; extra == 'ci'
+Requires-Dist: twine (<4.0.0,>=3.8.0) ; extra == 'ci'
+Requires-Dist: pip-tools (>=6.5.0) ; extra == 'ci'
+Provides-Extra: dev
+Requires-Dist: astunparse (>=1.6.3) ; extra == 'dev'
+Requires-Dist: mkdocs (>=1.2.0) ; extra == 'dev'
+Requires-Dist: mkdocs-material (>=8.2.1) ; extra == 'dev'
+Requires-Dist: mypy (>=0.931) ; extra == 'dev'
+Requires-Dist: flake8 (>=4.0.0) ; extra == 'dev'
+Requires-Dist: pydoc-markdown (<5.0.0,>=4.6.1) ; extra == 'dev'
+Requires-Dist: pylint (>=2.12.2) ; extra == 'dev'
+Requires-Dist: pytest (>=7.0.0) ; extra == 'dev'
+Requires-Dist: pytest-cov (>=3.0.0) ; extra == 'dev'
+Requires-Dist: pytest-mock (>=3.7.0) ; extra == 'dev'
+Requires-Dist: pytest-timeout (>=2.1.0) ; extra == 'dev'
+Requires-Dist: atomicwrites (>=1.4.0) ; extra == 'dev'
+Requires-Dist: types-paramiko (>=2.8.13) ; extra == 'dev'
+Requires-Dist: types-python-dateutil (>=2.8.9) ; extra == 'dev'
+Requires-Dist: types-PyYAML (<6.0.0,>=5.3.0) ; extra == 'dev'
+Requires-Dist: types-requests (>=2.27.0) ; extra == 'dev'
+Requires-Dist: types-Jinja2 (>=2.0.0) ; extra == 'dev'
+Requires-Dist: types-backports (>=0.1.3) ; extra == 'dev'
+Provides-Extra: mq
+Requires-Dist: pymqi (==1.12.0) ; extra == 'mq'
+Provides-Extra: script
+
+# Grizzly - `/ˈɡɹɪzli/`
+
+Framework:
+
+![PyPI - License](https://img.shields.io/pypi/l/grizzly-loadtester?style=for-the-badge)
+![PyPI](https://img.shields.io/pypi/v/grizzly-loadtester?style=for-the-badge)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/grizzly-loadtester?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/biometria-se/grizzly/code%20quality?style=for-the-badge)
+
+Command Line Interface:
+
+![PyPI - License](https://img.shields.io/pypi/l/grizzly-loadtester-cli?style=for-the-badge)
+![PyPI](https://img.shields.io/pypi/v/grizzly-loadtester-cli?style=for-the-badge)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/grizzly-loadtester-cli?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/biometria-se/grizzly-cli/code%20quality?style=for-the-badge)
+
+![grizzly logo](https://raw.githubusercontent.com/Biometria-se/grizzly/main/docs/assets/logo/grizzly_grasshopper_brown_256px.png)
+
+Grizzly is a framework to be able to easily define load scenarios, and is mainly built on-top of two other frameworks:
+
+> [Locust](https://locust.io): Define user behaviour with Python code, and swarm your system with millions of simultaneous users.
+
+> [Behave](https://behave.readthedocs.io/): Uses tests written in a natural language style, backed up by Python code.
+
+[Locust](https://en.wikipedia.org/wiki/Locust) are a group of certain species of short-horned grasshoppers in the family Arcididae that have a swarming phase.
+
+The name grizzly was chosen based on the grasshopper [Melanoplus punctulatus](https://en.wikipedia.org/wiki/Melanoplus_punctulatus), also known as __grizzly__ spur-throat grasshopper. This species [prefers living in trees](https://www.sciencedaily.com/releases/2005/07/050718234418.htm) over grass, which is a hint to [Biometria](https://www.biometria.se/)<sup>1</sup>, where `grizzly` originally was created.
+
+<sup>1</sup> _Biometria is a member owned and central actor within the swedish forestry that performs unbiased measurement of lumber flowing between forest and industry so that all of Swedens forest owners can feel confident selling their lumber._
+
+## Documentation
+
+More detailed documentation can be found [here](https://biometria-se.github.io/grizzly) and the easiest way to get started is to check out the [example](https://biometria-se.github.io/grizzly/example/).
+
+## Description
+
+`behave` is <del>ab</del>used for being able to define `locust` load test scenarios using [gherkin](https://cucumber.io/docs/gherkin). A feature can contain more than one scenario and all scenarios will run in parallell.
+
+```gherkin
+Feature: Rest API endpoint testing
+  Background: Common properties for all scenarios
+    Given "2" users
+    And spawn rate is "2" user per second
+    And stop on first failure
+
+  Scenario: Authorize
+    Given a user of type "RestApi" sending requests to "https://api.example.com"
+    And repeat for "2" iterations
+    And wait time inbetween requests is random between "0.1" and "0.3" seconds
+    And value for variable "AtomicDate.called" is "now | format='%Y-%m-%dT%H:%M:%S.00Z', timezone=UTC"
+    And value for variable "callback_endpoint" is "none"
+    Then post request with name "authorize" from endpoint "/api/v1/authorize?called={{ AtomicDate.called }} | content_type=json"
+        """
+        {
+            "username": "test",
+            "password": "password123",
+            "callback": "/api/v1/user/test"
+        }
+        """
+    Then save response payload "$.callback" in variable "callback_endpoint"
+
+    Then get request with name "user info" from endpoint "{{ callback_endpoint }} | content_type=json"
+    When response payload "$.user.name" is not "Test User" stop user
+```
+
+This makes it possible to implement load test scenarios without knowing python or how to use `locust`.
+
+## Features
+
+A number of features that we thought `locust` was missing out-of-the-box has been implemented in `grizzly`.
+
+### Test data
+
+Support for synchronous handling of test data (variables). This is extra important when running `locust` distributed and there is a need for each worker and user to have unique test data, that cannot be re-used.
+
+The solution is heavily inspired by [Karol Brejnas locust experiments - feeding the locust](https://medium.com/locust-io-experiments/locust-experiments-feeding-the-locusts-cf09e0f65897). A producer is running on the master (or local) node and keeps track of what has been sent to the consumer running on a worker (or local) node. The two communicates over a seperate [ZeroMQ](https://zeromq.org) session.
+
+When the consumer wants new test data, it sends a message to the server that it is available and for which scenario it is going to run. The producer then responds with unique test data that can be used.
+
+### Statistics
+
+Listeners for both InfluxDB and Azure Application Insights are included. The later is more or less [`appinsights_listener.py`](https://github.com/SvenskaSpel/locust-plugins/blob/master/locust_plugins/appinsights_listener.py), from the good guys at [Svenska Spel](https://github.com/SvenskaSpel), but with typing.
+
+They are useful when history of test runs is needed, or when wanting to correlate load tests with other events in the targeted environment.
+
+### Load test users
+
+`locust` comes with a simple user for loading an HTTP(S) endpoint and due to the nature of how the integration between `behave` and `locust` works, it is not possible to use `locust` provided users, even for HTTP(S) targets.
+
+* `RestApiUser`: send requests to REST API endpoinds, supports authentication with username+password or client secret
+* `ServiceBusUser`: send to and receive from Azure Service Bus queues and topics
+* `MessageQueueUser`: send and receive from IBM MQ queues
+* `SftpUser`: send and receive files from an SFTP-server
+* `BlobStorageUser`: send files to Azure Blob Storage<sup>2</sup>
+
+<sup>2</sup> A pull request for functionality in the other direction is appreciated!
+
+### Request log
+
+All failed requests are logged to a file which includes both header and body, both for request and response.
+
+## Installation
+
+```bash
+pip3 install grizzly-loadtester
+pip3 install grizzly-loadtester-cli
+```
+
+Do not forget to try the [example](https://biometria-se.github.io/grizzly/example/) which also serves as a boilerplate scenario project.
+
+## Development
+
+The easiest way to start contributing to this project is to have [Visual Studio Code](https://code.visualstudio.com/) (with "Remote - Containers" extension) and [docker](https://www.docker.com/) installed. The project comes with a `devcontainer`, which encapsulates everything needed for a development environment.
+
+It is also possible to use a python virtual environment where `requirements.txt` and `requirements-dev.txt` is installed, and also preferbly the IBM MQ client dependencies and `requirements-extras.txt`.
+
+
