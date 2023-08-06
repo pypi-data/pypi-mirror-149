@@ -1,0 +1,119 @@
+/*---------------------------------------------------------*/
+/* Logo and title 
+/*---------------------------------------------------------*/
+
+.title-container {
+  display: grid; 
+  grid-template-columns: min-content min-content; 
+  grid-template-rows: min-content; 
+  gap: 0px 0.5em; 
+  grid-template-areas: 
+    "logo title"; 
+  justify-items: start; 
+  align-items: center; 
+}
+.al-logo { grid-area: logo; }
+.al-title {
+  display: grid; 
+  grid-template-columns: min-content; 
+  grid-template-rows: 1fr 1fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "title-row-1"
+    "title-row-2"; 
+  justify-content: start; 
+  align-content: start; 
+  justify-items: start; 
+  align-items: start; 
+  grid-area: title; 
+  line-height: 1em;
+  font-family: 'Inter Bold', 'Arial';
+}
+
+.title-row-1 { 
+    grid-area: title-row-1; 
+    font-weight: bold;
+    font-size: .7em; 
+    text-transform: none; /*prevent any bootstrap theme to transform it to uppercase */
+  }
+
+.title-row-2 { 
+    grid-area: title-row-2;
+    font-weight: bold;
+    font-size: 1em; 
+    text-transform: none; /*prevent any bootstrap theme to transform it to uppercase */    
+  }
+
+@media only screen and (max-width: 800px) {
+  .al-title, .al-logo {
+    font-weight: normal;
+    font-size: 60%;    
+  }
+  .al-logo {    
+    border-width: 4px; 
+  }  
+}
+
+.danavbar-title { max-width: unset }
+
+/*---------------------------------------------------------*/
+/* Navigation bar and footer
+/*---------------------------------------------------------*/
+/*.navbar {
+    height: 60px;
+}
+*/
+.da-pad-for-navbar {
+    padding-top: 70px;
+}
+.da-top-for-navbar {
+    top: 70px;
+}
+footer {
+  text-align: right
+}
+footer a {
+  padding-left: 2em;
+}
+/*---------------------------------------------------------*/
+/* Content
+/*---------------------------------------------------------*/
+blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+    font-size: .75em;
+}
+blockquote:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+}
+blockquote p {
+    display: inline;
+}
+/* [FILE] image shadow */
+.daicon {    
+  box-shadow: 5px 5px 15px #69868e;
+  border-style: solid;
+  border-width: 1px;
+  border-color: gray;
+}
+/* Reduce integer and number input box size */
+input[type=number] {
+  width: 10rem;
+}
+/* Widen the Submit button (button labels vary) */
+.btn[type='submit'] {
+  min-width: 8em;
+}
+
+/* Make the footer links slightly darker for better contrast */
+footer a {
+  color: #0264F7
+}

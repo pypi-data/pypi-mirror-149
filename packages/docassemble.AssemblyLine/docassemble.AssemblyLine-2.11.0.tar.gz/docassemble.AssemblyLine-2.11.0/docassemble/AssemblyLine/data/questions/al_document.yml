@@ -1,0 +1,58 @@
+---
+features:
+  javascript:
+    - aldocument.js
+  css:
+    - aldocument.css
+---
+# This must be in Docassemble YAML due to limits in how Docassemble
+# searches for events. It also somewhat safer to limit the scope of what
+# events can be triggered by JS
+generic object: ALDocumentBundle
+event: x.send_email_action_event
+code: |
+  email_success = x.send_email(to=action_argument('email'), editable=action_argument('editable'), template=action_argument('template'))
+  if email_success:
+    # Exact phrase below is in Docassemble's words dictionary
+    log(word('E-mail was sent to') + ' ' + action_argument('email') ,'success')
+  else:
+    # E-mail failed is not in the default Docassemble words dictionary
+    log(word('E-mail failed'), 'error')
+---
+generic object: ALDocumentBundle
+code: |
+  # Used in the email subject line when email is triggered on download screen.
+  # This defaults to the interview title. For example, if the 
+  # interview title is "Guardianship Helper", the email
+  # subject would be "Your Guardianship Helper document from CourtFormsOnline is ready".
+  # Customize this if you prefer something like "Your guardianship document is ready"
+  x.document_label = str(all_variables(special='titles').get('title', all_variables(special='metadata').get('title', 'assembled'))).strip()
+---
+generic object: ALDocumentBundle
+template: x.send_email_template
+subject: |
+  % if len(x) > 1:
+  Your ${ x.document_label } documents from ${ al_app_name } are ready
+  % else:
+  Your ${ x.document_label } document from ${ al_app_name } is ready
+  % endif
+content: |
+  Your ${ x.document_label } document is attached.
+  
+  Visit ${ AL_ORGANIZATION_HOMEPAGE } to learn more.
+---
+generic object: ALDocumentBundle
+template: x.get_email_copy
+content: |
+  Get a copy of the documents in email
+---
+generic object: ALDocumentBundle
+template: x.include_editable_documents
+content: |
+  Include an editable copy
+---
+generic object: ALDocumentBundle
+template: x.zip_label
+content: |
+  Download zip
+  
