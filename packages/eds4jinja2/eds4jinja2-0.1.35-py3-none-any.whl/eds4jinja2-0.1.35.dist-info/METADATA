@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: eds4jinja2
+Version: 0.1.35
+Summary: Embed the data source specifications in your JINJA templates directly, and enjoy the dynamic data contexts.
+Home-page: https://github.com/meaningfy-ws/eds4jinja2
+Author: Eugeniu Costetchi
+Author-email: costezki.eugen@gmail.com
+Maintainer: Eugeniu Costetchi
+Maintainer-email: costezki.eugen@gmail.com
+License: UNKNOWN
+Keywords: template,jinja,report,report generation,rdf,sparql,linked-data,data-source,dynamic-context
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Utilities
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: jinja2
+Requires-Dist: sparqlwrapper
+Requires-Dist: pandas
+Requires-Dist: pyyaml
+Requires-Dist: toml
+Requires-Dist: xlrd
+Requires-Dist: openpyxl
+Requires-Dist: numpy
+Requires-Dist: Click
+Requires-Dist: rdflib
+Requires-Dist: py-singleton
+Requires-Dist: beautifulsoup4
+Requires-Dist: requests
+Provides-Extra: test
+Requires-Dist: tabulate ; extra == 'test'
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: coverage ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+Requires-Dist: pytest-bdd ; extra == 'test'
+Requires-Dist: flake8 ; extra == 'test'
+Requires-Dist: myst-parser ; extra == 'test'
+Requires-Dist: sphinx ; extra == 'test'
+Requires-Dist: sphinxcontrib-apidoc ; extra == 'test'
+Requires-Dist: twine ; extra == 'test'
+Requires-Dist: setuptools ; extra == 'test'
+Requires-Dist: wheel ; extra == 'test'
+
+# eds4jinja2
+An easy way to reports generation with Jinja2 templates. 
+
+With Embedded Datasource Specifications inside Jinja2 templates, you can fetch the data you need on the spot. 
+
+![test](https://github.com/meaningfy-ws/eds4jinja2/workflows/test/badge.svg)
+[![codecov](https://codecov.io/gh/meaningfy-ws/eds4jinja2/branch/master/graph/badge.svg)](https://codecov.io/gh/meaningfy-ws/eds4jinja2)
+[![Documentation Status](https://readthedocs.org/projects/eds4jinja2/badge/?version=latest)](https://eds4jinja2.readthedocs.io/en/latest/?badge=latest)
+
+![PyPI](https://img.shields.io/pypi/v/eds4jinja2?color=teal&label=version)
+![PyPI - Status](https://img.shields.io/pypi/status/eds4jinja2)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eds4jinja2)
+![PyPI - License](https://img.shields.io/pypi/l/eds4jinja2?color=green)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/eds4jinja2)
+
+Specify the data sources in your JINJA templates directly.
+
+```jinja2
+{% set content, error = from_file(path).fetch_tree() %} \n
+content:  {{ content }}\n
+error: {{ error }}\n
+```
+
+```jinja2
+{% set content, error =
+    from_endpoint(endpoint).with_query(query_string).fetch_tabular() %}
+content:  {{ content }} \n
+error: {{ error }} \n
+```
+
+# Installation
+
+```shell script
+pip install eds4jinja2
+```
+
+# Usage
+
+[Read the docs here](https://eds4jinja2.readthedocs.io/en/latest/)  
+
+## Contributing
+You are more than welcome to help expand and mature this project. We adhere to [Apache code of conduct](https://www.apache.org/foundation/policies/conduct), please follow it in all your interactions on the project.   
+When contributing to this repository, please first discuss the change you wish to make via issue, email, or any other method with the maintainers of this repository before making a change.
+
+## Licence 
+This project is licensed under [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html) licence. 
+Powered by [Meaningfy](https://github.com/meaningfy-ws).
+
