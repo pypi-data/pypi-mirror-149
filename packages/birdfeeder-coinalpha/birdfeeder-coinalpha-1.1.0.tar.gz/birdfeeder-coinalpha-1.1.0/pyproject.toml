@@ -1,0 +1,131 @@
+[build-system]
+requires = ["poetry>=1.0"]
+build-backend = "poetry.masonry.api"
+
+# Default section.
+# Convert dephell metainfo and dependencies from poetry to setup.py:
+# $ dephell deps convert
+[tool.dephell.main]
+from = {format = "poetry", path = "pyproject.toml"}
+to = {format = "setuppy", path = "setup.py"}
+
+# https://dephell.readthedocs.io/cmd-project-bump.html?highlight=versioning#versioning-schemes
+# zerover: means can broke anything in any release, versioning is 0.x.y
+versioning = "semver"
+
+# TODO: buggy, https://github.com/dephell/dephell/issues/484
+# Make lockfile
+# $ dephell deps convert --env=lock
+#[tool.dephell.lock]
+#from = {format = "poetry", path = "pyproject.toml"}
+#to = {format = "poetrylock", path = "poetry.lock"}
+
+# TODO: buggy, use poetry2conda for now, see README
+#[tool.dephell.conda]
+#from = {format = "poetry", path = "pyproject.toml"}
+#to = {format = "conda", path = "environment.yml"}
+
+
+[tool.poetry]
+name = "birdfeeder-coinalpha"
+version = "1.1.0"
+description = "Helper library for CoinAlpha projects"
+license = "MIT"
+authors = ["Vladimir Kamarzin <vvk@vvk.pp.ru>"]
+readme = "README.md"
+repository = "https://github.com/coinalpha/birdfeeder"
+
+keywords = []
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+packages = [
+    { include = "birdfeeder" }
+]
+include = ["birdfeeder/sample_configs/redis_sentinel_config"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+"ruamel.yaml" = "^0.16"
+python-json-logger = "^2"
+environs = "^9"
+typer = ">=0.3"
+pandas = "^1.1"
+cachetools = "^4"
+aiohttp = "^3.2"
+aiorun = "^2020"
+kafka-python = "^2"
+pydantic = "^1.9.0"
+boto3 = "^1"
+aioconsole = ">=0.1.16"
+
+[tool.poetry.dev-dependencies]
+# See https://python-poetry.org/docs/dependency-specification/
+poetry2conda = "^0.3"
+pre-commit = "^2.2.0"
+pytest = "^6"
+pytest-cov = "^2.7"
+pytest-mock = "^3.1.0"
+pytest-asyncio = "^0.14"
+pytest-aiohttp = "*"
+docker = "^4"
+SQLAlchemy = "^1.4"
+SQLAlchemy-Utils = "^0.37"
+redis = "^3.5"
+PyMySQL = "^1.0.2"
+mysqlclient = "^2"
+
+[tool.poetry.scripts]
+build_image = 'birdfeeder.build_image:app'
+
+[tool.poetry2conda]
+name = "birdfeeder"
+
+[tool.poetry2conda.dependencies]
+poetry2conda = { channel = "pip" }
+pre-commit = { channel = "pip" }
+environs = { channel = "conda-forge" }
+typer = { channel = "conda-forge" }
+aiorun = { channel = "conda-forge" }
+kafka-python = { channel = "conda-forge" }
+docker = { name = "docker-py" }
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 120
+
+[tool.pytest.ini_options]
+# Directories that are not visited by pytest collector:
+norecursedirs = "*.egg .eggs dist build docs .tox .git __pycache__"
+
+# Extra options:
+addopts = [
+  "--strict-markers",
+  "--doctest-modules",
+  "--cov=birdfeeder",
+  "--cov-report=term:skip-covered",
+  "--cov-report=html",
+  "--cov-branch",
+  "--cov-append",
+  ]
