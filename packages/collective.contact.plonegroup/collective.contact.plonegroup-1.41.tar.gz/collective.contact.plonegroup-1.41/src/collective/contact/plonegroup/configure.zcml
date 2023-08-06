@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.contact.plonegroup">
+
+    <i18n:registerTranslations directory="locales" />
+
+    <five:registerPackage package="." initialize=".initialize" />
+
+    <include package=".browser" />
+    <include package=".content" />
+    <include package=".upgrades" />
+    <include package="plone.api" />
+    <include package="collective.contact.core" />
+    <include package="imio.helpers" />
+
+    <include file="subscribers.zcml" />
+
+    <genericsetup:registerProfile
+        name="default"
+        title="collective.contact.plonegroup"
+        directory="profiles/default"
+        description="Installs the collective.contact.plonegroup add-on."
+        provides="Products.GenericSetup.interfaces.EXTENSION" />
+
+    <utility
+        name="collective.contact.plonegroup.functions"
+        factory=".vocabularies.FunctionsVocabulary" />
+
+    <utility
+        name="collective.contact.plonegroup.global_groups"
+        factory=".vocabularies.GlobalGroupsVocabulary" />
+
+    <adapter
+        for="zope.interface.Interface
+             z3c.form.interfaces.IFormLayer
+             zope.interface.Interface
+             collective.contact.plonegroup.interfaces.IGroupField
+             z3c.form.interfaces.IWidget"
+        provides="z3c.form.interfaces.ITerms"
+        factory=".vocabularies.GroupsTerms"
+        />
+
+    <adapter
+        for="zope.interface.Interface
+             z3c.form.interfaces.IFormLayer
+             zope.interface.Interface
+             collective.contact.plonegroup.interfaces.IOrganizationField
+             z3c.form.interfaces.IWidget"
+        provides="z3c.form.interfaces.ITerms"
+        factory=".vocabularies.OrganizationsTerms"
+        />
+
+    <adapter
+        for="zope.interface.Interface
+             z3c.form.interfaces.IFormLayer
+             zope.interface.Interface
+             collective.contact.plonegroup.interfaces.IDGFVocabularyField
+             z3c.form.interfaces.IWidget"
+        provides="z3c.form.interfaces.ITerms"
+        factory=".vocabularies.DGFVocabularyTerms"
+        />
+
+    <adapter factory=".subscribers.PloneGroupContactChecksAdapter" />
+
+</configure>
