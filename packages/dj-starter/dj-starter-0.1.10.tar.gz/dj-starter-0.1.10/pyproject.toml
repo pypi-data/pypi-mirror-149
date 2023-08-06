@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "dj-starter"
+version = "0.1.10"
+description = "Django Project Bootstraper with Common Models and Utilities"
+authors = ["Adrian <adrian@rydeas.com>"]
+repository = "https://github.com/adrianmeraz/dj-starter"
+
+packages = [
+    { include = "djstarter" }
+]
+exclude = [
+    "manage.py"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+coverage = "^6.2"
+Django = "^3.2.4"
+django-environ = "^0.8.1"
+httpx = {version = "~0.22.0", extras = ["http2"]}
+psycopg2-binary = "^2.9.2"
+python-dotenv = "^0.19.0"
+wheel = "^0.36.2"
+jsonpickle = "^2.1.0"
+
+[tool.poetry.dev-dependencies]
+respx = "~0.19.0"
+tblib = "~1.7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
