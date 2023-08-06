@@ -1,0 +1,62 @@
+Metadata-Version: 2.1
+Name: imlresi
+Version: 0.0.4
+Summary: Tools for dealing with IML-Resi PowerDrill data.
+Home-page: https://github.com/hammockman/imlresi-pypi
+Author: Jonathan Harrington
+Author-email: jh@aliente.ch
+License: MIT
+Project-URL: Issue Tracker, https://github.com/hammockman/imlresi-pypi/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# imlresi
+Tools for dealing with [IML-Resi PowerDrill](https://www.iml-service.com/product/iml-powerdrill/) data using python.
+
+**THIS PACKAGE IS UNOFFICAL AND HAS BEEN DEVELOPED INDEPENDENT OF IML**
+
+Current limitations:
+
+1. Focus is on actual measurements made by the tool rather than meta-info.
+1. Poor support for data generated in PD-Tools (e.g. "assessments").
+
+
+## Install
+
+https://pypi.org/project/imlresi/
+
+```sh
+pip install imlresi
+```
+
+
+
+## Use
+
+
+```python
+from imlresi import Trace
+
+tr = Trace()
+tr.read('trace.rgp')
+tr.to_json()
+```
+
