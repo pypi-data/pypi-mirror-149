@@ -1,0 +1,91 @@
+Metadata-Version: 2.1
+Name: wagtail-autocomplete
+Version: 0.8.0
+Summary: An Autocomplete edit handler for Pages, Snippets, and more.
+Home-page: https://github.com/wagtail/wagtail-autocomplete
+Author: Emily Horsman and Harris Lapiroff
+Author-email: me@emilyhorsman.com
+License: BSD-3-Clause
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 2.2
+Classifier: Framework :: Django :: 3.0
+Classifier: Framework :: Django :: 3.1
+Classifier: Framework :: Django
+Classifier: Framework :: Wagtail
+Classifier: Framework :: Wagtail :: 2
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+License-File: LICENSE
+Requires-Dist: wagtail (>=2.3)
+Provides-Extra: docs
+Requires-Dist: Sphinx (>=1.7) ; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme (>=0.4.0) ; extra == 'docs'
+Provides-Extra: test
+Requires-Dist: tox ; extra == 'test'
+Requires-Dist: pytest (>=3.5) ; extra == 'test'
+Requires-Dist: pytest-django (>=3.2) ; extra == 'test'
+Requires-Dist: beautifulsoup4 (>=4.8) ; extra == 'test'
+Requires-Dist: html5lib (>=0.999999999) ; extra == 'test'
+Requires-Dist: pytest-pythonpath (>=0.7.2) ; extra == 'test'
+
+Wagtail Autocomplete
+====================
+
+.. image:: https://circleci.com/gh/wagtail/wagtail-autocomplete.svg?style=svg
+    :target: https://circleci.com/gh/wagtail/wagtail-autocomplete
+
+An edit handler for the Wagtail content editor allowing single or multi autocompleted selection of Pages, Snippets, or other models.
+The widget is written in React and can be used outside the Wagtail admin, if desired.
+
+.. image:: https://raw.githubusercontent.com/wagtail/wagtail-autocomplete/master/docs/_static/autocomplete-m2m-demo.gif
+
+Features
+~~~~~~~~
+
+* Rapidly select related objects via a smooth autocomplete interface
+* A drop-in alternative to ``PageChooserPanel`` or ``SnippetChooserPanel``
+* Create new objects from the autocomplete input if your search turns up blank
+* React component can be used outside of the Wagtail admin for public-facing forms
+* Default theme shares the color scheme and styles of the Wagtail admin
+* Easy to re-theme with `BEM <http://getbem.com/>`_ methodology
+
+Who’s using it?
+~~~~~~~~~~~~~~~
+
+* The `U.S. Press Freedom Tracker <https://pressfreedomtracker.us/>`_ makes extensive use of this edit handler with its public-facing filters and content editor to rapidly select and create new related metadata objects.
+
+Merge into wagtail/wagtail
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Eventually we would like this to be merged into `wagtail/wagtail <https://github.com/wagtail/wagtail/>`_.
+This will require some work on the Wagtail API.
+
+* Support endpoints for non-``Page`` models
+* Support standard `Django field lookups <https://docs.djangoproject.com/en/1.11/ref/models/querysets/#id4>`_ such as ``id__in``
+* Create objects from the API
+* Permission system for non-administrator access to the API
+
+Documentation
+~~~~~~~~~~~~~
+
+Our documentation is on `Read the Docs <https://wagtail-autocomplete.readthedocs.io/>`_ and includes `basic usage instructions <https://wagtail-autocomplete.readthedocs.io/en/latest/basic_usage.html>`_ as well as `contribution guidelines <https://wagtail-autocomplete.readthedocs.io/en/latest/contributing.html>`_.
+
+Contributors
+~~~~~~~~~~~~
+
+* Harris Lapiroff (Little Weaver Web Collective) for the UX and UI design
+* Rachel Stevens (Little Weaver Web Collective)
+* Emily Horsman (Little Weaver Web Collective)
+
+
