@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0bdf0b"],{"2dad":function(n,e){FullCalendar.globalLocales.push(function(){"use strict";var n={code:"en-nz",week:{dow:1,doy:4},buttonHints:{prev:"Previous $0",next:"Next $0",today:"This $0"},viewHint:"$0 view",navLinkHint:"Go to $0",moreLinkHint(n){return`Show ${n} more event${1===n?"":"s"}`}};return n}())}}]);
+//# sourceMappingURL=chunk-2d0bdf0b.5010fad0.js.map

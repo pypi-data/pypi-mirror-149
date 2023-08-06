@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0af8a4"],{"0f80":function(e,t,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"lt",week:{dow:1,doy:4},buttonText:{prev:"Atgal",next:"Pirmyn",today:"Šiandien",month:"Mėnuo",week:"Savaitė",day:"Diena",list:"Darbotvarkė"},weekText:"SAV",allDayText:"Visą dieną",moreLinkText:"daugiau",noEventsText:"Nėra įvykių rodyti"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d0af8a4.b7cde0c0.js.map

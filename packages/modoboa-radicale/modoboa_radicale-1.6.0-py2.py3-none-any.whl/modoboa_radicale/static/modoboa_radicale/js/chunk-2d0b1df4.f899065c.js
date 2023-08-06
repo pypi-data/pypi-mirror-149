@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b1df4"],{2264:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var d={code:"cs",week:{dow:1,doy:4},buttonText:{prev:"Dříve",next:"Později",today:"Nyní",month:"Měsíc",week:"Týden",day:"Den",list:"Agenda"},weekText:"Týd",allDayText:"Celý den",moreLinkText:function(e){return"+další: "+e},noEventsText:"Žádné akce k zobrazení"};n.default=d}}]);
+//# sourceMappingURL=chunk-2d0b1df4.f899065c.js.map

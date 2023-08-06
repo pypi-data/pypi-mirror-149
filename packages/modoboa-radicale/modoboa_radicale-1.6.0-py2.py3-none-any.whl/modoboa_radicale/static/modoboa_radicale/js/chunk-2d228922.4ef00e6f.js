@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d228922"],{da6e:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var d={code:"et",week:{dow:1,doy:4},buttonText:{prev:"Eelnev",next:"Järgnev",today:"Täna",month:"Kuu",week:"Nädal",day:"Päev",list:"Päevakord"},weekText:"näd",allDayText:"Kogu päev",moreLinkText:function(e){return"+ veel "+e},noEventsText:"Kuvamiseks puuduvad sündmused"};n.default=d}}]);
+//# sourceMappingURL=chunk-2d228922.4ef00e6f.js.map

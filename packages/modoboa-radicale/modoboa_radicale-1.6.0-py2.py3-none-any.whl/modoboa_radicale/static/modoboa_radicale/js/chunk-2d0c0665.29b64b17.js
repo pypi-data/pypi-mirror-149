@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c0665"],{"422c":function(e,t){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"hu",week:{dow:1,doy:4},buttonText:{prev:"vissza",next:"előre",today:"ma",month:"Hónap",week:"Hét",day:"Nap",list:"Lista"},weekText:"Hét",allDayText:"Egész nap",moreLinkText:"további",noEventsText:"Nincs megjeleníthető esemény"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0c0665.29b64b17.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0dd623"],{"80c8":function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var d={code:"da",week:{dow:1,doy:4},buttonText:{prev:"Forrige",next:"Næste",today:"I dag",month:"Måned",week:"Uge",day:"Dag",list:"Agenda"},weekText:"Uge",allDayText:"Hele dagen",moreLinkText:"flere",noEventsText:"Ingen arrangementer at vise"};n.default=d}}]);
+//# sourceMappingURL=chunk-2d0dd623.6de0dfed.js.map

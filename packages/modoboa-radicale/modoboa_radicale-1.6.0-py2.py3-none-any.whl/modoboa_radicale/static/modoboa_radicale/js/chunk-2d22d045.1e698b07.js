@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d22d045"],{f665:function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o={code:"fr",week:{dow:1,doy:4},buttonText:{prev:"Précédent",next:"Suivant",today:"Aujourd'hui",year:"Année",month:"Mois",week:"Semaine",day:"Jour",list:"Planning"},weekText:"Sem.",allDayText:"Toute la journée",moreLinkText:"en plus",noEventsText:"Aucun événement à afficher"};n.default=o}}]);
+//# sourceMappingURL=chunk-2d22d045.1e698b07.js.map

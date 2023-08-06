@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0e6cd5"],{"99fe":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"si-lk",week:{dow:1,doy:4},buttonText:{prev:"පෙර",next:"පසු",today:"අද",month:"මාසය",week:"සතිය",day:"දවස",list:"ලැයිස්තුව"},weekText:"සති",allDayText:"සියලු",moreLinkText:"තවත්",noEventsText:"මුකුත් නැත"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0e6cd5.07399041.js.map

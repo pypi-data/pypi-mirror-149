@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d237f2f"],{fcfb:function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"ja",buttonText:{prev:"前",next:"次",today:"今日",month:"月",week:"週",day:"日",list:"予定リスト"},weekText:"週",allDayText:"終日",moreLinkText:function(e){return"他 "+e+" 件"},noEventsText:"表示する予定はありません"};return e}())}}]);
+//# sourceMappingURL=chunk-2d237f2f.698bc25c.js.map

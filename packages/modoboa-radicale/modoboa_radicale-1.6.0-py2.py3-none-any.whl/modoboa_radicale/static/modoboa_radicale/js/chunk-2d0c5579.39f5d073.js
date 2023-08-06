@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c5579"],{"3f4d":function(e,d,t){"use strict";Object.defineProperty(d,"__esModule",{value:!0});var o={code:"cy",week:{dow:1,doy:4},buttonText:{prev:"Blaenorol",next:"Nesaf",today:"Heddiw",year:"Blwyddyn",month:"Mis",week:"Wythnos",day:"Dydd",list:"Rhestr"},weekText:"Wythnos",allDayText:"Trwy'r dydd",moreLinkText:"Mwy",noEventsText:"Dim digwyddiadau"};d.default=o}}]);
+//# sourceMappingURL=chunk-2d0c5579.39f5d073.js.map

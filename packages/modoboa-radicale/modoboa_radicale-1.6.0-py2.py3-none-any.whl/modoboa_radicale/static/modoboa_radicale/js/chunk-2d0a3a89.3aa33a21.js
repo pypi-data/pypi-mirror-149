@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0a3a89"],{"02b3":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"zh-tw",buttonText:{prev:"上月",next:"下月",today:"今天",month:"月",week:"週",day:"天",list:"活動列表"},weekText:"周",allDayText:"整天",moreLinkText:"顯示更多",noEventsText:"没有任何活動"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0a3a89.3aa33a21.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d3299"],{"5c1f":function(e,t,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"eu",week:{dow:1,doy:7},buttonText:{prev:"Aur",next:"Hur",today:"Gaur",month:"Hilabetea",week:"Astea",day:"Eguna",list:"Agenda"},weekText:"As",allDayText:"Egun osoa",moreLinkText:"gehiago",noEventsText:"Ez dago ekitaldirik erakusteko"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0d3299.ad7a20ee.js.map

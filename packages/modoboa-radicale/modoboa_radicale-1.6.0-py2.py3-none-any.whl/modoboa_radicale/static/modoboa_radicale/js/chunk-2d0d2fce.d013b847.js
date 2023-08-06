@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0d2fce"],{"5b9d":function(e,o){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"eo",week:{dow:1,doy:4},buttonText:{prev:"Antaŭa",next:"Sekva",today:"Hodiaŭ",month:"Monato",week:"Semajno",day:"Tago",list:"Tagordo"},weekText:"Sm",allDayText:"Tuta tago",moreLinkText:"pli",noEventsText:"Neniuj eventoj por montri"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0d2fce.d013b847.js.map

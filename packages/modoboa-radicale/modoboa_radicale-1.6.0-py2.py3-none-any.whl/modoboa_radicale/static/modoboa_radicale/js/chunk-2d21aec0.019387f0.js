@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21aec0"],{be29:function(e,t,a){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n={code:"fi",week:{dow:1,doy:4},buttonText:{prev:"Edellinen",next:"Seuraava",today:"Tänään",month:"Kuukausi",week:"Viikko",day:"Päivä",list:"Tapahtumat"},weekText:"Vk",allDayText:"Koko päivä",moreLinkText:"lisää",noEventsText:"Ei näytettäviä tapahtumia"};t.default=n}}]);
+//# sourceMappingURL=chunk-2d21aec0.019387f0.js.map

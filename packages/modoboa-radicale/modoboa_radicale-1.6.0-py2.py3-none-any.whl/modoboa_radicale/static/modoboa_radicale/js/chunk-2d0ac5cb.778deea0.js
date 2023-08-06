@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0ac5cb"],{"18e3":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"ug",buttonText:{month:"ئاي",week:"ھەپتە",day:"كۈن",list:"كۈنتەرتىپ"},allDayText:"پۈتۈن كۈن"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0ac5cb.778deea0.js.map

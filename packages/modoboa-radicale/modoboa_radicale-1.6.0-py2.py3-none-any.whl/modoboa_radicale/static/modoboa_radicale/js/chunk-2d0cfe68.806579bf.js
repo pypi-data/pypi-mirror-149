@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cfe68"],{"664f":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"nl",week:{dow:1,doy:4},buttonText:{prev:"Vorige",next:"Volgende",today:"Vandaag",year:"Jaar",month:"Maand",week:"Week",day:"Dag",list:"Agenda"},allDayText:"Hele dag",moreLinkText:"extra",noEventsText:"Geen evenementen om te laten zien"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0cfe68.806579bf.js.map

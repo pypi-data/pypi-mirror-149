@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0ab6c4"],{"14e0":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"bg",week:{dow:1,doy:7},buttonText:{prev:"назад",next:"напред",today:"днес",month:"Месец",week:"Седмица",day:"Ден",list:"График"},allDayText:"Цял ден",moreLinkText:function(e){return"+още "+e},noEventsText:"Няма събития за показване"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0ab6c4.e953947e.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0b66f7"],{"1cc2":function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"fa",week:{dow:6,doy:12},direction:"rtl",buttonText:{prev:"قبلی",next:"بعدی",today:"امروز",month:"ماه",week:"هفته",day:"روز",list:"برنامه"},weekText:"هف",allDayText:"تمام روز",moreLinkText:function(e){return"بیش از "+e},noEventsText:"هیچ رویدادی به نمایش"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d0b66f7.442a9179.js.map

@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c49a7"],{"3c12":function(n,a){FullCalendar.globalLocales.push(function(){"use strict";var n={code:"ug",buttonText:{month:"ئاي",week:"ھەپتە",day:"كۈن",list:"كۈنتەرتىپ"},allDayText:"پۈتۈن كۈن"};return n}())}}]);
+//# sourceMappingURL=chunk-2d0c49a7.9d87f4f7.js.map

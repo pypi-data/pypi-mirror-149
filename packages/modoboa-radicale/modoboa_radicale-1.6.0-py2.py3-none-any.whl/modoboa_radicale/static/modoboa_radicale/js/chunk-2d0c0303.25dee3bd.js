@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c0303"],{"415e":function(e,o,t){"use strict";Object.defineProperty(o,"__esModule",{value:!0});var a={code:"es",week:{dow:0,doy:6},buttonText:{prev:"Ant",next:"Sig",today:"Hoy",month:"Mes",week:"Semana",day:"Día",list:"Agenda"},weekText:"Sm",allDayText:"Todo el día",moreLinkText:"más",noEventsText:"No hay eventos para mostrar"};o.default=a}}]);
+//# sourceMappingURL=chunk-2d0c0303.25dee3bd.js.map

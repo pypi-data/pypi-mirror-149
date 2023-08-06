@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0ab68b"],{"14c5":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"is",week:{dow:1,doy:4},buttonText:{prev:"Fyrri",next:"Næsti",today:"Í dag",month:"Mánuður",week:"Vika",day:"Dagur",list:"Dagskrá"},weekText:"Vika",allDayText:"Allan daginn",moreLinkText:"meira",noEventsText:"Engir viðburðir til að sýna"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0ab68b.7a66745b.js.map

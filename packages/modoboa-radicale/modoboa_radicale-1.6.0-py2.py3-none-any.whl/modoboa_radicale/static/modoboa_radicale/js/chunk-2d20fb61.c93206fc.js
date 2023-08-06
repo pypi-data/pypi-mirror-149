@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d20fb61"],{b591:function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"ko",buttonText:{prev:"이전달",next:"다음달",today:"오늘",month:"월",week:"주",day:"일",list:"일정목록"},weekText:"주",allDayText:"종일",moreLinkText:"개",noEventsText:"일정이 없습니다"};return e}())}}]);
+//# sourceMappingURL=chunk-2d20fb61.c93206fc.js.map

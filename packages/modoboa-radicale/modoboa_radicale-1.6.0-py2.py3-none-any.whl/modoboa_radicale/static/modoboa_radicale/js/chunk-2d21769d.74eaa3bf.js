@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d21769d"],{c72e:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"ko",buttonText:{prev:"이전달",next:"다음달",today:"오늘",month:"월",week:"주",day:"일",list:"일정목록"},weekText:"주",allDayText:"종일",moreLinkText:"개",noEventsText:"일정이 없습니다"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d21769d.74eaa3bf.js.map

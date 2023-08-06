@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d231616"],{effe:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"hu",week:{dow:1,doy:4},buttonText:{prev:"vissza",next:"előre",today:"ma",month:"Hónap",week:"Hét",day:"Nap",list:"Lista"},weekText:"Hét",allDayText:"Egész nap",moreLinkText:"további",noEventsText:"Nincs megjeleníthető esemény"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d231616.acb58609.js.map

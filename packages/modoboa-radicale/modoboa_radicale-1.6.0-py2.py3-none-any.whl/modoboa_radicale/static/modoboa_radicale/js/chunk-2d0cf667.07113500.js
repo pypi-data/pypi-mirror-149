@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0cf667"],{"640c":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"da",week:{dow:1,doy:4},buttonText:{prev:"Forrige",next:"Næste",today:"I dag",month:"Måned",week:"Uge",day:"Dag",list:"Agenda"},weekText:"Uge",allDayText:"Hele dagen",moreLinkText:"flere",noEventsText:"Ingen arrangementer at vise"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0cf667.07113500.js.map

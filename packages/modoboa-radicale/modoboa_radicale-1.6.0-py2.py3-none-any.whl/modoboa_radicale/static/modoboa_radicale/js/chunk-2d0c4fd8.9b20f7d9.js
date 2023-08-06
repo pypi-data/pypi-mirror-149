@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c4fd8"],{"3cd6":function(e,a,n){"use strict";Object.defineProperty(a,"__esModule",{value:!0});var t={code:"id",week:{dow:1,doy:7},buttonText:{prev:"mundur",next:"maju",today:"hari ini",month:"Bulan",week:"Minggu",day:"Hari",list:"Agenda"},weekText:"Mg",allDayText:"Sehari penuh",moreLinkText:"lebih",noEventsText:"Tidak ada acara untuk ditampilkan"};a.default=t}}]);
+//# sourceMappingURL=chunk-2d0c4fd8.9b20f7d9.js.map

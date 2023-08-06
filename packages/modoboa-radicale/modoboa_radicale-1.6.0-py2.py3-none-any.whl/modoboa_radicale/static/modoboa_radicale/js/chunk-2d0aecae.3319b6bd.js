@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0aecae"],{"0c27":function(e,n){FullCalendar.globalLocales.push(function(){"use strict";var e={code:"mk",buttonText:{prev:"претходно",next:"следно",today:"Денес",month:"Месец",week:"Недела",day:"Ден",list:"График"},weekText:"Сед",allDayText:"Цел ден",moreLinkText:function(e){return"+повеќе "+e},noEventsText:"Нема настани за прикажување"};return e}())}}]);
+//# sourceMappingURL=chunk-2d0aecae.3319b6bd.js.map

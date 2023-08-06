@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d228cd2"],{db75:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var o={code:"uk",week:{dow:1,doy:7},buttonText:{prev:"Попередній",next:"далі",today:"Сьогодні",month:"Місяць",week:"Тиждень",day:"День",list:"Порядок денний"},weekText:"Тиж",allDayText:"Увесь день",moreLinkText:function(e){return"+ще "+e+"..."},noEventsText:"Немає подій для відображення"};t.default=o}}]);
+//# sourceMappingURL=chunk-2d228cd2.7670636b.js.map
