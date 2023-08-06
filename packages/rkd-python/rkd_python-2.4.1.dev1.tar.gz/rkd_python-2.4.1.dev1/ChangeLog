@@ -1,0 +1,635 @@
+CHANGES
+=======
+
+* Update README.rst
+
+v2.4.0
+------
+
+* #74: Import cosmetics
+
+v2.4.0.0b1
+----------
+
+* #74: Fix RKD\_BIN on CI
+* #74: Fix PATH on CI
+* #74: Migrate to PyTest
+* #36: Add support for the custom working directory
+* #36: By the way fix error: \`AttributeError: 'float' object has no attribute 'replace'\`
+* #71: Fix tests
+* #71: Remove unnecessary PYTHONUNBUFFERED setting, as rkd.process.check\_call() sets it anyway
+* #71: Add support for output\_capture\_callback parameter in rkd.process.check\_call()
+* Dummy commit
+* Add a callback support to rkd.process.check\_call(), so this method could be used to capture into a closure
+* [#50] Docs
+* [#50] Docs
+* [#50] Test coverage for blocks parsing, refactored exceptions
+* [#50] Resolve existing issues and unit tests
+* #69: Add support for output processing
+* [#50] Reduce responsibility of TaskResolver
+* [#50] Working implementation of @rescue, @error and @retry modifiers
+* [#50] Working implementation of @rescue, @error and @retry modifiers
+* [#50] Syntax parsing - without working implementation of attributes yet
+* [#50] Move argparsing to a subdirectory to be able to extract model classes into a model.py file
+* [#50] Initial argparsing implementation
+* #67: Correctly use stderr
+* #65: Implement \`rkd.env\` module
+* #63: Add a simple test
+* #63: Migrate from poll() to epoll()
+* #63: Migrate from poll() to epoll()
+* #63: Implement fileno(), so the StandardOutputReplication() could more realistic look
+* #63: Fix unicode decode error
+
+v2.3.4
+------
+
+* #62: Fallback to global path, when there is no local path - tests coverage
+* #62: Fallback to global path, when there is no local path
+
+v2.3.3
+------
+
+* #54: Covered with a functional test, fixed packaging of "misc" directory with help of test that is now veryfing all files one-by-one
+* #54: Corrections to the package\_data to include "misc" directory
+* #54: Corrections to the package\_data to include "misc" directory
+* #54: Adjust packaging settings
+* #54: Trying to add "misc" directory to package
+* #54: Add docs, fix issues in docs
+* #54: Cover with unit tests
+* #54: Make the installed package directory less important, and development directory more important - to allow customizations
+* #54: Don't include extra directory, if the module already contains included files (MAINFEST.in)
+* #54: Added a command to clear environment
+* #54: Clean up
+* #54: Consider looking for resources in package, venv, user and global directories
+* CI: Fix ApplicationContext issues related to not finding ":sh" task
+* Bugfix: Move misc dirctory to /usr/share/rkd
+* Bugfix: Package also "internal" and "misc" directories
+* #61: Switched from chdir to PYTHONPATH, increased tests coverage in rkd\_python
+* #60: Migration from Travis CI to Github CI - try to correct tests on Github CI
+* #60: Migration from Travis CI to Github CI - try to correct tests on Github CI
+* #60: Migration from Travis CI to Github CI - release rkd and rkd\_python at once
+* #60: Migration from Travis CI to Github CI - update badge
+* #60: Migration from Travis CI to Github CI - skip test test\_sh\_captures\_output\_in\_correct\_order\_with\_various\_timing
+* #60: Migration from Travis CI to Github CI - add twine and pbr
+* #60: Migration from Travis CI to Github CI - set PYTHONPATH
+* #60: Migration from Travis CI to Github CI - set git identity, as functional tests requires a git identity when creating an empty repository
+* #60: Migration from Travis CI to Github CI - include rkd\_python into PYTHON PATH
+* #60: Migration from Travis CI to Github CI
+* #54: Move all files from "src" to upper directory, so the packages are now at main level
+* #54: By the way use sys.executable instead of fixed path
+* #54: Moving to upper package - defaults in rkd\_python tasks
+* #54: Moving to upper package - rkd\_python
+* #54: Moving to upper package
+* Add docs
+* #54: Move initialization class to boostrap package
+* #54: Move standardlib classes from \_\_init\_\_ to core
+* #54: Rename
+
+v2.3.0.0b3
+----------
+
+* #59: Change from --import to --imports for consistency
+* #59: Tests coverage for --imports
+* #59: Added --import commandline switch by adding an argument preparsing mechanism
+* #59: Add RKD\_IMPORTS environment variable
+* #59: Add rkd.api.parsing.SyntaxParsing interface
+* #59: Add imports() in standardlib
+* Clean up
+
+v2.3.0.0b2
+----------
+
+* #58: Make subprocess pass environment variables itself
+* #58: Load \`makefile.py\` in correct order, at first from local directories, then from global
+* #58: By the way - add possibility to early increase log level
+
+v2.3.0.0b1
+----------
+
+* #57: Update docstring
+* #57: Add support for inline subprocess compat mode
+* #57: Optimization
+* #57: Added additional documentation
+* #57: Do not copy terminal size if the console is non-interactive to avoid exception
+* #57: Do not copy terminal size if the console is non-interactive to avoid exception
+* #57: Implement terminal size setting and resizing
+* #56: Added env variable name to the message, so it will be easier to understand
+* #55: By default decrease verbosity in sh()
+
+v2.2.2
+------
+
+* Correctly detect if environment is interactive
+
+v2.2.1
+------
+
+* Fix for non-tty environments
+
+v2.2.0
+------
+
+* #41: Give thread a secure amount of time to be created
+* #52: Do not exit immediately, wait for the thread - revert as it breaks some of the commands with an infinite waiting
+* #52: Do not exit immediately, wait for the thread
+* Update docs
+* #41: Add manual documentation
+* #41: Fix docs references
+* #41: Add warning
+* #41: Add docs
+* #41: Add docs
+* #41: Improve basic test case by doing backup of environment and cwd
+* #41: Added execute\_mocked\_task\_and\_get\_output(), made \_restore\_standard\_out() not reporting errors if output capturing is off
+* #41: Adjust limits
+* #41: API testing component, first part
+* #48: Cover with a simple test
+* #48: Add interactive mode
+* Improve docs
+
+v2.1.5
+------
+
+* #47: Cover with unit test
+* #47: Escape dollar characters coming from outside RKD (from the shell environment)
+* #47: Revert - not a bug. Cover with proper tests and use cases
+* #46: Make output always unbuffered
+* #47: Escape dollar character - tests coverage
+* #47: Escape dollar sign
+* #44: Resolve the type error issue
+* Resolve little typing issue in case of IndexError:
+* Resolve little typing issue in case of IndexError:
+* Docs: Add example projects
+
+v2.1.4
+------
+
+* Resolve issue with not cleaning up after taking the stderr in output capturing
+
+v2.1.3
+------
+
+* #43: Cover with a functional test
+* #43: Recursively resolve TaskAliasDeclaration/GroupDeclaration - pass all arguments
+* #43: Recursively resolve TaskAliasDeclaration/GroupDeclaration
+
+v2.1.1
+------
+
+* Remove psutil from basic requirements as it depends on GCC!
+
+v2.1.0
+------
+
+* #40: Stabilize tests, fix found issues
+* #42: Pipenv support - cover with basic tests
+* #42: Pipenv support - cover with basic tests
+* #42: Pipenv support - add welcome message / instruction
+* Improve banner
+* #42: Pipenv support
+* #30: Correct test
+* #30: Add psutil requirement
+* #30: Compatibility with Python 3.6
+* #30: Improvements to the output capturing - now the stdout and stdin looks synchronized
+* Fix state in tests prepration
+* #40: Implement \`--new-after-line\` and \`--output\`
+* Update docs
+* Update docs
+* Update docs
+* Update docs
+* Update docs
+* Update docs
+* Update docs
+* Update docs
+
+v2.1.0.0RC1
+-----------
+
+* Update docs
+* Update docs
+* Update docs
+* #39: By the way refactor
+* #39: Directory structure refactor - propagate changes to rkd\_python
+* #39: Directory structure refactor - move inputoutput to api
+* #39: Directory structure refactor - WIP
+* #39: Directory structure refactor - move "temp"
+* #39: Directory structure refactor - introduce \`rkd.api\`
+* #39: Directory structure refactor
+* #39: Directory structure refactor
+* #39: Directory structure refactor
+* #39: Directory structure refactor
+* #34: Coverage for changes in get\_env() and in normalized\_get\_declared\_envs()
+* #34: Coverage for changes in get\_arg\_or\_env()
+* #34: Coverage for part of API - ArgumentEnv
+* #34: Implementation of - custom environment variable name for --switch (eg. "CMD" for "--command")
+* Add missing documentation to contract
+* Extract code - little refactoring
+* Update docs
+* Update docs
+* Added credits
+* #37: Possibly fix unit tests on Python 3.6
+* #37: Correct test data
+* #37: Cover with tests
+* #35: Improve test
+* #35: Correct test
+* #35: Add rest of unt tests and resolve issue with rkd() that does not recognize self binary path, when forking a process Also resolve issue with TempManager that was not working on not already initialized RKD structures (where there is no .rkd directory)
+* #35: Increase coverage
+* #35: Clean up
+* #35: Refactor tests, add new test case "test\_execute\_as\_forked\_process\_will\_inform\_about\_invalid\_user"
+* #35: Implement --become parameter and add additional test "test\_execute\_as\_forked\_process\_will\_inform\_about\_unserializable\_context"
+* #35: Correct test after changing example data
+* #35: Partially cover "\_execute\_as\_forked\_process" with a test - successful case only
+* #35: Cover "\_execute\_directly\_or\_forked" with test
+* #35: Check also final result
+* #35: Correct test for one-by-one execution results validation
+* #35: WIP Implementation of "become" feature that allows to switch user per-task
+* Update documentation
+* Update documentation
+* Update documentation
+* #37: Implement enhancement to not display stacktrace in case, when method just does not end with a return - by default \`return False\`
+
+v2.0.0
+------
+
+* Improve docs - add most important rkd.syntax classes to the tasks api docs
+* #33: Tests coverage - support for TaskAliasDeclaration() in imports()
+* #33: Implementation - support for TaskAliasDeclaration() in imports()
+* Improve docs
+* Improve documentation - add good practices list
+* Improve documentation
+* Improve documentation
+
+v2.0.0.0rc9
+-----------
+
+* Added roadmap information
+* #23: Improve get\_arg\_or\_env() behavior to consider env variables in priority, when --switch has default value or none
+
+v2.0.0.0rc8
+-----------
+
+* #25: By default remove all stack traces from exceptions printed to the user
+
+v2.0.0.0rc7
+-----------
+
+* #32: Fix clean up support
+
+v2.0.0.0rc6
+-----------
+
+* #32: Added TempManager for clear management of temporary files in .rkd workspace
+
+v2.0.0.0rc5
+-----------
+
+* #28: Add "secret" parameter to ask() in Wizard
+
+v2.0.0.0rc4
+-----------
+
+* #30: Skip test for now
+* Stabilize test that was depending on RELEASED VERSION of self
+* #29: Jinja2: Allow to use variables in filenames (--template-filenames)
+* Bring back verbosity to the structure creation
+
+v2.0.0.0rc3
+-----------
+
+* #27: Add option for mocking input
+
+v2.0.0.0pre2
+------------
+
+* #27: Hot fix for the added option
+
+v2.0.0.0pre1
+------------
+
+* #27: Fix tests
+* #27: Implement additional switches to JINJA2; --exclude-pattern and --copy-not-matching-files
+* #28: By the way add API section to the YAML topic
+* #28: Improve docs
+* #28: Improve docs
+* #28: Add finish() into docs
+* #28: Add support for load\_previously\_stored\_values()
+* #28: Add possibility to define custom filename
+* #28: Add documentation
+* #28: Add support for choices, cover with unit tests
+* #28: First Wizard implementation
+* #27: Cut off .j2 extensions
+* #26: Make test passing on various git versions - on Travis the GIT is returning higher than 0 exit code when nothing is to commit, that's actually not bad
+* #26: Increased tests coverage for the feature itself - for order of the executed methods
+* #26: Additional docs
+* #26: Additional coverage
+* #26: Do not use sh, use bash
+* #26: Initial tests coverage
+* #26: Refactor - extract code into methods
+* #26: Fixes to the setup-venv.sh script, so it is working now
+* Compatibility with older versions of PyYAML
+* #24: Remove docker tasks - remove occurrences in tests
+* #24: Remove docker tasks
+* #2: Fix docs typo
+* #2: Fix docs requirements
+* #2: Add docs
+* #2: Coverage - coverage of find\_path\_by\_name()
+* #2: Coverage - get\_lookup\_paths()
+* #2: Add load\_from\_file()
+* #2: Partial implementation of schema validation
+* Shortened banner a little bit: - Initiatives are leaved only international or those that are local but are in different type of activity - Removed unnecessary section, there are links to documentation
+
+v1.1
+----
+
+* Correct link to AUR package :)
+* Added link to AUR package
+* Update docs
+* Add info about usage
+* Cover commit 82409588706b68d1098c7c58f6fd0d9362a3770b with tests, improve
+* #22: Add support for global arguments
+* Resolve issue: The doc is empty
+* Attempt to resolve: \`\`\` UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 462: ordinal not in range(128)     error in setup command: Error parsing /tmp/pip-install-uk5cyfz5/rkd/setup.cfg: UnicodeDecodeError: 'ascii' codec can't decode byte 0xe2 in position 462: ordinal not in range(128) \`\`\`
+* Added release information
+* Update LICENSE
+
+v1.0.0
+------
+
+* Added LICENSE
+* #18: Update API docs
+* #18: Fix not properly building documentation due to missing dependencies
+* #18: Docs bugfixes
+* #18: Possibly finally resolve issue with Travis and PBR
+* #18: Add task for tagging project
+* Revert "#18: Run builds on docker on travis"
+* Revert "#18: Run builds on docker on travis"
+* #18: Run builds on docker on travis
+* #18: Run builds on docker on travis
+* #18: Updates to docs
+* #18: Travis - bump PBR
+* #18: Travis - bump PBR
+* #18: Try to correct publication on Travis
+* #18: Try to correct publication on Travis - debug
+* #18: Try to correct publication on Travis - debug
+* #18: Try to correct tests on Travis
+* #18: Additional tests coverage + bugfix for a bug detected in tests
+* #18: Additional tests coverage
+* #18: CI test
+* #18: CI test
+* #18: CI test
+* #18: Adjust tests to recent changes
+* #18: Cover arguments support with tests
+* #18: Cover arguments support with tests
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Attempt to run Travis CI build
+* #18: Switch Travis builds to Ubuntu Bionic for release
+* #18: WIP final improvements to the :rkd:create-structure - must make it solid, to do so created :file:line-in-file task
+* #18: By the way change, just before release - add support for arguments in commandline, that could simplify a lot in tasks
+* Remove not up-to-date comment
+* #18: Move section
+* #18: Correct image
+* #18: More docs
+* Update README.rst
+* Update README.rst
+* #18: Try with badges
+* #18: Update README
+* #18: Add background image
+* CI :test
+* Fixed :version task to show a complete list of tasks even, when cannot get version number
+* #17: Fix a broken interface
+* #17: Tests coverage
+* #17: Possibility to apply custom formatting for the task name on the :tasks list
+* CI retry
+* CI retry
+* CI retry
+* CI fix
+* #12: Additional coverage
+* #12: Additional coverage
+* #12: Do not call flush if not necessary
+* #12: Coverage for IO
+* #11: Updated docs
+* #11: Covered dot-env loading with functional test
+* #13: Added unit test and fixed a bug with incorrect RKD\_DEPTH incrementation
+* #13: Added unit test
+* Clean up
+* #15: Added unit tests coverage
+* #16: Unit tests to cover --help
+* #16: Functional test test to cover --help
+* Resolve failing tests
+* #12, #10: Resolved an issue, where the exit code is "120" when turning on capturing output to logs
+* #12, #10: Resolved an issue, where the exit code is "120" when turning on capturing output to logs
+* #10: Update docs
+* #10: Docs for audit logging
+* #16: Show full task description in --help
+* #15: "tabulate" integration
+* #13: Corrections to the RKD\_DEPTH support, it should be now supported not only in YAML syntax
+* #10: Proper logging + initial audit logs
+* #12: Fix the logging level of FATAL, add is\_log\_level\_at\_least()
+* #11: Resolve issue with dot-env loading in correct order
+* #9: Resolve issue with filesystem usage in JINJA2
+* #6: Update docs
+* #6: Update docs
+* #6: UI toggling via env variable
+* #6: UI toggling via env variable
+* #8: Resolve binary finding issue
+* Add "./src" to sys.path by default
+* Add environment management component
+* #7: Bugfixes to the group name showing in the :tasks
+* Resolve ValueError in :version
+
+v0.8.0.0b1
+----------
+
+* #7: Correct support for [global] group in RKD\_WHITELIST\_GROUPS
+* #7: Implement feature "Alias Groups" and "Hide Groups"
+* Introducing %RKD% to shell commands
+* Add support for RKD\_WHITELIST\_GROUPS
+* Support for .env loading
+
+v0.7.0.0b1
+----------
+
+* Docs fix
+* Docs fix for readthedocs.org
+* Update docs
+* #4 and #5: Fix typo
+* #4 and #5: Fix publication credentials
+* #4 and #5: Add requirements.txt for rkd\_python subpackage
+* #4 and #5: Fix PublishTaskTest
+* #4 and #5: Correct PYTHONPATH in rkd\_python
+* #4 and #5: Correct task name
+* #4 and #5: Add correct PYTHONPATH to build modules together
+* #4 and #5: Add correct PYTHONPATH to build modules together
+* #4 and #5: Travis syntax retry, by the way migrate CI scripts to Makefile
+* #4: Travis syntax retry
+* #4: Attempt to extract Python building tasks to the rkd\_python subpackage
+* Correct context building from YAML - add possibility to import modules without subpaths eg. \`rkd\_python\` - previously only eg. \`rkd\_python.something\` was possible to use
+* #1: Turn off COMPAT by default
+* #1: Potentially resolve problems with not shown output (turn off Python buffering to avoid double-buffering)
+* Add tests coverage
+* Update docs
+* Update docs
+* Clean up in tests + extra coverage
+* Add jinja to documentation index
+
+v0.6.0.0b1
+----------
+
+* Feature: Add JINJA2 support
+* Attempt to resolve: \`WARNING: autodoc: failed to import class 'contract.TaskInterface' from module 'rkd'; the following exception was raised: No module named 'dotenv'\`
+* Attempt to resolve: \`WARNING: autodoc: failed to import class 'contract.TaskInterface' from module 'rkd'; the following exception was raised: No module named 'yaml'\`
+
+v0.5.0a1
+--------
+
+* Update docs
+* Update docs
+* Fixes to docs
+* Fixes to docs
+* Refactor docs
+* Clear implementation of get\_arg\_or\_env() with tests coverage
+
+v0.4.1.a2
+---------
+
+* Documentation for loading priority
+* Fix: Environment variables definition order
+
+v0.4.1.a1
+---------
+
+* Add troubleshooting to docs
+* Travis: Compat not for tests, but only for :release task
+* Add compat support
+* Improve :task output
+* Refactor behavior of get\_arg\_or\_env()
+* Refactor tests to use output capturing instead of bash output redirection to file
+* Correct test data
+* Feature: Support for defining environment variables in YAML syntax
+* Fix: Context was not loading makefile.yaml when makefile.py was not present Refactor: Context exceptions
+* #1: Workaround - mix stdout with stderr on subprocess level, so the order will be OK, but stderr would not be able to be separated (compromise)
+* Fixed not pushing image
+
+v0.3.1
+------
+
+* Add good practices section
+* Add docs
+* #1: Mark test as skipped for now
+* Add 300 rounds of test\_sh\_captures\_output\_in\_correct\_order, because of the test specifics - timing
+* Travis improvements
+* Travis improvements
+* Travis: Debug
+* Travis: Debug
+* YAML: Add package importing feature
+* Add useful tip
+* Argument parsing: Refactor exception type
+* Argument parsing: Add environment variables list to --help
+* TaskUtilities: Fix output capturing
+* Docker: Fix implementation of allowed meta
+* Fighting with IO/Subprocess
+* Fix output in invalid order stderr/stdout
+* Refactor: Put infrastructural things out of interface
+* Fix: Not flushing output immediately
+* Add --no-ui switch and make RKD\_DEPTH >=1 to turn on --no-ui (RKD\_DEPTH >= 1 means RKD-in-RKD - a call to rkd in already executing rkd task)
+* Fix incorrectly propagating RKD\_PATH to inner calls - RKD in RKD (example: calling rkd in a bash script in YAML)
+* Bump version
+* Added mention about YAML syntax in the docs
+* Correct releases link
+
+v0.3
+----
+
+* Added badge, quick start instruction
+* Travis CI: Corrected typo
+* Add building on next Python versions
+* Correct method signature to match interface
+* Python: Add missing handling of arguments Tests: Increase tests coverage IO and sh(): Correct capturing of stdout/stderr, able to capture into StringIO()
+* Refactor to make testable: RiotKitDoApplication
+* Refactor to make testable: RiotKitDoApplication
+* Increased coverage of tasks parsing in YAML parser
+* Increased coverage of tasks parsing in YAML parser
+* WIP correct unit tests after recent change in constructor
+* WIP introduce makefile.yaml syntax - add RKD\_PATH to the example
+* WIP introduce makefile.yaml syntax
+* WIP
+* Add copy\_internal\_dependencies()
+* Add jinja2 dependency - RKD will strongly rely on this dependency
+* BaseShellCommandWithArgumentParsingTask: Remove not necessary stacktrace
+* Add \`BaseShellCommandWithArgumentParsingTask\`
+* Add \`BaseShellCommandWithArgumentParsingTask\`
+* Add makefile path as Python path
+
+v0.2
+----
+
+* Set default log level to info
+* Update docs
+* Update docs
+* Add :rkd:create-structure
+* Add authors note
+* Add rule
+* Add images
+* Add notice
+* Improve docs
+* Add docs
+* Add docs
+* Add unit tests coverage for TaskInterface methods
+* WIP cover resolver, fix issue: cannot declare at least twice tasks of same type in single alias task
+* WIP fix travis
+* WIP move io, ctx and executor out of task ExecutionContext, properly merge envs from different sources and validate
+* WIP :version
+* WIP introduced RKD\_PATH
+* WIP global switches are now prefixed with "r" eg. "-rl", added --log-level switch
+* WIP fix: docker component
+* WIP fix: properly interrupting the pipeline, add :exec task
+* WIP update the banner
+* WIP update the banner
+* WIP add description to alias tasks and banner if no task is specified
+* WIP adjusted unittests
+* WIP add .gitignore
+* WIP add unittest task and travis config
+* WIP multiline sh scripts, Makefile-like example
+
+v0.1
+----
+
+* WIP correct env variable name
+* WIP add error handling for non-existing tasks
+* WIP correct task alias definition
+* WIP compatibility with Python 3.6 and Python 3.7
+* WIP
+* WIP
+* WIP Use Python 3.7
+* WIP Use Python 3.7
+* WIP Add travis integration
+* WIP Fix for the Groups
+* WIP :init is now silent
+* WIP Packaging
+* WIP :sh task, args view in observer
+* WIP results collection and coloring
+* WIP added CallableTask
+* WIP :tasks - formatting
+* WIP :tasks
+* WIP :init task is now executing always
+* WIP output capturing - IO, fixed mutated tasks, consistent validation and execution behavior of argparse
+* Docs
+* Add todos
+* WIP update docs
+* WIP task execution with arguments passing, interfaces for better static analysis
+* WIP task validation and execution
+* WIP task groups
+* WIP task groups
+* WIP discovery
+* Change task name
+* A
