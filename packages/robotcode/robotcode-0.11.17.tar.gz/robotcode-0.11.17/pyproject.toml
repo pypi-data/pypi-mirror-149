@@ -1,0 +1,141 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "robotcode"
+version = "0.11.17"
+description = "Language server, debugger and tools for Robot Framework"
+authors = ["Daniel Biehl <daniel.biehl@imbus.de>"]
+homepage = 'https://github.com/d-biehl/robotcode'
+repository = 'https://github.com/d-biehl/robotcode'
+readme = "README.md"
+license = "Apache-2.0"
+include = ["robotcode/py.typed", "README.md", "CHANGELOG.md"]
+exclude = ["robotcode/external"]
+keywords = [
+  "Test",
+  "Testing",
+  "RobotFramework",
+  "Keyword Driven",
+  "Data Driven",
+  "Acceptance Testing",
+  "Acceptance Test Driven Development",
+  "BDD",
+  "Behavior Driven Testing",
+  "BDT",
+  "Robotic Process Automation",
+  "RPA",
+  "Language Server Protocol",
+  "Debug Adapter Protocol",
+  "Visual Studio Code",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: Apache Software License",
+  "Framework :: Robot Framework",
+  "Framework :: Robot Framework :: Tool",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: Implementation",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Testing :: Acceptance",
+  "Topic :: Software Development :: Testing :: BDD",
+  "Typing :: Typed",
+  "Topic :: Software Development :: Debuggers",
+  "Topic :: Text Editors :: Integrated Development Environments (IDE)",
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+robotframework = { version = "~4.1.0", allow-prereleases = false }
+
+
+[tool.poetry.dev-dependencies]
+isort = "*"
+mypy = "*"
+flake8 = "*"
+black = "*"
+pep8-naming = "*"
+debugpy = "*"
+pytest = "*"
+pytest-asyncio = "*"
+pytest-cov = "*"
+coverage = "*"
+coloredlogs = "*"
+robotremoteserver = "*"
+Cython = "*"
+robotframework-robocop = "*"
+robotframework-tidy = "*"
+PyYAML = "*"
+types-PyYAML = "*"
+snakeviz = "*"
+pytest-regressions = "*"
+pytest-html = "^3.1.1"
+GitPython = "^3.1.27"
+semantic-version = "^2.9.0"
+pre-commit = "^2.17.0"
+
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | build
+    | dist
+    | out
+    | robotcode/external
+  )/
+)
+'''
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -vv"
+filterwarnings = "ignore:.*Using or importing the ABCs from 'collections' instead of from 'collections.abc'.*:DeprecationWarning"
+testpaths = ["tests"]
+junit_suite_name = "robotcode"
+# log_cli = true
+# log_cli_level = 4
+# log_cli_format = "%(levelname)s %(name)s: %(message)s"
+asyncio_mode = "auto"
+
+[tool.isort]
+profile = "black"
+src_paths = ["robotcode", "tests"]
+skip_gitignore = true
+skip = ['external']
+
+[tool.coverage.run]
+omit = ["*tests*"]
+source = ["robotcode"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if __name__ == .__main__.:",
+  "raise NotImplementedError",
+]
+fail_under = 40
+
+[tool.mypy]
+# MyPy config
+# File reference here - http://mypy.readthedocs.io/en/latest/config_file.html#config-file
+python_version = 3.8
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unused_configs = true
+strict = true
+disallow_subclassing_any = false
+ignore_missing_imports = true
