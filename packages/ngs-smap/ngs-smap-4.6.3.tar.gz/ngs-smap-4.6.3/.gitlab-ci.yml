@@ -1,0 +1,132 @@
+image: python:3.10
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+stages:
+  - linting
+  - test
+  - coverage
+  - publish
+
+flake8:
+  stage: linting
+  image: python:3.8
+  before_script:
+    - python -V
+    - pip install -U pip
+    - pip install flake8
+  script:
+    - flake8 --verbose .
+
+test3.8:
+  stage: test
+  image: python:3.8
+  before_script:
+    - python -V
+    - pip install -U pip wheel
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.9:
+  stage: test
+  image: python:3.9
+  before_script:
+    - python -V
+    - pip install -U pip wheel
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+
+test3.10:
+  stage: test
+  image: python:3.10
+  before_script:
+    - python -V
+    - pip install -U pip wheel
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test_documentation:
+  stage: test
+  image: python:3.8
+  before_script:
+    - pip install -U pip
+    - pip install .[docs]
+  script:
+    - cd docs
+    - READTHEDOCS_PROJECT=ngs-smap sphinx-build -M html . build -W
+
+coverage:
+  stage: coverage
+  before_script:
+    - pip install -U pip
+    - pip install .
+    - pip install coverage
+  script:
+    - coverage run --source smap -m unittest discover -s test/ -p "test_*.py" &> /dev/null
+    - coverage report -m
+  coverage: /TOTAL.*\s+(\d+%)$/
+
+publish_docker:
+  stage: publish
+  image: docker:latest
+  only:
+    - tags
+  except:
+    - branches
+  services:
+    - docker:dind
+  script:
+    - DOCKER_BUILDKIT=1 docker build -t ilvo/smap:latest -t ilvo/smap:$CI_COMMIT_REF_NAME .
+    - docker login -u truttink -p $DOCKER_TOKEN
+    - docker push ilvo/smap:$CI_COMMIT_REF_NAME
+    - docker push ilvo/smap:latest
+
+publish_on_test_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --upgrade build twine
+    - python3 -m build
+    - python3 -m twine upload --repository testpypi dist/* -u __token__ -p $TEST_PYPI_TOKEN
+
+install_from_test_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  needs: ["publish_on_test_pypi"]
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.python.org/simple ngs-smap==$CI_COMMIT_REF_NAME
+    - python3 -m smap haplotype-sites --help
+
+publish_on_pypi:
+  stage: publish
+  only:
+    - tags
+  except:
+    - branches
+  needs:
+    ["install_from_test_pypi"]
+  script:
+    - python3 -m pip install --upgrade pi
+    - python3 -m pip install --upgrade build twine
+    - python3 -m build
+    - python3 -m twine upload dist/* -u __token__ -p $PYPI_TOKEN

@@ -1,0 +1,124 @@
+Metadata-Version: 2.1
+Name: ngs-smap
+Version: 4.6.3
+Summary: SMAP is a software package that analyzes next-generation DNA sequencing read mapping distributions and performs haplotype calling to create multi-allelic molecular markers.
+Home-page: https://ngs-smap.readthedocs.io/en/latest/
+Author-email: dries.schaumont@ilvo.vlaanderen.be
+License: GNU General Public License v3 (GPLv3)
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Requires-Python: >=3.8.1
+Description-Content-Type: text/markdown
+Provides-Extra: docs
+License-File: LICENSE
+
+# SMAP - Stack Mapping Anchor Points
+![pipepeline status badge](https://gitlab.com/truttink/smap/badges/master/pipeline.svg)
+[![coverage report](https://gitlab.com/truttink/smap/badges/master/coverage.svg)](https://gitlab.com/truttink/smap/-/commits/master)
+
+SMAP is a software package that analyzes read mapping distributions and performs haplotype calling to create multi-allelic molecular markers. SMAP haplotyping works on all types of samples, including (di- and polyploid) individuals and Pool-Seq, and reads of various NGS methods, including Genotyping-by-Sequencing (GBS) and highly multiplex amplicon sequencing (HiPlex). 
+* SMAP delineate analyses read mapping distributions for GBS read mapping QC, defines read mapping polymorphisms within loci and across samples, and selects high quality loci across the sample set for downstream analyses.
+* SMAP compare identifies the number of common loci across two runs of SMAP delineate.
+* SMAP haplotype-sites performs read-backed haplotyping using a priori known polymorphic SNP sites, and creates compressed, read-reference-encoded haplotype strings (ShortHaps). SMAP haplotype-sites also captures GBS read mapping polymorphisms (here called SMAPs) as a novel genetic diversity marker type, and integrates those with SNPs for ShortHap haplotyping.
+* SMAP haplotype-window works independent of prior knowledge of polymorphisms, groups reads by locus, defines a window enclosed between two custom border sequences, and retains the entire corresponding DNA sequence as haplotype. Haplotype-window is, among many applications, especially useful for high-throughput CRISPR/Cas mutation screens.
+* The SMAP utility tool SMAPutil_SlidingFrames.py is a python script to create BED files with SMAPs to delineate loci for HiPlex and Shotgun data.
+
+## Documentation
+
+An extensive manual of the SMAP package can be found on [Read the Docs](https://ngs-smap.readthedocs.io/) including detailed explanations and illustrations.
+
+## Citation
+
+If you use SMAP, please cite "Schaumont et al., (2022). Stack Mapping Anchor Points (SMAP): a versatile suite of tools for read-backed haplotyping. https://doi.org/10.1101/2022.03.10.483555". Source code is available online at https://gitlab.com/truttink/smap/.
+
+## Building and installing
+
+SMAP is being developed and tested on Linux.
+Additionally, some dependencies are only developed on Linux.
+
+### Using pip
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install ngs-smap
+```
+
+If you also want to install SMAP haplotype-window:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install ngs-smap
+pip install smap-haplotype-window
+```
+
+### Via Git
+
+```bash
+git clone https://gitlab.com/truttink/smap.git
+cd smap
+git checkout master
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install .
+```
+
+or 
+
+```bash
+`git clone https://gitlab.com/truttink/smap.git ; cd smap ; git checkout master ; python3 -m venv .venv ; source .venv/bin/activate ; pip install --upgrade pip ; pip install .`
+```
+
+If you also want to install SMAP haplotype-window:
+
+```bash
+git clone https://gitlab.com/truttink/smap.git
+cd smap
+git checkout master
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install .
+cd ..
+git clone https://gitlab.com/dschaumont/smap-haplotype-window
+cd smap-haplotype-window
+git checkout master
+pip install .
+```
+
+or 
+
+```bash
+`git clone https://gitlab.com/dschaumont/smap-haplotype-window ; cd smap ; git checkout master ; python3 -m venv .venv ; source .venv/bin/activate ; pip install --upgrade pip ; pip install . ; cd .. ; git clone https://gitlab.com/dschaumont/smap-haplotype-window ; cd smap-haplotype-window ; git checkout master ; pip install .`
+```
+
+### Using Docker
+
+A docker container is available on dockerhub. 
+To pull the docker image and run SMAP using Docker, use:
+
+```bash
+docker run ilvo/smap --help
+```
+
+It is currently not possible to install haplotype-window using docker.
+
+## Contributions
+
+* The Ghent University 2019 and 2021 Computational Biology class under supervision of prof. Dr. Peter Dawyndt and Felix Van der Jeugt has made contributions to reduce memory usage and to speed up haplotype calculations.
+
+## Links
+* [Documentation](https://ngs-smap.readthedocs.io/)
+* [Source Code](https://gitlab.com/truttink/smap)
+* [Report an issue](https://gitlab.com/truttink/smap/-/issues)
+* [GbprocesS: extraction of genomic inserts from NGS data for GBS experiments](https://gitlab.com/dschaumont/GBprocesS)
+* [SMAP on pypi](https://pypi.org/project/ngs-smap/)
+* [SMAP on dockerhub](https://hub.docker.com/repository/docker/ilvo/smap)
+* [ILVO (Flanders Research Institute for Agriculture, Fisheries and Food)](https://ilvo.vlaanderen.be/en/)
+
+

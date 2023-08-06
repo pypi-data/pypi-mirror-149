@@ -1,0 +1,2 @@
+- Closes #xxxx (replace #xxxx with the issue number)
+- Updated the CHANGELOG file.
