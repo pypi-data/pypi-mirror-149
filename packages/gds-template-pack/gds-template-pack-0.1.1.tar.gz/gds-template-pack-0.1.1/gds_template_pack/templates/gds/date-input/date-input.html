@@ -1,0 +1,40 @@
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" role="group" aria-describedby="{{ input_id }}-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+                {{ heading }}
+            </h1>
+        </legend>
+        {% if hint %}
+        <div id="{{ input_id }}-hint" class="govuk-hint">
+            {{ hint }}
+        </div>
+        {% endif %}
+        <div class="govuk-date-input" id="{{ input_id }}">
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="{{ input_id_day }}">
+                        Day
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="{{ input_id_day }}" name="{{ input_id_day }}" type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="{{ input_id_month }}">
+                    Month
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="{{ input_id_month }}" name="{{ input_id_month }}" type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="{{ input_id_year }}">
+                    Year
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="{{ input_id_year }}" name="{{ input_id_year }}" type="text" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

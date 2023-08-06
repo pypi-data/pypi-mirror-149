@@ -1,0 +1,19 @@
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h1 class="govuk-fieldset__heading">
+                {{ heading }}
+            </h1>
+        </legend>
+        <div class="govuk-radios">
+            {% for radio in radios %}
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="{{ radio.id }}-{{ forloop.counter }}" name="{{ radio.id }}" type="radio" value="{{ radio.label_text|slugify }}">
+                    <label class="govuk-label govuk-radios__label" for="{{ radio.id }}-{{ forloop.counter }}">
+                        {{ radio.label_text }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    </fieldset>
+</div>

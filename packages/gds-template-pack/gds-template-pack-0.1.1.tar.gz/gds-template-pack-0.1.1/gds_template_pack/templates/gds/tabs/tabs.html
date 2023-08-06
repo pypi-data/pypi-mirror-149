@@ -1,0 +1,20 @@
+<div class="govuk-tabs" data-module="govuk-tabs">
+    <h2 class="govuk-tabs__title">
+        {{ title }}
+    </h2>
+    <ul class="govuk-tabs__list">
+        {% for tab in tabs %}
+            <li class="govuk-tabs__list-item{% if forloop.first %} govuk-tabs__list-item--selected{% endif %}">
+                <a class="govuk-tabs__tab" href="#{{ tab.title|lower|slugify }}">
+                    {{ tab.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% for tab in tabs %}
+        <div class="govuk-tabs__panel {% if not forloop.first %}govuk-tabs__panel--hidden{% endif %}" id="{{ tab.title|lower|slugify }}">
+            <h2 class="govuk-heading-l">{{ tab.content }}</h2>
+        </div>
+    {% endfor %}
+</div>
