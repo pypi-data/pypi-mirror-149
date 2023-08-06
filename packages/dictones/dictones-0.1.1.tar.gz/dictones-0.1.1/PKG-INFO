@@ -1,0 +1,83 @@
+Metadata-Version: 2.1
+Name: dictones
+Version: 0.1.1
+Summary: Little bit better than dict
+Author: to101
+Author-email: to101kv@gmail.com
+Requires-Python: >=3.1,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+
+
+## Description
+
+Like dict, but a little bit better
+
+# install
+```
+  pip install dictones
+```
+
+#### import
+
+```python
+from dictones import DictOnes
+```
+
+#### Usage
+# 1. Added constructor
+```python
+  filled_dict = DictOnes('first_key, second_key', 'to first key', 'to second key')
+  print(filled_dict.first_key)
+  print(filled_dict.second_key)
+```
+
+#### Output
+
+```http
+'to first key'
+'to second_key'
+```
+
+# 2. Constructor without filling
+```python
+  filled_dict = DictOnes('first_key, second_key')
+  print(filled_dict.first_key)
+  print(filled_dict.second_key)
+  print(filled_dict.key)
+```
+
+#### Output
+
+```http
+None
+None
+...raise KeyError(attrname)
+KeyError: 'key'
+```
+
+# 3. Deleting
+```python
+filled_dict = DictOnes('first_key, second_key')
+print(filled_dict.first_key)
+print(filled_dict.second_key)
+print('second_key' in filled_dict)
+del filled_dict.second_key
+print('second_key' in filled_dict)
+```
+#### Output
+```http
+None
+None
+True
+False
+```
+
+# Otherwise it is the same dict
