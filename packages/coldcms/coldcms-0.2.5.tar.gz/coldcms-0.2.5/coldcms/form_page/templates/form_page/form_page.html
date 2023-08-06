@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load assets l10n i18n svg bulma_tags wagtailcore_tags %}
+
+{% block content %}
+
+<section class="hero is-small is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        {{ page.title }}
+      </h1>
+      <h2 class="subtitle is-5">
+        {{ page.intro|richtext }}
+      </h2>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container content is-medium">
+    <div class="columns is-centered">
+      <div class="column is-half">
+        <form class="form" action="{% pageurl page %}" method="POST">
+          {% csrf_token %}
+          {{ form|bulma }}
+          <div class="has-text-centered">
+            <button type="submit" class="button is-primary">
+              {% if page.button %}
+                {{page.button}}
+              {% else %}
+                {% trans "Validate" %}
+              {% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

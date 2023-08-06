@@ -1,0 +1,52 @@
+{% load wagtailimages_tags image_filters %}
+
+
+{% if img_block.fullwidth %}
+  <div class="is-fluid">
+    <div class="image is-fullwidth">
+      {% if img_block.url.url != "#" %}
+        <a href="{{ img_block.url.url }}"
+          {% if img_block.url.blank %}
+            target="_blank"
+          {% endif %}
+          title="{{ img_block.url.text }}">
+      {% endif %}
+        {% if img_block.image.image_type == 'image' %}
+          {% if img_block.image.img %}
+            {% image img_block.image.img original %}
+          {% endif %}
+        {% elif img_block.image.image_type == 'svg' %}
+          {% if img_block.image.svg %}
+            <img src="{{ img_block.image.svg.url }}" alt="{{ img_block.image.svg }}" />
+          {% endif %}
+        {% endif %}
+      {% if img_block.url %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% else %}
+  <div class="columns is-gapless is-justify-content-center">
+    <div class="column is-half" id="generic_image_{{generic_image_id}}">
+      <div class="section">
+        <div class="image is-fullwidth">
+          {% if img_block.url.url != "#" %}
+            <a href="{{ img_block.url.url }}"
+              {% if img_block.url.blank %}
+                target="_blank"
+              {% endif %}
+              title="{{ img_block.url.text }}">
+          {% endif %}
+            {% if img_block.image.image_type == 'image' %}
+              {% image img_block.image.img original %}
+            {% elif img_block.image.image_type == 'svg' %}
+              <img src="{{ img_block.image.svg.url }}" alt="{{ img_block.image.svg }}" />
+            {% endif %}
+          {% if img_block.url %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

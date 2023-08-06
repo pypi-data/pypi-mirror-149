@@ -1,0 +1,20 @@
+{% load navigation_tags %}
+
+{% for menuitem in menuitems %}
+  {% if menuitem.show_dropdown %}
+  <div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link"{% if menuitem.url != '#' %} href="{{ menuitem.url }}"{% endif %} >
+        {{ menuitem.title }}
+    </a>
+
+    <div class="navbar-dropdown">
+      {% top_menu parent=menuitem %}
+    </div>
+  </div>
+  {% else %}
+  <a class="navbar-item" href="{{ menuitem.url }}" >
+    {{ menuitem.title }}
+  </a>
+  {% endif %}
+
+{% endfor %}

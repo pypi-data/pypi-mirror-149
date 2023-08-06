@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n svg %}
+
+{% block content %}
+  <section class="hero is-small is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section">
+      <nav role="navigation" aria-label="go back to blog">
+        <a href="{{ blog_url }}">
+          <span class="icon is-small">
+          {% svg "reply" %}
+          </span>
+          {% trans "Return to blog" %}
+        </a>
+      </nav>
+      <br>
+      <article class="subtitle">
+        {% for page in dates_pages %}
+          <span class="icon is-small">
+          {% svg "calendar-alt" %}
+          </span>
+          <a href="{{ page.url }}">
+            {{ page.date|date:'F, Y' }}
+          </a>
+          <br>
+        {% endfor %}
+      </article>
+    </section>
+  </div>
+
+{% endblock %}

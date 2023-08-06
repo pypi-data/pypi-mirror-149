@@ -1,0 +1,37 @@
+{% load wagtailimages_tags image_filters %}
+
+{% if settings.site_settings.MenuOptions.hide_menu %}
+<section class="hero header-block is-fullheight is-relative is-clipped" id="header_block_{{ header_id }}">
+{% else %}
+<section class="hero header-block is-fullheight-with-navbar is-relative is-clipped" id="header_block_{{ header_id }}">
+{% endif %}
+
+  {% if header.image.image_type == 'image' %}
+    {% if header.image.img %}
+      {% image header.image.img original %}
+    {% endif %}
+  {% elif header.image.image_type == 'svg' %}
+    {% if header.image.svg %}
+      <img src="{{ header.image.svg.url }}" alt="{{ header.image.svg }}" />
+    {% endif %}
+  {% endif %}
+
+  <div class="hero-body is-justify-content-center is-relative is-flex-direction-column">
+    <h2 class="title is-2{% if header.color %} has-text-{{ header.color }}{% endif %}">
+      {{ header.title }}
+    </h2>
+
+    <p class="subtitle is-4">
+      {{ header.text }}
+    </p>
+    <div class="buttons">
+    {% if header.buttons %}
+      {% for button in header.buttons %}
+        <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button {% if header.color %}is-{{ header.color }} {% else %}is-primary {% endif %}is-medium">
+          {{ button.text }}
+        </a>
+      {% endfor %}
+    {% endif %}
+    </div>
+  </div>
+</section>

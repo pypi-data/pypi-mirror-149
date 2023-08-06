@@ -1,0 +1,11 @@
+<section class="container section" id="big_card_{{ big_card_id }}">
+    <div class="columns is-vcentered is-centered is-variable {% if big_card.position_image == 'right' %}is-flex-direction-row-reverse{% endif %}" id="big_card_{{ big_card_id }}_{{ forloop.counter }}">
+      {% if big_card.image.img or big_card.image.svg %}
+        {% include 'components/blocks/big_card_img.html' with big_card_id=big_card_id  big_card_img_id=forloop.counter %}
+      {% endif %}
+      {% include 'components/blocks/big_card_text.html' with big_card_id=big_card_id  big_card_text_id=forloop.counter %}
+    </div>
+    <div class="section">
+      <hr class="is-marginless">
+    </div>
+</section>

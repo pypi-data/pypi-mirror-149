@@ -1,0 +1,80 @@
+{% load svg image_filters %}
+<section>
+{% if carousel.title %}
+  <h2 class="is-size-2 has-text-centered">{{carousel.title}}</h2>
+{% endif %}
+
+
+{% if carousel.slides %}
+  {% if settings.site_settings.MenuOptions.hide_menu %}
+    <div class="carousel slide hero is-fullheight" id="carousel_{{carousel_id}}">
+  {% else %}
+    <div class="carousel slide hero is-fullheight-with-navbar" id="carousel_{{carousel_id}}"">
+  {% endif %}
+    <ul class="slider">
+    {% for slide in carousel.slides %}
+      <li>
+        <input type="radio"
+               id="slide_{{carousel_id}}_{{ forloop.counter }}"
+               name="slide_{{carousel_id}}"
+               {% if forloop.first %}checked{% endif %}>
+
+        {% if carousel.slides|length > 1 %}
+          {% if forloop.first %}
+            <label class="previous" for="slide_{{carousel_id}}_{{ carousel.slides|length }}">
+              {% svg "carousel_previous" %}
+            </label>
+          {% else %}
+            <label class="previous" for="slide_{{carousel_id}}_{{ forloop.counter|add:"-1" }}">
+              {% svg "carousel_previous" %}
+            </label>
+          {% endif %}
+        {% endif %}
+
+        <div class="slide-text content is-medium columns">
+          <div class="column is-offset-one-quarter-desktop is-half-desktop is-offset-2-touch is-8-touch">
+            {% if slide.title %}
+              <h2 class="has-text-white title is-spaced is-2">{{ slide.title }}</h2>
+            {% endif %}
+            {% if slide.text %}
+              <p class="has-text-white subtitle is-4">{{ slide.text }}</p>
+            {% endif %}
+            {% if slide.buttons %}
+              {% for button in slide.buttons %}
+                <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button is-primary is-medium" >
+                  {{ button.text }}
+                </a>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        {% if slide.image.img or slide.image.svg %}
+          {% if slide.image.image_type == 'image' %}
+            {% if slide.image.img %}
+              {% responsive_image slide.image.img "img-slide" %}
+            {% endif %}
+          {% elif slide.image.image_type == 'svg' %}
+            {% if slide.image.svg %}
+              <img class="img-slide" src="{{ slide.image.svg.url }}" alt="{{ slide.image.svg }}" />
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% if carousel.slides|length > 1 %}
+          {% if forloop.last %}
+            <label class="next" for="slide_{{carousel_id}}_1">
+              {% svg "carousel_next" %}
+            </label>
+          {% else %}
+            <label class="next" for="slide_{{carousel_id}}_{{ forloop.counter|add:"1" }}">
+              {% svg "carousel_next" %}
+            </label>
+          {% endif %}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+</section>

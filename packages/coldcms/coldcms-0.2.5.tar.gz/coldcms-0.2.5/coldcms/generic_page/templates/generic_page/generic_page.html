@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags wagtailcore_tags %}
+
+{% wagtail_site as current_site %}
+
+{# Handling meta tags for social media preview image #}
+{% block og_image %}
+  {# We take the image from the first component on the page, #}
+  {# only if this component is a carousel or a centered image. #}
+  {# carousel is a list of images, centered_image is a single image #}
+  {% if self.content_blocks.0.block_type == 'generic_image' and self.content_blocks.0.value.image %}
+    {% image self.content_blocks.0.value.image.img fill-1200x630 as first_image %}
+    <meta property="og:image" content="http://{{ current_site.hostname }}{{ first_image.url }}" />
+  {% elif self.content_blocks.0.block_type == 'carousel' and self.content_blocks.0.value.0.image %}
+    {% image self.content_blocks.0.value.0.image.img fill-1200x630 as first_image %}
+    <meta property="og:image" content="http://{{ current_site.hostname }}{{ first_image.url }}" />
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if self.depth == 2 %}
+      {% include 'home_page.html' with blocks=self.content_blocks %}
+    {% else %}
+      {% include 'components/generic_content_blocks.html' with content_blocks=self.content_blocks %}
+    {% endif %}
+{% endblock content %}

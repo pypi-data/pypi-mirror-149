@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+<div class="container section">
+  {% if image_list_block.title %}
+    <h2 class="has-text-centered pb-3 is-size-3">{{image_list_block.title}}</h2>
+  {% endif %}
+  <div class="columns is-centered is-multiline">
+    {% for image in image_list_block.list_images %}
+      <div class="column is-4 has-text-centered">
+        {% include 'components/blocks/image_url_block.html' with image=image %}
+      </div>
+    {% endfor %}
+  </div>
+</div>

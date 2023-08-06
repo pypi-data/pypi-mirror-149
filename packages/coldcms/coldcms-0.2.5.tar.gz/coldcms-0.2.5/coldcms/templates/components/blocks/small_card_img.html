@@ -1,0 +1,11 @@
+{% load image_filters %}
+
+{% if card.image.image_type == 'image' %}
+  {% if card.image.img %}
+    {% responsive_image img=card.image.img ratio=ratio %}
+  {% endif %}
+{% elif card.image.image_type == 'svg' %}
+  {% if card.image.svg %}
+    <img src="{{ card.image.svg.url }}" alt="{{ card.image.svg }}" />
+  {% endif %}
+{% endif %}

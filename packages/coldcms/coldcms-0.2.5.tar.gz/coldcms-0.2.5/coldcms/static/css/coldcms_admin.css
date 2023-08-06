@@ -1,0 +1,84 @@
+/* Conditional visibility for choice blocks */
+.coldcms-admin__choice-handler-target--hidden {
+  display: none;
+}
+
+/* Collapsable panels */
+.object > .title-wrapper {
+  cursor: pointer;
+}
+.object > .title-wrapper > label {
+  cursor: pointer;
+}
+.object.coldcms-admin__panel--collapsed {
+  height: 53px;
+}
+.object.coldcms-admin__panel--collapsed:last-child {
+  height: 90px;
+}
+.object.coldcms-admin__panel--collapsed > .object-layout {
+  display: none ;
+}
+.object.coldcms-admin__panel--collapsed > .title-wrapper label:before,
+.object.coldcms-admin__panel--collapsed > .title-wrapper:before {
+  -webkit-transform:rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.collapse-button{
+  padding-top: 5px !important;
+}
+
+.collapse-icon-hidden {
+  display: none;
+}
+
+.c-sf-block.coldcms-admin__struct-block--collapsed > .c-sf-block__content {
+  display: none;
+}
+
+/* Initially hide elements */
+.coldcms-admin__initially-hidden {
+  display: none;
+}
+
+.c-sf-container .field label.button.colorfield {
+  display: flex;
+  width: fit-content;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+select.select-colors {
+  display: none;
+  max-width: 350px;
+  height: 35px;
+  padding: 0rem 1rem;
+  appearance: revert;
+}
+
+input.input-show-select-color {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+input.input-show-select-color:checked ~ select.select-colors {
+  display: block;
+}
+
+.choice_field .input select.select-colors~span:after,
+.collection_choice_field .input select.select-colors~span:after,
+.model_choice_field .input select.select-colors~span:after,
+.typed_choice_field .input select.select-colors~span:after {
+  content: "";
+  border: none;
+}

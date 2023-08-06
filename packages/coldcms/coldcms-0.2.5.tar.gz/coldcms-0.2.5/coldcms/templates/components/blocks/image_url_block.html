@@ -1,0 +1,33 @@
+{% load wagtailimages_tags %}
+
+<div class="card">
+  <div class="card-content">
+    {% if image.url %}
+    <a href="{{image.url}}" target="_blank">
+      {% if image.image.image_type == 'image' %}
+        {% if image.image.img %}
+          {% image image.image.img max-320x200 %}
+        {% endif %}
+      {% elif image.image.image_type == 'svg' %}
+        {% if image.image.svg %}
+          <img src="{{ image.image.svg.url }}" alt="{{ image.image.svg }}" />
+        {% endif %}
+      {% endif %}
+    </a>
+    {% else %}
+      {% if image.image.image_type == 'image' %}
+        {% if image.image.img %}
+          {% image image.image.img max-320x200 %}
+        {% endif %}
+      {% elif image.image.image_type == 'svg' %}
+        {% if image.image.svg %}
+          <img src="{{ image.image.svg.url }}" alt="{{ image.image.svg }}" />
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    {% if image.caption %}
+      <p class="pt-2">{{image.caption}}</p>
+    {% endif %}
+  </div>
+</div>

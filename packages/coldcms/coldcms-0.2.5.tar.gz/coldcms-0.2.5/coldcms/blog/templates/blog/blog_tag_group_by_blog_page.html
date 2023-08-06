@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags image_filters i18n svg static %}
+
+{% block content %}
+
+  <section class="hero is-medium is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ blog.title }}
+        </h1>
+        <h2 class="subtitle is-5">
+          {{ blog.intro }}
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <nav class="bd-navbar p-0 is-size-4">
+        <div class="navbar-menu">
+          <a class="navbar-item" href="{{ blog.url }}">{% trans "All" %}</span></a>
+          {% for tag in blog_tags %}
+            {% if page == tag %}
+              <a class="navbar-item has-text-weight-semibold">{{ tag.tag }}</a>
+            {% else %}
+              <a class="navbar-item" href="{{ tag.url }}">{{ tag.tag }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="columns is-multiline articles-list">
+        {% for post in blog_pages %}
+          <div class="column is-4">
+            {% with post=post.specific %}
+                <div class="card">
+                  {% with post.main_image as main_image %}
+                    <a href="{% pageurl post %}">
+                      <div class="card-image">
+                        <figure class="image is-4by3">
+                          {% if main_image %}
+                          {% responsive_image main_image ratio=1.5 %}
+                          {% else %}
+                          <img src="{% static 'svg/default_post_image.svg' %}" alt=""/>
+                          {% endif %}
+                        </figure>
+                        <header class="card-header">
+                          <h3 class="card-header-title title is-4 has-text-centered">
+                            {{ post.title }}
+                          </h3>
+                        </header>
+                      </div>
+                    </a>
+                  {% endwith %}
+                  <div class="card-content">
+                    <a href="{% pageurl post %}">
+                      <p class="intro-text has-text-centered mb-4">
+                        {% if post.intro %}
+                          {{ post.intro }}
+                        {% else %}
+                          <br>
+                        {% endif %}
+                      </p>
+                    </a>
+                    <p class="has-text-centered">
+                      <a href="{% pageurl post %}" class="button">en savoir +</a>
+                    </p>
+                  </div>
+                </div>
+            {% endwith %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

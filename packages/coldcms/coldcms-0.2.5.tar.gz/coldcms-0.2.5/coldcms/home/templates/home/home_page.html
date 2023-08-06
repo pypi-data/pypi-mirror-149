@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if self.home_content_blocks %}
+    {% for block in self.home_content_blocks %}
+
+      {% if block.block_type == 'carousel' %}
+        {% include 'components/blocks/carousel.html' with carousel=block.value %}
+      {% endif %}
+
+      {% if block.block_type == 'big_card' %}
+        {% include 'components/blocks/big_cards.html' with cards=block.value %}
+      {% endif %}
+
+      {% if block.block_type == 'small_card' %}
+        {% include 'components/blocks/small_cards.html' with cards=block.value %}
+      {% endif %}
+
+    {% endfor %}
+  {% endif %}
+{% endblock content %}

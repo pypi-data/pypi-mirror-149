@@ -1,0 +1,17 @@
+{% load image_filters %}
+
+<div class="column is-hidden-touch">
+  <div class="image" id="big_card_img_{{big_card_group_id}}_{{big_card_img_id}}">
+
+    {% if big_card.image.image_type == 'image' %}
+      {% if big_card.image.img %}
+        {% responsive_image img=big_card.image.img ratio=0.75 %}
+      {% endif %}
+    {% elif big_card.image.image_type == 'svg' %}
+      {% if big_card.image.svg %}
+        <img class="big-card-svg" src="{{ big_card.image.svg.url }}" alt="{{ big_card.image.svg }}" />
+      {% endif %}
+    {% endif %}
+
+  </div>
+</div>

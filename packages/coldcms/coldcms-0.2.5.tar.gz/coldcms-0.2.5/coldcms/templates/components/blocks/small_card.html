@@ -1,0 +1,49 @@
+{% load image_filters svg %}
+
+{% if forloop.last and cards|length|add:1|divisibleby:3 %}
+<div class="column is-two-third" id="small_card_{{small_card_group_id}}_{{forloop.counter}}">
+{% else %}
+<div class="column is-one-third" id="small_card_{{small_card_group_id}}_{{forloop.counter}}">
+{% endif %}
+  <div class="card card-fullheight">
+
+    {% if card.image.img or card.image.svg %}
+      <div class="card-image" id="small_card_img_{{small_card_group_id}}_{{forloop.counter}}">
+      {% if forloop.last and cards|length|add:1|divisibleby:3 %}
+        <div class="image is-2by1">
+          {% include 'components/blocks/small_card_img.html' with ratio=2 %}
+      {% elif forloop.last and cards|length|add:2|divisibleby:3 %}
+        <div class="image is-3by1">
+          {% include 'components/blocks/small_card_img.html' with ratio=3 %}
+      {% else %}
+          <div class="image is-square">
+            {% include 'components/blocks/small_card_img.html' with ratio=1 %}
+      {% endif %}
+          </div>
+      </div>
+    {% endif %}
+
+
+    <div class="card-content" id="small_card_text_{{small_card_group_id}}_{{forloop.counter}}">
+      <div class="content has-text-justified">
+        {# `.media` is used to have a smaller margin-bottom #}
+        {% if card.title %}
+          <p class="media title is-4{% if card.color %} has-text-{{ card.color }}{% endif %}"> {{ card.title }} </p>
+        {% endif %}
+        {% if card.text %}
+          {{ card.text | safe }}
+        {% endif %}
+      </div>
+      {% if card.buttons %}
+        <div class="buttons">
+          {% for button in card.buttons %}
+          <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button is-outlined{% if card.color %} is-{{ card.color }}{% endif %}">
+            {{ button.text }}
+          </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>

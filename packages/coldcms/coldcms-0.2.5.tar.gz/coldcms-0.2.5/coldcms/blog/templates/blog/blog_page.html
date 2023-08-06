@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags image_filters i18n svg%}
+
+{% wagtail_site as current_site %}
+
+{% block og_image %}
+ {% if page.gallery_images.all %}
+    {% image page.gallery_images.first.image fill-1200x630 as blog_image %}
+    <meta property="og:image" content="http://{{ current_site.hostname }}{{ blog_image.url }}" />
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <section class="hero is-small is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+        <h2 class="subtitle is-5">
+          {{ page.intro }}
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section">
+      <div class="subtitle">
+        <nav role="navigation" aria-label="go back to blog">
+          <a href="{{ page.get_parent.url }}">
+            <span class="icon is-small">
+            {% svg "reply" %}
+            </span>
+            {% trans "Return to blog" %}
+          </a>
+        </nav>
+        <br>
+        <div class="columns">
+          <div class="column">
+            {% for tag in page.tags.all %}
+              <a href="{{ tag_page|get_item:tag }}">
+                <span class="tag is-primary">
+                  <span class="icon is-small">
+                  {% svg "tag" %}
+                  </span>
+                  &nbsp;&nbsp;&nbsp;{{ tag }}
+                </span>
+              </a>
+            {% endfor %}
+          </div>
+          <div class="column has-text-right">
+            <span class="icon is-small">
+            {% svg "user" %}
+            </span>
+              <a href="{% if author_index %}{{ author_index.url }}{% endif %}">{{ page.owner|title }}</a>
+            -
+            <span class="icon is-small">
+            {% svg "calendar-alt" %}
+            </span>
+            {{ page.date }}
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <article class="content">
+        {{ page.body|richtext }}
+      </article>
+
+      <br>
+
+      <aside class="columns is-multiline">
+        {% for item in page.gallery_images.all %}
+          <div class="column is-hidden-touch is-3">
+            <div class="card">
+              <div class="card-image">
+                {% responsive_image img=item.image ratio=1.5 %}
+              </div>
+              {% if item.caption %}
+                <footer class="card-footer">
+                  <p class="card-footer-item">
+                    {{ item.caption }}
+                  </p>
+                </footer>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </aside>
+    </section>
+  </div>
+
+{% endblock %}

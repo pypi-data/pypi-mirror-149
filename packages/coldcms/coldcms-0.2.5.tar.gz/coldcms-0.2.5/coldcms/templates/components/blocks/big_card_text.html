@@ -1,0 +1,17 @@
+{% if big_card.image.img or big_card.image.svg %}
+  <div class="column is-three-fifths-desktop" id="big_card_text_{{big_card_id}}_{{big_card_text_id}}">
+{% else %}
+  <div class="column is-full" id="big_card_text_{{big_card_id}}_{{big_card_text_id}}">
+{% endif %}
+  <div class="section">
+    <section class="content is-medium has-text-justified">
+      <h2 class="{% if big_card.color %}has-text-{{ big_card.color }}{% endif %}">{{ big_card.title }}</h2>
+      {{ big_card.text | safe }}
+      {% for button in big_card.buttons %}
+      <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button is-outlined{% if big_card.color %} is-{{big_card.color }}{% endif %}" >
+          {{ button.text }}
+        </a>
+      {% endfor %}
+    </section>
+  </div>
+</div>

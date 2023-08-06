@@ -1,0 +1,10 @@
+<section class="container section" id="container_cards_{{container_cards_id}}">
+  {% if container_cards.title %}<h2 class="title has-text-centered{% if container_cards.color %} has-text-{{ container_cards.color }}{% endif %}">{{ container_cards.title }}</h2>{% endif %}
+  <div class="columns is-multiline">
+
+    {% for card in container_cards.cards %}
+      {% include 'components/blocks/small_card.html' with forloop=forloop %}
+    {% endfor %}
+
+  </div>
+</section>

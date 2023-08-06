@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load i18n svg %}
+
+{% block content %}
+  <section class="hero is-medium is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section">
+      {% if page.content %}
+        <div class="content is-medium">
+          {{ page.content | safe }}
+        </div>
+      {% endif %}
+
+      {% if page.questions_groups %}
+        <div class="tabs">
+          <ul>
+            {% for questions_group in page.questions_groups %}
+              <label for="category_{{ forloop.counter }}">
+                <li>
+                  <a>
+                    {% if questions_group.value.category_name %}
+                      {{ questions_group.value.category_name }}
+                    {% else %}
+                      {% trans "Other" %}
+                    {% endif %}
+                  </a>
+                </li>
+              </label>
+            {% endfor %}
+          </ul>
+        </div>
+
+        {% for questions_group in page.questions_groups %}
+          <div>
+            <input class="hidden-input" type="radio" name="tab" id="category_{{ forloop.counter }}"{% if forloop.first %} checked{% endif %}>
+            <div class="tab-content">
+              {% include 'components/containers/container_questions.html' with questions_group_block=questions_group.value questions_group_id=forloop.counter %}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </section>
+  </div>
+
+{% endblock content %}

@@ -1,0 +1,55 @@
+{% load site_tags wagtailimages_tags svg %}
+
+{% get_footer_columns as columns %}
+{% get_footer_icons as icons %}
+
+{% if icons or columns %}
+<footer class="footer">
+
+  {% if columns %}
+  <div class="container">
+    <div class="columns is-multiline is-variable is-7 is-centered">
+      {% for col in columns %}
+        <div class="column is-3">
+          {% if col.title %}
+            <h5 class="subtitle">
+              {{ col.title }}
+            </h5>
+          <hr>
+          {% endif %}
+          {% if col.links %}
+            {% for link in col.links %}
+              <a href="{{ link.value.url }}" class="is-1" {% if link.value.blank %}target="_blank" rel="noopener" {% endif %}>
+                {{ link.value.text }}
+              </a>
+              <br>
+            {% endfor %}
+            <hr>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if icons %}
+  <div class="container">
+    <div class="columns is-vcentered is-multiline is-centered is-7">
+      {% for icon in icons %}
+        <div class="column is-4 social-media-icon">
+          <a href="{{ icon.value.link }}">
+            <span class="icon {{ icon.value.icon_type }} social-media-icon">
+              {% svg icon.value.icon_type %}
+            </span>
+            <div class="social-media-text">
+              {{ icon.value.link_text }}
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div> 
+  </div>
+  {% endif %}
+
+</footer>
+{% endif %}

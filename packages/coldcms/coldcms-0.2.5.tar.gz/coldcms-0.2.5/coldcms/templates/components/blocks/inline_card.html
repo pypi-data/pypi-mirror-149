@@ -1,0 +1,41 @@
+{% load image_filters svg %}
+
+<section class="box" id="small_card_{{list_card_group_id}}_{{forloop.counter}}">
+  <article class="media is-align-items-center" id="small_card_img_{{small_card_group_id}}_{{forloop.counter}}">
+    {% if card.image.img or card.image.svg %}
+        <div class="media-left">
+          <figure class="image is-128x128">
+            {% if card.image.image_type == 'image' %}
+              {% if card.image.img %}
+                {% responsive_image img=card.image.img ratio=1 %}
+              {% endif %}
+            {% elif card.image.image_type == 'svg' %}
+              {% if card.image.svg %}
+                <img src="{{ card.image.svg.url }}" alt="{{ card.image.svg }}" />
+              {% endif %}
+            {% endif %}
+          </figure>
+        </div>
+    {% endif %}
+
+    <div class="media-content" id="small_card_text_{{list_card_group_id}}_{{forloop.counter}}">
+      <div class="content">
+        {% if card.title %}
+          <p class="title is-4"> {{ card.title }} </p>
+        {% endif %}
+        {% if card.text %}
+          {{ card.text | safe }}
+        {% endif %}
+      </div>
+      {% if card.buttons %}
+        <div class="buttons">
+          {% for button in card.buttons %}
+          <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button is-outlined">
+            {{ button.text }}
+          </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </article>
+</section>

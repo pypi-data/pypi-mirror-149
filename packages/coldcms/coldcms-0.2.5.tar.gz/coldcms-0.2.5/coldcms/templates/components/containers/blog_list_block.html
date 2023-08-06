@@ -1,0 +1,16 @@
+{% load wagtailcore_tags image_filters i18n svg %}
+
+<section class="container section">
+
+  <h2 class="title has-text-centered">{{ blog_list_block.title }}</h2>
+
+  <div class="columns is-multiline articles-list is-centered">
+    {% for post in blog_list_block.blog_list %}
+      <div class="column is-4">
+        {% include "components/blocks/post_block.html" with post=post.specific %}
+      </div>
+    {% endfor %}
+  </div>
+
+</section>
+

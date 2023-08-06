@@ -1,0 +1,51 @@
+.tab-content {
+    display: none;
+}
+
+.tab-content {
+    .card {
+        margin-left: 1em;
+        margin-bottom: 1.5em;
+    }
+    .card-content {
+        height: 0;
+        opacity: 0;
+        padding: 0 1.5rem;
+        transition: padding 0.3s ease;
+        overflow: hidden;
+    }
+    .angle-right {
+        display: inline-flex;
+    }
+    .angle-down {
+        display: none;
+    }
+    input:checked ~ .card-content {
+        height: auto;
+        opacity: 1;
+        padding: 1.5rem;
+        transition: opacity 0.3s ease, padding 0.3s ease;
+        overflow: hidden;
+    }
+    input:checked ~ .card-header {
+        .angle-right {
+            display: none;
+        }
+        .angle-down {
+            display: inline-flex;
+        }
+    }
+}
+
+.hidden-input {
+    position: absolute;
+    opacity: 0;
+}
+
+input:checked ~ .tab-content {
+    display: block;
+}
+
+.is-fullwidth {
+    width: 100%;
+}

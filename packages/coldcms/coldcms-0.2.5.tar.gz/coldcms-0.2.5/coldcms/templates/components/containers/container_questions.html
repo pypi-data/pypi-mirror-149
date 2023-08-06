@@ -1,0 +1,29 @@
+{% load i18n svg %}
+<div class="question">
+  {% for question in questions_group_block.questions %}
+  <div class="card">
+    <input class="hidden-input" type="checkbox" id="answer_{{ questions_group_id }}_{{ forloop.counter }}">
+    <header class="card-header card-header-faq">
+      <label class="is-fullwidth" for="answer_{{ questions_group_id }}_{{ forloop.counter }}">
+        <a class="card-header-icon" aria-label="show answer">
+          <p class="card-header-title">
+          {{ question.value.question }}
+          </p>
+
+          <span class="icon angle-right is-small">
+            {% svg "angle-right" %}
+          </span>
+          <span class="icon angle-down is-small">
+            {% svg "angle-down" %}
+          </span>
+        </a>
+      </label>
+    </header>
+    <div class="card-content">
+      <div class="content">
+        {{ question.value.answer | safe }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

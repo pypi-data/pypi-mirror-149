@@ -1,0 +1,84 @@
+$navbar-item-img-max-height: 2rem ;
+$icon-dimensions-small: 0.75rem ;
+
+$black: {{ colors.black }};
+$black-bis: {{ colors.black_bis}};
+$black-ter: {{ colors.black_ter }};
+
+$grey-darker: {{ colors.grey_darker }};
+$grey-dark:	{{ colors.grey_dark }};
+$grey: {{ colors.grey }};
+$grey-light: {{ colors.grey_light }};
+$grey-lighter: {{ colors.grey_lighter }};
+$grey-lightest:	{{ colors.grey_lightest }};
+
+$white-ter:	{{ colors.white_ter }};
+$white-bis: {{ colors.white_bis }};
+$white:	{{ colors.white }};
+
+$orange: {{ colors.orange }};
+$yellow: {{ colors.yellow }};
+$green:	{{ colors.green }};
+$turquoise:	{{ colors.turquoise }};
+$cyan: {{ colors.cyan }};
+$blue: {{ colors.blue }};
+$purple: {{ colors.purple }};
+$red: {{ colors.red }};
+
+$primary: {{ colors.primary }};
+$info: {{ colors.info }};
+$success: {{ colors.success }};
+$warning: {{ colors.warning }};
+$danger: {{ colors.danger }};
+
+{% if theme_variables %}
+  @import "{{ theme_variables }}";
+{% endif %}
+
+
+// Load Bulma global styles
+@import "../node_modules/bulma/sass/utilities/_all.sass" ;
+@import "../node_modules/bulma/sass/base/_all.sass" ;
+
+// Load  Bulma modules when needed
+@import "../node_modules/bulma/sass/components/card" ;
+@import "../node_modules/bulma/sass/components/navbar" ;
+@import "../node_modules/bulma/sass/components/tabs" ;
+@import "../node_modules/bulma/sass/components/media" ;
+@import "../node_modules/bulma/sass/components/modal" ;
+
+@import "../node_modules/bulma/sass/elements/box" ;
+@import "../node_modules/bulma/sass/elements/button" ;
+@import "../node_modules/bulma/sass/elements/container" ;
+@import "../node_modules/bulma/sass/elements/content" ;
+@import "../node_modules/bulma/sass/elements/icon" ;
+@import "../node_modules/bulma/sass/elements/image" ;
+@import "../node_modules/bulma/sass/elements/tag" ;
+@import "../node_modules/bulma/sass/elements/title" ;
+
+@import "../node_modules/bulma/sass/grid/columns" ;
+
+@import "../node_modules/bulma/sass/layout/footer" ;
+@import "../node_modules/bulma/sass/layout/hero" ;
+@import "../node_modules/bulma/sass/layout/section" ;
+@import "../node_modules/bulma/sass/form/_all";
+@import "../node_modules/bulma/sass/helpers/_all";
+
+// Custom css
+@import "big_cards" ;
+@import "carousel" ;
+@import "small_cards" ;
+@import "menu" ;
+@import "tabs" ;
+@import "spacing" ;
+@import "icons" ;
+@import "header" ;
+@import "box_block";
+@import "logo_block";
+@import "question_block";
+@import "blog";
+@import "colors" ;
+
+{% if theme %}
+  @import "{{ theme }}";
+{% endif %}

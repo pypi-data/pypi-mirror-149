@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags image_filters i18n svg %}
+
+{% block content %}
+
+  <section class="hero is-small is-primary">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="subtitle">
+        <nav role="navigation" aria-label="go back to blog">
+          <a href="{{ blog_url }}">
+            <span class="icon is-small">
+            {% svg "reply" %}
+            </span>
+            {% trans "Return to blog" %}
+          </a>
+        </nav>
+      </div>
+      <div class="columns is-multiline articles-list">
+        {% for post in blog_pages %}
+          <div class="column is-4">
+            {% include "blog/post.html" with post=post.specific %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

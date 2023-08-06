@@ -1,0 +1,19 @@
+{% load wagtailimages_tags %}
+<div class="has-text-centered">
+  {% if logo_block.logo %}
+    <div class="media">
+
+      {% if logo_block.logo.image_type == 'image' %}
+        {% if logo_block.logo.img %}
+          {% image logo_block.logo.img height-140 %}
+        {% endif %}
+      {% elif logo_block.logo.image_type == 'svg' %}
+        {% if logo_block.logo.svg %}
+          <img class="logo-block-svg" src="{{ logo_block.logo.svg.url }}" alt="{{ logo_block.logo.svg }}" />
+        {% endif %}
+      {% endif %}
+
+    </div>
+  {% endif %}
+  <div class="is-size-4">{{ logo_block.name }}</div>
+</div>

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load wagtailimages_tags %}
+
+{% block content %}
+  <section class="hero is-medium is-dark">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <section class="section">
+      {% if page.content %}
+        <div class="content is-medium">
+          {{ page.content | safe }}
+        </div>
+
+      {% endif %}
+
+      {% if page.partners_groups %}
+        <div class="content">
+          {% for partner_group in page.partners_groups %}
+            {% with partner_group_id=forloop.counter %}
+              {% if partner_group.value.category_name %}
+                <h3 class="is-inline-block" id="partner_group_{{partner_group_id}}">
+                  {{ partner_group.value.category_name }}
+                  <hr>
+                </h3>
+              {% endif %}
+              <div class="columns is-multiline">
+                {% for partner in partner_group.value.partners %}
+                  <div class="column is-one-quarter is-flex is-horizontally-centered has-text-centered" id="partner_{{partner_group_id}}_{{forloop.counter}}">
+                    {% if partner.value.website_url %}
+                      <a href="{{ partner.value.website_url }}" >
+                        {% if partner.value.logo %}
+                          <div class="media">
+
+                            {% if partner.value.logo.image_type == 'image' %}
+                              {% image partner.value.logo.img height-140 %}
+                            {% elif partner.value.logo.image_type == 'svg' %}
+                            <img class="big-card-svg" src="{{ partner.value.logo.svg.url }}" alt="{{ partner.value.logo.alt }}" />
+                            {% endif %}
+
+                          </div>
+                        {% endif %}
+                        {{ partner.value.name }}
+                      </a>
+                    {% else %}
+                      <div>
+                        {% if partner.value.logo %}
+                          <div class="media">
+                            {% if partner.value.logo.image_type == 'image' %}
+                              {% image partner.value.logo.img height-140 %}
+                            {% elif partner.value.logo.image_type == 'svg' %}
+                              <img class="big-card-svg" src="{{ partner.value.logo.svg.url }}" alt="{{ partner.value.logo.alt }}" />
+                            {% endif %}
+                          </div>
+                        {% endif %}
+                        {{ partner.value.name }}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  </div>
+
+{% endblock content %}

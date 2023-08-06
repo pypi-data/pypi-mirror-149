@@ -1,0 +1,12 @@
+<section class="container section">
+  {% if columns_block.title %}
+    <h2 class="title is-2{% if columns_block.color %} has-text-{{ columns_block.color }}{% endif %}">{{columns_block.title}}</h2>
+  {% endif %}
+  <div class="columns">
+    {% for column in columns_block.columns %}
+      <div class="column">
+        {% include 'components/generic_content_blocks.html' with content_blocks=column.content %}
+      </div>
+    {% endfor %}
+  </div>
+</section>

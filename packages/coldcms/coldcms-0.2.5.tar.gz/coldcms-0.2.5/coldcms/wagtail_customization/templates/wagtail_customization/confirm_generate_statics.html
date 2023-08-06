@@ -1,0 +1,21 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+{% block titletag %}{% blocktrans with title=page.get_admin_display_title %}Re-generate {{ title }}{% endblocktrans %}{% endblock %}
+
+{% block content %}
+  {% trans "Re-generate" as regenerate_str %}
+  {% include "wagtailadmin/shared/header.html" with title=regenerate_str subtitle=page.get_admin_display_title icon="redo" %}
+
+  <div class="nice-padding">
+    <p>{% trans "Are you sure you want to re-generate this page?" %}</p>
+    <form action="{% url 'generate_statics' page.id %}" method="POST">
+      {% csrf_token %}
+      <ul class="fields">
+        <li>
+          <input type="submit" value="{% trans 'Yes, re-generate it' %}" class="button">
+          <a href="{% url 'wagtailadmin_explore' page.id %}" class="button button-secondary">{% trans "No, take me back" %}</a>
+        </li>
+      </ul>
+    </form>
+  </div>
+{% endblock %}

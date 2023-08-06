@@ -1,0 +1,72 @@
+{% load assets %}
+{% load wagtailimages_tags image_filters wagtailcore_tags %}
+
+{% wagtail_site as current_site %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>
+    {% block title %}
+      {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
+    {% endblock %}
+    {% block title_suffix %}
+      {% with current_site.site_name as site_name %}
+        {% if site_name %}- {{ site_name }}{% endif %}
+      {% endwith %}
+    {% endblock %}
+  </title>
+  {% if self.search_description %}<meta name="description" content="{{ self.search_description }}" />{% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {% if settings.site_settings.SiteSettings.logo_type == "image" %}
+    {% image settings.site_settings.SiteSettings.image fill-16x16 as favicon_custom %}
+    <link rel="icon" href="{{ favicon_custom.url }}">
+  {% elif settings.site_settings.SiteSettings.logo_type == "svg" %}
+    {% with settings.site_settings.SiteSettings.svg as favicon_custom %}
+      <link rel="icon" href="{{ favicon_custom.url }}">
+    {% endwith %}
+  {% endif %}
+
+  {% assets "css_all" %}
+    <link type="text/css" href="{{ ASSET_URL }}" rel="stylesheet"/>
+    {% if request.is_preview %}
+      {% if settings.site_settings.CSSStyleSheet.CSS_stylesheet %}
+        <link rel="stylesheet" type="text/css" href="/media/{{ settings.site_settings.CSSStyleSheet.CSS_stylesheet.file }}">
+      {% endif %}
+    {% endif %}
+  {% endassets %}
+
+  {% block extra_css %}{% endblock %}
+
+  {% if settings.site_settings.SiteSettings.logo_type == "image" %}
+    {% image settings.site_settings.SiteSettings.image fill-1200x630 as site_image %}
+  {% endif %}
+
+  <meta property="og:title" content="{{ self.title }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://{{ current_site.hostname }}" />
+
+  {% block og_image %}
+    {% if site_image %}
+      <meta property="og:image" content="http://{{ current_site.hostname }}{{ site_image.url }}" />
+    {% else %}
+      <meta property="og:image" content="http://{{ current_site.hostname }}/static/images/coldcms-logo.png" />
+    {% endif %}
+  {% endblock %}
+
+  {% with current_site.site_name as site_name %}
+    <meta property="og:site_name" {% if site_name %} content="{{ site_name }}" {% else %} content="" {% endif %} />
+  {% endwith %}
+
+</head>
+
+<body id="{{ self.slug }}-{{ self.id }}">
+{% if not settings.site_settings.MenuOptions.hide_menu %}
+  {% include 'components/menu/index.html' %}
+{% endif %}
+{% block content %}{% endblock %}
+{% include 'footer.html' %}
+</body>
+</html>

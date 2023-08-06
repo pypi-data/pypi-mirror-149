@@ -1,0 +1,26 @@
+  <div class="columns is-gapless is-centered">
+    <div class="column is-half" id="generic_text_{{ generic_text_id }}">
+      <div class="section">
+        <section class="content is-medium {{ txt_block.text_alignment }}">
+          {% if txt_block.title%}
+            <h2 class="{{ txt_block.text_alignment }}{% if txt_block.color %} has-text-{{ txt_block.color }}{% endif %}">{{ txt_block.title }}</h2>
+          {% endif %}
+          {% if txt_block.text%}
+            <span class="{{ txt_block.text_alignment }}">
+              {{ txt_block.text | safe }}
+            </span>
+          {% endif %}
+
+        </section>
+        {% if txt_block.buttons %}
+        <section class="has-text-centered">
+            {% for button in txt_block.buttons %}
+            <a href="{{ button.url }}" title="{{ button.text }}" {% if button.blank %}target="_blank"{% endif %} class="button is-horizontally-centered{% if txt_block.color %} is-{{ txt_block.color }}{% endif %}">
+              {{ button.text }}
+            </a>
+            {% endfor %}
+        </section>
+        {% endif %}
+      </div>
+    </div>
+  </div>

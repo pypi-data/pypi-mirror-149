@@ -1,0 +1,26 @@
+{% load wagtailcore_tags image_filters i18n svg %}
+
+<a href="{% pageurl post %}">
+  <div class="card">
+    {% with post.main_image as main_image %}
+      {% if main_image %}
+        <div class="card-image">
+          <figure class="image is-4by1">
+            {% responsive_image main_image ratio=1.5 %}
+          </figure>
+        </div>
+      {% endif %}
+    {% endwith %}
+    <header class="card-header">
+      <h3 class="card-header-title title is-3">
+        {{ post.title }}
+      </h3>
+    </header>
+    <div class="card-content">
+      <p class="has-text-black">{{ post.intro }}</p>
+      <p>
+      <a href="{% pageurl post %}" title="{{ post.title }}">{% trans "Read more..." %}</a>
+      </p>
+    </div>
+  </div>
+</a>

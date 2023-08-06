@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load assets l10n i18n svg %}
+
+{% block content %}
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          {{ page.title }}
+        </h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content is-medium">
+      <div class="columns">
+        <div class="column">
+          {% if page.address %}
+            <span class="icon is-small">
+              {% svg "map-marker-alt" %}
+            </span>
+            {{ page.address }}
+            {% if page.location %}
+              {% with long=page.location.y|unlocalize lat=page.location.x|unlocalize %}
+                <a href="https://www.openstreetmap.org/?mlat={{ lat }}&mlon={{ long }}#map=16/{{ lat }}/{{ long }}" rel="nofollow" target="_blank">
+              {% endwith %}
+              <br>
+              &nbsp;&nbsp;&nbsp;{% trans "(Click to open a map)" %}
+              </a>
+              <br>
+            {% endif %}
+          {% endif %}
+
+          {% if page.phone_number %}
+            <span class="icon is-small">
+              {% svg "phone" %}
+            </span>
+            <a href="{{ page.phone_number }}">{{ page.phone_number }}</a>
+            <br>
+          {% endif %}
+
+          {% if page.email %}
+            <span class="icon is-small">
+              {% svg "envelope" %}
+            </span>
+            <a href="mailto:{{ page.email }}?subject=Website%20contact%20form">{{ page.email }}</a>
+          {% endif %}
+        </div>
+
+        <div class="column">
+          {% if page.opening_hours %}
+            <span class="icon is-small">
+              {% svg "clock" %}
+            </span>
+            <u>{% trans "Opening hours" %}</u><br>
+
+            {% for opening_hour in page.opening_hours %}
+              <b>{{ opening_hour.value.day }}: </b>
+              {{ opening_hour.value.hours }}
+              <br>
+            {% endfor %}
+          {% endif %}
+
+          {% if page.opening_hours_free_text %}
+            {{ page.opening_hours_free_text|safe }}
+          {% endif %}
+        </div>
+      </div>
+      {% if page.content %}
+        <hr>
+        {{ page.content | safe }}
+      {% endif %}
+    </div>
+
+  </section>
+
+{% endblock content %}

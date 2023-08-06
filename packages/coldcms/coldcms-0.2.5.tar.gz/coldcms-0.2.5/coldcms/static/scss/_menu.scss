@@ -1,0 +1,42 @@
+.navbar-brand > .burger {
+  margin-left: inherit;
+}
+
+#main-navbar-input {
+    position: absolute;
+    opacity: 0;
+}
+
+#main-navbar {
+  @media screen and (max-width: 1023px) {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    height: 100vh;
+    width: 270px;
+    display: block;
+    transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+    padding: 0;
+  }
+}
+
+#main-navbar-input:checked ~ #main-navbar {
+    left: 0;
+    transition: all 0.2s ease;
+    -webkit-transition: all 0.2s ease;
+}
+
+a.navbar-burger.close span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+    -webkit-transform: translateY(5px) rotate(45deg);
+}
+
+a.navbar-burger.close span:nth-child(2) {
+    opacity: 0;
+}
+
+a.navbar-burger.close span:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+    -webkit-transform: translateY(-5px) rotate(-45deg);
+}

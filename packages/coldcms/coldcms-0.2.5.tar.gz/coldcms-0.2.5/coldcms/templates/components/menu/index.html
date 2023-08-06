@@ -1,0 +1,77 @@
+{% load navigation_tags wagtailimages_tags site_tags svg %}
+
+{% load wagtailcore_tags %}
+
+{% wagtail_site as current_site %}
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <input type="checkbox" id="main-navbar-input">
+  <label for="main-navbar-input">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="main-navbar">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+  </label>
+
+  <div id="main-navbar" class="navbar-menu">
+    <label for="main-navbar-input">
+      <div class="navbar-brand">
+        <a role="button" class="navbar-burger burger close" aria-label="menu" aria-expanded="false" data-target="main-navbar">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    </label>
+    <div class="navbar-start">
+      {% if settings.site_settings.SiteSettings.image or settings.site_settings.SiteSettings.svg %}
+        <a class="navbar-item is-hidden-touch" href="{{ current_site.root_page.url }}">
+
+          {% if settings.site_settings.SiteSettings.logo_type == 'image' %}
+            {% if settings.site_settings.SiteSettings.image %}
+              {% image settings.site_settings.SiteSettings.image fill-32x32 %}
+            {% endif %}
+          {% elif settings.site_settings.SiteSettings.logo_type == 'svg' %}
+            {% if settings.site_settings.SiteSettings.svg %}
+              <img src="{{ settings.site_settings.SiteSettings.svg.url }}" alt=""/>
+            {% endif %}
+          {% endif %}
+
+        </a>
+      {% endif %}
+      {% if current_site.root_page.show_in_menus %}
+        <a class="navbar-item" href="{{ current_site.root_page.url }}">
+          {{ current_site.root_page.title }}
+        </a>
+      {% endif %}
+      {% top_menu parent=current_site.root_page first_level=True %}
+    </div>
+
+    {% get_menu_links_icons as icons %}
+    {% if icons %}
+      <div class="navbar-end menu-icons">
+        <hr class="navbar-divider menu-icons">
+        {% for icon in icons %}
+          {% if icon.type ==  "social_media_icon" %}
+          <a class="navbar-item menu-icons" href="{{ icon.value.link }}" {% if icon.value.blank %}target='_blank'{% endif %}>
+            <span class="icon {{ icon.value.icon_type }} social-media-icon">
+              {% svg icon.value.icon_type %}
+            </span>
+            <div class="social-media-text">
+              {{ icon.value.link_text }}
+            </div>
+          </a>
+          {% elif icon.type == 'link' %}
+            <a class="navbar-item menu-icons" href="{{ icon.value.link }}">
+              {{ icon.value.link_text }}
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</nav>
