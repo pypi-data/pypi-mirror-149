@@ -1,0 +1,495 @@
+Metadata-Version: 2.1
+Name: slapos.cookbook
+Version: 1.0.244
+Summary: SlapOS recipes.
+Home-page: https://lab.nexedi.com/nexedi/slapos
+Maintainer: Nexedi
+Maintainer-email: info@nexedi.com
+License: GPLv3
+Description: slapos.cookbook
+        ===============
+        
+        Cookbook of SlapOS recipes.
+        
+        
+        testing
+        =======
+        
+        Unit tests for recipes can be found under ``slapos/test/recipe``. To run the
+        tests use provided unittest.defaultTestLoader inside ``slapos/test/test_recipe``
+        by invoking 
+        
+            python setup.py test --test-suite slapos.test.test_recipe.additional_tests
+        
+        
+        generic_cloudooo
+        ================
+        
+        The generic_cloudooo recipe helps you to deploy cloudooo services with their configuration files.
+        
+        
+        How to use generic_cloudooo?
+        ----------------------------
+        
+        Here is an example of a section to add in your software.cfg :
+        
+        .. code-block:: ini
+        
+          [cloudooo-configuration]
+          recipe = slapos.cookbook:generic_cloudooo
+          configuration-file = ${directory:etc}/cloudooo.cfg
+          wrapper = ${directory:services}/cloudooo
+          data-directory = ${directory:srv}/cloudooo
+          ip = 0.0.0.0
+          port = 1234
+          ooo-paster = ${directory:bin}/cloudooo_paster
+          mimetype_entry_addition =
+            text/html application/pdf wkhtmltopdf
+          openoffice-port = 1235
+          ooo-binary-path = ${directory:libreoffice-bin}/program
+          environment =
+            FONTCONFIG_FILE = $${fontconfig-conf:output}
+            PATH = ${binary-link:target-directory}
+          ooo-uno-path = ${directory:libreoffice-bin}/basis-link/program
+        
+        
+        Where :
+        
+        - `configuration-file` is the path where the put the configuration file;
+        - `wrapper` is the path where the put the final executable file;
+        - `data-directory` is the folder where cloudooo would put it's temporary files;
+        - `ip` and `port` is where cloudooo will listen to;
+        - `ooo-paster` is the path of the program that will load cloudooo configuration
+          and start the application;
+        - `mimetype_entry_addition` is additional entries to give to the default
+          mimetype registry. (see section below.) The mimetype entry list is sorted in
+          order to make the global mimetype at the bottom of the list.
+          (i.e. `* * ooo` > `text/* * ooo`)
+        
+            .. code-block:: ini
+        
+                mimetype_entry_addition =
+                  <input_format> <output_format> <handler>
+        
+        - `openoffice-port` is the port where the internal OpenOffice.org service will
+          listen to;
+        - `ooo-binary-path` is the path of the openoffice service executable file;
+        - `environment` are environment vars to use with the openoffice binary;
+        - `ooo-uno-path` is the path where UNO library is installed.
+        
+        
+        Default mimetype registry
+        -------------------------
+        
+        .. code-block:: ini
+        
+          application/vnd.oasis.opendocument* * ooo
+          application/vnd.sun.xml* * ooo
+          application/pdf text/* pdf
+          application/pdf * ooo
+          video/* * ffmpeg
+          audio/* * ffmpeg
+          application/x-shockwave-flash * ffmpeg
+          application/ogg * ffmpeg
+          application/ogv * ffmpeg
+          image/png image/jpeg imagemagick
+          image/png * ooo
+          image/* image/* imagemagick
+          text/* * ooo
+          application/zip * ooo
+          application/msword * ooo
+          application/vnd* * ooo
+          application/x-vnd* * ooo
+          application/postscript * ooo
+          application/wmf * ooo
+          application/csv * ooo
+          application/x-openoffice-gdimetafile * ooo
+          application/x-emf * ooo
+          application/emf * ooo
+          application/octet* * ooo
+          * application/vnd.oasis.opendocument* ooo
+        
+        
+        kvm
+        ===
+        
+        kvm: Introduction
+        -----------------
+        
+        The erp5.recipe.kvm aims to integrate KVM setups and buildout. This recipe is 
+        able to download one remote image and setup a KVM environment to use it. 
+        
+        This recipe is also capable to reuse images or partitions already present on
+        disk to create the setup. 
+        
+        Examples
+        --------
+        
+        The follow examples lists different kind of configurations.
+        
+        
+        KVM with Remote and gzipped Image
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        ::
+        
+            [kvm-testing-with-remote-gzip-image]
+            image = http://URL/public.mdv2010.0_x86_64.qcow2.img.gz
+        
+            # md5 checks are optional
+            md5_download = adcff8adcff8adcff8adcff8
+            md5_image = 1a4e371a4e371a4e371a4e371a4e37
+        
+            gzip = true
+            
+            # Use -hda instead -drive arg
+            # Default is drive (see Options below)
+            image_type = hda
+        
+            ### Common Configuration below. ###
+            
+            # VNC is optional
+            kvm_vnc = <SOME-IP>:<VNC-DISPLAY>
+        
+            # Graphic is optional
+            kvm_graphic = std
+        
+            
+            # Define list of redirections.
+            kvm_redir =
+              tcp:13480::80
+            
+            kvm_net =
+              user,hostname=publicmandriva
+              nic,model=ne2k_pci
+        
+            # This automatically create a redirection for 13456 -> 22
+            ssh_port = 13456
+            ssh_key_path = /path/to/mykey.key
+        
+        KVM with Remote and raw Image
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        ::
+        
+            [kvm-testing-with-remote-raw-image]
+            image = http://URL/public.mdv2010.0_x86_64.qcow2.img
+            md5_download = 1a4e371a4e371a4e371a4e371a4e37
+            md5_image = 1a4e371a4e371a4e371a4e371a4e37
+        
+            gzip = false
+        
+            ### The Rest Same configuration as previous ###
+        
+        KVM with direct local Image file
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        This does not copy and/or download the image::
+        
+            [kvm-testing-with-local-image]
+        
+            file = /home/you/public.mdv2010.0_x86_64.qcow2.img
+            md5_image = 1a4e371a4e371a4e371a4e371a4e37
+        
+            ### The Rest Same configuration as previous ###
+        
+        KVM with a linux partition
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+        This does not copy and/or download the image::
+        
+            [kvm-testing-a-linux-partition]
+        
+            file = /dev/sdb
+        
+            ### The Rest Same configuration as previous ###
+        
+        
+        Options
+        -------
+        
+        
+        location
+        
+          When define, it does not use buildout parts directory to allocate the image.
+        
+        image
+        
+          URL to a remote image. 
+        
+        file 
+        
+          Use file makes recipe ignore image option. You can define a path to a image
+          or partion to use. 
+        
+        image_type 
+        
+          You can define how the KVM will use the image with "-hdx" or "-drive". By
+          default it uses drive and the result is:
+        
+            "kvm -drive file=IMAGE,if=virtio,cache=none,boot=on ..."
+        
+          if you use image_type=hda:
+             
+            "kvm -hda IMAGE ..." 
+        
+        gzip
+        
+          If true means the image is compressed (gzipped), and the recipe will
+          uncompress the image before copy it.
+        
+        md5_download
+        
+          When defined, this values is used to verify the file downloaded.
+        
+        md5_image
+        
+          When defined, this values is used to verify the image generated, don't use it
+          when a partition is used in file parameter.
+        
+        kvm_vnc
+        
+          Define the ip-address:display used by KVM to start the VNC server. If not
+          defined, no VNC port is created.
+        
+        kvm_redir
+        
+          Define port redirections to the buildout.
+        
+        kvm_graphic
+        
+          If defined it adds the "-vga value" at the KVM command.
+        
+        kvm_net
+        
+          Define the net definitions, each value defines one "-net" in kvm command.
+          Example:
+          
+            kvm_net =
+              user,hostname=publicmandriva
+              nic,model=ne2k_pci
+        
+          It generates:
+        
+            "kvm -net user,hostname=publicmandriva -net  nic,model=ne2k_pci ..."
+        
+        kvm_snapshot 
+        
+          Use "-snapshot" when run a KVM. This not write the changes direct into the
+          image. Default value is False.
+        
+        ssh_port
+        
+          If defined creates a new redirection for port 22 and creates few script to
+          connect to the instance.
+        
+        ssh_hostname
+        
+          By default it uses localhost. You don't need to define this.
+        
+        ssh_key_path
+        
+          Path to the ssh key used to connect without password to the image running.
+          
+        ssh_user
+        
+          Define the server that will be used to connect to the instance. 
+        
+        kvm_bin_directory
+        
+          Place where the scripts will be created. By default it uses bin-directory from
+          buildout.
+        
+        kvm_run_directory
+        
+           Place where the pid file will be created, by default it uses var-directory
+           from buildout.
+        
+        
+        Generated Commands
+        ------------------
+        
+        Few scripts are generated to you manage your KVM instance. The scripts names are
+        created with the followed standard:
+        
+           KVM-PARTS-NAME-ctl
+        
+        Commands usage
+        ~~~~~~~~~~~~~~
+           
+        KVM-PARTS-NAME-ctl (start|stop|status|restart)
+          
+          This script is used to manage the KVM instance.
+        
+        
+        KVM-PARTS-NAME-sendfile REMOTEFILE LOCALFILE
+        
+          Copy the local file to a remote place.
+        
+        KVM-PARTS-NAME-getfile REMOTEFILE LOCALFILE
+        
+          Copy the remote file to a local place.
+        
+        KVM-PARTS-NAME-runscript COMMAND
+        
+          Run a command into remote KVM computer.
+        
+        
+        kvm_frontend
+        =============
+        
+        kvm_frontend: Introduction
+        ---------------------------
+        
+        The ``slapos.recipe.kvm_frontend`` aims to provide proxy server to KVM instances.
+        
+        It allows HTTPS IPv4/IPv6 proxying (with or without domain name), and supports
+        the WebSocket technology needed for VNC-in-webapplication noVNC.
+        
+        It works following the master/slave instances system. A master instance is
+        created, containing all what is needed to run the proxy. Slave instances
+        are later created, adding one line in the master instance's proxy configuration
+        that specify the IP/port to proxy to the KVM.
+        The slave instance (kvm) is then accessible from
+        http://[masterinstanceIPorhostname]/[randomgeneratednumber]
+        
+        
+        Instance parameters
+        -------------------
+        
+        Incoming master instance parameters
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+         * ``port``                - Port of server, optional, defaults to 4443.
+         * ``domain``              - domain name to use, optional, default to ``host.vifib.net``.
+         * ``redirect_plain_http`` - if value is one of ``['y', 'yes', '1', 'true']``,
+           will try to create a simple http server on port 80 redirecting to the proxy. Optional.
+        
+        Incoming slave instance parameters
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+         * ``host``    - KVM instance IP or hostname. Mandatory.
+         * ``port``    - KVM instance port, Mandatory.
+         * ``https``   - if value is one of ``['n', 'no', '0', 'false']``, will try to connect to target in plain http. Optional.
+        
+        Connection parameters
+        ---------------------
+        
+        Outgoing master connection parameters
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+         * ``domain_ipv6_address``  - Proxy IP
+         * ``site_url``             - Proxy URL
+        
+        Outgoing slave connection parameters
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        
+         * ``site_url``             - URL of instance
+         * ``domain_name``          - Domain name of proxy
+         * ``port``                 - Port of proxy
+        
+        
+        librecipe
+        =========
+        
+        Thanks to using slapos.cookbook:librecipe it is easier to create zc.buildout recipes in SlapOS environment.
+        
+        How to use?
+        -----------
+        
+        In setup.py of recipe add only one install requires to slap.lib.recipe.
+        
+        In code itself subclass from slap.lib.recipe.BaseSlapRecipe.BaseSlapRecipe.
+        
+        Use _install hook:
+        
+        ::
+        
+          from slap.lib.recipe.BaseSlapRecipe import BaseSlapRecipe
+        
+          class Recipe(BaseSlapRecipe):
+            ...
+            def _install(self):
+              # refer below for list of available objects
+              specific code
+              of recipe
+        
+        Available variables self.:
+        
+         * name and options passed by zc.buildout during init
+         * work_directory -- buildout's directory
+         * bin_directory -- places for generated binaries
+         * running_wrapper_location -- filename of wrapper to create
+         * data_root_directory -- directory container for data -- inside this
+           directory it is advised to create named directories for provided servers
+           which needs data
+         * backup_directory -- directory container for backups -- inside this
+           directory it is advised o created named directories for backups, with same
+           structure as in data_root_directory
+         * var_directory -- container for various, unix following things:
+        
+           * log_directory -- container for logs
+           * run_directory -- container for pidfiles and sockets
+        
+         * etc_directory -- place to put named files and directories of configuration
+           for provided servers
+         * computer_id -- id of computer
+         * computer_partition_id -- if of computer partition
+         * server_url - url of Vifib server
+         * software_release_url -- url of software release being instantiated
+         * slap -- initialised connection to Vifib server
+         * computer_partition -- initialised connection to computer partition
+         * request -- shortcut to computer partition request method
+        
+        By default all directories are created before calling _install hook.
+        
+        _install method shall return list of paths which are safe to be removed by
+        buildout during part uninstallation.
+        
+        Important assumptions
+        ---------------------
+        
+        Because in SlapOS environment zc.buildout does not know when data are changed,
+        recipes shall be always uninstalled/installed. This is done during constructing
+        recipe instance which subclasses from BaseSlapRecipe.
+        
+        
+        mkdirectory
+        ===========
+        
+        mkdirectory loops on its options and create the directory joined
+        
+        .. Note::
+        
+           Use a slash ``/`` as directory separator. Don't use system dependent separator.
+           The slash will be parsed and replace by the operating system right separator.
+        
+           Only use relative directory to the buildout root directory.
+        
+        The created directory won't be added to path list.
+        
+        
+        These recipes provide the ability to save some buildout parameters and their value in a custom file, inside the instance folder.
+        
+        In both recipes, you HAVE TO give a filename, which will be stored at the root of the instance folder
+        
+        
+        WriteRecipe : 
+        -------------
+        
+        * Is used to create a section (named according to the buildout section_name).
+        * You can give then as much parameters you wish, with their default values.
+        * Whenever you run buildout, if the parameter has yet been saved in the config file, it will do nothing.
+        * If the parameter's value has changed in the config file, it won't be overwritten
+        * /!\ If you decide to change the default value of one parameter, ALL other parameters will be reseted in the config file, even if you changed it manually. Explanation : The default values aren't expected to change, except while development purposes.
+        
+        ReadRecipe :
+        
+        * It fills its own section with all the options in all the sections of the config file.
+        
+        
+Keywords: slapos recipe
+Platform: UNKNOWN
+Classifier: Framework :: Buildout :: Recipe
+Classifier: Programming Language :: Python
+Provides-Extra: test
