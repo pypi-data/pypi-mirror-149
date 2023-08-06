@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      i18n:domain="contenttypes.basic"
+      tal:omit-tag="">
+
+  <style>
+    #formfield-form-widgets-icon_id { 
+      position: relative; 
+    }
+    .select-icon { 
+      display: inline-block; 
+    }
+    .select-icon:hover { 
+      background-color: antiquewhite;
+    }
+    .icon-btn { 
+      margin-top: 10px; 
+    }
+    .icon,
+    .icon-choice,
+    .icon-selected {
+      display: inline-block; 
+      width: 5rem; 
+      height: 5rem; 
+    }
+    .pointer { 
+      cursor: pointer; 
+    }
+    .modal-content { 
+      padding: 2rem 
+    }
+  </style>
+
+  <input type="hidden" id="form-widgets-icon_id_${python:view.id}" name="${python:view.name}" value="${python:view.value}"/>
+
+  <div class="display-flex button-div"> 
+      <a class="pat-plone-modal mr-3 btn btn-primary standalone icon-btn" href="#modal_${python:view.id}">
+        <tal:value condition="python:view.value" i18n:translate="">Change icon</tal:value>
+        <tal:not_value condition="python:not view.value" i18n:translate="">Add icon</tal:not_value>
+      </a>
+     
+      <svg viewBox="0 0 100 100" class="icon-choice" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <use id="selected_icon_id_${python:view.id}" xlink:href="${python:view.portal_url}/sprite-icons#${python:view.value}"></use>
+      </svg>
+    
+  </div>
+
+  <div id="modal_${python:view.id}" style="display: none" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <h1 class="plone-modal-title" i18n:translate="">Select an icon</h1>
+
+
+    <tal:repeat repeat="item python:view.xml">
+        <a class="select-icon" href="#form-widgets-icon_id_${python:view.id}" data-id="${item}" data-modal-id="${python:view.id}">
+            <svg viewBox="0 0 100 100" class="icon pointer shape-codepen" xmlns:xlink="http://www.w3.org/1999/xlink">
+              <use xlink:href="sprite-icons#${item}"></use>
+            </svg>
+        </a>
+    </tal:repeat>
+
+    <script keep-body="true">
+      $(function(){
+        $('.select-icon').on('click', function (e) {
+          var data_id = $(this).data('id');
+          var data_modal_id = $(this).data('modal-id');
+          var url_svg = '${python:view.portal_url}/sprite-icons#';
+          $('#form-widgets-icon_id_' + data_modal_id).attr('value', data_id);
+          $('#selected_icon_id_' + data_modal_id).attr('xlink:href', url_svg + data_id);
+          $('.plone-modal-close').click();
+        })
+      })
+    </script>
+
+  </div>
+
+</html>

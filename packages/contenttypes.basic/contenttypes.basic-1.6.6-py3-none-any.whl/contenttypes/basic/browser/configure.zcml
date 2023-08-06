@@ -1,0 +1,82 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="contenttypes.basic">
+
+  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
+  <include package="z3c.jbot" file="meta.zcml" />
+  <browser:jbot
+      directory="overrides"
+      layer="contenttypes.basic.interfaces.IContenttypesBasicLayer"
+      />
+
+  <!-- Publish static files -->
+  <plone:static
+      name="contenttypes.basic"
+      type="plone"
+      directory="static"
+      />
+
+  <!-- Sprite -->
+  <browser:page
+      for="*"
+      name="sprite-icons"
+      class=".sprite.SpriteView"
+      template="sprite.pt"
+      permission="zope.Public"
+  />
+
+  <!-- Custom Link Redirect View -->
+  <browser:page
+      name="link_redirect_custom_view"
+      for="contenttypes.basic.interfaces.ILink"
+      class=".link_redirect.LinkRedirectView"
+      permission="zope2.View"
+      menu="plone_displayviews"
+      title="View Link"
+      />
+
+  <!-- Default Views -->
+
+  <browser:page
+      name="view"
+      for="contenttypes.basic.interfaces.ISlide"
+      class=".default_view.DefaultView"
+      template="default_view.pt"
+      permission="zope2.View"
+      menu="plone_displayviews"
+      title="View Slide"
+      />
+
+  <browser:page
+      name="view"
+      for="contenttypes.basic.interfaces.IBanner"
+      class=".default_view.DefaultView"
+      template="default_view.pt"
+      permission="zope2.View"
+      menu="plone_displayviews"
+      title="View Banner"
+      />
+
+  <browser:page
+      name="view"
+      for="contenttypes.basic.interfaces.IIcon"
+      class=".default_view.DefaultView"
+      template="default_view.pt"
+      permission="zope2.View"
+      menu="plone_displayviews"
+      title="View Icon"
+      />
+
+  <browser:page
+      name="view"
+      for="contenttypes.basic.interfaces.IAnnouncement"
+      class=".default_view.DefaultView"
+      template="default_view.pt"
+      permission="zope2.View"
+      menu="plone_displayviews"
+      title="View Announcement"
+      />
+
+</configure>

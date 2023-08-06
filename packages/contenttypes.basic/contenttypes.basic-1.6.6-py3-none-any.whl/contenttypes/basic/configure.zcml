@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="contenttypes.basic">
+
+  <i18n:registerTranslations directory="locales" />
+  
+  <include file="permissions.zcml" />
+  <include file="upgrades.zcml" />
+  <include package=".behaviors" />
+  <include package=".browser" />
+  <include package=".controlpanel" />
+  <include package=".widgets" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="contenttypes.basic"
+      directory="profiles/default"
+      description="Installs the contenttypes.basic add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.post_install"
+      />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="contenttypes.basic (uninstall)"
+      directory="profiles/uninstall"
+      description="Uninstalls the contenttypes.basic add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.uninstall"
+      />
+
+  <genericsetup:registerProfile
+      name="z-coordinates-controlpanel"
+      title="contenttypes.basic (Coordinates ControlPanel)"
+      directory="profiles/coordinates-controlpanel"
+      description="Install Coordinates ControlPanel."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.coordinates_controlpanel_install"
+      />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="contenttypes.basic-hiddenprofiles"
+      />
+
+</configure>
