@@ -1,0 +1,95 @@
+{% load cms_tags staticfiles sekizai_tags cache i18n meta %}
+<!doctype html>
+<html
+  id="page-{{ request.current_page.id }}"
+  {# FAQ: Only available if set in page's "Advanced" settings #}
+  data-page-id="{{ request.current_page.reverse_id }}"
+  class="{% block template_class %}{% endblock template_class %}">
+
+{# SEE: https://github.com/nephila/django-meta/blob/1.7.0/docs/rendering.rst #}
+<head {% meta_namespaces %}>
+  <!-- Early Site Scripts. -->
+  {# Debugging Support. #}
+  {% include "debug_js.html" with settings=settings %}
+  {# Google Analytics. #}
+  {% include 'analytics.html' %}
+
+  <!-- Metadata. -->
+  <title>{% block title %} This is my new project home page {% endblock title %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Metadata: Social Media. -->
+  {% block meta %}
+    {# FAQ: Conditional includes are intentionally verbose #}
+    {# SEE: https://confluence.tacc.utexas.edu/x/QwI9Cw #}
+    {% with path="djangocms_page_meta.html" %}{% include path %}{% endwith %}
+  {% endblock meta %}
+
+  <!-- Site Font and/or Custom Font. -->
+  {# The core site font (can be replaced or accompanied by custom font/s) #}
+  {% block assets_font %}
+  {% include 'assets_font.html' %}
+  {% endblock assets_font %}
+
+  <!-- Site Assets. -->
+  {# The core site assets (can NOT be replaced by custom assets) #}
+  {% include 'assets_site.html' %}
+
+  <!-- Custom Assets. -->
+  {# Placeholder for custom assets #}
+  {% block assets_custom %}
+  {% include 'assets_custom.html' %}
+  {% endblock assets_custom %}
+
+  <!-- CMS Admin Styles. -->
+  {% render_block "css" %}
+</head>
+
+<body class="o-site  {% block page_type_class %}{% endblock page_type_class %}">
+  {% cms_toolbar %}
+
+  <header class="o-site__head">
+    {% include "header.html" %}
+  </header>
+
+  <main id="cms-content" class="o-site__body">
+  {% block content %}
+
+    {# To allow extra Container in page structure by hiding extra padding #}
+    <style type="text/css">
+      .container > .s-breadcrumbs + .container { padding-inline: 0; }
+    </style>
+
+    {# To wrap breadcrumbs in Container without relying on CMS editor #}
+    <div class="container">
+      {% include "nav_cms_breadcrumbs.html" %}
+      {% placeholder "content" %}
+    </div>
+
+  {% endblock content %}
+  </main>
+
+  <footer class="c-footer  s-footer  o-site__foot">
+  {% block footer %}
+
+    {% static_placeholder "footer-content" or %}
+    <p>©2020 Texas Advanced Computing Center, The University of Texas at Austin, Office of the Vice President for Research.</p>
+    {% endstatic_placeholder %}
+
+  {% endblock footer %}
+  </footer>
+
+  <!-- Site Assets (Delayed). -->
+  {% include 'assets_site_delayed.html' %}
+
+  <!-- Custom Assets (Delayed). -->
+  {% block assets_custom_delayed %}
+  {% include 'assets_custom_delayed.html' %}
+  {% endblock assets_custom_delayed %}
+
+  <!-- CMS Admin Scripts. -->
+  {% render_block "js" %}
+</body>
+
+</html>

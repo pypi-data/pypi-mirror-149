@@ -1,0 +1,18 @@
+{# @var className #}
+{% load menu_tags %}
+
+{# WARNING: Some markup is duplicated in other repositories #}
+{# SEE: https://confluence.tacc.utexas.edu/x/LoCnCQ #}
+<ul class="s-cms-nav  {{className}}">
+  <!-- All top-level CMS controlled nav elements handled here. -->
+  {# Path must be relative to templates' root dir #}
+  {# FAQ: If template is included with `only`, then it does NOT render `show_menu` #}
+  {% show_menu 0 100 1 100 "cms_menu.html" %}
+</ul>
+<script type="module">
+  import findLinksAndSetTargets from '/static/site_cms/js/modules/setTargetForExternalLinks.js';
+
+  const scopeElement = document.getElementById('cms-content');
+
+  findLinksAndSetTargets({ scopeElement });
+</script>
