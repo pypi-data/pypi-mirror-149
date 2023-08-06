@@ -1,0 +1,297 @@
+#!/usr/bin/env python
+#
+# PACS ToolKit movescu wrapper
+#
+# (c) 2016-2021 Fetal-Neonatal Neuroimaging & Developmental Science Center
+#                   Boston Children's Hospital
+#
+#              http://childrenshospital.org/FNNDSC/
+#                        dev@babyMRI.org
+#
+
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+from    argparse            import RawTextHelpFormatter
+from    argparse            import ArgumentParser
+from    terminaltables      import SingleTable
+from    pfmisc._colors      import Colors
+import  json
+import  pypx
+from    pypx.push           import parser_setup, parser_interpret, parser_JSONinterpret
+import  socket
+import  pudb
+
+str_defIP   = [l for l in (
+                [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2]
+                if not ip.startswith("127.")][:1],
+                    [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close())
+                for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
+
+str_name    = "px-push"
+str_version = "3.2.6"
+str_desc    = Colors.CYAN + """
+
+                                                     _
+                                                    | |
+             _ __  __  __ ______  _ __   _   _  ___ | |__
+            | '_ \ \ \/ /|______|| '_ \ | | | |/ __|| '_ \.
+            | |_) | >  <         | |_) || |_| |\__ \| | | |
+            | .__/ /_/\_\        | .__/  \__,_||___/|_| |_|
+            | |                  | |
+            |_|                  |_|
+
+                        PACS ToolKit Wrapper
+                            "move" images
+
+                       -- version """ + \
+             Colors.YELLOW + str_version + Colors.CYAN + """ --
+
+    ``px-push`` is a module / script that provides functionality for
+    "pushing" specific study/series collections to a remote destination.
+
+    Depending on the context of the CLI flags, ``px-push`` can push to
+    either a PACS node or to ChRIS swift storage.
+
+""" + Colors.NO_COLOUR
+
+def synopsis(ab_shortOnly = False):
+    scriptName = os.path.basename(sys.argv[0])
+    shortSynopsis =  Colors.YELLOW + '''
+    NAME
+
+        %s
+
+        - (image) push
+
+    SYNOPSIS
+
+            _script mode_:
+            px-push                                                 \\
+                [--JSONargs <JSONargStringStructure>]               \\
+                [--db <dblogbasepath>]                              \\
+                [--xcrdir|-p <xcrdir>]                              \\
+                [--xcrfile|-f <xcrfile>]                            \\
+                [--xcrdirfile <xcrdirfile>]                         \\
+                [--parseAllFilesWithSubStr <substr>]                \\
+                [--swift <swiftKeyServiceID>]                       \\
+                [--swift <swiftKeyServiceID>]                       \\
+                [--swiftIP <swiftStorage>]                          \\
+                [--swiftPort <swiftPort>]                           \\
+                [--swiftLogin <user>:<password>]                    \\
+                [--swiftServicesPACS <PACSname>]                    \\
+                [--swiftPackEachDICOM]                              \\
+                [--rootDirTemplate <rootTemplate>]                  \\
+                [--studyDirTemplate <studyTemplate>]                \\
+                [--seriesDirTemplate <seriesTemplate>]              \\
+                [--imageFileTemplate <imageTemplate>]               \\
+                [-x|--desc]                                         \\
+                [-y|--synopsis]                                     \\
+                [--json]                                            \\
+                [--version]                                         \\
+                [--debugToDir <dir>]                                \\
+                [--verbosity <level>]
+
+    BRIEF EXAMPLE
+
+        px-push                                                     \\
+            --swiftIP 192.168.1.216                                 \\
+            --swiftPort 8080                                        \\
+            --swiftLogin cube:cube1234                              \\
+            --swiftServicesPACS BCH                                 \\
+            --StudyInstanceUID 1.2.3.435                            \\
+            --SeriesInstanceUID 2.3.5.6.7                           \\
+
+    ''' % scriptName + Colors.NO_COLOUR
+
+    description = Colors.LIGHT_GREEN + '''
+
+    DESCRIPTION
+
+        ``px-push`` is the primary vehicle for transmitting a DICOM file
+        to a remote location. The remote location can be either another
+        PACS node (in which case the PACS related CLI are used), or
+        swift storage (in which the swift related CLI are used). In the
+        case of swift storage, and if CUBE related CLI are used, then
+        this module will also register the files that have been pushed
+        to the CUBE instance.
+
+        While the most typical use case will involve specifying the
+        file (set) to transmit using a (study/series) description to
+        the internal `smdb` database, it is also possible to indate a
+        file (or set of files) directly on the filesystem.
+
+    ARGS
+
+        [--JSONargs <JSONargStringStructure>]
+        An alternate mechanism of specifying all the args to this script.
+        Essentially every key/value in the <JSONargStringStructure> can
+        mirror a CLI key/value. The JSONargs is parsed first, so key/values
+        in that structure can be overriden by explicit CLI.
+
+        [--db <dblogbasepath>]
+        A path to the base directory of the DB contents/files that track
+        received files. This is typically the <logDir> of the `smdb` DB.
+
+        [--xcrdir|-p <xcrdir>]
+        A directory that contains a DICOM file to process.
+
+        [--xcrfile|-f <xcrfile>]
+        A specific DICOM file in the <xcrdir>.
+
+        [--xcrdirfile <xcrdirfile>]
+        A fully qualified dir and file specifier. If passed, the script
+        will separate into dir and file parts.
+
+        [--parseAllFilesWithSubStr <substr>]
+        If passed, process all the files in the <xcrdir> that contain the
+        <substr> in their filename in one sweep.
+
+        [--swift <swiftKeyServiceID>]
+        A key lookup into an smdb data element that defines all the fields
+        required for swift access. This is pre-instantiated by calling the
+        smdb element a priori. Fields are:
+
+                    "<swiftKeyServiceID>":  {
+                            "ip":       "<IPofSwiftServer>",
+                            "port":     "<PortOfSwiftServer>",
+                            "login":    "<username>:<passwd>"
+                        }
+
+        [--swiftIP <swiftStorage>]
+        [--swiftPort <swiftPort>]
+        The IP address and port for the swift storage container.
+
+        [--swiftLogin <user>:<password>]
+        The username and password for swift access.
+
+        [--swiftPackEachDICOM]
+        If specified, assume DICOMS are unordered and not all of the same
+        series. Process a store directive for each DICOM file individually.
+
+        [--swiftServicesPACS <PACSname>]
+        The name of the PACS within the swift ``SERVICES/PACS`` location.
+
+        [--rootDirTemplate <rootTemplate>]
+        A string template for the root directory name in which to push a
+        given DICOM.
+
+        Default: "%PatientID-%PatientName-%PatientBirthData-%PatientAge"
+
+        [--studyDirTemplate <studyTemplate>]
+        A string template for the study directory name in which to push a
+        given DICOM.
+
+        Default: "%StudyDescription-%AccessionNumber-%StudyDate"
+
+        [--seriesDirTemplate <seriesTemplate>]
+        A string template for the series directory name in which to push a
+        given DICOM.
+
+        Default: "%_pad|5,0_SeriesNumber-%SeriesDescription"
+
+        [--imageFileTemplate <imageTemplate>]
+        A string template for the image file name in which to push a
+        given DICOM.
+
+        [-x|--desc]
+        Provide an overview help page.
+
+        [-y|--synopsis]
+        Provide a synopsis help summary.
+
+        [--version]
+        Print internal version number and exit.
+
+        [--json]
+        If specified, print the JSON structure related to the process event. This is
+        useful when used in a pipeline fashion with other px-* modules.
+
+        [--debugToDir <dir>]
+        A directory to contain various debugging output -- these are typically
+        JSON object strings capturing internal state. If empty string (default)
+        then no debugging outputs are captured/generated. If specified, then
+        ``pfcon`` will check for dir existence and attempt to create if
+        needed.
+
+        [-v|--verbosity <level>]
+        Set the verbosity level. "0" typically means no/minimal output. Allows for
+        more fine tuned output control as opposed to '--quiet' that effectively
+        silences everything.
+
+    EXAMPLES
+
+        px-push                                                     \\
+            --db /home/dicom/log                                    \\
+            --swiftIP 192.168.1.216                                 \\
+            --swiftPort 8080                                        \\
+            --swiftLogin chris:chris1234                            \\
+            --swiftBaseLocation SERVICES/PACS                       \\
+            --CUBEURL https://localhost:8000/api/v1/                \\
+            --CUBEusername chris                                    \\
+            --CUBEuserpasswd chris1234                              \\
+            --StudyInstanceUID 1.2.3.435                            \\
+            --SeriesInstanceUID 2.3.5.6.7                           \\
+
+        px-push                                                     \\
+            --db /home/dicom/log                                    \\
+            --swiftIP 192.168.1.216                                 \\
+            --swiftPort 8080                                        \\
+            --swiftLogin chris:chris1234                            \\
+            --swiftServicesPACS BCH                                 \\
+            --swiftPackEachDICOM                                    \\
+            --CUBEURL https://localhost:8000/api/v1/                \\
+            --CUBEusername chris                                    \\
+            --CUBEuserpasswd chris1234                              \\
+            --xcrdir /tmp/dicom                                     \\
+            --parseAllFilesWithSubStr dcm
+
+    ''' + Colors.LIGHT_PURPLE + '''
+
+    DOCKERIZED EXAMPLES
+
+
+    ''' + Colors.NO_COLOUR
+
+    if ab_shortOnly:
+        return shortSynopsis
+    else:
+        return shortSynopsis + description
+
+parser      = parser_setup(str_desc)
+args        = parser_interpret(parser)
+if len(args.JSONargString):
+    # If the user has specified args in the JSONargString, then
+    # interpret this structure.
+    #
+    # NOTE:
+    # This will OVERWRITE any non-JSON args that may have been specified
+    # as per normal. Using the JSONargString is an either-or choice!
+    d_JSONargs  : dict  = json.loads(args.JSONargString)
+    args                = parser_JSONinterpret(parser, d_JSONargs)
+
+if args.desc or args.synopsis:
+    print(str_desc)
+    if args.desc:
+        str_help     = synopsis(False)
+    if args.synopsis:
+        str_help     = synopsis(True)
+    print(str_help)
+    sys.exit(1)
+
+if args.b_version:
+    print("Version: %s" % str_version)
+    sys.exit(1)
+
+# Return the JSON result as a serialized string:
+output = pypx.push(vars(args))
+
+if int(args.verbosity):
+    if args.json:
+        try:
+            print(json.dumps(output, indent = 4))
+        except Exception as e:
+            print(json.dumps({
+                'status'    : False,
+                'error'     : '%s' % e
+            }))
