@@ -1,0 +1,76 @@
+Metadata-Version: 2.1
+Name: genmq
+Version: 0.3.0
+Summary: Moodle quiz generator
+Home-page: https://github.com/ccaprani/genmq
+Author: Colin Caprani
+Author-email: colin.caprani@monash.edu
+License: GNU General Public License v3.0
+Project-URL: Documentation, https://ccaprani.github.io/genmq/
+Project-URL: Source, https://github.com/ccaprani/genmq/
+Project-URL: Tracker, https://github.com/ccaprani/genmq/issues/
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Topic :: Education :: Computer Aided Instruction (CAI)
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Education
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# genmq
+A Moodle quiz generator using LaTeX and the `moodle.sty` package with jinja2 templates
+
+*Generates Individualized Moodle Quizzes based on a LaTeX Template*
+
+**Author:** Colin Caprani,
+[colin.caprani@monash.edu](mailto://colin.caprani@monash.edu)
+
+## Overview
+`genmq` is a python package that performs mail-merge like functionality to generate a Moodle quiz XML file for bulk upload. It uses a template latex file based on the [`moodle.sty`](https://framagit.org/mattgk/moodle) package, and populates placeholder variables with entries from a prepared csv file to generate many variants of the template question. It can include the answers, precision, and feedback; all as described in the documentation for the `moodle.sty` package.
+
+`genmq` can also split larger Moodle XML files into multiple files to facilitate uploading when there are file size limits.
+
+## Installation
+
+`genmq` installs as a command into your system.
+
+### Using pip
+
+```python
+pip install genmq
+```
+
+### For development
+Clone or download this repository to a local directory. Open a terminal in that directory (where this README will be found) and run:
+
+```python
+pip install -e .
+```
+
+
+## Typical Usage
+
+For generating quizzes:
+
+```bash
+genmq -t [template].tex -c [database].csv
+```
+
+For splitting an existing large XML file:
+```bash
+genmq -s [moodle_quiz].xml
+```
+
+To see all arguments, run `genmq --help`.
+
+
+
