@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="contenttypes.basic">
+
+  <adapter factory=".icon.IconFieldWidget" />
+  <adapter factory=".colour.ColourFieldWidget" />
+  <adapter factory=".osmap.OSMapFieldWidget" />
+  <adapter factory=".osmap.OSMapConverter" />
+
+  <z3c:widgetTemplate
+    mode="input"
+    widget="..interfaces.IIconWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="icon_input.pt" />
+
+  <z3c:widgetTemplate
+    mode="display"
+    widget="..interfaces.IIconWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="icon_display.pt" />
+
+  <z3c:widgetTemplate
+    mode="input"
+    widget="..interfaces.IColourWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="colour_input.pt" />
+
+  <z3c:widgetTemplate
+    mode="display"
+    widget="..interfaces.IColourWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="colour_display.pt" />
+
+  <z3c:widgetTemplate
+    mode="input"
+    widget="..interfaces.IOSMapWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="osmap_input.pt" />
+
+  <z3c:widgetTemplate
+    mode="display"
+    widget="..interfaces.IOSMapWidget"
+    layer="z3c.form.interfaces.IFormLayer"
+    template="osmap_display.pt" />
+
+</configure>

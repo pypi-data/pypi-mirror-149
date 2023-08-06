@@ -1,0 +1,5 @@
+==================
+contenttypes.basic
+==================
+
+User documentation

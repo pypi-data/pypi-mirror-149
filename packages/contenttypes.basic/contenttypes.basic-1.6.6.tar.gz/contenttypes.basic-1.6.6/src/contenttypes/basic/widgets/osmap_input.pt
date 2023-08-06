@@ -1,0 +1,152 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      i18n:domain="contenttypes.basic"
+      tal:omit-tag="">
+
+
+    <link rel="stylesheet" type="text/css" href="${python:view.portal_url}/++plone++contenttypes.basic/osmap/leaflet.css">
+    <style>
+        .ml-2{margin-left:2rem;}
+        .my-2{margin-top:2rem; margin-bottom:2rem;}
+    </style>
+
+    <div class="row">
+        <div class="display-flex alignitems-center col-xs-12">
+            <input type="text" placeholder="Type an address" i18n:attributes="placeholder"
+                tal:attributes="class python:'text-widget required textline-field' if view.required else 'text-widget textline-field'"
+                id="osmap-widget-address-${python:view.timestamp}" />
+            <button id="osmap-button-${python:view.timestamp}" class="ml-2 btn btn-primary" type="button" i18n:translate="">Search</button>
+        </div>
+    </div>
+
+    <div class="row my-2 display-flex alignitems-center">
+        <div class="coordinates-wrapper col-xs-12 col-sm-3" 
+            tal:define="init_value python:view.value != '0|0' and view.value or view.default_value;
+                        init_value_map python:view.value != '0|0' and view.value or view.default_value_map();">
+            <input type="text" id="osmap-widget-coordinates-${python:view.timestamp}" name="${python:view.name}" value="${init_value}"
+                data-init-value="${init_value_map}" placeholder="${init_value}" />
+        </div>
+
+        <div class="clear-value-wrapper col-xs-12 col-sm-6">
+            <button class="btn btn-primary" type="button" id="clear-coords-${python:view.timestamp}" i18n:translate=""> Clear coordinates </button>
+        </div>
+    </div>
+  
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="osmap-widget-map-${python:view.timestamp}" style="height: 500px;z-index: 0;"></div>
+        </div>
+    </div>
+
+    <script>
+        requirejs.config({
+            'baseUrl': PORTAL_URL,            
+            'paths':{            
+                "leaflet": "++plone++contenttypes.basic/osmap/leaflet",
+            }
+        })
+
+        require([
+            'jquery',
+            'leaflet',
+        ], function($, L) {
+            "use strict";
+
+            // Vars
+            var timestamp = ${python:view.timestamp};
+            var inputAddress = $('#osmap-widget-address-'+timestamp);
+            var inputCoordinates = $('#osmap-widget-coordinates-'+timestamp);
+            var value = parseLatLng(inputCoordinates.attr('data-init-value'));
+
+            // Map
+            var osmap = L.map('osmap-widget-map-'+timestamp).setView([value.lat, value.lng], 15);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="//osm.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(osmap);
+
+            // Marker
+            var marker = L.marker([value.lat, value.lng], {draggable:true, autoPan:true}).addTo(osmap);
+
+            // Resize
+            let invalidateSize = setInterval(function(){ 
+                if (osmap.getSize().x !== '0')
+                    clearInterval(invalidateSize);
+                osmap.invalidateSize();
+            }, 500)
+
+            // Show coordinates
+            $('#show-coords-${python:view.timestamp}').on('input, change, click', function(e){
+                $(this).is(":checked") ? inputCoordinates.css('display', 'block') : inputCoordinates.css('display', 'none')
+            });
+
+            // Clear coordinates
+            $('#clear-coords-${python:view.timestamp}').on('click', function(e){
+                inputCoordinates.val('0|0')
+            });
+
+            // Find location
+            $('#osmap-button-${python:view.timestamp}').on('click', function(){
+                geolocate();
+            });
+
+            function geolocate(event){
+                $.ajax({
+                    url: 'https://nominatim.openstreetmap.org/search?q=' + $('#osmap-widget-address-${python:view.timestamp}')[0].value + '&format=json',
+                    type: "GET",
+                    success: function(data){
+                        if (data.length > 0){
+                            marker.setLatLng([data[0]['lat'],data[0]['lon']]);
+                            osmap.setView(marker.getLatLng());
+                        }
+                    }
+                });
+            };
+
+            // Move marker
+            marker.on('move', debounce(updateInputCoordinates, 500));
+
+            function updateInputCoordinates(){
+                var coordinates = marker.getLatLng()
+                inputCoordinates.val(coordinates['lat'] + '|' + coordinates['lng'])
+            }
+
+
+            // Parse coordinates
+            function parseLatLng(input){
+                if (typeof input ==  'object') {
+                    if (typeof input.lat == 'function')
+                        return input.lat() + '|' + input.lng();
+                    else
+                        return input.lat + '|' + input.lng;
+                } else if (typeof input == 'string') {
+                    var coors = input.split('|');
+                    coors = {
+                        lat: parseFloat(coors[0]),
+                        lng: parseFloat(coors[1])
+                    }
+                    return coors
+                }
+            }
+
+            // Debounce
+            function debounce(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
+
+        });
+    </script>
+
+</html>

@@ -1,0 +1,80 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:plone="http://namespaces.plone.org/plone"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  i18n_domain="contenttypes.basic">
+
+  <include package="plone.behavior" file="meta.zcml"/>
+
+  <plone:behavior
+    name="contenttypes.basic.hide_text"
+    title="Hide Text Behavior"
+    description="Adds hide text field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.IHideTextBehavior"
+    provides=".hide_text.IHideTextSchema"
+    factory=".hide_text.HideTextFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.button_text"
+    title="Button Text Behavior"
+    description="Adds button text field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.IButtonTextBehavior"
+    provides=".button_text.IButtonTextSchema"
+    factory=".button_text.ButtonTextFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.text_position"
+    title="Text Position Behavior"
+    description="Adds text position field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.ITextPositionBehavior"
+    provides=".text_position.ITextPositionSchema"
+    factory=".text_position.TextPositionFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.icon"
+    title="Icon Behavior"
+    description="Adds icon field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.IIconBehavior"
+    provides=".icon.IIconBehaviorSchema"
+    factory=".icon.IconBehaviorFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.colour"
+    title="Colour Behavior"
+    description="Adds colour field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.IColourBehavior"
+    provides=".colour.IColourBehaviorSchema"
+    factory=".colour.ColourBehaviorFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.link"
+    title="Link Behavior"
+    description="Adds link field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.ILinkBehavior"
+    provides=".link.ILinkBehaviorSchema"
+    factory=".link.LinkBehaviorFactory"
+    />
+
+  <plone:behavior
+    name="contenttypes.basic.osmap"
+    title="OSMap Behavior"
+    description="Adds OpenStreet map field"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    marker="contenttypes.basic.interfaces.IOSMapBehavior"
+    provides=".osmap.IOSMapBehaviorSchema"
+    factory=".osmap.OSMapBehaviorFactory"
+    />
+
+</configure>
