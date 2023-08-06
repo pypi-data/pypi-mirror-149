@@ -1,0 +1,44 @@
+Metadata-Version: 2.1
+Name: pandas-scd2
+Version: 0.2.1
+Summary: slowly changing dimension with pandas
+Home-page: https://gitlab.com/liranc/pandas_scd
+License: UNKNOWN
+Description: # pandas_scd
+        
+        executing slowly changing dimension type 2
+        
+        source_table: name of the table with the new source
+        dim_table: name of the dim table to apply scd2
+        key: the key to identify a row in the dim/source
+        tracked_columns: list of columns to check is any update occurred
+        connection: sqlalchemy connection object
+        
+        the class will add the following columns to the dataframe (value for new record):
+        start_ts (now)
+        end_ts (None)
+        is_active (True)
+        
+        
+        ## Getting started
+        
+        pip install pandas-scd2
+        
+        from pandas_scd import SCD2
+        
+        SCD2(   source_table: str,
+                dim_table: str,
+                key: str,
+                tracked_columns: list,
+                connection: sqlalchemy.engine
+            )
+        
+        
+        
+Keywords: slowly changing dimention scd
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: all
+Provides-Extra: mysql
+Provides-Extra: postgres
