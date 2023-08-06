@@ -1,0 +1,63 @@
+{% autoescape None %}
+
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="/static/brython-{{brython_version}}/brython.js"></script>
+    <script type="text/javascript" src="/static/brython-{{brython_version}}/brython_stdlib.js"></script>
+    <script type="text/javascript" src="/static/material-components-web/material-components-web.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/material-components-web/material-components-web.min.css">
+    <link rel="stylesheet" type="text/css" href="/theme.css">
+
+    <!--Fonts-->
+    <link type="text/css" rel="stylesheet" href="/static/fonts/fontawesome/css/all.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/roboto-android/roboto.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/roboto-android/roboto-mono.css">
+    <link type="text/css" rel="stylesheet" href="/static/fonts/bootstrap-icons/bootstrap-icons.css">
+
+    <!--Material Icons-->
+    <link type="text/css" rel="stylesheet" href="/static/fonts/material-design-icons-3.0.1/iconfont/material-icons.css">
+
+    {% block html_head %}{% end %}
+
+
+    <script type="text/python">
+import sys
+
+sys.path.append('/root/')
+sys.path.append('/static/modules/')
+
+from radiant.utils import fake
+{% for module in mock_imports %}
+sys.modules["{{module}}"] = fake()
+{% end %}
+    </script>
+
+
+    <script type="text/python">
+{% if path %}
+import sys
+sys.path.append('/path/')
+{% end %}
+
+from radiant.utils import autoinit
+from {{file}} import {{class_}}
+
+argvs = {{argv}}
+
+{% block module_init %}
+{{class_}}(None, {{python_}})
+{% end %}
+
+autoinit()
+
+    </script>
+
+  </head>
+
+  <body onload="brython({{debug_level}})">
+
+  </body>
+
+</html>
