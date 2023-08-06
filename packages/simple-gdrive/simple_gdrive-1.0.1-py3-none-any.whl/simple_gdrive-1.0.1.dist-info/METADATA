@@ -1,0 +1,52 @@
+Metadata-Version: 2.1
+Name: simple-gdrive
+Version: 1.0.1
+Summary: Simple command to help download and upload big files to Google Drive (using their official Drive APIs)
+Home-page: https://github.com/binh-vu/simple_gdrive
+License: MIT
+Author: Binh Vu
+Author-email: binh@toan2.com
+Requires-Python: >=3.8,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: click (>=8.1.3,<9.0.0)
+Requires-Dist: google-api-python-client (>=2.47.0,<3.0.0)
+Requires-Dist: google-auth-httplib2 (>=0.1.0,<0.2.0)
+Requires-Dist: google-auth-oauthlib (>=0.5.1,<0.6.0)
+Requires-Dist: loguru (>=0.6.0,<0.7.0)
+Requires-Dist: tqdm (>=4.64.0,<5.0.0)
+Project-URL: Repository, https://github.com/binh-vu/simple_gdrive
+Description-Content-Type: text/markdown
+
+**simple-gdrive**: A simple command to help download and upload big files to Google Drive (using their official APIs)
+
+### Setup
+
+Before using the command, you must open Google Cloud Platform and create credentials for oauth: [cloud.google.com](https://cloud.google.com) > APIs & Services > Credentials. Note that if your project hasn't enabled Drive APIs, go to APIs & Services > Enabled APIs & Services and add Drive APIs.
+Then, download the JSON file and put it in the AuthDir (default at `~/.simple_gdrive`) with the name `credentials.json`. When you run the script for the first time, it will redirect to your browser so you can authenicate and give permission to YOUR application (created in the previous step) to access to your drive. Then, you will obtain an access token saving to the same drive with name `tokens.json`. Keeping the two files safe (or delete `tokens.json` after usage) and nobody else will have access to your data.
+
+### Installation
+
+```bash
+pip install simple-gdrive
+```
+
+### Usage
+
+Invoke the command by running `gdrive` or `python -m simple_gdrive`.
+
+Download a file:
+
+```bash
+gdrive download -s <path in disk> -d <path in drive>
+```
+
+Upload a file
+
+```bash
+gdrive upload -s <file path in disk> -d <path in drive>
+```
+
