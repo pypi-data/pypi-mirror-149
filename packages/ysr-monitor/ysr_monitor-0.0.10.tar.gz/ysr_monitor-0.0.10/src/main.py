@@ -1,0 +1,49 @@
+
+# TODO rconcile requiremtnes
+# todo implement screen stuff
+# todo alerts
+# todo scan for request emails
+
+import time
+from controller import Controller, EnvAlert
+from screen import Screen
+
+# frequency of sensor update in seconds
+UPDATE_FREQ = 1
+
+
+def main():
+    try:
+        controller = Controller()
+
+        controller.update_controller()
+        controller.update_data_records(to_console=True)
+
+        try:
+            screen = Screen()
+            lines = ['T1: {}C, T2: {}C'.format(round(controller.T1, 1), round(controller.T2, 1)),
+                     'H1: {}%, H2: {}%'.format(round(controller.H1, 1), round(controller.H2, 1)),
+                     'Battery: {}/{}'.format(controller.batt_charge, controller.batt_capacity)]
+            screen.display(lines=lines)
+
+        except ValueError:
+            print("Screen disconnected")
+            # todo send screen disconnected message
+            pass
+
+    except OSError:
+        print("Sensor disconnected")
+        # todo send sensor disconnected message
+        pass
+
+    except EnvAlert:
+        print("Environment Issue!")
+        # todo send env alert message
+        pass
+
+
+if __name__ == '__main__':
+    x = 2
+    while x > 1:
+        main()
+        time.sleep(UPDATE_FREQ)
