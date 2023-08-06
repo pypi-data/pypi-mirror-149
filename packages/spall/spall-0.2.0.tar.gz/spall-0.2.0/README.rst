@@ -1,0 +1,170 @@
+spall
+======
+.. image:: https://github.com/jshwi/spall/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/jshwi/spall/actions/workflows/ci.yml
+    :alt: ci
+.. image:: https://github.com/jshwi/spall/actions/workflows/codeql-analysis.yml/badge.svg
+    :target: https://github.com/jshwi/spall/actions/workflows/codeql-analysis.yml
+    :alt: CodeQL
+.. image:: https://readthedocs.org/projects/spall/badge/?version=latest
+    :target: https://spall.readthedocs.io/en/latest/?badge=latest
+    :alt: readthedocs.org
+.. image:: https://img.shields.io/badge/python-3.8-blue.svg
+    :target: https://www.python.org/downloads/release/python-380
+    :alt: python3.8
+.. image:: https://img.shields.io/pypi/v/spall
+    :target: https://img.shields.io/pypi/v/spall
+    :alt: pypi
+.. image:: https://codecov.io/gh/jshwi/spall/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/jshwi/spall
+    :alt: codecov.io
+.. image:: https://img.shields.io/badge/License-MIT-blue.svg
+    :target: https://lbesson.mit-license.org/
+    :alt: mit
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+    :alt: black
+
+Object oriented commandline
+
+
+Install
+-------
+
+.. code-block:: console
+
+    $ pip install spall
+
+Development
+-----------
+
+.. code-block:: console
+
+    $ pip install spall
+
+Usage
+-----
+
+Import ``Subprocess`` from ``spall``
+
+.. code-block:: python
+
+    >>> from spall import Subprocess
+
+Instantiate individual executables
+
+.. code-block:: python
+
+    >>> cat = Subprocess("cat")
+    >>> echo = Subprocess("echo")
+    >>> fails = Subprocess("false")
+
+
+Default is to return returncode and print stdout and stderr to console
+
+.. code-block:: python
+
+    >>> returncode = echo.call("Hello, world")
+    Hello, world
+    >>> returncode
+    0
+
+Capture stdout with the ``capture`` keyword argument
+
+.. code-block:: python
+
+    >>> echo.call("Hello, world", capture=True)
+    0
+
+Stdout is consumed by calling ``stdout()`` which returns a list
+
+.. code-block:: python
+
+    >>> echo.stdout()
+    ['Hello, world']
+    >>> echo.stdout()
+    []
+
+Stdout is accrued until ``stdout()`` is called
+
+.. code-block:: python
+
+    >>> echo.call("Hello, world", capture=True)
+    0
+    >>> echo.call("Goodbye, world", capture=True)
+    0
+    >>> echo.stdout()
+    ['Hello, world', 'Goodbye, world']
+    >>> echo.stdout()
+    []
+
+Redirect stdout to /dev/null with the ``devnull`` keyword argument
+
+.. code-block:: python
+
+    >>> echo.call("Hello, world", devnull=True)
+    0
+    >>> echo.stdout()
+    []
+
+Pipe stdout to file with the ``file`` keyword argument
+
+.. code-block:: python
+
+    >>> import os
+    >>> import tempfile
+    >>>
+    >>> tmp = tempfile.NamedTemporaryFile(delete=False)
+    >>> echo.call("Hello, world", file=tmp.name)
+    0
+    >>> returncode = cat.call(tmp.name)
+    Hello, world
+    >>> returncode
+    0
+    >>> os.remove(tmp.name)
+
+Failing command will raise a ``subprocess.CalledProcessError``
+
+.. code-block:: python
+
+    >>> import contextlib
+    >>> from subprocess import CalledProcessError
+    >>>
+    >>> with contextlib.redirect_stderr(None):
+    ...     try:
+    ...         returncode = fails.call()
+    ...     except CalledProcessError as err:
+    ...         str(err)
+    "Command 'false' returned non-zero exit status 1."
+    >>> returncode
+    0
+
+This, however, will not
+
+.. code-block:: python
+
+    >>> with contextlib.redirect_stderr(None):
+    ...     fails.call(suppress=True)
+    1
+
+All the keyword arguments above can be set as the default for the instantiated object
+
+.. code-block:: python
+
+    >>> echo = Subprocess("echo", capture=True)
+    >>> echo.call("Hello, world")
+    0
+    >>> echo.stdout()
+    ['Hello, world']
+
+Which can then be overridden
+
+.. code-block:: python
+
+    >>> returncode = echo.call("Hello, world", capture=False)
+    Hello, world
+    >>> returncode
+    0
+    >>> echo.stdout()
+    []
+
