@@ -1,0 +1,110 @@
+Metadata-Version: 2.1
+Name: servicefoundry
+Version: 0.1.20
+Summary: Generate deployed services from code
+Home-page: https://github.com/innoavator/servicefoundry
+Author: Abhishek Choudhary
+Author-email: abhichoudhary06@gmail.com
+Requires-Python: >=3.6.2,<4.0.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: Mako (>=1.1.6,<2.0.0)
+Requires-Dist: PyJWT (>=2.3.0,<3.0.0)
+Requires-Dist: PyYAML (>=6.0,<7.0)
+Requires-Dist: click (>=8.0.4,<9.0.0)
+Requires-Dist: fastapi (>=0.75.0,<0.76.0)
+Requires-Dist: importlib-metadata (>=4.2,<5.0)
+Requires-Dist: importlib-resources (>=5.2.0,<6.0.0)
+Requires-Dist: jsonschema (>=3.2.0,<4.0.0)
+Requires-Dist: mistune (>=0.8.4,<0.9.0)
+Requires-Dist: prometheus_client (>=0.13.1,<0.14.0)
+Requires-Dist: python-socketio[client] (>=5.5.2,<6.0.0)
+Requires-Dist: questionary (>=1.10.0,<2.0.0)
+Requires-Dist: requests (>=2.27.1,<3.0.0)
+Requires-Dist: rich (>=12.0.0,<13.0.0)
+Requires-Dist: rich-click (>=1.2.1,<2.0.0)
+Project-URL: Repository, https://github.com/innoavator/servicefoundry
+Description-Content-Type: text/markdown
+
+# Dev Setup
+
+**Setup a virtual env (or use an existing one)**
+
+```shell
+cd ~/   # or someplace else
+python3.9 -m venv venv39
+```
+
+> prefer using `python3.9-intel` on Apple Silicon
+
+**Activate the virtual environment**
+
+```shell
+source ~/venv39/bin/activate
+```
+
+**Install `poetry` and `pre-commit`**
+
+```shell
+pip install poetry pre-commit
+```
+
+**Git clone**
+
+```shell
+git clone https://github.com/truefoundry/servicefoundry-cli
+```
+
+**Install pre-commit hooks**
+
+```shell
+cd servicefoundry-cli/
+pre-commit install --install-hooks
+```
+
+> You can run the hook manually with `pre-commit run --all-files`
+
+
+
+It is recommended to go through [Poetry Docs](https://python-poetry.org/docs/) to get a hang of development, testing and
+packaging process
+
+# Local Installation
+
+```shell
+poetry install
+```
+
+# Testing
+
+```shell
+poetry run pytest
+```
+
+# Build distributions
+
+```shell
+poetry build
+```
+
+# Usage :
+
+- Login : `servicefoundry login`
+
+- Init : `servicefoundry init`
+
+- Run : `servicefoundry run`
+
+# Process flow to use the commands
+
+- servicefoundry (should hint to servicefoundry login)
+- servicefoundry login (should hint to init, run from example folder)
+- servicefoundry init (should hint to run)
+- servicefoundry run (should hint to grafanaendpoint and servicefoundry get service <service_id>)
+
+- servicefoundry list workspace
+- servicefoundry list
+
