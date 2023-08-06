@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Unclassified Images{% endblock %}
+{% block body %}
+	<h2 oncontextmenu="$.get('/touch-image/137')">Select an image</h2>
+	<form action="/" method="get">
+		<p>Search tags(Space-separated)</p>
+		<input id="id_search_tags" name="search_tags" class="text">
+        <input type="submit" value="submit">
+	</form>
+	<div id="image-list">
+		<!--- Stuff goes here --->
+	</div>
+    <div class="sidebar">
+        <h2>Most used tags</h2>
+        {% for tag in most_used_tags %}
+            <button name="tag_{{ tag['name'] }}" id="id_used_tag_{{ tag['name'] }}">{{ tag["name"] }}</button>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+{% block domready %}
+var page = 0;
+var empty_page = false;
+var block_request = false;
+
+var tags = ""
+let sp = new URLSearchParams(window.location.search)
+var has = sp.has("search_tags")
+
+if (has) {
+	tags = sp.get("search_tags")
+}
+else {
+	tags = ""
+}
+
+$.get('/data-images?page=' + page + '&tags='+ tags.toString(), function(data) {
+	if (data == '') {
+		empty_page == true;
+	}
+	else {
+		block_request = false;
+		$('#image-list').append(data);
+	}
+});
+
+
+$(window).scroll(function() {
+var margin = $(document).height() - $(window).height() - 200;
+if ($(window).scrollTop() > margin && empty_page == false &&
+block_request == false) {
+	block_request = true;
+		page += 1;
+		let sp = new URLSearchParams(window.location.search)
+		has = sp.has("search_tags")
+		if (has) {
+			tags = sp.get("search_tags")
+		}
+		else {
+			tags = ""
+		}
+		$.get('/data-images?page=' + page + '&tags=' + tags.toString(), function(data) {
+			if (data == '') {
+				empty_page == true;
+			}
+			else {
+				block_request = false;
+
+				$('#image-list').append(data);
+
+			}
+		});
+	}
+});
+
+var $input = $('#id_search_tags')
+
+{% for tag in most_used_tags %}
+$("#id_used_tag_{{ tag['name'] }}").click(function(e) {
+    tag_name = $(this).text()
+    if (tag_name != "") {
+        var appendum = ""
+        if ($input.val() != "") {
+            appendum = " "
+        }
+        $input.val($input.val() + appendum + tag_name)
+    }
+});
+{% endfor  %}
+
+$input.focus()
+{% endblock %}
