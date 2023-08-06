@@ -1,0 +1,50 @@
+0.2.10
+ - enh: Cache Fourier transforms using weak references of the
+   input data (useful for the reference data)
+ - ref: QLSI background correction by division with reference
+   gradient data Hx and Hy (minor speed-up) (#1)
+0.2.9
+ - enh: add comments in QLSI source code explaining what is being done
+0.2.8
+ - fix: replace hard-coded filter size of 400 with half the sideband
+   distance for QLSI data
+0.2.7
+ - enh: allow to specify qlsi_pitch_term and use wavelength to convert
+   wavefront distances to phase for QLSI data
+ - fix: smooth square filter was not symmetric in x and y
+ - docs: fix filter description for square filters (double filter size)
+0.2.6
+ - enh: allow to select preferred Fourier transform interface via
+   e.g. `qpretrieve.fourier.PREFERRED_INTERFACE = "FFTFilterNumpy"`
+ - ref: rename OAH module internally
+0.2.5
+ - fix: make sure the reference QLSI image is treated exactly like
+   the data QLSI image in terms of padding and subtracting mean
+0.2.4
+ - enh: allow to specify approximate padding size in FFTFilter
+ - docs: update wrong docs stated padding with linear ramp, but
+   we are doing zero-padding
+0.2.3
+ - fix: allow computation of QLSI wavefront without reference image
+ - ref: turn field into a property and let subclasses define how to
+   compute phase and amplitude
+0.2.2
+ - enh: use multiprocessing.cpu_count() as threads argument for FFTW
+0.2.1
+ - ref: invert phase by multiplying field.imag by -1 in OAH
+0.2.0
+ - feat: add quadri-wave prototype for quadriwave lateral shearing
+   interferometry (subject to future refactoring and breaking changes)
+ - feat: implement FFT with PyFFTW
+ - setup: remove unused install_requires
+ - ref: clean up BaseInterferogram and support passing pipeline
+   keyword arguments during init
+0.1.2
+ - ref: add base class for Fourier hologram analysis
+0.1.1
+ - fix: some Fourier filters did not work properly due to earlier
+   refactorization
+ - enh: support hologram data that are RGB(A) (by only taking R)
+ - tests: imported tests from qpimage
+0.1.0
+ - initial release
