@@ -1,0 +1,140 @@
+Metadata-Version: 2.1
+Name: s3-sync
+Version: 0.2.1
+Summary: Sync s3 from one source to another place
+Home-page: https://github.com/FerdinaKusumah/s3-sync
+Author: Ferdina Kusumah
+Author-email: ferdina.kusumah@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3 (==1.21.42)
+Requires-Dist: pydantic (==1.9.0)
+Requires-Dist: tqdm (==4.64.0)
+Requires-Dist: PyYAML (==6.0)
+
+# s3-sync
+
+Sync AWS S3 storage:
+* From s3 -> s3
+* FROM s3 -> local storage
+* FROM local storage -> s3 
+
+
+![S3 Sync](https://raw.githubusercontent.com/FerdinaKusumah/s3-sync/master/s3_sync/images/example.png)
+
+## Installation
+
+```shell
+  pip install s3_sync
+```
+
+## S3 sync s3 to s3
+
+### Read from parameters
+```shell
+    s3-sync --sync-cross-account true \
+        --source-bucket-name foo \
+        --source-region-name ap-southeast-1 \
+        --source-access-key-id bar \
+        --source-secret-access foobar \
+        
+        --target-bucket-name foo \
+        --target-region-name ap-southeast-1 \
+        --target-access-key-id bar \
+        --target-secret-access foobar
+```
+
+### Read from json file
+* Create example json file as bellow example, you can name this file whatever
+
+```json
+{
+  "source": {
+    "bucket_name": "foo",
+    "region_name": "ap-southeast-1",
+    "aws_access_key_id": "bar",
+    "aws_secret_access_key": "foobar"
+  },
+  "target": {
+    "bucket_name": "foo",
+    "region_name": "ap-southeast-1",
+    "aws_access_key_id": "bar",
+    "aws_secret_access_key": "foobar"
+  }
+}
+```
+
+* Then execute command `s3-sync --sync-cross-account true -json ./whatever.json`
+
+### Read from yml or yaml file
+* Create example json file as bellow example, you can name this file whatever
+
+```yaml
+source:
+  bucket_name: foo
+  region_name: ap-southeast-1
+  aws_access_key_id: bar
+  aws_secret_access_key: foobar
+target:
+  bucket_name: foo
+  region_name: ap-southeast-1
+  aws_access_key_id: bar
+  aws_secret_access_key: foobar
+```
+
+* Then execute command `s3-sync --sync-cross-account true -yml ./whatever.yml` or `s3-sync --sync-cross-account true -yaml ./whatever.yaml`
+
+
+## S3 sync s3 to local (*Give absolute path for this*)
+### Read from parameters
+```shell
+    s3-sync --sync-server-local true \
+        --source-bucket-name foo \
+        --source-region-name ap-southeast-1 \
+        --source-access-key-id bar \
+        --source-secret-access foobar \
+        --target-local-path "/Users/ferdinakusumah/foo/bar/s3-sync/sync-data"
+```
+
+### Read from json file
+* Create example json file as bellow example, you can name this file whatever
+
+```json
+{
+  "source": {
+    "bucket_name": "foo",
+    "region_name": "ap-southeast-1",
+    "aws_access_key_id": "bar",
+    "aws_secret_access_key": "foobar"
+  },
+  "target": {
+    "path": "/Users/ferdinakusumah/foo/bar/s3-sync/sync-data"
+  }
+}
+```
+
+* Then execute command `s3-sync --sync-server-local true -json ./whatever.json`
+
+### Read from yml or yaml file
+* Create example json file as bellow example, you can name this file whatever
+
+```yaml
+source:
+  bucket_name: foo
+  region_name: ap-southeast-1
+  aws_access_key_id: bar
+  aws_secret_access_key: foobar
+target:
+  path: /Users/ferdinakusumah/foo/bar/s3-sync/sync-data
+```
+
+* Then execute command `s3-sync --sync-server-local true -yml ./whatever.yml` or `s3-sync --sync-server-local true -yaml ./whatever.yaml`
+
+### Pull Request are welcome
+
