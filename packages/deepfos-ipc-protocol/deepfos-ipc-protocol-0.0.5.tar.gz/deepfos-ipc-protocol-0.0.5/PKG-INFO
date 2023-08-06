@@ -1,0 +1,64 @@
+Metadata-Version: 2.1
+Name: deepfos-ipc-protocol
+Version: 0.0.5
+Summary: deepfos系统使用的unix socket协议
+Home-page: https://github.com/pypa/sampleproject
+Author: chenxingyu
+Author-email: chenxingyu1021@mail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+### 客户端调用测试用例
+
+> m = EchoClientProtocol(SOCK_FILE)
+> message = {"task_id": "xxxxadslf"}
+> message2 = {
+>     "key": "key",
+>     "status": "status",
+>     "endTime": "endTime",
+> }
+> message3 = {
+>     "key": "key3",
+>     "status": "status3",
+>     "endTime": "endTime3",
+> }
+> m.send_msg("O", "message")
+> m.send_msg("H", message)
+> m.send_msg("U", message2)
+> m.send_msg("I", [message2, message3])
+
+
+### 服务端自定义逻辑测试用例
+
+'''
+protocol可以支持到让我在server端加入自定义逻辑，
+比如可以传一个object， 这个object有dispatch方法，
+每次你parse完，调这个dispatch，把mtype和解析结果传进去，
+在其中我写自己定制化的逻辑
+'''
+
+> class A:
+>    
+>    def print_data(self, mtype, data, **kwargs):
+>        print(mtype)
+>        print(data)
+
+> def a(mtype, data, **kwargs):
+>    print("mtype:", mtype)
+>    print("data:", data)
+>    print("kwargs:", kwargs)
+
+'''
+第一个参数为sock文件位置
+之后的参数都是可选参数
+当ins参数为类对象时，后面必须带一个func参数，值为类下的方法名
+无论使用类方法还是直接使用函数必须增加两个参数位置参数，mtype和data
+'''
+> m = MyServer(SOCK_FILE, ins=A, func="print_data", a=1, b=2)
+> m = MyServer(SOCK_FILE, ins=a, a="a", b="b")
+> m.run()
+
