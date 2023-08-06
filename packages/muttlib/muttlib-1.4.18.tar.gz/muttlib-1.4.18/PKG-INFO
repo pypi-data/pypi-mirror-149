@@ -1,0 +1,171 @@
+Metadata-Version: 2.1
+Name: muttlib
+Version: 1.4.18
+Summary: Collection of helper modules by Mutt Data.
+Home-page: https://gitlab.com/mutt_data/muttlib/
+Keywords: data
+Author: Mutt Data
+Author-email: info@muttdata.ai
+Requires-Python: >=3.7,<3.10
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Provides-Extra: all
+Provides-Extra: bigquery
+Provides-Extra: forecast
+Provides-Extra: gdrive
+Provides-Extra: gsheets
+Provides-Extra: hive
+Provides-Extra: ibis
+Provides-Extra: mongo
+Provides-Extra: mysql
+Provides-Extra: oracle
+Provides-Extra: postgres
+Provides-Extra: pyarrow
+Provides-Extra: redshift
+Provides-Extra: snowflake
+Provides-Extra: sqlserver
+Provides-Extra: teradata
+Provides-Extra: test
+Provides-Extra: trino
+Requires-Dist: Deprecated (>=1.2.13,<2.0.0)
+Requires-Dist: Jinja2 (>=2.11.3,<3.1.0)
+Requires-Dist: MarkupSafe (>=0.2.3,<2.1.0)
+Requires-Dist: PyHive (>=0.6.1); extra == "hive" or extra == "all"
+Requires-Dist: PyMySQL (>=1.0.2,<2.0.0); extra == "mysql" or extra == "all"
+Requires-Dist: PyYAML (>=5.1,<7.0)
+Requires-Dist: SQLAlchemy (>=1.3.0,<1.4.0)
+Requires-Dist: bandit (>=1.7.2,<2.0.0); extra == "test" or extra == "all"
+Requires-Dist: betamax (>=0.8.1,<0.9.0); extra == "test" or extra == "all"
+Requires-Dist: betamax-serializers (>=0.2.1,<0.3.0); extra == "test" or extra == "all"
+Requires-Dist: cryptography (==3.4.7); extra == "snowflake" or extra == "all"
+Requires-Dist: cx-Oracle (>=8.3.0,<9.0.0); extra == "oracle" or extra == "all"
+Requires-Dist: freezegun (>=1.1.0,<2.0.0); extra == "test" or extra == "all"
+Requires-Dist: google-cloud-bigquery (==2.24.0); extra == "bigquery" or extra == "all"
+Requires-Dist: gspread-pandas (>=2.3.0,<3.0.0); extra == "gsheets" or extra == "all"
+Requires-Dist: holidays (>=0.10.2); extra == "test" or extra == "forecast" or extra == "all" or extra == "all"
+Requires-Dist: ibis-framework[impala] (==1.4.0); extra == "ibis" or extra == "all"
+Requires-Dist: interrogate (>=1.5.0,<2.0.0); extra == "test" or extra == "all"
+Requires-Dist: ipython (>=7.29.0,<8.0.0)
+Requires-Dist: jinjasql (>=0.1.8,<0.2.0)
+Requires-Dist: matplotlib (>=3.5.0,<4.0.0)
+Requires-Dist: nox (>=2021.10.1,<2022.0.0); extra == "test" or extra == "all"
+Requires-Dist: numpy (>=1.20.0,<2.0)
+Requires-Dist: oauth2client (>=4.1.3,<5.0.0); extra == "gdrive" or extra == "all"
+Requires-Dist: pandas (>=1.0.0)
+Requires-Dist: progressbar2 (>=3.55.0,<4.0.0)
+Requires-Dist: prophet (>=1.0.1,<2.0.0); extra == "forecast" or extra == "all"
+Requires-Dist: psycopg2-binary (>=2.9.2,<3.0.0); extra == "postgres" or extra == "redshift" or extra == "all" or extra == "all"
+Requires-Dist: pyarrow (==6.0.0); extra == "pyarrow" or extra == "ibis" or extra == "test" or extra == "all" or extra == "all" or extra == "all"
+Requires-Dist: pymongo (>=3.12.1,<4.0.0); extra == "mongo" or extra == "all"
+Requires-Dist: pymssql (>=2.2.2,<3.0.0); extra == "sqlserver" or extra == "all"
+Requires-Dist: pyparsing (<3); extra == "redshift" or extra == "all"
+Requires-Dist: pystan (==2.19.1.1); extra == "forecast" or extra == "all"
+Requires-Dist: pytest (>=6.2.5,<7.0.0); extra == "test" or extra == "all"
+Requires-Dist: pytest-cov (>=3.0.0,<4.0.0); extra == "test" or extra == "all"
+Requires-Dist: pytest-html (>=3.1.1,<4.0.0); extra == "test" or extra == "all"
+Requires-Dist: pytest-mpl (==0.12); extra == "test" or extra == "all"
+Requires-Dist: pytest-xdist (>=2.4.0,<3.0.0); extra == "test" or extra == "all"
+Requires-Dist: requests (>=2.26.0,<3.0.0); extra == "gdrive" or extra == "all"
+Requires-Dist: scikit-learn (>=1.0.1,<2.0.0)
+Requires-Dist: scipy (>=1.7.2,<2.0.0)
+Requires-Dist: snowflake-connector-python (>=2.7.1,<3.0.0); extra == "snowflake" or extra == "all"
+Requires-Dist: snowflake-sqlalchemy (==1.2.4); extra == "snowflake" or extra == "all"
+Requires-Dist: sqlalchemy-redshift (==0.8.6); extra == "redshift" or extra == "all"
+Requires-Dist: sqlalchemy-trino (==0.4.0); extra == "trino" or extra == "all"
+Requires-Dist: teradatasql (==17.0.0.8); extra == "teradata" or extra == "all"
+Requires-Dist: thrift (>=0.15.0,<0.16.0); extra == "hive" or extra == "all"
+Requires-Dist: types-PyMySQL (>=1.0.11,<2.0.0)
+Requires-Dist: types-requests (>=2.27.7,<3.0.0)
+Requires-Dist: wrapt (==1.11.2)
+Description-Content-Type: text/markdown
+
+# muttlib 🐶📚
+
+[![pypi version](https://img.shields.io/pypi/v/muttlib?color=blue)](https://pypi.org/project/muttlib/)[![pipeline status](https://gitlab.com/mutt_data/muttlib/badges/master/pipeline.svg)](https://gitlab.com/mutt_data/muttlib/-/commits/master)[![coverage report](https://gitlab.com/mutt_data/muttlib/badges/master/coverage.svg)](https://gitlab.com/mutt_data/muttlib/-/commits/master)[![docstring report](https://gitlab.com/mutt_data/muttlib/-/jobs/artifacts/master/raw/docs_coverage.svg?job=docstr-cov)](https://interrogate.readthedocs.io/en/latest/)[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+
+
+## Description
+
+Library with helper code to start a data-related project.
+By [Mutt Data](https://muttdata.ai/).
+
+Current modules:
+
+- `dbconn`: Somewhat homogeneus lib to access multiple DBs.
+- `file_processing`: Helpers for concurrent file processing.
+- `forecast`: Provides FBProphet a common interface to Sklearn and general
+  utilities for forecasting problems, allowing wider and easier grid search for
+  hyperparameters.
+- `utils`: A single version of miscellaneous functions needed every now and then.
+- `gsheetsconn`: Module to make data interactions to/from Google Sheets <> Pandas.
+- `gdrive`: Module that provides a UNIX-ish interface to GDrive.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Credits](#contributing)
+- [License](#license)
+
+### Installing from PyPi
+
+_Note:_ since version `1.4.13`, `muttlib` is packaged and developed using [poetry](https://python-poetry.org).
+
+Base lib:
+```bash
+poetry add muttlib
+```
+
+Check below for available extras.
+
+Parquet and Feather support:
+```bash
+poetry add muttlib -E pyarrow
+```
+
+Forecast:
+```bash
+poetry add muttlib -E forecast
+```
+
+Misc DB support for dbconn:
+```bash
+poetry add muttlib -E oracle
+poetry add muttlib -E hive
+poetry add muttlib -E postgres
+poetry add muttlib -E mysql
+poetry add muttlib -E sqlserver
+poetry add muttlib -E mongo
+poetry add muttlib -E ibis
+```
+
+_Note:_ the `ibis` extra requires installing binary packages. Check [CONTRIBUTING.md](https://gitlab.com/mutt_data/muttlib/-/blob/master/CONTRIBUTING.md#prerequisites) for the full list.
+
+### Installing custom branches from the repos
+
+From GitHub mirror:
+```bash
+poetry add -e git+https://github.com/MuttData/muttlib.git@AWESOME_FEATURE_BRANCH#egg=muttlib
+```
+
+From Gitlab main repo:
+```bash
+poetry add -e git+https://gitlab.com/mutt_data/muttlib.git@AWESOME_FEATURE_BRANCH#egg=muttlib
+```
+
+## Usage
+
+See the [documentation](https://mutt_data.gitlab.io/muttlib/) to get started with `muttlib`.
+
+## Contributing
+
+We appreciate for considering to help out maintaining this project. If you'd like to contribute please read our [contributing guidelines](https://mutt_data.gitlab.io/muttlib/contributing.html).
+
+## License
+`muttlib` is licensed under the [Apache License 2.0](https://gitlab.com/mutt_data/muttlib/-/blob/master/LICENCE).
+
