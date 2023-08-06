@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "canvas-workflow-kit"
+version = "0.5.13"
+description = "Development kit to empower customization of your Canvas instance"
+authors = ["Canvas Team <engineering@canvasmedical.com>"]
+exclude = ["canvas_workflow_kit/schemas", "canvas_workflow_kit/scripts"]
+
+# Be cautious adding dependencies. These also will get installed to home-app.
+# Dependencies should be loosely versioned to not cause conflicts when installed to home-app.
+
+[tool.poetry.dependencies]
+python = "^3.7"
+arrow = "^1.*"
+cached-property = "1.5.*"
+requests = "2.*"
+memoization = "0.4.*"
+python-decouple = "3.*"
+click = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+pytest-cov = "^3.0.0"
+bump2version = "^1.0.1"
+lazydocs = "^0.4.8"
+pydoc-markdown = "^4.3.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+canvas-cli = 'canvas_workflow_kit.canvas_cli:cli'
+
+[tool.pytest.ini_options]
+norecursedirs = "value_set/*"

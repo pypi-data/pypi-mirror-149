@@ -1,0 +1,70 @@
+from protocols import events
+from protocols.protocol import ClinicalQualityMeasure
+from protocols.value_set.v{year} import ({value_sets})
+
+
+class ClinicalQualityMeasure{class_name}(ClinicalQualityMeasure):
+    """
+{title}
+
+{short_description}
+
+{definition}
+
+{rationale}
+
+{guidance}
+
+    More information: {cms_url}
+    """
+
+    title = '{plain_title}'
+
+    identifiers = ['CMS{class_name}']
+
+    types = {types}
+
+    responds_to_event_types = [
+        events.HEALTH_MAINTENANCE,
+    ]
+
+    authors = [
+{authors}
+    ]
+
+    references = [
+{references}
+    ]
+
+    funding_source = '{funding_source}'
+
+    def in_initial_population(self):
+        """
+{initial_population}
+        """
+        pass
+
+    def in_denominator(self):
+        """
+{denominator}
+
+{denominator_exclusions}
+
+{denominator_exceptions}
+        """
+        {denominator_body}
+
+    def in_numerator(self):
+        """
+{numerator}
+
+{numerator_exclusions}
+        """
+        pass
+
+
+    def compute_results(self):
+        """
+{recommendation}
+        """
+        pass
