@@ -1,0 +1,90 @@
+Metadata-Version: 2.1
+Name: tagreader
+Version: 3.0.1
+Summary: Library for reading from Aspen InfoPlus.21 and OSIsoft PI IMS servers
+Home-page: https://github.com/equinor/tagreader-python
+Author: Einar S. Idsø
+Author-email: eiids@equinor.com
+License: MIT
+Keywords: Aspen InfoPlus.21,OSIsoft PI
+Platform: Windows
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Requires-Python: ~=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+# Tagreader #
+
+Tagreader is a Python package for reading trend data from the OSIsoft
+PI and Aspen Infoplus.21 IMS systems. It is intended to be easy to use,
+and present as similar interfaces as possible to the backend historians.
+
+While originally developed for Windows, Tagreader can since release 3.0.0
+also be used on Linux and Windows platforms.
+
+Queries can be performed using either REST API (preferred) or ODBC queries.
+The use of ODBC queries require installation of proprietary drivers from
+AspenTech and OSIsoft that are only available for Windows.
+
+Trend data is output as Pandas Dataframes. The HDF5 file format is used
+to cache results.
+
+## Requirements
+
+Python >=3.7 with the following packages:
+
+  + pandas >= 1.0.0
+  + tables (*)
+  + requests
+  + requests-kerberos
+  + certifi >= 2020.04.05
+  + pyodbc (**)
+
+*) If tables is not installed, caching of fetched data will be disabled.
+Tables will be installed alongside Tagreader unless the installation is
+known to fail, which is the case for Macs with M1 chip.
+
+**) If using ODBC connections, you must also install proprietary drivers for
+PI ODBC and/or Aspen IP.21 SQLPlus. These drivers are only available for
+Microsoft Windows. Pyodbc will therefore not be installed for non-Windows
+systems.
+
+## Installation
+
+To install and/or upgrade:
+
+```
+pip install --upgrade tagreader
+```
+
+## Usage example ##
+
+```
+import tagreader
+c = tagreader.IMSClient("mysource", "aspenone")
+print(c.search("tag*"))
+df = c.read_tags(["tag1", "tag2"], "18.06.2020 08:00:00", "18.06.2020 09:00:00", 60)
+```
+
+Also see the
+[quickstart](https://github.com/equinor/tagreader-python/blob/master/docs/quickstart.ipynb)
+document and the
+[manual](docs/https://github.com/equinor/tagreader-python/blob/master/docs/manual.md)
+for more information.
+
+
