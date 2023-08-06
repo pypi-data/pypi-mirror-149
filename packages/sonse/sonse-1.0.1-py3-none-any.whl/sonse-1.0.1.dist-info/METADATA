@@ -1,0 +1,260 @@
+Metadata-Version: 2.1
+Name: sonse
+Version: 1.0.1
+Summary: Stephen's Obsessive Note-Storage Engine.
+Home-page: https://github.com/rattlerake/sonse
+Author: Stephen Malone
+Author-email: mail@sonse.org
+License: UNKNOWN
+Project-URL: Changelog, https://github.com/rattlerake/sonse/blob/main/changes.md
+Project-URL: Issues, https://github.com/rattlerake/sonse/issues
+Keywords: notes note-taking cli
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Office/Business :: News/Diary
+Classifier: Topic :: Terminals
+Classifier: Topic :: Utilities
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: click (>=8.1)
+
+<div align="center">
+
+![Logo](https://raw.githubusercontent.com/rattlerake/sonse/main/.github/sonse.png)
+
+[Latest Release][lrel] · [PyPi Package][pypi] · [Issues][bugs] · [Changelog][chng] · [License][lcns]
+
+[![](https://img.shields.io/github/last-commit/rattlerake/sonse)][cmmt]
+[![](https://img.shields.io/github/workflow/status/rattlerake/sonse/Run%20Tests)][test]
+[![](https://img.shields.io/pypi/v/sonse)][pypi]
+[![](https://img.shields.io/pypi/pyversions/sonse)][pypi]
+[![](https://img.shields.io/github/issues/rattlerake/sonse)][bugs]
+[![](https://img.shields.io/pypi/l/sonse)][lcns]
+
+</div>
+
+
+**Sonse** (*Stephen's Obsessive Note-Storage Engine*, pronounced *son·say*) is a command-line note management application. It allows you to create, edit and maintain your notes without sacrificing the simplicity and openness of plain text.
+
+If you've got a bunch of loose text files lying around and you'd like to keep them organised, Sonse is for you. It'll keep them safe, sorted and sensible, forever. (And if you don't like it, you can delete Sonse without harming your data.)
+
+> **Note:** Sonse is designed primarily for Linux and Linux-based operating systems; in particular it uses several Linux defaults and environment variables for its basic functions. Mac OS should work (please [file a bug][bugs] if it doesn't), but Windows is unsupported at this time.
+
+Installation
+------------
+
+Sonse requires [Python 3.10][p310] and a few dependencies. You can install it one of two ways:
+
+### PyPi Package
+
+You can get the official [PyPi package][pypi] with pip:
+
+```text
+$ pip install sonse
+$ sonse --help
+```
+
+This will install Sonse with a `sonse` executable you can run directly. Nice and easy.
+
+### Source Code
+
+You can also clone this repository or [download the latest release][lrel] and run the source code yourself, if you're interesting in tinkering with the code:
+
+```text
+$ git clone https://github.com/rattlerake/sonse.git
+$ cd sonse
+$ pip install -r requirements.txt
+$ python -m sonse --help
+```
+
+You'll need to install [the dependencies][reqs] and run Sonse from the Python module, or create an alias for it.
+
+Setup
+-----
+
+### Configuration
+
+All Sonse needs is a single environment variable called `SONSE`. This variable should contain the path to your notes directory and their file extension, separated by a pipe. For example, if your notes are in `$HOME/notes` and they end in `.txt`, then use:
+
+```sh
+# Bash/Zsh
+$ export SONSE="$HOME/notes|.txt"
+
+# Csh/Tcsh
+$ setenv SONSE "$HOME/notes|.txt"
+
+# Fish (my favourite)
+$ set -gx SONSE "$HOME/notes|.txt"
+```
+
+That's it. That's all you need to do.
+
+### Directories & Naming
+
+Sonse keeps all your notes in your configured directory, and refers to them by their lower-case file names. For example, let's say your notes look like this:
+
+```sh
+$ ls -1 $HOME/notes:
+alpha.txt
+bravo.txt
+charlie-123.txt
+```
+
+Then Sonse will show them like this:
+
+```sh
+$ sonse list
+alpha
+bravo
+charlie-123
+```
+
+Also, note names are disambiguated, allowing you to save time by typing just enough characters to disambiguate:
+
+```
+$ sonse list
+alpha
+bravo-one
+bravo-two
+
+$ sonse read a
+This is note alpha.
+
+$ sonse read bravo
+Error: ambiguous name, did you mean: 'bravo-one', 'bravo-two'?
+```
+
+### Shell Completion
+
+Sonse uses [Click][clck] for its interface, which has optional support for shell auto-completions. I highly recommend [enabling this functionality][comp] if you have a shell that supports it. (Sonse works fine without it, but it's nice to have.)
+
+Commands
+--------
+
+All commands have detailed help messages, use the `-h --help` option to see them. The following is a quick tour of all the available commands and their general usage:
+
+### Create a note
+
+Create a new empty note in your directory:
+
+```
+$ sonse create alpha
+```
+
+Use `-e/--edit` to edit the note after creation:
+
+```
+$ sonse create alpha --edit
+```
+
+### Edit a note
+
+Open a note in your default text editor, according to `$VISUAL` or `$EDITOR`:
+
+```
+$ sonse edit alpha
+```
+
+### Read a note
+
+Print an existing note to standard output:
+
+```text
+$ sonse read alpha
+This is note alpha!
+```
+
+### List all notes
+
+List all notes in alphabetical order:
+
+```
+$ sonse list
+alpha
+bravo
+charlie
+```
+
+Or list all notes starting with a prefix:
+
+```
+$ sonse list a
+alpha
+```
+
+### Copy a note
+
+Copy an existing note to a new name:
+
+```
+$ sonse copy alpha bravo
+```
+
+### Move a note
+
+Rename an existing note to a new name:
+
+```
+$ sonse move alpha bravo
+```
+
+### Delete a note
+
+Delete a note, if it exists:
+
+```
+$ sonse delete alpha
+Are you sure you want to delete 'alpha'? [y/N]: y
+```
+
+Use `-f/--force` to bypass the confirmation prompt:
+
+```
+$ sonse delete alpha --force
+```
+
+### Export a note
+
+Copy an existing note to a file on disk:
+
+```
+$ sonse export alpha some-file.txt
+```
+
+### Import a note
+
+Copy a file on disk to a new or existing note:
+
+```
+$ sonse import alpha some-file.txt
+```
+
+Use `-e/--edit` to edit the note after importing:
+
+```
+$ sonse import alpha ~/some-file.txt --edit
+```
+
+Contribution
+------------
+
+If you find any bugs or have any suggestions, please add them to the [issue tracker][bugs] with as much detail as possible. Thank you!
+
+[bugs]: https://github.com/rattlerake/sonse/issues
+[chng]: https://github.com/rattlerake/sonse/blob/main/changes.md
+[clck]: https://click.palletsprojects.com/
+[cmmt]: https://github.com/rattlerake/sonse/commits/main
+[comp]: https://click.palletsprojects.com/en/8.1.x/shell-completion/
+[lcns]: https://github.com/rattlerake/sonse/blob/main/license.md
+[lrel]: https://github.com/rattlerake/sonse/releases/latest
+[p310]: https://www.python.org/downloads/release/python-3100/
+[pypi]: https://pypi.org/project/sonse/
+[reqs]: https://github.com/rattlerake/sonse/blob/main/requirements.txt
+[test]: https://github.com/rattlerake/sonse/actions/workflows/test.yml
+
+
