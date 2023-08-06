@@ -1,0 +1,178 @@
+# MFHM
+
+> 基于[HTTPX](https://github.com/encode/httpx)和[FastAPI](https://github.com/tiangolo/fastapi)的微服务包
+>
+> **注意：** 该项目只是本人用于研究微服务原理而创建的探索项目, 请将本项目用于个人/研究为目的/无关紧要的项目中, 切勿在生产项目中使用
+
+## 开始使用
+
+### 1. 服务中心
+
+MFHM的服务中心是整个微服务系统的信息交换核心, 在使用MFHM前必须创建一个服务中心
+
+MFHM内置了一个服务中心, 要启动内置的服务中心非常简单:
+
+1. 创建一个目录作为服务中心源码目录(以 `serviceCenter` 为例)
+2. 在目录中创建一个python文件(以 `serviceCenter.py` 为例)
+2. 从 `mfhm.center` 模块导入服务中心类 `ServiceCenter`
+3. 配置并创建服务中心实例
+4. 调用实例的 `start()` 方法启动服务中心
+
+```python
+# serviceCenter/serviceCenter.py
+
+
+from mfhm.center import ServiceCenter
+
+
+sc = ServiceCenter(
+    dataDir='./data'
+)
+
+sc.start()
+```
+
+`ServiceCenter` 接受以下参数用于实例化
+
+```python
+class ServiceCenter(object):
+
+    def __init__(
+            self, 
+            host:str = '0.0.0.0', 
+            port:int = 21428,
+            pingTestInterval:int = 10,
+            pingTestTimeout:int = 5,
+            cacheSaveInterval:int = 60,
+            dataDir:str = None,
+            cacheFilename:str = 'centerCache.json',
+            logger = getLogger(os.path.basename(os.path.abspath(__file__))),
+            asyncHttpClient = httpx.AsyncClient()
+    ) -> None:
+        pass
+```
+
+| 参数              | 默认值            | 说明                                                         |
+| ----------------- | ----------------- | ------------------------------------------------------------ |
+| host              | 0.0.0.0           | 服务中心主机地址                                             |
+| port              | 21428             | 服务中心监听端口                                             |
+| pingTestInterval  | 10                | ping测试时间间隔，服务中心会定时向各微服务发送一个ping测试用于检测服务是否存活 |
+| pingTestTimeout   | 5                 | ping测试的超时时间                                           |
+| cacheSaveInterval | 60                | 缓存定时保存时间间隔，服务中心托管的服务信息都存储在内存中，为了防止服务中心在异常退出或者重启后丢失托管的服务数据，会定时将服务信息持久化到磁盘 |
+| dataDir           | None              | 数据存储目录，                                               |
+| cacheFilename     | centerCache.json  | 缓存文件名称                                                 |
+| logger            | mfhm.log.Logger   | 日志对象，mfhm使用python标准库 `logging` 作为日志记录工具，该参数值应该是标准的 `logging.Logger` 类/子类实例 |
+| asyncHttpClient   | httpx.AsyncClient | HTTPX的异步HTTP客户端                                        |
+
+运行 `serviceCenter.py` 
+
+```bash
+python serviceCenter.py
+```
+
+你将会看到以下类似的输出, 这代表服务中心启动成功
+
+```shell
+2022-05-08 22:26:02,494 | INFO     | Started server process [16752]
+2022-05-08 22:26:02,494 | INFO     | Waiting for application startup.
+2022-05-08 22:26:02,495 | INFO     | Application startup complete.
+2022-05-08 22:26:02,496 | INFO     | Uvicorn running on http://0.0.0.0:21428 (Press CTRL+C to quit) 
+```
+
+### 2. 创建服务
+
+在接下来的例子中将会创建两个微服务 `service01` 和 `service02`
+
+#### 2.1 service01
+
+2.1.1 创建目录 `service01`
+
+2.1.2 在 `service01` 目录下创建 `service01.py`
+
+2.1.3 从 `mfhm.service` 导入 `Service` 类
+
+2.1.4 配置 `Service` 并实例化
+
+2.1.5 使用实例创建一个测试接口 
+
+- request:
+    - meghod: GET
+    - path: /hello
+- response: 
+    - json
+
+```python
+# service01/service01.py
+
+
+from mfhm.service import Service
+
+
+# serviceName: 当前服务的服务名称
+# centerHost: 服务中心主机地址
+# centerPort: 服务中心监听端口
+s = Service(
+    serviceName='service01',
+    centerHost='127.0.0.1',
+    centerPort=21428
+)
+
+
+@s.get('/hello')
+async def hello():
+    return {'status': True, 'code': '0000', 'message': 'hello, my name is service01'}
+
+
+s.start()
+```
+
+2.1.6 执行 `service01.py` 启动服务(服务默认监听30176端口), 你将会看到类似以下的输出, 这代表服务启动成功
+
+```shell
+2022-05-08 23:00:46,669 | INFO     | Started server process [11372]
+2022-05-08 23:00:46,669 | INFO     | Waiting for application startup.
+2022-05-08 23:00:46,669 | INFO     | Application startup complete.
+2022-05-08 23:00:46,670 | INFO     | Uvicorn running on http://0.0.0.0:30176 (Press CTRL+C to quit)
+```
+
+
+#### 2.2 service02
+
+重复 `service01` 服务的创建步骤创建 `service02` 服务
+
+> 注意：由于例子中的所有的服务都在同一个系统中创建, 因此创建 `service02` 服务时需要修改服务的监听端口, 不能与 `service01` 服务监听的端口冲突, 否则启动 `service02` 时你将会得到类似以下的报错
+
+```shell
+2022-05-08 23:04:26,387 | INFO     | Started server process [5220]
+2022-05-08 23:04:26,388 | INFO     | Waiting for application startup.
+2022-05-08 23:04:26,388 | INFO     | Application startup complete.
+2022-05-08 23:04:26,428 | ERROR    | [Errno 10048] error while attempting to bind on address ('0.0.0.0', 30176): 通常每个套接字地址(协议/网络地址/端口)只允许使用一次。
+2022-05-08 23:04:26,429 | INFO     | Waiting for application shutdown.
+2022-05-08 23:04:26,433 | INFO     | Application shutdown complete.
+```
+
+```python
+# service02/service02.py
+
+
+from mfhm.service import Service
+
+
+s = Service(
+    serviceName='service02',
+    servicePort=30177,
+    centerHost='127.0.0.1',
+    centerPort=21428
+)
+
+
+@s.get('/hello')
+async def hello():
+    return {'status': True, 'code': '0000', 'message': 'hello, my name is service01'}
+
+
+s.start()
+```
+
+
+### 3. 服务调用
