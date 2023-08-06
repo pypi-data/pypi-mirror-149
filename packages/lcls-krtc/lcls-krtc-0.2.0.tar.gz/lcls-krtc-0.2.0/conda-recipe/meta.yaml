@@ -1,0 +1,24 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: krtc
+  version: {{ data.get('version') }}
+
+source:
+  path : ..
+
+build:
+  number: 2
+  noarch: python
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - python
+    - pykerberos
+
+about:
+  home: https://github.com/slaclab/krtc.git
+  license: MIT License

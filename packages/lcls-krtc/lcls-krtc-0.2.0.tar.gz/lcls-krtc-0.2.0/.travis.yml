@@ -1,0 +1,32 @@
+version: ~> 1.0
+
+env:
+  global:
+    - secure: "KrwXszNQ6p1opt0WKCFJM/ZkcR4XNtOYmDZitRKWT99NcYu4V5qTI8Mygsd6+xXBZ08dWgj5MpqfqU7lAZOiSKnyMf37mkYBoQfXNkT+qFY+/+BNVvScjiF/gYLejPLpsIn65fzxsAbTstyrcU6v+LLMGXm4z29vJ+BZLtTT3mT6D/eTCMFWtT48yGtGSAi59ec8Bj1FzuATq410buOmc1piRxcSCFd+6zWq+RlsSbA49/e4Y53b9vD7ZLlbrtLVu4sRLAqLopcch3SrESHI0lpjyyqtO2EyJYlS48JCIMc/t4KIjZUcpQsdZqa+tmeic0XTRnO789Br8LXKSf0AxUUqPyifKReAPkk9AD7js6mMKBfPa9QxjtUfurLmwxLpeISpqX6zT2y595wJEEax9GjsuS4rvwLLKITAMtvxIQMdQhqecCuYfXqWTxogHc3E4yDlYHplOkDnYefx20LwQl+02vUUc5VvF6VhiTeIBWIbb0tGRwsH2yvFF5c+saMQ4Oqm/bH2BHfWTML/JmgAZGqlz2OSg0jIexnswYqYV9BWzoca0rIkfB5zjMgpDmMd/EKbEkeLxJwpdt+iMMcP0kvgBeHj89mjgKQKTpOrCCIWvpTfYOPzap3jMSDLBRCwTUoOiXtdaxpHWt4o7VxC6E1XPQoIJSXG1W0WnuMT6D8="
+
+    # enable the usage of versions menu which allow versioning of the docs
+    # pages and not only the master branch
+    - DOCTR_VERSIONS_MENU="1"
+    # Dependency files used to build the documentation (space separated)
+    - DOCS_REQUIREMENTS="dev-requirements.txt"
+    # Options to be passed to flake8 for package linting. Usually this is just
+    # the package name but you can enable other flake8 options via this config
+    - PYTHON_LINT_OPTIONS="krtc"
+
+    # The name of the conda package
+    - CONDA_PACKAGE="krtc"
+    # The folder containing the conda recipe (meta.yaml)
+    - CONDA_RECIPE_FOLDER="conda-recipe"
+    # Extra dependencies needed to run the tests which are not included
+    # at the recipe and dev-requirements.txt. E.g. PyQt
+    # pandoc/pypandoc - used to translate README.md for sphinx
+    - CONDA_EXTRAS="pip"
+    # Requirements file with contents for tests dependencies
+    - CONDA_REQUIREMENTS="dev-requirements.txt"
+
+    # Extra dependencies needed to run the test with Pip (similar to
+    # CONDA_EXTRAS) but for pip
+    - PIP_EXTRAS="."
+
+import:
+  - pcdshub/pcds-ci-helpers:travis/shared_configs/standard-python-conda.yml
