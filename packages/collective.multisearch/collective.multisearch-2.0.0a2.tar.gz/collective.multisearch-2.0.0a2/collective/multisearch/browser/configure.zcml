@@ -1,0 +1,75 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+    <include package="plone.resource" file="meta.zcml" />
+    <adapter factory=".manager.localPortletAssignmentMappingAdapter" />
+    <plone:portlet
+        name="multisearch.RemoteSearchPortlet"
+        interface=".portlet_remote_search.IRemoteSearchPortlet"
+        assignment=".portlet_remote_search.Assignment"
+        renderer=".portlet_remote_search.Renderer"
+        addview=".portlet_remote_search.AddForm"
+        editview=".portlet_remote_search.EditForm"
+        />
+
+    <plone:portlet
+        name="multisearch.LocalSearchPortlet"
+        interface=".portlet_local_search.ILocalSearchPortlet"
+        assignment=".portlet_local_search.Assignment"
+        renderer=".portlet_local_search.Renderer"
+        addview=".portlet_local_search.AddForm"
+        editview=".portlet_local_search.EditForm"
+        />
+
+    <!-- Our custom view for managing the portlets -->
+    <adapter
+        factory=".manager.MultiSearchContextualEditPortletManagerRenderer"
+        provides=".interfaces.IMultiSearchPortletManagerRenderer"
+        />
+
+    <!-- Custom version of the default plone search portlet -->
+    <plone:portlet
+        name="multisearch.SearchPortlet"
+        interface=".search_portlet.ISearchPortlet"
+        assignment=".search_portlet.Assignment"
+        renderer=".search_portlet.Renderer"
+        addview=".search_portlet.AddForm"
+        editview=".search_portlet.EditForm"
+        />
+
+    <!-- Custom search box -->
+    <browser:viewlet
+        name="multisearch.searchbox"
+        manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+        class=".search_viewlet.SearchBoxViewlet"
+        layer="..interfaces.IAddOnInstalled"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+        class=".manager.MultiSearchManagerContextualPortlets"
+        name="manage-multisearch"
+        template="templates/manage-multisearch.pt"
+        permission="plone.app.portlets.ManagePortlets"
+        layer="..interfaces.IAddOnInstalled"
+        />
+
+    <browser:page
+        for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+        class=".search.MultiSearchView"
+        name="multisearch"
+        template="templates/multisearch.pt"
+        permission="zope2.View"
+        layer="..interfaces.IAddOnInstalled"
+        />
+
+    <plone:static
+        directory="resources"
+        type="plone"
+        name="collective.multisearch"
+        />
+
+</configure>

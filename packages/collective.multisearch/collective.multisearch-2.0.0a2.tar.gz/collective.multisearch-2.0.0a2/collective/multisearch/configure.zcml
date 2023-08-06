@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="collective.multisearch">
+
+  <!-- Include packages for permissions. -->
+  <include package="Products.CMFCore" />
+  <include package="plone.app.portlets" />
+  <five:registerPackage package="." initialize=".initialize" />
+  <i18n:registerTranslations directory="locales" />
+  <include package=".browser" />
+  <include file="profiles.zcml" />
+
+  <subscriber handler=".events.dispatchToComponent" />
+  <subscriber handler=".events.registerPortletManagerRenderer" />
+  <subscriber handler=".events.unregisterPortletManagerRenderer" />
+
+</configure>
