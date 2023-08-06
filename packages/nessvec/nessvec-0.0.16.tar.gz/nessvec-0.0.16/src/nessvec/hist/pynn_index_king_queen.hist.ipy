@@ -1,0 +1,296 @@
+>>> filepath = 'https://gitlab.com/tangibleai/word-vector-benchmarks/-/blob/main/word-analogy/monolingual/en/sat.csv'
+>>> import pandas as pd
+>>> df_analogy = pd.read_csv(filepath)
+>>> filepath = 'https://gitlab.com/tangibleai/word-vector-benchmarks/-/raw/main/word-analogy/monolingual/en/sat.csv'
+>>> df_analogy = pd.read_csv(filepath)
+>>> df_analogy
+      Unnamed: 0  type           word1       word2           word3       target
+0              0     0            lull       trust            balk    fortitude
+1              1     0            lull       trust          betray      loyalty
+2              2     0            lull       trust          cajole   compliance
+3              3     0            lull       trust          hinder  destination
+4              4     0            lull       trust          soothe      passion
+...          ...   ...             ...         ...             ...          ...
+5605        5605   373      remorseful     misdeed  impressionable   temptation
+5606        5606   373      remorseful     misdeed   sanctimonious    hypocrisy
+5607        5607   373     deleterious      result  impressionable   temptation
+5608        5608   373     deleterious      result   sanctimonious    hypocrisy
+5609        5609   373  impressionable  temptation   sanctimonious    hypocrisy
+
+[5610 rows x 6 columns]
+>>> df_analogy = pd.read_csv(filepath, index_col=0)
+>>> df_analogy
+      type           word1       word2           word3       target
+0        0            lull       trust            balk    fortitude
+1        0            lull       trust          betray      loyalty
+2        0            lull       trust          cajole   compliance
+3        0            lull       trust          hinder  destination
+4        0            lull       trust          soothe      passion
+...    ...             ...         ...             ...          ...
+5605   373      remorseful     misdeed  impressionable   temptation
+5606   373      remorseful     misdeed   sanctimonious    hypocrisy
+5607   373     deleterious      result  impressionable   temptation
+5608   373     deleterious      result   sanctimonious    hypocrisy
+5609   373  impressionable  temptation   sanctimonious    hypocrisy
+
+[5610 rows x 5 columns]
+>>> for i, row in df_analogy.iterrows():
+...     print(f'"{row.word1}" is to "{row.word2}" as "{row.word3}" is to "{row.target}"')
+...
+>>> cd src/nessvec
+>>> from files import load_hdf5
+>>> vecs, vocab = load_hdf5()
+>>> import pynndescent as pyn
+>>> index = pynndescent.NNDescent(vecs)
+>>> index = pyn.NNDescent(vecs)
+>>> index.query(vecs[vocab['king']])
+>>> np.array([vecs[vocab['king']]])
+>>> import numpy as np
+>>> np.array([vecs[vocab['king']]])
+array([[ 1.082e-01,  4.450e-02, -3.840e-02,  1.100e-03, -8.880e-02,
+         7.130e-02, -6.960e-02, -4.770e-02,  7.100e-03, -4.080e-02,
+        -7.070e-02, -2.660e-02,  5.000e-02, -8.240e-02,  8.480e-02,
+        -1.627e-01, -8.510e-02, -2.950e-02,  1.534e-01, -1.828e-01,
+        -2.208e-01,  2.430e-02, -9.210e-02, -1.089e-01, -1.009e-01,
+        -1.190e-02,  3.770e-02,  2.038e-01,  7.200e-02,  2.020e-02,
+         2.798e-01,  1.150e-02, -1.510e-02,  1.037e-01,  4.000e-04,
+        -1.040e-02,  1.960e-02,  1.265e-01,  8.280e-02, -1.369e-01,
+         1.070e-01,  1.270e-01, -3.490e-02, -6.830e-02, -1.140e-02,
+         3.370e-02,  1.260e-02,  7.920e-02,  4.400e-02, -2.530e-02,
+         4.890e-02, -7.850e-02, -6.259e-01, -9.720e-02,  1.654e-01,
+        -5.780e-02, -4.370e-02,  4.090e-02, -1.820e-02, -1.891e-01,
+         2.770e-02, -1.460e-02, -5.310e-02,  4.260e-02,  4.900e-03,
+         4.000e-03,  1.423e-01, -9.750e-02, -3.500e-03,  9.630e-02,
+        -1.900e-03, -1.466e-01, -1.662e-01,  6.650e-02, -1.500e-01,
+        -1.267e-01,  2.670e-02, -1.560e-01, -1.442e-01,  1.515e-01,
+         2.420e-02, -6.080e-02,  9.180e-02, -2.407e-01, -4.110e-02,
+        -1.420e-02,  6.550e-02, -3.590e-02,  1.459e-01,  9.400e-02,
+         1.590e-02,  6.380e-02, -1.077e-01, -5.170e-02, -1.370e-02,
+         5.120e-02, -2.750e-02, -5.070e-02,  6.900e-03,  3.660e-02,
+        -1.529e-01, -1.813e-01,  3.390e-02, -8.510e-02, -5.400e-02,
+         1.180e-01,  1.039e-01,  6.190e-02, -2.350e-02, -1.150e-02,
+         1.648e-01,  9.360e-02, -5.000e-03, -9.790e-02, -5.890e-02,
+        -7.210e-02, -1.586e-01,  2.270e-02, -4.460e-02, -3.398e-01,
+        -2.840e-02, -2.507e-01,  4.510e-02, -1.226e-01,  8.000e-02,
+         2.365e-01,  7.560e-02, -8.530e-02,  1.157e-01,  2.780e-02,
+         7.100e-02, -1.314e-01, -4.630e-02,  4.270e-02, -5.050e-02,
+        -2.490e-02,  1.182e-01,  4.810e-02, -1.085e-01, -1.600e-02,
+         3.900e-03, -3.860e-02,  1.551e-01,  2.695e-01,  7.070e-02,
+        -8.420e-02,  1.167e-01,  8.450e-02, -1.040e-02,  2.060e-02,
+         4.690e-02,  5.700e-03,  8.970e-02,  7.230e-02,  2.220e-02,
+         7.270e-02,  6.420e-02, -2.350e-02, -2.160e-02, -6.010e-02,
+         5.370e-02, -2.842e-01, -1.047e-01,  1.733e-01,  2.100e-03,
+        -1.050e-02,  1.143e-01,  2.150e-02,  7.400e-03, -5.040e-02,
+        -4.900e-03,  1.190e-02, -2.700e-02,  1.450e-02,  9.670e-02,
+         9.030e-02,  3.145e-01,  1.222e-01,  9.850e-02,  2.126e-01,
+        -1.030e-01,  7.930e-02, -7.870e-02, -5.930e-02,  7.390e-02,
+        -6.960e-02, -8.180e-02,  3.200e-02, -1.808e-01,  4.770e-02,
+         8.250e-02, -1.270e-02,  1.445e-01, -6.050e-02, -5.130e-02,
+         9.450e-02, -1.030e-01,  4.750e-02,  9.820e-02,  2.402e-01,
+         8.600e-03, -2.410e-02, -3.320e-02,  4.300e-02, -4.170e-02,
+         1.990e-02, -5.280e-02, -6.300e-02,  3.470e-02,  5.800e-02,
+        -2.600e-02,  1.113e-01,  9.890e-02, -3.800e-03, -1.272e-01,
+        -9.790e-02,  4.500e-03,  6.100e-03, -3.980e-02, -8.500e-03,
+        -3.500e-03, -1.191e-01, -9.490e-02,  1.230e-02,  1.705e-01,
+        -2.065e-01,  5.500e-02,  4.530e-02,  4.240e-02, -5.780e-02,
+        -3.480e-02, -1.770e-02,  3.437e-01, -6.590e-02,  9.240e-02,
+        -1.122e-01, -1.588e-01,  1.068e-01, -3.029e-01,  1.800e-03,
+         3.170e-02,  1.857e-01,  3.600e-02,  8.290e-02,  2.240e-02,
+         9.340e-02, -4.750e-02,  1.719e-01,  1.500e-03,  4.849e-01,
+        -2.280e-02, -9.020e-02,  4.650e-02, -1.087e-01,  1.374e-01,
+         1.150e-02, -1.246e-01,  5.090e-02,  1.578e-01, -1.667e-01,
+        -3.400e-02,  4.690e-02,  5.680e-02,  1.599e-01, -3.915e-01,
+         3.560e-02,  2.870e-02, -2.275e-01, -1.378e-01, -2.650e-02,
+        -1.115e-01,  1.804e-01,  7.960e-02, -9.870e-02,  9.050e-02,
+         3.556e-01,  2.400e-02,  2.460e-02,  2.830e-02,  6.090e-02,
+        -2.270e-02, -4.690e-02, -5.350e-02,  4.400e-02,  1.021e-01,
+        -1.398e-01,  5.370e-02, -2.549e-01,  8.270e-02, -1.011e-01,
+         4.700e-03, -7.120e-02,  1.442e-01, -7.000e-02,  1.230e-02,
+         3.440e-02, -5.700e-02,  1.580e-02,  5.440e-02,  2.560e-02]],
+      dtype=float32)
+>>> index.query(np.array([vecs[vocab['king']]]))
+(array([[  2407,   7697,   6406,   1067,   9517,   7610, 600459,   5409,
+         854338,   5094]], dtype=int32),
+ array([[0.       , 1.3556131, 1.4353056, 1.4583831, 1.552168 , 1.5647222,
+         1.5958745, 1.6200883, 1.6515356, 1.677393 ]], dtype=float32))
+>>> vocab
+,                    0
+the                  1
+.                    2
+and                  3
+of                   4
+                 ...  
+whitespotted    999989
+sacoglossan     999990
+Iseya           999991
+Bayyah          999992
+Vilaya          999993
+Length: 999994, dtype: int64
+>>> vocab.iloc[[  2407,   7697,   6406,   1067,   9517,   7610, 600459,   5409,
+...          854338,   5094]]
+...
+king         2407
+kings        7697
+queen        6406
+King         1067
+monarch      9517
+prince       7610
+king-      600459
+kingdom      5409
+kings.     854338
+royal        5094
+dtype: int64
+>>> index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))
+(array([[  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+         623878, 836526]], dtype=int32),
+ array([[1.1425351, 1.5177922, 1.7606367, 1.7698067, 1.7804254, 1.9027267,
+         1.9186809, 1.9193145, 1.9274433, 1.9348658]], dtype=float32))
+>>> vocab.iloc[index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0]]
+>>> index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))
+(array([[  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+         623878, 836526]], dtype=int32),
+ array([[1.1425351, 1.5177922, 1.7606367, 1.7698067, 1.7804254, 1.9027267,
+         1.9186809, 1.9193145, 1.9274433, 1.9348658]], dtype=float32))
+>>> index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0]
+array([[  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+        623878, 836526]], dtype=int32)
+>>> index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0][0]
+array([  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+       623878, 836526], dtype=int32)
+>>> vocab.iloc[index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0][0]]
+king               2407
+queen              6406
+kings              7697
+monarch            9517
+princess          11491
+king-            600459
+King               1067
+prince             7610
+queen-consort    623878
+queendom         836526
+dtype: int64
+>>> pd.DataFrame(vocab.iloc[index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0][0]])
+                    0
+king             2407
+queen            6406
+kings            7697
+monarch          9517
+princess        11491
+king-          600459
+King             1067
+prince           7610
+queen-consort  623878
+queendom       836526
+>>> pd.DataFrame([vocab.iloc[index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))[0][0]]])
+   king  queen  kings  monarch  princess   king-  King  prince  queen-consort  queendom
+0  2407   6406   7697     9517     11491  600459  1067    7610         623878    836526
+>>> target = index.query(np.array([vecs[vocab['king']] - vecs[vocab['man']] + vecs[vocab['woman']]]))
+>>> target[0]
+array([[  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+        623878, 836526]], dtype=int32)
+>>> target[0][0], target[0][1]
+>>> target[0][0], target[1][0]
+(array([  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+        623878, 836526], dtype=int32),
+ array([1.1425351, 1.5177922, 1.7606367, 1.7698067, 1.7804254, 1.9027267,
+        1.9186809, 1.9193145, 1.9274433, 1.9348658], dtype=float32))
+>>> target[0]
+array([[  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+        623878, 836526]], dtype=int32)
+>>> target[0][0], target[1][1]
+>>> target[0][0], target[1][0]
+(array([  2407,   6406,   7697,   9517,  11491, 600459,   1067,   7610,
+        623878, 836526], dtype=int32),
+ array([1.1425351, 1.5177922, 1.7606367, 1.7698067, 1.7804254, 1.9027267,
+        1.9186809, 1.9193145, 1.9274433, 1.9348658], dtype=float32))
+>>> zip(target[0][0], target[1][0])
+<zip at 0x7f0ca5ffe200>
+>>> pd.DataFrame(zip(target[0][0], target[1][0]))
+        0         1
+0    2407  1.142535
+1    6406  1.517792
+2    7697  1.760637
+3    9517  1.769807
+4   11491  1.780425
+5  600459  1.902727
+6    1067  1.918681
+7    7610  1.919315
+8  623878  1.927443
+9  836526  1.934866
+>>> pd.DataFrame(zip(target[0][0], target[1][0]), columns='word_id distance'.split())
+   word_id  distance
+0     2407  1.142535
+1     6406  1.517792
+2     7697  1.760637
+3     9517  1.769807
+4    11491  1.780425
+5   600459  1.902727
+6     1067  1.918681
+7     7610  1.919315
+8   623878  1.927443
+9   836526  1.934866
+>>> pd.DataFrame(zip(target[0][0], target[1][0]), columns='word_id distance'.split()).set_index('word_id')
+         distance
+word_id          
+2407     1.142535
+6406     1.517792
+7697     1.760637
+9517     1.769807
+11491    1.780425
+600459   1.902727
+1067     1.918681
+7610     1.919315
+623878   1.927443
+836526   1.934866
+>>> pd.DataFrame(zip(target[0][0], target[1][0]), columns='word_id distance'.split())
+   word_id  distance
+0     2407  1.142535
+1     6406  1.517792
+2     7697  1.760637
+3     9517  1.769807
+4    11491  1.780425
+5   600459  1.902727
+6     1067  1.918681
+7     7610  1.919315
+8   623878  1.927443
+9   836526  1.934866
+>>> pd.DataFrame(zip(target[0][0], target[1][0], vocab.iloc[target[0][0]]), columns='word_id distance neighbor'.split())
+   word_id  distance  neighbor
+0     2407  1.142535      2407
+1     6406  1.517792      6406
+2     7697  1.760637      7697
+3     9517  1.769807      9517
+4    11491  1.780425     11491
+5   600459  1.902727    600459
+6     1067  1.918681      1067
+7     7610  1.919315      7610
+8   623878  1.927443    623878
+9   836526  1.934866    836526
+>>> vocab.iloc[target[0][0]]
+king               2407
+queen              6406
+kings              7697
+monarch            9517
+princess          11491
+king-            600459
+King               1067
+prince             7610
+queen-consort    623878
+queendom         836526
+dtype: int64
+>>> vocab.iloc[target[0][0]].index.values
+array(['king', 'queen', 'kings', 'monarch', 'princess', 'king-', 'King',
+       'prince', 'queen-consort', 'queendom'], dtype=object)
+>>> pd.DataFrame(zip(target[0][0], target[1][0], vocab.iloc[target[0][0]].index.values), columns='word_id distance neighbor'.split())
+   word_id  distance       neighbor
+0     2407  1.142535           king
+1     6406  1.517792          queen
+2     7697  1.760637          kings
+3     9517  1.769807        monarch
+4    11491  1.780425       princess
+5   600459  1.902727          king-
+6     1067  1.918681           King
+7     7610  1.919315         prince
+8   623878  1.927443  queen-consort
+9   836526  1.934866       queendom
+>>> hist -opf king_queen.ipy

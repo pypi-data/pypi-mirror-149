@@ -1,0 +1,15 @@
+import pandas as pd
+from bs4 import BeautifulSoup
+url = 'https://bjpcjp.github.io/pocket-links.html'
+
+# no lists or tables for the bookmarks:
+# dfs = pd.read_html(url)
+# dfs[0]
+
+import requests
+resp = requests.get(url)
+content = resp.text
+soup = BeautifulSoup(content, "lxml")
+divs = soup.find_all("div", {"class": "x-grid"})
+div = soup.find("div", {"class": "x-grid"})
+
