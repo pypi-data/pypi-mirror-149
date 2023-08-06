@@ -1,0 +1,111 @@
+name: Unit tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        redis-py: ["4.1.2", "4.2.2"]
+        aioredis: ["2.0.1"]
+        exclude:
+          - python-version: "3.7"
+            redis-py: "4.2.2"
+            aioredis: "2.0.1"
+          - python-version: "3.8"
+            redis-py: "4.2.2"
+            aioredis: "2.0.1"
+        include:
+          - python-version: "3.9"
+            redis-py: "4.2.*"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "2.10.6"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.0.1"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.1.0"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.2.1"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.3.11"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.4.1"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "3.5.3"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "4.0.1"
+            aioredis: "1.3.1"
+          - python-version: "3.10"
+            redis-py: "4.1.*"
+            aioredis: "2.0.1"
+          - python-version: "3.10"
+            redis-py: "4.2.*"
+            aioredis: "2.0.1"
+            coverage: yes
+    services:
+      redis:
+        image: redis:6.2.6
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-cache-v2-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-cache-v2-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-cache-v2-
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          pip install -U pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install redis==${{ matrix.redis-py }} aioredis==${{ matrix.aioredis }}
+
+      - name: Test with coverage
+        if: ${{ matrix.coverage == 'yes' }}
+        run: |
+          pip install -e .
+          flake8
+          pytest -v --cov=fakeredis --cov-branch
+          coverage json
+          echo "COVERAGE=$(jq '.totals.percent_covered_display|tonumber' coverage.json)" >> $GITHUB_ENV
+      - name: Test without coverage
+        if: ${{ matrix.coverage != 'yes' }}
+        run: |
+          pip install .
+          pytest -v
+      - name: Create coverage badge
+        if: ${{ matrix.coverage == 'yes' && github.event_name == 'push' }}
+        uses: schneegans/dynamic-badges-action@v1.1.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: b756396efb895f0e34558c980f1ca0c7
+          filename: fakeredis-py.json
+          label: coverage
+          message: ${{ env.COVERAGE }}%
+          color: green
