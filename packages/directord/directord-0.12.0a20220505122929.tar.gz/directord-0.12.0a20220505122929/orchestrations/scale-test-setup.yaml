@@ -1,0 +1,23 @@
+# This orchestration will create containerized instances of directord client
+# which will allow developers to test environment interactions at scale.
+#
+# Scale operations will pull and run 50 instances per-host within the directord
+# cluster and will bind to the configuration deployed within the existing node.
+#
+---
+
+- jobs:
+  - RUN: podman pull quay.io/cloudnull/directord:latest
+  - RUN: podman tag quay.io/cloudnull/directord:latest directord
+  - RUN: >-
+      for i in {0..24}; do
+      podman run --hostname $(hostname)-client-${i}
+                 --name directord-client-${i}
+                 --net=host
+                 --env DIRECTORD_CONFIG_FILE=/etc/directord/config.yaml
+                 --env DIRECTORD_MACHINE_ID=$(hostname)-client-${i}
+                 --volume /etc/directord:/etc/directord:z
+                 --user 0
+                 --detach
+                 directord directord;
+      done
