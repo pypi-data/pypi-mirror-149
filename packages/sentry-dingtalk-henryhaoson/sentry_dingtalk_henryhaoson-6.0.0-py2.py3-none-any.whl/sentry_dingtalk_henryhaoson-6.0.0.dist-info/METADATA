@@ -1,0 +1,55 @@
+Metadata-Version: 2.1
+Name: sentry-dingtalk-henryhaoson
+Version: 6.0.0
+Summary: A sentry extension integrates DingTalk robot webhook forked from Jedore/sentry-dingtalk
+Home-page: https://git.17bdc.com/android-apps/sentry-dingtalk
+Author: Henryhaoson
+Author-email: hao.zhu@shanbay.com
+License: MIT
+Keywords: sentry dingtalk
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.6.13
+Description-Content-Type: text/markdown
+Requires-Dist: sentry (>=21.5.1)
+
+
+# Sentry DingTalk
+
+Sentry 集成钉钉机器人通知
+
+## Requirments
+- sentry >= 21.5.1
+
+## 特性
+- 发送异常通知到钉钉
+- 配置 @ 成员，逗号分隔
+- webhook optional 可以配置一个额外的 webhook，但是会抹除 `@信息`
+## 快速使用
+### 安装
+1. 使用 `pip` 命令
+    ```bash
+    $ pip install sentry-dingtalk-henryhaoson
+    ```
+
+2. 写入依赖文件 `onpremise-xxx/sentry/requirements.txt`
+    ```bash
+    $ echo sentry-dingtalk-henryhaoson >> requirements.txt
+    ```
+
+### 钉钉机器人
+[配置](https://developers.dingtalk.com/document/app/custom-robot-access)钉钉机器人并拿到对应的 webhook, 可以对机器人设置 关键词、签名、IP限制
+
+### 配置
+在 Sentry 面板 Settings > Integrations 中找到 DingTalk 并配置 webhook等信息，添加项目，创建告警规则
+
+### 测试
+1. Enable Plugin
+2. Test Plugin
+
+
