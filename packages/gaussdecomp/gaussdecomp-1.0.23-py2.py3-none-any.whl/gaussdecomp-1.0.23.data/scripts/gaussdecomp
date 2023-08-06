@@ -1,0 +1,62 @@
+#!python
+#
+# Script to run Gaussian Decomposition on a spectrum/cube
+
+from __future__ import print_function
+
+import os
+import time
+import numpy as np
+from astropy.io import fits
+from astropy.table import Table
+from argparse import ArgumentParser
+from dlnpyutils import utils as dln
+import subprocess
+import traceback
+import importlib as imp
+import gaussdecomp
+try:
+    import __builtin__ as builtins # Python 2
+except ImportError:
+    import builtins # Python 3
+
+# Main command-line program
+if __name__ == "__main__":
+    parser = ArgumentParser(description='Run Gaussian Decomposition')
+    parser.add_argument('cubefiles', type=str, nargs='+', help='Cube file')
+    parser.add_argument('--xstart', type=int, nargs='+', default=0, help='X starting position')
+    parser.add_argument('--ystart', type=int, nargs='+', default=0, help='Y starting position')
+    parser.add_argument('--single', action='store_true', help='Single spectrum decomposition')
+    parser.add_argument('--outfile', type=str, nargs=1, default='', help='Output filename')
+    parser.add_argument('--noback', action='store_true', help='Do not go backwards')
+    parser.add_argument('--backred', action='store_true', help='Backwards and return')
+    parser.add_argument('--wander', action='store_true', help='Wander around the datacube')
+    parser.add_argument('-p','--plot', action='store_true', help='Save the plots')
+    parser.add_argument('-c','--clobber', action='store_true', help='Clobber existing files')
+    parser.add_argument('-v','--verbose', action='store_true', help='Verbose output')
+    args = parser.parse_args()
+
+    t0 = time.time()
+    cubefile = args.cubefile[0]
+    outfile = dln.first_el(args.outfile)
+    verbose = args.verbose
+    saveplot = args.plot
+
+    # Set up logger
+    #if verbose:
+    #    logger = dln.basiclogger()
+    #    logger.handlers[0].setFormatter(logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s"))
+    #    logger.handlers[0].setStream(sys.stdout)
+    #    builtins.logger = logger   # make it available globally across all modules
+
+    # Decompose cube
+    if args.single is False:
+        gstruc = gaussdecomp.driver.driver(cubefile,args.xstart,args.ystart,outfile=outfile,
+                                           noback=args.noback,backret=args.backret,wander=args.wander,
+                                           silent=~args.verbose,noplot=~args.plot,clobber=args.clobber)
+    
+    # Single spectrum decomposition
+    else:
+        datacube = gaussdecomp.cube.Cube.read(cubefile)
+        sp = datacube(args.xstart,args.ystart)
+        out = gaussdecomp.fitter.gaussfit(sp)
