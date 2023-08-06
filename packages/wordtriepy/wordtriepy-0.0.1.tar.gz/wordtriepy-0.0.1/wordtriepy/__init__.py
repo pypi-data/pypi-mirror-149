@@ -1,0 +1,1 @@
+from .wordtriepy import WordTrie
