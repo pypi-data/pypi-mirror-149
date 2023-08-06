@@ -1,0 +1,42 @@
+[build-system]
+requires = [ "poetry-core>=1.0.0",]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "migra"
+version = "3.0.1652017344"
+authors = [ "Robert Lechte <robertlechte@gmail.com>",]
+license = "Unlicense"
+readme = "README.md"
+description = "Like `diff` but for PostgreSQL schemas"
+repository = "https://github.com/djrobstep/migra"
+homepage = "https://databaseci.com/docs/migra"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 88
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+sqlbag = "*"
+six = "*"
+schemainspect = ">=3.1.1652015119"
+psycopg2-binary = { version = "*", optional = true }
+
+[tool.poetry.dev-dependencies]
+sqlbag = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-clarity = "*"
+psycopg2-binary = "*"
+flake8 = "*"
+isort = "*"
+black = "*"
+toml = "*"
+
+[tool.poetry.scripts]
+migra = "migra:do_command"
+
+[tool.poetry.extras]
+pg = [ "psycopg2-binary",]
