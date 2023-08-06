@@ -1,0 +1,13 @@
+stts = {}
+stts["all"] = ["NN", "NE", "ADJA", "ADJD", "CARD", "VMFIN", "VAFIN", "VVFIN", "VAIMP", "VVIMP", "VVINF", "VAINF", "VMINF", "VVIZU", "VVPP", "VMPP", "VAPP", "ART", "PPER", "PRF", "PPOSAT", "PPOSS", "PDAT", "PDS", "PIAT", "PIDAT", "PIS", "PRELAT", "PRELS", "PWAT", "PWS", "PWAV", "PAV", "ADV", "KOUI", "KOUS", "KON", "KOKOM", "APPR", "APPRART", "APPO", "APZR", "PTKZU", "PTKNEG", "PTKVZ", "PTKA", "PTKANT", "ITJ", "TRUNC", "XY", "FM"]
+stts["nouns"] = ["NN", "NE"]
+stts["adjectives"] = ["ADJA", "ADJD"]
+stts["numbers"] = ["CARD"]
+stts["verbs"] = ["VMFIN", "VAFIN", "VVFIN", "VAIMP", "VVIMP", "VVINF", "VAINF", "VMINF", "VVIZU", "VVPP", "VMPP", "VAPP"]
+stts["articles"] = ["ART"]
+stts["pronouns"] = ["PPER", "PRF", "PPOSAT", "PPOSS", "PDAT", "PDS", "PIAT", "PIDAT", "PIS", "PRELAT", "PRELS", "PWAT", "PWS", "PWAV", "PAV"]
+stts["adverb"] = ["ADV"]
+stts["conjunctions"] = [ "KOUI", "KOUS", "KON", "KOKOM"]
+stts["adpositions"] = ["APPR", "APPRART", "APPO", "APZR"]
+stts["particle"] = ["PTKZU", "PTKNEG", "PTKVZ", "PTKA", "PTKANT"]
+stts["misc"] = ["ITJ", "TRUNC", "XY", "FM"]
