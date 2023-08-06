@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+skip_gitignore = true
+skip = "__init__.py"
+
+[tool.autoflake]
+expand-star-imports = true # expand from module import *
+ignore-init-module-imports = true # exclude __init__.py when removing unused imports
+remove-duplicate-keys = true # remove all duplicate keys in objects
+
+[tool.flakehell]
+base = "https://gitlab.ndp-systemes.fr/odoo-addons/ci-files/-/raw/master/jobs/.pre/base_flake_hell.toml"
