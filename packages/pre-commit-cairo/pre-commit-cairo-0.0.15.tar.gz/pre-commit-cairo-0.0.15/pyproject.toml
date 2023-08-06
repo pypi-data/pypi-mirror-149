@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pre-commit-cairo"
+version = "0.0.15"
+description = ""
+authors = ["franalgaba <f.algaba@outlook.es>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+rich = "^12.2.0"
+cairo-lang = "0.8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = {version = "^22.3.0", allow-prereleases = true}
+pytest-asyncio = "0.16.0"
+
+[tool.poetry.scripts]
+check-lint = 'pre_commit_cairo.check_lint:main'
+check-format = 'pre_commit_cairo.check_format:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
