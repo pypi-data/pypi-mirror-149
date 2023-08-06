@@ -1,0 +1,74 @@
+import os
+import re
+
+from setuptools import find_packages, setup
+
+DEV_REQUIREMENTS = [
+    # tests
+    "pytest<7",
+    "pytest-cov<3",
+    "pytest-xdist<3",
+    "pytest-timeout<2",
+    "responses==0.17.0",
+    # loading test fixture data
+    "ruamel.yaml==0.17.16",
+]
+
+
+def parse_version():
+    # single source of truth for package version
+    version_string = ""
+    version_pattern = re.compile(r'__version__ = "([^"]*)"')
+    with open(os.path.join("src", "globus_cli", "version.py")) as f:
+        for line in f:
+            match = version_pattern.match(line)
+            if match:
+                version_string = match.group(1)
+                break
+    if not version_string:
+        raise RuntimeError("Failed to parse version information")
+    return version_string
+
+
+def read_readme():
+    with open("README.rst") as fp:
+        return fp.read()
+
+
+setup(
+    name="globus-cli",
+    version=parse_version(),
+    packages=find_packages("src"),
+    package_dir={"": "src"},
+    python_requires=">=3.6",
+    install_requires=[
+        "globus-sdk==3.8.0",
+        "click>=8.0.0,<9",
+        "jmespath==0.10.0",
+        # these are dependencies of the SDK, but they are used directly in the CLI
+        # declare them here in case the underlying lib ever changes
+        "requests>=2.19.1,<3.0.0",
+        "cryptography>=3.3.1,<37",
+    ],
+    extras_require={"development": DEV_REQUIREMENTS},
+    entry_points={"console_scripts": ["globus = globus_cli:main"]},
+    # descriptive info, non-critical
+    description="Globus CLI",
+    long_description=read_readme(),
+    author="Stephen Rosen",
+    author_email="sirosen@globus.org",
+    url="https://github.com/globus/globus-cli",
+    keywords=["globus", "cli", "command line"],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+    ],
+)
