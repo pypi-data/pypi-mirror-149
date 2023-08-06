@@ -1,0 +1,63 @@
+Metadata-Version: 2.1
+Name: gpt-image
+Version: 0.3.0
+Summary: Build GPT Disk Images on Local Drives
+Home-page: https://github.com/swysocki/gpt-image
+Author: Scott Wysocki
+Author-email: swysocki@gmail.com
+License: MIT
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# GPT Image
+
+Create GUID Partition Table disk images on local disks.  Written in pure Python
+`gpt-image` allows GPT disk images to be _built_ on a local filesystem and
+exported to a destination device.
+
+This is useful for creating a disk image on SD Cards or embedded devices.
+
+## Quick Start
+
+```python
+
+import gpt_image
+
+# create a new, 8 MB disk, size is in bytes
+disk = gpt_image.disk.Disk("disk-image.raw")
+disk.create(8 * 1024 * 1024)
+
+# create a 2MB partition, default is a Linux partition
+partition = gpt_image.partition.Partition("partition1", 2 * 1024 * 1024, uuid.uuid4())
+
+# add the partition to disk
+disk.table.partitions.add(partition)
+disk.write()
+
+```
+
+MIT License
+
+Copyright (c) 2021 Scott Wysocki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
