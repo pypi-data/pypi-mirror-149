@@ -1,0 +1,155 @@
+Observables:
+- name: Y_INVARIANT_YIELD
+  phrases:
+  - {INVARIANT_YIELD: 'Invariant Yield'}
+  - Phrase.PT_DEPENDENCE
+  - Phrase.YRAP_DEPENDENCE
+  pretty: '\frac{1}{2\pi p_{\mathrm{T}}}\frac{\mathrm{d}^2N}{\mathrm{d}p_{\mathrm{T}}\mathrm{d}y}'
+  units: Unit.INV_GEVC2
+  value: 1/(2*PI*PT)*D2N/DPT/DYRAP
+- name: ETA_INVARIANT_YIELD
+  phrases:
+  - Phrase.INVARIANT_YIELD
+  - Phrase.PT_DEPENDENCE
+  - Phrase.ETARAP_DEPENDENCE
+  pretty: '\frac{1}{2\pi p_{\mathrm{T}}}\frac{\mathrm{d}^2N}{\mathrm{d}p_{\mathrm{T}}\mathrm{d}\eta}'
+  units: Unit.INV_GEVC2
+  value: 1/(2*PI*PT)*D2N/DPT/DETARAP
+- name: ETA_DENSITY
+  phrases:
+  - Phrase.ETARAP_DEPENDENCE
+  - {DENSITY: 'Density'}
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}\eta}'
+  value: DN/DETARAP
+- name: Y_DENSITY
+  phrases:
+  - Phrase.YRAP_DEPENDENCE
+  - Phrase.DENSITY
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}y}'
+  value: DN/DYRAP
+- name: RAA
+  phrases:
+  - {NUCL_MODIFICATION: 'Nuclear Modification'}
+  - {AA_COLLISION: 'Nucleus-Nucleus Collision'}
+  pretty: 'R_{\mathrm{AA}}'
+  value: RAA
+- name: RCP
+  phrases:
+  - Phrase.NUCL_MODIFICATION
+  - Phrase.CENT_DEPENDENCE
+  pretty: 'R_{\mathrm{CP}}'
+  value: RCP
+- name: RPA
+  phrases:
+  - Phrase.NUCL_MODIFICATION
+  - {PA_COLLISION: 'Nucleon-Nucleus Collision'}
+  pretty: 'R_{\mathrm{pA}}'
+  value: RPA
+- name: MEANPT
+  phrases:
+  - Phrase.PT_DEPENDENCE
+  pretty: '\langle p_{\mathrm{T}}\rangle'
+  units: Unit.GEVC
+  value: MEAN(PT)
+- name: Y_DENSITY_STAR
+  phrases:
+  - Phrase.YRAP_DEPENDENCE
+  - Phrase.DENSITY
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}(y-y_{\mathrm{beam}})}'
+  value: DN/D(YRAP-YRAP(BEAM))
+- name: ETA_DENSITY_STAR
+  phrases:
+  - Phrase.ETARAP_DEPENDENCE
+  - Phrase.DENSITY
+  - Phrase.CENT_DEPENDENCE
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}(\eta-y_{\mathrm{beam}})}'
+  value: DN/D(ETARAP-YRAP(BEAM))
+- name: Y_DENSITY_SCALED
+  phrases:
+  - Phrase.YRAP_DEPENDENCE
+  - Phrase.DENSITY
+  - Phrase.CENT_DEPENDENCE
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}y}\frac{2}{N_{\mathrm{part}}}'
+  value: DN/DYRAP/(NPART/2)
+- name: ETA_DENSITY_SCALED
+  phrases:
+  - Phrase.ETARAP_DEPENDENCE
+  - Phrase.DENSITY
+  - Phrase.CENT_DEPENDENCE
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}\eta}\frac{2}{N_{\mathrm{part}}}'
+  value: DN/DETARAP/(NPART/2)
+- name: Y_DENSITY_STAR_SCALED
+  phrases:
+  - Phrase.YRAP_DEPENDENCE
+  - Phrase.DENSITY
+  - Phrase.CENT_DEPENDENCE
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}(y-y_{\mathrm{beam}})}\frac{2}{N_{\mathrm{part}}}'
+  value: DN/D(YRAP-YRAP(BEAM))/(NPART/2)
+- name: ETA_DENSITY_STAR_SCALED
+  phrases:
+  - Phrase.ETARAP_DEPENDENCE
+  - Phrase.DENSITY
+  - Phrase.CENT_DEPENDENCE
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}(\eta-y_{\mathrm{beam}})}\frac{2}{N_{\mathrm{part}}}'
+  value: DN/D(ETARAP-YRAP(BEAM))/(NPART/2)
+- name: Y_LOSS
+  pretty: '\delta y'
+  value: LOSS(YRAP)
+- name: E_LOSS
+  pretty: '\delta E'
+  units: Unit.GEV
+  value: LOSS(E)
+- name: CHI2
+  pretty: '\chi^2'
+  value: CHI2
+- name: CHI2NU
+  pretty: '\chi^2/\nu'
+  value: CHI2/NDF
+- name: PBAR_P_RATIO
+  pretty: '\overline{\mathrm{p}}/\mathrm{p}'
+  value: PBAR/P
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: PIM_PIP_RATIO
+  pretty: '\mathrm{\pi}^{-}/\mathrm{\pi}^{+}'
+  value: PI-/PI+
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: PIP_PIM_RATIO
+  pretty: '\mathrm{\pi}^{+}/\mathrm{\pi}^{-}'
+  value: PI+/PI-
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: KM_KP_RATIO
+  pretty: '\mathrm{K}^{-}/\mathrm{K}^{+}'
+  value: K-/K+
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: KP_KM_RATIO
+  pretty: '\mathrm{K}^{+}/\mathrm{K}^{-}'
+  value: K+/K-
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: PBAR_PIM_RATIO
+  pretty: '\overline{\mathrm{p}}/\mathrm{\pi}^{-}'
+  value: PBAR/PI-
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: KM_PIM_RATIO
+  pretty: '\mathrm{K}^{-}/\mathrm{\pi}^{-}'
+  value: K-/PI-
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: KP_PIP_RATIO
+  pretty: '\mathrm{K}^{+}/\mathrm{\pi}^{+}'
+  value: K+/PI+
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: P_PIP_RATIO
+  pretty: '\mathrm{p}/\mathrm{\pi}^{+}'
+  value: P/PI+
+  phrases: [Phrase.PARTICLE_RATIO]
+- name: DNDYRAP
+  phrases:
+  - Phrase.YRAP_DEPENDENCE
+  - Phrase.DENSITY
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}y}'
+  value: DN/DYRAP
+- name: DNDETARAP
+  phrases:
+  - Phrase.ETARAP_DEPENDENCE
+  - Phrase.DENSITY
+  pretty: '\frac{\mathrm{d}N}{\mathrm{d}\eta}'
+  value: DN/DETARAP
