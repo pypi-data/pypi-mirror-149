@@ -1,0 +1,17 @@
+#!/bin/bash
+NGSCXX_DIR=$( cd $(dirname $0); pwd )
+PY_INCLUDE_FLAGS=-I$(python3 -c"import sysconfig;print(sysconfig.get_path('include'))")
+if [ -f /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ ]
+  then NGSCXX=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
+  else NGSCXX=c++
+fi
+export CCACHE_NOHASHDIR=1
+
+Netgen_BUNDLE="`echo "$0" | sed -e 's/\/Contents\/MacOS\/ngscxx//'`"
+Netgen_MACOS="$Netgen_BUNDLE/Contents/MacOS"
+
+
+if [ -f /usr/local/bin/ccache ]
+  then /usr/local/bin/ccache $NGSCXX -O3 -DNDEBUG   -DHAVE_NETGEN_SOURCES -DHAVE_DLFCN_H -DHAVE_CXA_DEMANGLE -DUSE_TIMEOFDAY -DMSG_NOSIGNAL=0 -DTCL -DLAPACK -DNGS_PYTHON -DUSE_UMFPACK -DNETGEN_PYTHON -DNG_PYTHON -std=c++17 -Wno-undefined-var-template -DMAX_SYS_DIM=3 -fsized-deallocation -faligned-allocation -fPIC -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk  -I/Library/Frameworks/Python.framework/Versions/3.9/include/python3.9 -I$NGSCXX_DIR/../netgen/include -I$NGSCXX_DIR/../netgen/include/include $PY_INCLUDE_FLAGS -I$Netgen_BUNDLE/Contents/Resources/include $*
+  else $NGSCXX -O3 -DNDEBUG   -DHAVE_NETGEN_SOURCES -DHAVE_DLFCN_H -DHAVE_CXA_DEMANGLE -DUSE_TIMEOFDAY -DMSG_NOSIGNAL=0 -DTCL -DLAPACK -DNGS_PYTHON -DUSE_UMFPACK -DNETGEN_PYTHON -DNG_PYTHON -std=c++17 -Wno-undefined-var-template -DMAX_SYS_DIM=3 -fsized-deallocation -faligned-allocation -fPIC -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk  -I/Library/Frameworks/Python.framework/Versions/3.9/include/python3.9 -I$NGSCXX_DIR/../netgen/include -I$NGSCXX_DIR/../netgen/include/include $PY_INCLUDE_FLAGS -I$Netgen_BUNDLE/Contents/Resources/include $*
+fi
