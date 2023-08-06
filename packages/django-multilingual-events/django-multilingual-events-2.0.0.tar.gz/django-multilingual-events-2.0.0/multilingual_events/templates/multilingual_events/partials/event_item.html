@@ -1,0 +1,18 @@
+{% load thumbnail %}
+<div class="row">
+    <div class="col-md-3">
+        <a href="{{ event.get_absolute_url }}">
+            {% if event.image %}
+                <img src="{% thumbnail event.image 130x130 crop %}" alt="{{ event.image.original_filename }}">
+            {% endif %}
+        </a>
+    </div>
+    <div class="col-md-9">
+        <small><em>{{ event.start_date|date:"DATE_FORMAT" }}{% if event.end_date %} - {{ event.end_date|date:"DATE_FORMAT" }}{% endif %}</em></small>
+        <h4><a href="{{ event.get_absolute_url }}">{{ event.title }}</a></h4>
+        <p>{{ event.description|truncatewords:20 }}</p>
+    </div>
+</div>
+{% if not is_last %}
+    <hr />
+{% endif %}
