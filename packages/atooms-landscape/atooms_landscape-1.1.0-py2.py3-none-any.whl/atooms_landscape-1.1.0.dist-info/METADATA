@@ -1,0 +1,86 @@
+Metadata-Version: 2.1
+Name: atooms-landscape
+Version: 1.1.0
+Summary: UNKNOWN
+Home-page: https://framagit.org/atooms/landscape
+Author: Daniele Coslovich
+Author-email: daniele.coslovich@umontpellier.fr
+License: GPLv3
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Description-Content-Type: text/markdown
+Requires-Dist: atooms-models (<2,>=1.0.7)
+Requires-Dist: numpy
+Requires-Dist: scipy
+
+Energy landscape
+================
+
+[![pypi](https://img.shields.io/pypi/v/atooms-landscape.svg)](https://pypi.python.org/pypi/atooms-landscape/)
+[![version](https://img.shields.io/pypi/pyversions/atooms-landscape.svg)](https://pypi.python.org/pypi/atooms-landscape/)
+[![license](https://img.shields.io/pypi/l/atooms-pp.svg)](https://en.wikipedia.org/wiki/GNU_General_Public_License)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/git/https%3A%2F%2Fframagit.org%2Fatooms%2Flandscape/HEAD?labpath=docs%2Findex.ipynb)
+[![pipeline](https://framagit.org/atooms/landscape/badges/master/pipeline.svg)](https://framagit.org/atooms/landscape/badges/master/pipeline.svg)
+[![coverage report](https://framagit.org/atooms/landscape/badges/master/coverage.svg)](https://framagit.org/atooms/landscape/-/commits/master)
+
+Energy landscape analysis tools built with atooms.
+
+Quick start
+-----------
+
+Find the minimum of the potential energy surface (PES) of a Lennard-Jones trimer
+```python
+from atooms.landscape.surfaces import potential_energy
+from atooms.landscape import conjugate_gradient
+from atooms.system import Particle, Cell, System
+from atooms.models.f90 import Interaction
+
+system = System()
+system.particle = [Particle(species=1, position=[0., 0., 0.]),
+                   Particle(species=1, position=[0.5, 1., -.1]),
+                   Particle(species=1, position=[1.1, 0.1, 0.1])]
+system.cell = Cell([10., 10., 10.])
+system.interaction = Interaction('lennard_jones')
+result = conjugate_gradient(system)
+distance = sum(system.particle[0].distance(system.particle[1])**2)**0.5
+assert abs(distance - 1.12246) < 1e-6 
+```
+
+Features
+--------
+- Optimization methods to find **local minima** of the PES
+  - Steepest descent
+  - Conjugate gradients
+  - l-BFGS
+- Optimization methods to find **stationary points** of the PES
+  - Eigenvector-following
+  - Square-force minimization
+- *Normal modes* analysis
+
+Installation
+------------
+From pypi
+```
+pip install atooms-landscape
+```
+
+You can clone the code repository and install from source
+```
+git clone https://framagit.org/atooms/landscape.git
+cd landscape
+make install
+```
+
+Contributing
+------------
+Contributions to the project are welcome. If you wish to contribute, check out [these guidelines](https://framagit.org/atooms/atooms/-/blob/master/CONTRIBUTING.md).
+
+Authors
+-------
+Daniele Coslovich: https://www.units.it/daniele.coslovich/
+
+
