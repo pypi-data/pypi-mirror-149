@@ -1,0 +1,459 @@
+{
+  "WORKFLOWS": "",
+  "BINS": "",
+  "MAXTHREADS": "20",
+  "VERSION": "0.0.7",
+  "SETTINGS": {
+    "id": {
+      "condition": {
+        "SAMPLES": [
+          "rep_1",
+          "rep_2"
+        ],
+        "GROUPS": [
+          "WT",
+          "WT"
+        ],
+        "TYPES": [
+          "standard",
+          "standard"
+        ],
+        "BATCHES": [
+          "1",
+          "1"
+        ],
+        "SEQUENCING": "paired",
+        "REFERENCE": "GENOMES/Dm6/dm6.fa.gz",
+        "INDEX": "GENOMES/Dm6/INDICES/star",
+        "PREFIX": "idx",
+        "ANNOTATION": {
+          "GTF": "GENOMES/Dm6/dm6.gtf.gz",
+          "GFF": "GENOMES/Dm6/dm6.gff3.gz"
+        }
+      }
+    }
+  },
+  "FETCH": {
+    "TOOLS": {
+      "sra": "sra"
+    },
+    "id": {
+      "condition": {
+        "sra": {
+          "OPTIONS": 
+            {
+              "DOWNLOAD": ""
+            }
+        }
+      }
+    }
+  },
+  "BASECALL": {
+    "TOOLS": {
+      "guppy": "~/.local/bin/guppy-cpu/bin/guppy_basecaller"
+    },
+    "id": {
+      "condition": {
+        "guppy": {
+          "OPTIONS": 
+            {
+              "BASECALL": ""
+            }
+        }
+      }
+    }
+  },
+  "QC": {
+    "TOOLS": {
+      "fastqc": "fastqc"
+    },
+    "id": {
+      "condition": {
+        "fastqc": {
+          "OPTIONS": 
+            {
+              "QC": "",
+              "MULTI": ""
+            }
+        }
+      }
+    }
+  },
+  "TRIMMING": {
+    "TOOLS": {
+      "trimgalore": "trim_galore",
+      "cutadapt": "cutadapt"
+    },
+    "id": {
+      "condition": {
+        "trimgalore": {
+          "OPTIONS": 
+            {
+              "TRIM": "-q 15 --length 8 -e 0.15"
+            }
+        },
+        "cutadept": {
+          "OPTIONS": 
+            {
+              "TRIM": "-q 15 --length 8 -e 0.15"
+            }
+        }
+      }
+    }
+  },
+  "DEDUP": {
+    "TOOLS": {
+      "umitools": "umi_tools"
+    },
+    "id": {
+      "condition": {
+        "umitools": {
+          "OPTIONS":
+          {  
+              "WHITELIST" : "--extract-method string --bc-pattern AGANNNNACGT",
+              "EXTRACT": "--extract-umi-method read_id",
+              "DEDUP": ""
+          }
+        },
+        "picard":{
+            "OPTIONS":
+            {  
+                "JAVA" : "",
+                "DEDUP": ""
+            }
+        }
+      }
+    }
+  },
+  "MAP": {
+    "TOOLS": {
+      "star": "STAR",
+      "segemehl3": "segemehl.x",
+      "hisat2": "hisat2",
+      "bwa": "bwa mem",
+      "minimap": "minimap2"
+    },
+    "id": {
+      "condition": {
+        "star": {
+          "OPTIONS":  
+          {  
+              "INDEX" : "--sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript Parent --genomeSAindexNbases 13",
+              "MAP": "--sjdbGTFfeatureExon exon --sjdbGTFtagExonParentTranscript Parent --outSAMprimaryFlag AllBestScore",
+              "EXTENSION" : ""
+          }
+        },
+        "segemehl3": {
+          "OPTIONS":  
+          {  
+              "INDEX" : "",
+              "MAP": "",
+              "EXTENSION" : ""
+          }
+        },
+        "hisat2": {
+          "OPTIONS":  
+          {  
+              "INDEX" : "",
+              "MAP": "",
+              "EXTENSION" : ""
+          }
+        },
+        "bwa": {
+          "OPTIONS":  
+          {  
+              "INDEX" : "",
+              "MAP": "",
+              "EXTENSION" : ""
+          }
+        },
+        "minimap": {
+          "OPTIONS":  
+          {  
+              "INDEX" : "",
+              "MAP": "",
+              "EXTENSION" : ""
+          }
+        }
+      }
+    }
+  },
+  "COUNTING": {
+    "TOOLS": {
+      "countreads": "featureCounts",
+      "salmon": "salmon"
+    },
+    "FEATURES": {
+      "exon": "Parent",
+      "gene": "ID"
+    },
+    "id": {
+      "condition": {
+        "countreads":
+        {
+          "OPTIONS":
+          {
+              "COUNT": "-f --fraction -O -M"
+          }
+        },
+        "salmon": {
+          "OPTIONS":
+            {
+                "INDEX": "-l A --gencode",
+                "QUANT": "--gcBias",
+                "DTU": ""
+            }
+        }
+      }
+    }
+  },
+  "ANNOTATE": {
+    "TOOLS": {
+      "annotatebed": "annotate"
+    },
+    "id": {
+      "condition": {
+        "annotatebed": {
+          "ANNOFEATURE": "gene",
+          "OPTIONS":
+          {
+              "ANNOTATE": "-w ON"
+          }
+        }
+      }
+    }
+  },
+  "TRACKS": {
+    "TOOLS": {
+      "ucsc": "ucsc"
+    },
+    "id": {
+      "condition": {
+        "ucsc": {
+          "UCSC" : "-n hubname -s short_hubname -l long_trackname -b short_trackname"
+        }
+      }
+    }
+  },
+  "PEAKS": {
+    "TOOLS": {
+      "macs": "macs2",
+      "peaks": "peaks",
+      "piranha": "Piranha"
+    },
+    "COMPARABLE" :
+    {
+      "Condition": "Control"
+    },
+    "id": {
+      "condition": {
+        "macs": {
+          "CLIP": "iCLIP",
+          "OPTIONS":
+            {  
+                "FINDPEAKS": "-g --keep-dup auto --fix-bimodal --extsize 200 --qvalue 0.05 --shift -100"
+            }
+        },
+        "peaks": {
+          "CLIP": "iCLIP",
+          "OPTIONS":
+            {  
+                "PREPROCESS": "",
+                "FINDPEAKS": "-b 10"
+            }
+        },
+        "piranha":{
+          "CLIP": "iCLIP",
+          "OPTIONS":
+            {  
+                "PREPROCESS": "",
+                "FINDPEAKS": "-b 10"
+            }
+          }
+      }
+    }
+  },
+  "DE": {
+    "TOOLS": {
+      "deseq2": "Analysis/DE/DESEQ2.R",
+      "edger": "Analysis/DE/EDGER.R"
+    },
+    "COMPARABLE": {
+      "WTvsKO": [
+        [
+          "WT"
+        ],
+        [
+          "KO"
+        ]
+      ]
+    },
+    "EXCLUDE": [],
+    "CUTOFFS": {
+      "pvalue": "0.05",
+      "lfc": "1.5"
+    },
+    "id": {
+      "condition": {
+        "deseq2": {
+          "OPTIONS":
+          {
+              "COUNT": "-t gene -g gene_id -f --fraction -O",
+              "DE": "controlgenes=spike-in.list"
+          }
+      },
+      "edger": {
+          "OPTIONS":
+          {
+              "COUNT": "-t gene -g gene_id -f --fraction -O",
+              "DE": "controlgenes=spike-in.list"
+          }
+        }
+      }
+    }
+  },
+  "DEU": {
+    "TOOLS": {
+      "dexseq": "Analysis/DEU/DEXSEQ.R",
+      "edger": "Analysis/DEU/EDGER.R"
+    },
+    "COMPARABLE": {
+      "WTvsKO": [
+        [
+          "WT"
+        ],
+        [
+          "KO"
+        ]
+      ]
+    },
+    "EXCLUDE": [],
+    "CUTOFFS": {
+      "pvalue": "0.05",
+      "lfc": "1.5"
+    },
+    "id": {
+      "condition": {
+        "dexseq":
+        {
+            "OPTIONS":
+            {
+                "COUNT": "-t exon -g gene_id -f --fraction -O",
+                "DEU": ""
+            }
+        },
+        "edger":
+        {
+            "OPTIONS":
+            {
+                "COUNT": "-t exon -g gene_id -f --fraction -O",
+                "DEU": ""
+            }
+        }
+      }
+    }
+  },
+  "DAS": {
+    "TOOLS": {
+      "diego": "Analysis/DAS/DIEGO.py",
+      "edger": "Analysis/DAS/EDGER.R"
+    },
+    "COMPARABLE": {
+      "WTvsKO": [
+        [
+          "WT"
+        ],
+        [
+          "KO"
+        ]
+      ]
+    },
+    "EXCLUDE": [],
+    "CUTOFFS": {
+      "pvalue": "0.05",
+      "lfc": "1.5"
+    },
+    "id": {
+      "condition": {
+        "diego":
+        {
+          "OPTIONS":
+          {
+              "COUNT": "-t exon -g gene_id -f --fraction -O",
+              "DAS": "-c 10 -d 3 -q 0.01 -z 1.0 -r"
+          }
+        },
+        "edger": 
+        {
+          "OPTIONS":
+          {
+            "COUNT": "-t exon -g gene_id -f --fraction -O",
+            "DAS": ""
+          }
+        }
+      }
+    }
+  },
+  "DTU": {
+    "TOOLS": {
+      "dexseq": "Analysis/DTU/DEXSEQ.R",
+      "drimseq": "Analysis/DTU/DRIMSEQ.R"
+    },
+    "COMPARABLE": {
+      "WTvsKO": [
+        [
+          "WT"
+        ],
+        [
+          "KO"
+        ]
+      ]
+    },
+    "EXCLUDE": [],
+    "CUTOFFS": {
+      "pvalue": "0.05",
+      "lfc": "1.5"
+    },
+    "id": {
+      "condition": {
+        "dexseq":
+        {
+            "OPTIONS":
+            {
+                "INDEX": "-l A --gencode",
+                "QUANT": "--gcBias",
+                "DTU": ""
+            }
+        },
+        "drimseq": 
+        {
+            "OPTIONS":
+            {
+                "INDEX": "-l A --gencode",
+                "QUANT": "--gcBias",
+                "DTU": ""
+            }
+        }
+      }
+    }
+  },
+  "CIRCS" : {
+    "TOOLS" :
+    {
+      "ciri2" : "PATH_TO_CIRI2.pl"
+    },
+    "id": {
+        "condition": {
+            "setting": {
+                "ENV" : "ciri2",
+                "BIN" : "ciri2",
+                "ciri2":{
+                    "OPTIONS":
+                    {  
+                        "CIRC": ""
+                    }
+                }
+            }
+        }
+    }
+}
