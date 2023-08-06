@@ -1,0 +1,17 @@
+{# @var className #}
+
+{# WARNING: Some markup is duplicated in other repositories #}
+{# SEE: https://confluence.tacc.utexas.edu/x/LoCnCQ #}
+<ul class="s-portal-nav  {{ className }}" id="portal-nav">
+
+  <!-- All Portal-controlled nav elements handled here. -->
+  {# FAQ: Content populated via JavaScript, below #}
+
+</ul>
+<script type="module">
+  import * as importHTML from '/static/site_cms/js/modules/importHTML.js';
+
+  const container = document.getElementById('portal-nav');
+
+  importHTML.insertFromURL('/core/markup/nav', container);
+</script>
