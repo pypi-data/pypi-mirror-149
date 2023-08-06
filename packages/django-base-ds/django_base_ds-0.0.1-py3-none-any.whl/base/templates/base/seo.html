@@ -1,0 +1,17 @@
+{% load static %}
+{% load cache %}
+<meta name="description" content="{{ seo.desc }}">
+<meta name="keywords" content="{{ seo.keywords }}">
+
+<meta property="og:url" content="https://{{ seo.url }}">
+<meta property="og:image" itemprop="image primaryImageOfPage" content="{% static 'img/favicon.png' %}">
+
+<meta name="twitter:description" property="og:description" itemprop="description" content="{{ seo.desc }}">
+<meta name="twitter:title" property="og:title" itemprop="name" content="{{ seo.company_name }} | {{ seo.small_title }}">
+
+{% cache 86400 base_header %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ seo.url }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:domain" content="{{ seo.url }}">
+{% endcache %}
