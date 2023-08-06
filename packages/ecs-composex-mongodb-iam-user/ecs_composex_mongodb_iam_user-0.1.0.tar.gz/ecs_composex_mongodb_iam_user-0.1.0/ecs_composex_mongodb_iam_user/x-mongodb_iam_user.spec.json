@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "x-mongodb_iam_user.spec.json",
+  "$id": "x-mongodb_iam_user.spec.json",
+  "title": "x-mongodb_iam_user",
+  "description": "Allows to create AWS IAM Role DB User for each service that requires the same access.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "Services"
+  ],
+  "properties": {
+    "Properties": {
+      "type": "object"
+    },
+    "Services": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9-_]+$": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "MacroParameters": {
+      "$ref": "#/definitions/MacroParameters"
+    }
+  },
+  "definitions": {
+    "MacroParameters": {
+      "type": "object",
+      "properties": {
+        "PrivateKey": {
+          "$ref": "#/definitions/ApiKeySecretsManager"
+        },
+        "PublicKey": {
+          "$ref": "#/definitions/ApiKeySecretsManager"
+        }
+      }
+    },
+    "ApiKeySecretsManager": {
+      "type": "object",
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "SecretName"
+          ]
+        },
+        {
+          "required": [
+            "SecretArn"
+          ]
+        }
+      ],
+      "properties": {
+        "SecretName": {
+          "type": "string"
+        },
+        "SecretArn": {
+          "type": "string"
+        },
+        "JsonKey": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

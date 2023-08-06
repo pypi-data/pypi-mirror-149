@@ -1,0 +1,92 @@
+[tool.poetry]
+name = "ecs_composex_mongodb_iam_user"
+version = "0.1.0"
+description = "Compose-X Module to manage MongoDb::Atlas::AwsIamDatabaseUser"
+authors = ["johnpreston <john@compose-x.io>"]
+license = "MPL-2.0"
+
+classifiers = [
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+ecs_composex = "^0.18.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+isort = "^5.9.3"
+flake8 = "^3.9.2"
+coverage = "^5.5"
+pytest = "^6.2.4"
+behave = "^1.2.6"
+pre-commit = "^2.14.0"
+tbump = "^6.7.0"
+Sphinx = "^4.5.0"
+sphinx-material = "^0.0.35"
+
+
+[tool.poetry.urls]
+"ECS ComposeX" = "https://github.com/compose-x/ecs_composex/"
+"Compose-X Labs" = "https://labs.compose-x.io/"
+"Compose-X Blog" = "https://blog.compose-x.io/"
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_first_party = "kelvin"
+
+[tool.coverage.report]
+exclude_lines = [
+  "if __name__ == '__main__'"
+]
+[tool.coverage.run]
+omit = [
+  "*/cli.py"
+]
+
+[tool.tbump]
+github_url = "https://github.com/compose-x/ecs_composex_mongodb_iam_user"
+
+[tool.tbump.version]
+current = "0.1.0"
+
+regex = '''
+  (?P<major>\d+)
+  \.
+  (?P<minor>\d+)
+  \.
+  (?P<patch>\d+)
+  (?:(?P<rc>[\S]+))?
+  '''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "pyproject.toml"
+
+[[tool.tbump.file]]
+src = "ecs_composex_mongodb_iam_user/__init__.py"
+
+[[tool.tbump.before_commit]]
+name = "Files format"
+cmd = "make conform"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
