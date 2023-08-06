@@ -1,0 +1,40 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
+
+# See: https://bugs.launchpad.net/pbr/+bug/1384919 for why this is here...
+pbr!=2.1.0,>=2.0.0 # Apache-2.0
+
+# Packages needed for using this library.
+
+# Python 2->3 compatibility library.
+six>=1.10.0 # MIT
+
+# For async and/or periodic work
+futurist>=1.2.0 # Apache-2.0
+
+# For reader/writer + interprocess locks.
+fasteners>=0.17.3 # Apache-2.0
+
+# Very nice graph library
+networkx>=2.1.0 # BSD
+
+# Used for backend storage engine loading.
+stevedore>=1.20.0 # Apache-2.0
+
+# Used for structured input validation
+jsonschema>=3.2.0 # MIT
+
+# For the state machine we run with
+automaton>=1.9.0 # Apache-2.0
+
+# For common utilities
+oslo.utils>=3.33.0 # Apache-2.0
+oslo.serialization!=2.19.1,>=2.18.0 # Apache-2.0
+tenacity>=6.0.0 # Apache-2.0
+
+# For lru caches and such
+cachetools>=2.0.0 # MIT License
+
+# For pydot output tests
+pydot>=1.2.4 # MIT License
