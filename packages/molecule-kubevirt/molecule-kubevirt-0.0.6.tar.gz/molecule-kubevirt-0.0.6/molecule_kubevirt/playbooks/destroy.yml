@@ -1,0 +1,44 @@
+---
+- name: Destroy
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  no_log: "{{ molecule_no_log }}"
+  tasks:
+    - name: Delete VM
+      k8s:
+        state: absent
+        kind: VirtualMachine
+        name: "{{ item.name }}"
+        namespace: "{{ item.namespace | default('default') }}"
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Delete cloud init
+      k8s:
+        state: absent
+        kind: Secret
+        name: "{{ item.name }}-cloud-init"
+        namespace: "{{ item.namespace | default('default') }}"
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Delete ssh service
+      k8s:
+        state: absent
+        kind: Service
+        name: "{{ item.name }}"
+        namespace: "{{ item.namespace | default('default') }}"
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Delete ssh key pair
+      file:
+        path: "{{ molecule_ephemeral_directory }}/identity_{{ item.name }}"
+        state: absent
+      loop: "{{ molecule_yml.platforms }}"
+      loop_control:
+        label: "{{ item.name }}"

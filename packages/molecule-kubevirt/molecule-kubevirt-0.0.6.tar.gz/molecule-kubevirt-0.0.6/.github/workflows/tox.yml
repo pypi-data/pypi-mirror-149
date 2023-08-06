@@ -1,0 +1,443 @@
+name: tox
+
+on:
+  create:  # is used for publishing to TestPyPI
+    tags:  # any tag regardless of its name, no branches
+      - "**"
+  push:  # only publishes pushes to the main branch to TestPyPI
+    branches:  # any integration branch but not tag
+      - "main"
+  pull_request:
+  release:
+    types:
+      - published  # It seems that you can publish directly without creating
+  schedule:
+    - cron: 1 0 * * *  # Run daily at 0:01 UTC
+
+jobs:
+  build:
+    name: ${{ matrix.tox_env }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - tox_env: lint
+          # - tox_env: docs
+          - tox_env: py36-ansible_2
+            PYTHON_BASE_IMAGE: python:3.6
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: py36-ansible_2-devel
+            PYTHON_BASE_IMAGE: python:3.6
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: py37-ansible_3
+            PYTHON_BASE_IMAGE: python:3.7
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: py38-ansible_4
+            PYTHON_BASE_IMAGE: python:3.8
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: py39-ansible_2
+            PYTHON_BASE_IMAGE: python:3.9
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: py39-ansible_2-devel
+            PYTHON_BASE_IMAGE: python:3.9
+            KUBERNETES_VERSION: v1.22.2
+          - tox_env: packaging
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install a default Python
+        uses: actions/setup-python@v2
+        if: ${{ ! contains(matrix.tox_env, 'py') }}
+
+      - name: Install dependencies
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            python -m pip install -U pip
+            pip install tox
+        if: ${{ ! contains(matrix.tox_env, 'py') }}
+
+      - name: Run tox -e ${{ matrix.tox_env }}
+        run: |
+          echo "${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}"
+          ${{ matrix.PREFIX }} tox -e ${{ matrix.tox_env }}
+        if: ${{ ! contains(matrix.tox_env, 'py') }}
+
+      - name: Update packages index
+        run: |
+          sudo apt-get update
+
+      - name: Install docker
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            . /etc/os-release
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+            sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+            sudo apt-get update
+            sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install kubectl
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/${{ matrix.KUBERNETES_VERSION }}/bin/linux/amd64/kubectl; chmod +x ./kubectl
+            sudo install kubectl /usr/local/bin
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: start minikube
+        run: |
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube
+          minikube start
+
+      - name: Install kubevirt packages requirements
+        run: |
+          sudo apt install -y qemu qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager libvirt-daemon-system
+          sudo systemctl restart libvirtd
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Tweak ubuntu apparmor for Kubevirt
+        run: |
+          # See : https://github.com/kubevirt/kubevirt/issues/4303
+          # Add one magic line and reload service
+          tweak_qemu_apprarmor="$(head -n -1 /etc/apparmor.d/usr.sbin.libvirtd; echo "  /usr/libexec/qemu-kvm rmix,"; tail -1 /etc/apparmor.d/usr.sbin.libvirtd)"
+          echo "$tweak_qemu_apprarmor" | sudo dd of=/etc/apparmor.d/usr.sbin.libvirtd
+          sudo systemctl reload apparmor.service
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install kubevirt
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            export VERSION=v0.52.0
+            kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt-operator.yaml
+            kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/$VERSION/kubevirt-cr.yaml
+            cat <<EOF |kubectl apply -f -
+            apiVersion: kubevirt.io/v1
+            kind: KubeVirt
+            metadata:
+              name: kubevirt
+              namespace: kubevirt
+            spec:
+              certificateRotateStrategy: {}
+              configuration:
+                developerConfiguration:
+                  useEmulation: true
+              customizeComponents: {}
+              imagePullPolicy: IfNotPresent
+              workloadUpdateStrategy: {}
+            EOF
+
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install KubeVirt virtcl
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            export VERSION=v0.52.0
+            export ARCH=linux-amd64
+            curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/$VERSION/virtctl-$VERSION-linux-amd64
+            chmod +x virtctl
+            sudo install virtctl /usr/local/bin
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install KubeVirt's CDI
+        run: |
+          export VERSION=v1.48.0
+          kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator.yaml
+          kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-cr.yaml
+
+      - name: Install calico
+        run: |
+          kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calico.yaml
+          echo "*******************************"
+          # FIXME activate wait for less flakyness
+          sleep 30 && kubectl -n kube-system set env daemonset/calico-node FELIX_IGNORELOOSERPF=true
+
+      - name: Install Multus and configure one net-attach
+        run: |
+          curl -Ls https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset.yml | kubectl apply -f -
+
+          cat <<EOF | kubectl create -f -
+          ---
+          apiVersion: "k8s.cni.cncf.io/v1"
+          kind: NetworkAttachmentDefinition
+          metadata:
+            name: macvlan-conf
+          spec:
+            config: '{
+                "cniVersion": "0.3.0",
+                "type": "macvlan",
+                "master": "eth0",
+                "mode": "bridge",
+                "ipam": {
+                  "type": "host-local",
+                  "subnet": "192.168.1.0/24",
+                  "rangeStart": "192.168.1.200",
+                  "rangeEnd": "192.168.1.216",
+                  "routes": [
+                    { "dst": "0.0.0.0/0" }
+                  ],
+                  "gateway": "192.168.1.1"
+                }
+              }'
+          EOF
+
+      - name: Build molecule test container for ${{ matrix.tox_env }}
+        run: |
+          eval $(minikube docker-env)
+          docker build --build-arg PYTHON_BASE_IMAGE=${{ matrix.PYTHON_BASE_IMAGE }} --build-arg KUBERNETES_VERSION=${{ matrix.KUBERNETES_VERSION }} . --file tools/Dockerfile  -t molecule_kubevirt_${{ matrix.tox_env }}:latest
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install kail
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: |
+            curl -SL https://github.com/boz/kail/releases/download/v0.15.0/kail_0.15.0_linux_amd64.tar.gz -o kail.tar.gz
+            tar xf kail.tar.gz
+            sudo install kail /usr/local/bin
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Install log colour script
+        run: |
+          sudo install tools/kawlour /usr/local/bin
+
+      - name: Wait and get kubevirt status
+        run: |
+          # wait network is ready
+          kubectl wait --for=condition=ready pods --namespace=kubevirt -l kubevirt.io=virt-operator
+          kubectl wait --for=condition=ready pods --namespace=kubevirt -l kubevirt.io=virt-api || true
+          kubectl wait --for=condition=ready pods --namespace=kubevirt -l kubevirt.io=virt-controller || true
+          kubectl wait --for=condition=ready pods --namespace=kubevirt -l kubevirt.io=virt-handler || true
+          kubectl get nodes -o wide
+          kubectl get pods -A
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Prepare Job
+        run: |
+          # Service Account for Job
+          kubectl create -f tools/test-rolebinding.yaml
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Launch background log scripts
+        run: |
+          # Kail monitors any logs from default namespace
+
+          # Infinite script waits for new VMs up and fetch logs from console
+          # Event router reports any event as log, a great help for troubleshooting since minikube exports all running Pods logs
+          # FIXME: no more working: https://github.com/jseguillon/molecule-kubevirt/runs/3795920362?check_suite_focus=true
+          # kubectl create -f https://raw.githubusercontent.com/heptiolabs/eventrouter/master/yaml/eventrouter.yaml
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Launch test
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 25
+          max_attempts: 1
+          on_retry_command: |
+            kubectl delete pods --all || true
+            kubectl delete configmaps --all || true
+            kubectl delete job --all || true
+          command: |
+            export LOG_DIR="/tmp/molecule_kubevirt_logs/$(date '+%YY-%m-%d-%H-%M-%S')"
+            mkdir -p ${LOG_DIR}
+
+            kail -n default 2>&1 > ${LOG_DIR}/ns-default.log || true & (tools/log_console.sh || true ) & kail -n kubevirt 2>&1 > ${LOG_DIR}/ns-kubevirt.log || true &
+            kubectl get pods -n default -w 2>&1 | tee ${LOG_DIR}/pod-watch.log || true &
+
+            # Configmap will be waiting untill it is deleted, telling one Pod ended the Job
+            kubectl create configmap molecule-job-running --from-literal status=Started
+            cat <<EOF | kubectl apply -f -
+            ---
+            apiVersion: batch/v1
+            kind: Job
+            metadata:
+              name: molecule
+            spec:
+              template:
+                spec:
+                  serviceAccountName: molecule-kubevirt
+                  containers:
+                  - name: molecule
+                    image: molecule_kubevirt_${{ matrix.tox_env }}
+                    imagePullPolicy: IfNotPresent
+                    command: [ "/bin/bash", "-c", "--" ]
+                    args: ["(tox -e ${{ matrix.tox_env }} -c /opt/molecule_kubevirt/tox.ini ; kubectl create configmap molecule-result --from-literal exitCode=\$?); kubectl delete configmap molecule-job-running"]
+                    env:
+                      - name: PYTEST_REQPASS
+                        value: "6"
+                  restartPolicy: Never
+              backoffLimit: 0
+            EOF
+
+            echo "Job launched"
+
+            # Wait for molecule Job Pod to start
+            until (kubectl get pods -l job-name=molecule | grep molecule); do echo "Wait molecule pod to start"; sleep 5; done
+
+            kubectl wait --for=condition=ready pods -l job-name=molecule --namespace default
+            echo "Molecule pod is now running, waiting..."
+
+            # Wait for molecule Job to delete configmap, notifying one Job Pod ran till the end, whatever the result
+            kubectl wait --for delete --timeout=20m  configmap/molecule-job-running
+
+            kill $(jobs -p)
+
+            echo "::group::pod watch default ns"
+            cat ${LOG_DIR}/pod-watch.log | kawlour || true
+            echo "::endgroup::"
+
+            echo "::group::logs namespace default"
+            cat ${LOG_DIR}/ns-default.log  | kawlour || true
+            echo "::endgroup::"
+
+            echo "::group::logs virtctl"
+            cat ${LOG_DIR}/virtcl-console*.log  | kawlour || true
+            echo "::endgroup::"
+
+            echo "::group::logs namespace kubvirt"
+            cat ${LOG_DIR}/ns-kubevirt.log  | kawlour || true
+            echo "::endgroup::"
+
+            # Get molecule tests results and exit accordingly
+            MOLECULE_RESULT=$(kubectl get configmap molecule-result -o "jsonpath={.data['exitCode']}")
+            if [ ! "${MOLECULE_RESULT}" == "0" ]; then echo "Test non ok : ${MOLECULE_RESULT}"; exit 1; fi
+        if: ${{ contains(matrix.tox_env, 'py') }}
+
+      - name: Print and dump Kubenetes status
+        if: always()
+        run: |
+          kail -n kubevirt --since 120m 2>&1 > /tmp/ns-kubevirt.log || true &
+          kail -n kube-system --since 120m 2>&1 > /tmp/ns-kube-system.log || true &
+          mkdir -p ${LOG_DIR} || true
+          echo "::group::Events"
+          echo "** Events"
+          kubectl get events --sort-by='.lastTimestamp' | tee ${LOG_DIR}/events.txt || true
+          echo "::endgroup::"
+          echo "::group::Jobs"
+          echo "** Jobs"
+          kubectl describe jobs | tee  ${LOG_DIR}/jobs.txt || true
+          echo "::endgroup::"
+          echo "::group::Configmap"
+          echo "** Describe Configmap"
+          kubectl describe cm | tee ${LOG_DIR}/cm.txt || true
+          echo "::endgroup::"
+          echo "::group::namespace kubevirt all"
+          cat /tmp/ns-kubevirt.log | kawlour || true
+          echo "::endgroup::"
+          echo "::group::namespace kube-system all"
+          cat /tmp/ns-kube-system.log | kawlour || true
+          echo "::endgroup::"
+        env:
+          LOG_DIR: /tmp/molecule-kubevirt/logs
+
+      - name: Export logs
+        if: always()
+        run: |
+          cp -r /tmp/molecule_kubevirt_logs/* ${LOG_DIR} || true
+          cp /tmp/ns-*.log ${LOG_DIR} || true
+          cp /tmp/kail.log ${LOG_DIR} || true
+          cp /tmp/virtcl-console*.log ${LOG_DIR} || true
+          sudo dmesg > ${LOG_DIR}/dmesg.txt || true
+          minikube logs --file ${LOG_DIR}/minikube.log || true
+          sudo journalctl | cat > ${LOG_DIR}/journalctl.txt || true
+          sudo chown -R $USER:$USER ${LOG_DIR} || true
+        env:
+          LOG_DIR: /tmp/molecule-kubevirt/logs
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: molecule-kubevirt-${{ matrix.tox_env }}-${{ github.run_id }}
+          path: /tmp/molecule-kubevirt/logs
+
+  publish:
+    name: Publish to PyPI registry
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: 1
+      TOXENV: packaging
+
+    steps:
+      - name: Switch to using Python 3.6 by default
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - name: Install tox
+        run: python -m pip install --user tox
+      - name: Check out src from Git
+        uses: actions/checkout@v2
+        with:
+          # Get shallow Git history (default) for release events
+          # but have a complete clone for any other workflows.
+          # Both options fetch tags but since we're going to remove
+          # one from HEAD in non-create-tag workflows, we need full
+          # history for them.
+          fetch-depth: >-
+            ${{
+              (
+                (
+                  github.event_name == 'create' &&
+                  github.event.ref_type == 'tag'
+                ) ||
+                github.event_name == 'release'
+              ) &&
+              1 || 0
+            }}
+      - name: Drop Git tags from HEAD for non-tag-create and non-release events
+        if: >-
+          (
+            github.event_name != 'create' ||
+            github.event.ref_type != 'tag'
+          ) &&
+          github.event_name != 'release'
+        run: >-
+          git tag --points-at HEAD
+          |
+          xargs git tag --delete
+      - name: Build dists
+        run: python -m tox
+      - name: Publish to test.pypi.org
+        if: >-
+          (
+            github.event_name == 'push' &&
+            github.ref == format(
+              'refs/heads/{0}', github.event.repository.default_branch
+            )
+          ) ||
+          (
+            github.event_name == 'create' &&
+            github.event.ref_type == 'tag'
+          )
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.testpypi_password }}
+          repository_url: https://test.pypi.org/legacy/
+      - name: Publish to pypi.org
+        if: >-  # "create" workflows run separately from "push" & "pull_request"
+          github.event_name == 'release'
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.pypi_password }}
