@@ -1,0 +1,146 @@
+[project]
+name = "world"
+authors = [
+    { name = "Barry Warsaw", email = "barry@python.org" },
+]
+description = "world -- top level domain code mappings"
+readme = "README.rst"
+version = "5.0"
+requires-python = ">=3.8"
+keywords = [
+    "domain name system",
+    "DNS",
+    "country codes",
+    "ISO 3166",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 6 - Mature",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Topic :: Internet :: Name Service (DNS)",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "atpublic",
+]
+dynamic = []
+
+[project.license]
+text = "Apache-2.0"
+
+[project.urls]
+"Home Page" = "https://world.readthedocs.io"
+Documentation = "https://world.readthedocs.io"
+Source = "https://gitlab.com/warsaw/world.git"
+"Bug Tracker" = "https://gitlab.com/warsaw/world/issues"
+
+[project.scripts]
+world = "world.__main__:main"
+
+[project.optional-dependencies]
+
+[tool.pdm]
+source-includes = [
+    "docs/",
+    "test/",
+    "tools/",
+    "tox.ini",
+    "conftest.py",
+]
+includes = [
+    "src/world/",
+    "**/*.pck",
+]
+excludes = [
+    "**/.mypy_cache/",
+]
+
+[tool.pdm.version]
+from = "src/world/__init__.py"
+
+[tool.pdm.dev-dependencies]
+testing = [
+    "coverage[toml]",
+    "diff-cover",
+    "pytest",
+    "pytest-cov",
+    "sybil",
+]
+qa = [
+    "flake8",
+    "isort",
+    "mypy",
+    "blue",
+]
+docs = [
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "furo",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=world --cov-report=term --cov-report=xml"
+testpaths = "test docs"
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+
+[tool.isort]
+include_trailing_comma = true
+known_first_party = "world"
+length_sort_straight = true
+lines_after_imports = 2
+lines_between_types = 1
+multi_line_output = 3
+order_by_type = false
+skip = [
+    "conf.py",
+]
+
+[tool.mypy]
+mypy_path = "src"
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = false
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+implicit_reexport = false
+strict_equality = true
+show_error_context = true
+show_column_numbers = true
+show_error_codes = true
+pretty = true
+show_absolute_path = true
+warn_unused_configs = true
+verbosity = 0
+
+[[tool.mypy.overrides]]
+module = [
+    "pytest",
+    "sybil.*",
+]
+ignore_missing_imports = true
+
+[build-system]
+requires = [
+    "pdm-pep517",
+]
+build-backend = "pdm.pep517.api"
