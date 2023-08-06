@@ -1,0 +1,209 @@
+image: $CI_REGISTRY/materials-modeling/$CI_PROJECT_NAME/cicd
+
+variables:
+  INSTDIR: "local_installation"
+
+before_script:
+  - export PYTHONPATH=$PWD/$INSTDIR:${PYTHONPATH}
+
+
+#------------------- build stage -------------------
+
+.build:
+  stage: build
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - local_installation/
+  script:
+    - pip3 install --target=$INSTDIR .
+
+build:linux:
+  extends: .build
+  tags:
+    - linux
+
+
+#------------------- test stage -------------------
+
+.basic_tests:
+  stage: test
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
+  script:
+    - xdoctest hiphive
+    - coverage run -m pytest --verbose --junitxml=report.xml tests/
+    - coverage report -m --omit=hiphive/calculators/numba_calc.py
+    - coverage html --omit=hiphive/calculators/numba_calc.py
+
+basic_tests:linux:
+  extends: .basic_tests
+  needs:
+    - build:linux
+  tags:
+    - linux
+  artifacts:
+    expire_in: 2 days
+    paths:
+      - htmlcov/
+    reports:
+      junit: report.xml
+
+.test_examples:
+  stage: test
+  tags:
+    - linux
+  needs:
+    - build:linux
+  script:
+    - basedir=$PWD
+    - |
+      for dir in $(find examples/ -name '*.py' | xargs dirname | sort -uk1 | grep -v compare_fcs_phono3py) ; do
+        echo "dir= $dir"
+        cd $basedir
+        cd $dir
+        for file in $(ls *.py | sort -gk1) ; do
+          echo "Running $file -- `date`"
+          python3 $file
+          echo "Finished running $file -- `date`"
+        done
+        echo
+      done
+
+test_examples:manual:
+  extends: .test_examples
+  when: manual
+
+test_examples:schedules:
+  extends: .test_examples
+  only:
+   - schedules
+
+.test_notebooks:
+  stage: test
+  tags:
+    - linux
+  needs:
+    - build:linux
+  script:
+    - pytest --nbmake --nbmake-timeout=3600 $(find examples/ -name '*.ipynb')
+
+test_notebooks:manual:
+  extends: .test_notebooks
+  when: manual
+
+test_notebooks:schedules:
+  extends: .test_notebooks
+  only:
+   - schedules
+
+style_check:
+  stage: test
+  tags:
+    - linux
+  script:
+    - flake8 doc/ examples/ hiphive/ tests/
+
+test_documentation:
+  stage: test
+  tags:
+    - linux
+  needs:
+    - build:linux
+  except:
+   - master
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - public
+  script:
+    - mkdir public
+    - sphinx-build -b doctest -W doc/source/ public/
+    - sphinx-build -W doc/source/ public/
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+code_quality:
+  artifacts:
+    paths: [gl-code-quality-report.json]
+
+
+#------------------- deploy stage -------------------
+
+pages:
+  stage: deploy
+  tags:
+    - linux
+  only:
+    - master
+    - tags
+  except:
+   - schedules
+  artifacts:
+    expire_in: 14 days
+    paths:
+      - public
+  script:
+    # prepare homepage
+    - mkdir -p public/dev
+    - mv doc/google*.html public/
+    # --------------------------
+    # DEVELOPMENT VERSION
+    - git checkout master
+    - tag=$(git describe | tail -1)
+    - echo "tag= $tag"
+    # code coverage report
+    - cp -dr htmlcov/ public/dev/coverage/
+    # build user guide
+    - sed -i "s/version = ''/version = '$tag'/" doc/source/conf.py
+    - cat doc/source/conf.py
+    - sphinx-build -W doc/source/ public/dev/
+    # make tests and examples downloadable
+    - cd examples
+    - find tutorial/ -print | zip ../public/dev/tutorial.zip -@
+    - find advanced_topics/ -print | zip ../public/dev/advanced_topics.zip -@
+    - cd ..
+    - find tests/ -print | zip public/dev/tests.zip tests/structure_databases/*.db -@
+    - git checkout -- doc/source/conf.py
+    # --------------------------
+    # STABLE VERSION
+    - tag=$(git tag | tail -1)
+    - echo "tag= $tag"
+    - git checkout $tag
+    # reinstall to make sure we are referring to the correct version
+    - rm -fr $INSTDIR
+    - pip3 install --target=$INSTDIR .
+    # code coverage report
+    - cp -dr htmlcov/ public/coverage/
+    # build user guide
+    - sphinx-build -W doc/source/ public/
+    # make tests and examples downloadable
+    - cd examples
+    - find tutorial/ -print | zip ../public/tutorial.zip -@
+    - find advanced_topics/ -print | zip ../public/advanced_topics.zip -@
+    - cd ..
+    - find tests/ -print | zip public/tests.zip tests/structure_databases/*.db -@
+    # --------------------------
+    # clean up
+    - ls -l public/
+    - chmod go-rwX -R public/
+
+pypi:
+  stage: deploy
+  tags:
+    - linux
+  only:
+    - tags
+  except:
+    - schedules
+  when: manual
+  environment:
+      name: pypi-upload
+  script:
+    # check out the latest tag (redundant if job is limited to tags; still a sensible precaution)
+    - tag=$(git tag | tail -1)
+    - echo "tag= $tag"
+    - git checkout $tag
+    # create source distribution and push to PyPI
+    - python3 setup.py sdist
+    - ls -l dist/
+    - python3 -m twine upload dist/*

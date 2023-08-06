@@ -1,0 +1,88 @@
+# dot -Tsvg workflow.dot -o workflow.svg
+
+digraph g {
+
+  graph [ fontname = "helvetica",
+          fontsize = 12.0,
+          rankdir = "TB",
+          bgcolor = "transparent" ];
+
+  edge [ fontname = "helvetica",
+         fontsize = 12.0,
+         penwidth = 1.5 ]
+
+  node [ fontname = "helvetica",
+         fontsize = 12.0,
+         fontcolor = black,
+         shape = ellipse,
+         color = "#a0c9e5",
+         style = filled];
+
+  Prototype [ color="#ffca9c",
+              label="Prototype structure\n(primitive cell)",
+              shape=box];
+  Cutoffs [ color="#ffca9c",
+            label="Cutoff radii for\neach order",
+            shape=box];
+  Structures [ color="#ffca9c",
+               label="Input structures\nwith reference forces",
+	       shape=box,
+               href="../advanced_topics/structure_generation.html",
+               target="_top"];
+
+  ClusterSpace [ label="Cluster space",
+                 href="../moduleref/cluster_space.html#hiphive.ClusterSpace",
+                 target="_top" ];
+
+  StructureContainer [ label="Structure container",
+                       href="../moduleref/structures.html#hiphive.StructureContainer",
+                       target="_top" ];
+  Optimizer [ label="Optimizer",
+              href="../moduleref/optimizers.html",
+              target="_top"];
+  ForceConstantPotential [ label="Force constant potential",
+                           href="../moduleref/force_constants.html#hiphive.ForceConstantPotential",
+                           target="_top" ];
+  ForceConstants [ label="Force constants",
+                   href="../moduleref/force_constants.html#hiphive.ForceConstants",
+                   target="_top" ];
+  ForceConstantCalculator [ label="Force constant calculator",
+                            href="../moduleref/force_constants.html#hiphive.calculators.ForceConstantCalculator",
+                            target="_top" ];
+
+  Supercell [ color="#ffca9c",
+              label="Supercell structure",
+              shape=box];
+
+  MD [ shape=rectangle,
+       color="#a2daa2",
+       label="Molecular dynamics (via ASE)",
+       fontcolor=black,
+       href="../tutorial/run_fourth_order_MD.html",
+       target="_top"];
+
+  phonons [ shape=rectangle,
+            color="#a2daa2",
+            label="Derived properties\n(via phono3py, \nphonopy, shengBTE)",
+            fontcolor=black,
+            href="../tutorial/compute_harmonic_thermal_properties.html",
+            target="_top"];
+
+  Prototype -> ClusterSpace;
+  Cutoffs -> ClusterSpace;
+
+  ClusterSpace -> StructureContainer;
+  Structures -> StructureContainer;
+
+  StructureContainer -> Optimizer [label="  Fit matrix and\n  vector of target values"];
+
+  ClusterSpace -> ForceConstantPotential;
+  Optimizer -> ForceConstantPotential [label="  Parameters"];
+
+  ForceConstantPotential -> ForceConstants;
+  Supercell -> ForceConstants;
+  ForceConstants -> phonons;
+
+  ForceConstants -> ForceConstantCalculator;
+  ForceConstantCalculator -> MD;
+}
