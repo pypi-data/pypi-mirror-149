@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: pytest-rt
+Version: 1.3.2
+Summary: pytest data collector plugin for Testgr
+Home-page: https://github.com/and-sm/pytest-rt
+Author: Andrey Smirnov
+Author-email: and.inbx@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Framework :: Pytest
+Classifier: Programming Language :: Python :: 3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pytest-rt - pytest data collector for Testgr
+
+Plugin sends pytest data to Testgr server.
+
+### Setup
+
+```pip install pytest-rt```
+
+### Launch
+```
+pytest --rt --rtu="http://your_testgr_url/loader" -> will launch pytest with pytest-rt plugin.
+```
+Additional parameters: 
+
+* --rte "your_environment" -> Send your environment name as additional data to the Testgr server. 
+* --rt-job-report - Enable email sending after job finish.
+* --rt-return-job - Write last finished job UUID in testgr_last_job.txt file.
+* --rt-custom-data - Send any custom data to the Testgr in dict format. Example:
+```
+--rt-custom data='{"Git":"dev-branch"}'
+```
+* --rt-custom-id - requirement for pytest-xdist plugin. Use with random ID. 
+```
+--rt-custom-id="unique_id"
+```
+
+## Authors
+[**Andrey Smirnov**](https://github.com/and-sm)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+
+
