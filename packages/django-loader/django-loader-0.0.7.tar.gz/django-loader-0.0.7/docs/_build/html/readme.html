@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>README &#8212; django-loader 0.0.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Functions" href="functions.html" />
+    <link rel="prev" title="django-loader Documentation" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="readme">
+<h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
+<section id="django-loader">
+<h2>django-loader<a class="headerlink" href="#django-loader" title="Permalink to this headline">¶</a></h2>
+<p>django-loader: a configuration variable and secrets loader for Django
+apps.</p>
+<a class="reference external image-reference" href="https://badge.fury.io/py/django-loader"><img alt="PyPI Version" src="https://badge.fury.io/py/django-loader.svg" /></a>
+<a class="reference external image-reference" href="https://django-loader.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/django-loader/badge/?version=latest" /></a>
+</section>
+</section>
+<section id="what-is-django-loader">
+<h1>What is django-loader?<a class="headerlink" href="#what-is-django-loader" title="Permalink to this headline">¶</a></h1>
+<p>django-loader is a configuration variable and secrets loader for
+Django apps.  It loads a dictionary of configuration variables into
+<code class="docutils literal notranslate"><span class="pre">settings.py</span></code> that consists of default values, values from a
+configuration file (like <code class="docutils literal notranslate"><span class="pre">.env</span></code>) and from environment variables.  It
+can load configuration files in TOML, JSON, YAML, and BespON formats.
+The script interface is able to convert between all available formats.</p>
+</section>
+<section id="roadmap">
+<h1>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li><p>Change from loading one configuration file to one or a list of
+configuration files, with successive files having precedence over
+previous ones.</p></li>
+<li><p>Implement validation functions to provide for customizable data
+validation and security checks.</p></li>
+<li><p>Add simple command line interface options with <code class="docutils literal notranslate"><span class="pre">argparse</span></code> and add
+usage to doumentation.</p></li>
+</ol>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Install django-loader with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">django</span><span class="o">-</span><span class="n">loader</span>
+<span class="n">pip</span> <span class="n">freeze</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>or add as a poetry dependency.</p>
+<p>If you desire a package locally built with poetry, download the
+source, change the appropriate lines in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, and
+rebuild.</p>
+</section>
+<section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>Console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loader</span> <span class="n">file</span> <span class="nb">format</span>
+</pre></div>
+</div>
+<p>In Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">loader</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">secrets</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_secrets</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">secrets</span><span class="p">[</span><span class="s2">&quot;SECRET_KEY&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>See the source and <a class="reference external" href="https://django-loader.readthedocs.io/en/latest/">documentation</a> for more
+information.</p>
+</section>
+<section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>There are no configuration files or options; all configurable options
+will be accessible as function parameters or options in the command
+line interface.</p>
+</section>
+<section id="copyright-and-license">
+<h1>Copyright and License<a class="headerlink" href="#copyright-and-license" title="Permalink to this headline">¶</a></h1>
+<p>SPDX-License-Identifier: <a class="reference external" href="https://spdx.org/licenses/MTI.html">MIT</a></p>
+<p>django-loader:  a configuration variable and secrets loader for Django
+apps.</p>
+<p>Copyright (C) 2021 <a class="reference external" href="mailto:gray&#37;&#52;&#48;flyquackswim&#46;com">Jeremy A Gray</a>.</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+“Software”), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</section>
+<section id="author">
+<h1>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="mailto:gray&#37;&#52;&#48;flyquackswim&#46;com">Jeremy A Gray</a></p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">django-loader</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">README</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#django-loader">django-loader</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#what-is-django-loader">What is django-loader?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#copyright-and-license">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#author">Author</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">django-loader Documentation</a></li>
+      <li>Next: <a href="functions.html" title="next chapter">Functions</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Jeremy A Gray.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/readme.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
