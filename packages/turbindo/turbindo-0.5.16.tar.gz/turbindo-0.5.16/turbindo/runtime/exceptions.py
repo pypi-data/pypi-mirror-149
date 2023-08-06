@@ -1,0 +1,2 @@
+class NoRowFoundException(BaseException):
+    pass
