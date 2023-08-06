@@ -1,0 +1,1 @@
+from .multisort import multisort, cmp_func, reversor
