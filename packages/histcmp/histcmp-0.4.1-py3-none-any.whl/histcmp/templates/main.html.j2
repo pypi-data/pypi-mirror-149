@@ -1,0 +1,75 @@
+{% extends "base.html.j2" %}
+
+{% block body %}
+    {% for item in comparison.items %}
+    <a href="#{{ item.key }}" title="{{ item.key }}">
+        {{ item.status.icon | emojize }}
+    </a>
+    {% endfor %}
+    <hr>
+
+    <div class="container plot-container">
+    {% for item in comparison.items %}
+    <div class="column is-one-third plot">
+    <div class="box">
+        <div class="block">
+        <h2 class="title {% if item.status == Status.FAILURE -%}
+        has-text-danger
+        {%- elif item.status == Status.INCONCLUSIVE -%}
+        has-text-warning
+        {%- endif -%}" id="{{ item.key }}">
+            <a href="#{{item.key}}">{{ item.key }}</a>
+        </h2>
+        </div>
+
+        <div class="block">
+        {% for plot in item.generic_plots %}
+        <img src="{{plot}}"/>
+        {% endfor %}
+        </div>
+
+        <hr>
+        
+        <div class="block" x-data="{open: 0}">
+            <div class="tags">
+            {% for check in item.checks %}
+            <a @click="open = open == {{loop.index}} ? 0 : {{loop.index}}" :class="open == {{loop.index}} ? 'active' : ''"
+            {% if check.is_disabled %}
+            class="check tag is-light"
+            {% elif check.status == Status.SUCCESS %}
+            class="check tag is-success"
+            {% elif check.status == Status.FAILURE %}
+            class="check tag is-danger"
+            {% elif check.status == Status.INCONCLUSIVE %}
+            class="check tag is-warning"
+            {% endif %}
+            >
+                {#{{ check.status.icon | emojize }}#}
+                {% if check.is_disabled %}
+                    {{ check.status.icon | emojize }}
+                {% endif %}
+                {{ check }}
+            </a>
+
+            {% endfor %}
+            </div>
+            {% for check in item.checks %}
+            <div class="container">
+            <div x-show="open == {{loop.index}}" class="notification">
+                {% if not check.is_applicable %}
+                    {{check}} is not applicable
+                {% else %}
+                {{ check.label.strip() | replace("\n", "<br>") | replace("---", "<hr class='check_rule'>") }}
+                {% endif %}
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+
+
+    </div>
+    </div>
+    {% endfor %}
+    </div>
+    
+{% endblock %}
