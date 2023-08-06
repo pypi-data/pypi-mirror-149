@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+
+    "$id": "https://raw.githubusercontent.com/os-climate/osc-trino-acl-dsl/main/schema/dsl-schema.json",
+
+    "title": "Trino ACL DSL",
+
+    "description": "A DSL for generating rules.json files for Trino",
+    "type": "object",
+    "properties": {
+        "admin": { "$ref": "#/definitions/user-group-array" },
+        "public": { "type": "boolean" },
+        "catalogs": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/catalog-entry" }
+        },
+        "schemas": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/schema-entry" }
+        },
+        "tables": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/table-entry" }
+        }
+    },
+    "required": ["admin", "public", "catalogs", "schemas", "tables"],
+
+    "definitions": {
+        "catalog-entry": {
+            "description": "an entry decribing the policy for a catalog",
+            "type": "object",
+            "properties": {
+                "catalog": { "$ref": "#/definitions/trino-id" },
+                "public": { "type": "boolean" }
+            },
+            "required": ["catalog", "public"]
+        },
+        "schema-entry": {
+            "description": "an entry decribing the policy for a database schema",
+            "type": "object",
+            "properties": {
+                "catalog": { "$ref": "#/definitions/trino-id" },
+                "schema": { "$ref": "#/definitions/trino-id" },
+                "admin": { "$ref": "#/definitions/user-group-array" },
+                "public": { "type": "boolean" }
+            },
+            "required": ["catalog", "schema", "admin", "public"]
+        },
+        "table-entry": {
+            "description": "an entry decribing the policy for a table",
+            "type": "object",
+            "properties": {
+                "catalog": { "$ref": "#/definitions/trino-id" },
+                "schema": { "$ref": "#/definitions/trino-id" },
+                "table": { "$ref": "#/definitions/trino-id" },
+                "admin": { "$ref": "#/definitions/user-group-array" },
+                "public": { "oneOf": [
+                    { "type": "boolean" },
+                    { "type": "object",
+                        "properties": {
+                            "filter": { "$ref": "#/definitions/filter-array" },
+                            "hide": { "$ref": "#/definitions/hide-array" }
+                        }
+                    }
+                ] },
+                "acl": { "type": "array",
+                    "items": { "type": "object",
+                        "properties": {
+                            "id": { "$ref": "#/definitions/user-group-array" },
+                            "filter": { "$ref": "#/definitions/filter-array" },
+                            "hide": { "$ref": "#/definitions/hide-array" }
+                        },
+                        "required": ["id"],
+                        "minProperties": 2
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": ["catalog", "schema", "table", "public"]
+        },
+        "filter-array": {
+            "description": "describes row filtering access controls",
+            "type": "array",
+            "items": { "$ref": "#/definitions/trino-sql-clause" }
+        },
+        "hide-array": {
+            "description": "array of column names to hide",
+            "type": "array",
+            "items": { "$ref": "#/definitions/trino-id" }
+        },
+        "user-group-array": {
+            "description": "an array of user or group patterns",
+            "type": "array",
+            "items": { "oneOf": [
+                { "$ref": "#/definitions/trino-user" },
+                { "$ref": "#/definitions/trino-group" }
+            ] },
+            "minItems": 1
+        },
+        "trino-group": {
+            "description": "Specifies a trino group name or regex",
+            "type": "object",
+            "properties": {
+                "group": { "$ref": "#/definitions/trino-id-regex" }
+            },
+            "required": ["group"]
+        },
+        "trino-user": {
+            "description": "Specifies a trino user name or regex",
+            "type": "object",
+            "properties": {
+                "user": { "$ref": "#/definitions/trino-id-regex" }
+            },
+            "required": ["user"]
+        },
+        "trino-sql-clause": {
+            "description": "Contains a Trino SQL clause (e.g. the argument to WHERE <clause>). TODO: it would be nice to check this for correct syntax but I am dubious it is feasible",
+            "type": "string"
+        },
+        "trino-id": {
+            "description": "a valid trino identifier, e.g. catalog, schema, or table name",
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "trino-id-regex": {
+            "description": "a trino id, or regex to match some id(s). TODO: define pattern",
+            "type": "string"
+        }
+    }
+}
