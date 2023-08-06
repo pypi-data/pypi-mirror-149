@@ -1,0 +1,114 @@
+Metadata-Version: 2.1
+Name: pytest-serverless
+Version: 1.0.0
+Summary: Automatically mocks resources from serverless.yml in pytest using moto.
+Home-page: https://github.com/whisller/pytest-serverless
+License: MIT
+Keywords: pytest,serverless,moto,boto3
+Author: Daniel Ancuta
+Author-email: whisller@gmail.com
+Requires-Python: >=3.7,<4.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Testing :: Mocking
+Classifier: Topic :: Software Development :: Testing :: Unit
+Requires-Dist: boto3 (>=1.22,<2.0)
+Requires-Dist: moto (>=3.1,<4.0)
+Requires-Dist: pyyaml (>=6.0,<7.0)
+Project-URL: Repository, https://github.com/whisller/pytest-serverless
+Description-Content-Type: text/markdown
+
+pytest-serverless
+---
+Automatically mocks resources defined in serverless.yml file using [moto](https://github.com/spulec/moto) and uses them in [pytest](https://github.com/pytest-dev/pytest).
+
+This way you can focus on writing tests rather than defining enormous list of fixtures.
+
+| master | PyPI | Python | pytest | Licence |
+| --- | --- | --- | --- | --- |
+| ![Master](https://github.com/whisller/pytest-serverless/workflows/Master/badge.svg) | [![PyPI](https://img.shields.io/pypi/v/pytest-serverless.svg)](https://pypi.org/project/pytest-serverless/) | ![](https://img.shields.io/pypi/pyversions/pytest-serverless.svg) | `6.2` | ![](https://img.shields.io/pypi/l/pytest-serverless.svg) |
+
+## Pre installation requirements
+- `serverless` installed
+- `pytest` installed
+
+## Installation
+```sh
+pip install pytest-serverless
+```
+
+## Usage
+Assuming your `serverless.yml` file looks like:
+```yaml
+service: my-microservice
+resources:
+ Resources:
+   TableA:
+     Type: 'AWS::DynamoDB::Table'
+     DeletionPolicy: Delete
+     Properties:
+       TableName: ${self:service}.my-table
+       AttributeDefinitions:
+         - AttributeName: id
+           AttributeType: S
+         - AttributeName: company_id
+           AttributeType: S
+       KeySchema:
+         - AttributeName: id
+           KeyType: HASH
+       GlobalSecondaryIndexes:
+         - IndexName: company_id
+           KeySchema:
+             - AttributeName: company_id
+               KeyType: HASH
+           Projection:
+             ProjectionType: ALL
+           ProvisionedThroughput:
+             ReadCapacityUnits: 10
+             WriteCapacityUnits: 30
+       ProvisionedThroughput:
+         ReadCapacityUnits: 10
+         WriteCapacityUnits: 30
+```
+
+Just mark your test with `@pytest.mark.usefixtures("serverless")` and `pytest-serverless` will automatically create `my-microservice.my-table` dynamodb table.
+```python
+import boto3
+import pytest
+
+
+@pytest.mark.usefixtures("serverless")
+def test():
+    table = boto3.resource("dynamodb").Table("my-microservice.my-table")
+    count_of_items = len(table.scan()["Items"])
+    assert count_of_items == 0
+```
+
+You can use a custom serverless file path setting the envionmnet variable `SERVERLESS_FILE_PATH`.
+
+```shell
+$ export SERVERLESS_FILE_PATH=/path/to/serverless.yml
+```
+
+You can use choose both `sls` or `serverless` command to run, settings the environment variable `SERVERLESS_COMMAND`. It will only accpets `sls` or `serverless` values.
+
+```shell
+$ export SERVERLESS_COMMAND=sls
+```
+
+## Supported resources
+### AWS::DynamoDB::Table
+### AWS::SQS::Queue
+### AWS::SNS::Topic
+### AWS::S3::Bucket
+### AWS::KMS::Key
+
