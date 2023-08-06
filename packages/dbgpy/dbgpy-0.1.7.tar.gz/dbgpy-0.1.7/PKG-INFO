@@ -1,0 +1,43 @@
+Metadata-Version: 2.1
+Name: dbgpy
+Version: 0.1.7
+Summary: Python implementation of Rust's dbg! macro
+Home-page: https://github.com/marcelroed/dbgpy
+License: MIT
+Author: Marcel Rød
+Author-email: marcelroed@gmail.com
+Requires-Python: >=3.5
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: astunparse (>=1,<2); python_version < "3.9"
+Requires-Dist: attrs (>=21.1,<22.0)
+Project-URL: Repository, https://github.com/marcelroed/dbgpy
+Description-Content-Type: text/markdown
+
+# dbgpy
+
+Debug print inspired by Rust's `dbg!` macro.
+
+Example:
+
+```python
+from dbgpy import dbg
+import numpy as np
+
+arr = np.linspace(0, 10)
+
+dbg(arr.shape)
+```
+
+Outputs
+```
+main.py:6: arr.shape = (50,)
+```
+
+
