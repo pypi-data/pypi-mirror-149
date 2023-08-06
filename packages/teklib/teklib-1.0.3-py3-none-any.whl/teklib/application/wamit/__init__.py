@@ -1,0 +1,1 @@
+from .wamit import read_wamit as read
