@@ -1,0 +1,62 @@
+[package]
+name = "aliyundrive-fuse"
+version = "0.1.11"
+edition = "2021"
+description = "FUSE for AliyunDrive"
+license = "MIT"
+homepage = "https://github.com/messense/aliyundrive-fuse"
+repository = "https://github.com/messense/aliyundrive-fuse.git"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0"
+bytes = "1.0"
+clap = { version = "3.0", features = ["derive", "env", "wrap_help"] }
+fuser = { version = "0.11", default-features = false }
+libc = "0.2"
+oneshot = { version = "0.1", default-features = false, features = ["std"] }
+openssl-probe = { version = "0.1", optional = true }
+parking_lot = "0.12"
+reqwest = { version = "0.11", default-features = false, features = ["json", "gzip", "blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+time = { version = "0.3", features = ["formatting", "parsing"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "local-time"] }
+url = "2.2"
+
+[features]
+default = ["rustls-tls", "libfuse"]
+rustls-tls = ["reqwest/rustls-tls"]
+native-tls = ["reqwest/native-tls"]
+native-tls-vendored = ["reqwest/native-tls-vendored", "openssl-probe"]
+libfuse = ["fuser/libfuse"]
+
+[profile.release]
+lto = true
+opt-level = "z"  # Optimize for size
+
+[package.metadata.deb]
+maintainer = "messense <messense@icloud.com>"
+copyright = "2021-present, messense <messense@icloud.com>"
+license-file = ["LICENSE", "4"]
+extended-description = """\
+阿里云盘 FUSE 磁盘挂载"""
+depends = "fuse3"
+section = "utility"
+priority = "optional"
+assets = [
+    ["target/release/aliyundrive-fuse", "usr/bin/", "755"],
+    ["systemd.service", "etc/systemd/system/aliyundrive-fuse.service", "644"],
+]
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/aliyundrive-fuse", dest = "/usr/bin/aliyundrive-fuse", mode = "0755" },
+    { source = "LICENSE", dest = "/usr/share/doc/aliyundrive-fuse/LICENSE", doc = true, mode = "0644" },
+    { source = "systemd.service", dest = "/etc/systemd/system/aliyundrive-fuse.service", config = true, mode = "0644" },
+]
+
+[package.metadata.generate-rpm.requires]
+fuse3 = "*"
