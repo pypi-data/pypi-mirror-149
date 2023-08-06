@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{name}}</title>
+    {{head}}
+  </head>
+  <body>
+    <div data-role="page">
+      <div data-role="header">
+        {{home}}
+        <h1>{{name}}</h1>
+      </div>
+      <div role="main" class="ui-content">
+        <h1>{{name}}</h1>
+        {{description}}
+        <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+          {% for format in available_formats %}
+          <a href="{{url}}.{{format}}{{url_params}}" rel="external" class="ui-btn ui-corner-all">
+            {{format}}
+          </a>
+          {% endfor %}
+        </div>
+        <hr>
+        {{table|safe}}
+      </div>
+    </div>
+  </body>
+</html>
