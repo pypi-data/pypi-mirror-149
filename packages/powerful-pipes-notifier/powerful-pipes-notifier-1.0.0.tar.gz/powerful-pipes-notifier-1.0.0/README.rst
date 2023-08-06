@@ -1,0 +1,82 @@
+*****************************************************************************
+Powerful Pipes - The power of UNIX Pipes
+*****************************************************************************
+
+.. image:: https://img.shields.io/badge/License-Apache2-SUCCESS
+   :target: https://github.com/42crunch/powerful-pipes-notifier/blob/main/LICENSE
+   :alt: License
+.. image:: https://img.shields.io/pypi/v/powerful-pipes-notifier
+   :alt: PyPI
+.. image:: https://img.shields.io/badge/Python-3.8%20%7C%203.9%20%7C%203.10-blue
+   :alt: Python Versions
+
+.. figure:: https://raw.githubusercontent.com/42Crunch/powerful-pipes-notifier/main/docs/logo-250x250.png
+   :align: center
+
+In a nutshell ``Powerful Pipes Notifier`` is a notification tool to forward STDIN data to different destinations.
+
+Install
+-------
+
+.. code-block:: bash
+
+    > pip install powerful-pipes-notifier
+
+Quick Start
+-----------
+
+
+
+
+Allowed schemes
++++++++++++++++
+
+Currently these are the implemented schemas:
+
+- http:// -> webhook
+- ws:// -> websocket
+
+Rules engine
+++++++++++++
+
+You can set a rule that tell to notifier if notify or not.
+
+Rules are based in JSONPath standard and will try to match it in the input JSON data.
+
+Usage example:
+
+.. code-block:: bash
+
+    > notifier -d "${WEBHOOK_URL}" -R "_meta.dataSource.sourceName == 'har asdf'"
+    > notifier -d "${WEBHOOK_URL}" -R "_meta.summary.current == _meta.summary.total"
+
+
+Documentation
+-------------
+
+You can find the complete documentation at: `Documentation <https://powerful-pipes-notifier.pythonhosted.org>`_
+
+Authors
+-------
+
+Powerful Pipes was made by 42Crunch Research Team:
+
+- `jc42 <https://github.com/jc42c>`_
+- `cr0hn <https://github.com/cr0hn>`_
+
+
+License
+-------
+
+Powerful Pipes is Open Source and available under the `Apache 2 <https://github.com/42crunch/powerful-pipes/blob/main/LICENSE>`_.
+
+Contributions
+-------------
+
+Contributions are very welcome. See `CONTRIBUTING.md <https://github.com/42crunch/powerful-pipes/blob/main/CONTRIBUTING.md>`_ or skim existing tickets to see where you could help out.
+
+Acknowledgements
+----------------
+
+Project logo thanks to `Pipe icons created by starline - Flaticon <https://www.freepik.com/vectors/blue-arrow>`_
+
