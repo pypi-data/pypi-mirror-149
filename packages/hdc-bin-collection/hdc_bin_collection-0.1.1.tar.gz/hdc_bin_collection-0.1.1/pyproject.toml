@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "hdc_bin_collection"
+version = "0.1.1"
+description = "A module that finds the next bin collection dates for a specific address in Market Harborough, UK. Uses the UPRN to find the address."
+authors = ["Aaron Carson <aaron@aaroncarson.co.uk>"]
+keywords = ["hdc", "bin", "collection", "Market", "Harborough", "garbage", "trash", "rubbish", "recycling"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/caraar12345/hdc-bin-collection"
+include = ["LICENSE"]
+packages = [
+  { include = "hdc_bin_collection/*.py" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+beautifulsoup4 = "^4.11.0"
+requests = "^2.27.1"
+aiohttp = "^3.8.1"
+asyncio = "^3.4.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[tool.pyright]
+reportOptionalMemberAccess = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
