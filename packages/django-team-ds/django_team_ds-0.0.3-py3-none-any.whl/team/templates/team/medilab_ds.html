@@ -1,0 +1,47 @@
+{% extends 'team/_common.html' %}
+{% load static %}
+
+{% block team %}
+<!-- ======= Doctors Section ======= -->
+<section id="team" class="doctors">
+  <div class="container">
+    <div class="section-title">
+      <h2>{{ team.title }}</h2>
+      <p>{{ team.subtitle }}</p>
+    </div>
+    <div class="row">
+      {% for member in team.members %}
+      <div class="col-lg-6 {% cycle '' 'mt-4 mt-lg-0' 'mt-4' 'mt-4' 'mt-4' 'mt-4'%}">
+        <div class="member d-flex align-items-start">
+          <div class="pic">
+            {% cycle 'member1' 'member2' 'member3' 'member4' 'member5' 'member6' as member_dir silent %}
+            <img src="{% static 'img/members/'|add:member_dir|add:'/profile.jpg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="member-info">
+            <h4>{{ member.name }}</h4>
+            <span>{{ member.title }}</span>
+            {% if team.type == "desc" %}
+              <p>{{ member.desc }}</p>
+            {% else %}
+              {% for p in member.career %}
+                <p>{{ p }}</p>
+              {% endfor %}
+            {% endif %}
+            <div class="social">
+              {% for cert in member.certs %}
+              {% cycle 'cert1' 'cert2' 'cert3' 'cert4' 'cert5' 'cert6' as cert_filename silent %}
+              <a href="{% static 'img/members/'|add:member_dir|add:'/'|add:cert_filename|add:'.jpg' %}" data-bs-toggle="tooltip" title="{{ cert.title }}" class="glightbox">
+                <i class="{% cycle 'ri-honour-fill' 'ri-trophy-fill' 'ri-star-fill' 'ri-vip-diamond-fill'%}"></i>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section><!-- End Doctors Section -->
+{% endblock %}
+
+
