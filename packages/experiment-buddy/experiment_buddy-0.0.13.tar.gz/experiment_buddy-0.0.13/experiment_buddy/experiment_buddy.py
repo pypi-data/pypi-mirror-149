@@ -1,0 +1,515 @@
+import argparse
+import datetime
+import logging
+import os
+import random
+import re
+import socket
+import subprocess
+import sys
+import time
+import types
+import warnings
+from typing import Dict, Union, List, Optional
+
+import cloudpickle
+import fabric
+import git
+import matplotlib.pyplot as plt
+import requests
+import tensorboardX
+import tqdm
+import wandb
+import wandb.cli
+import yaml
+from invoke import UnexpectedExit
+from paramiko.ssh_exception import SSHException
+
+import experiment_buddy.utils
+
+try:
+    import torch
+except ImportError:
+    TORCH_ENABLED = False
+    torch = None
+else:
+    TORCH_ENABLED = True
+
+logging.basicConfig(level=logging.INFO)
+
+wandb_escape = "^"
+hyperparams: Optional[Dict] = None
+tb = tensorboard = None
+if os.path.exists("buddy_scripts/"):
+    SCRIPTS_PATH = "buddy_scripts/"
+else:
+    SCRIPTS_PATH = os.path.join(os.path.dirname(__file__), "../scripts/")
+ARTIFACTS_PATH = "runs/"
+DEFAULT_WANDB_KEY = os.path.join(os.environ["HOME"], ".netrc")
+
+
+def register(config_params):
+    warnings.warn("Use register_defaults() instead")
+    return register_defaults(config_params)
+
+
+def register_defaults(config_params):
+    global hyperparams
+    # TODO: fails on nested config object
+    if hyperparams is not None:
+        raise RuntimeError("refusing to overwrite registered parameters")
+
+    if isinstance(config_params, argparse.Namespace):
+        raise Exception("Need a dict, use var() or locals()")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('_ignored', nargs='*')
+
+    for k, v in config_params.items():
+        if k.startswith(wandb_escape):
+            raise NameError(f"{wandb_escape} is a reserved prefix")
+        if _is_valid_hyperparam(k, v):
+            parser.add_argument(f"--{k}", f"--^{k}", type=type(v), default=v)
+            if "_" in k:
+                k = k.replace("_", "-")
+                parser.add_argument(f"--{k}", f"--^{k}", type=type(v), default=v)
+
+    try:
+        parsed = parser.parse_args()
+    except TypeError as e:
+        print("Type mismatch between registered hyperparameters defaults and actual values,"
+              " it might be a float argument that was passed as an int (e.g. lr=1 rather than lr=1.0) but set as a float (--lr 0.1)")
+        raise e
+
+    for k, v in vars(parsed).items():
+        k = k.lstrip(wandb_escape)
+        config_params[k] = v
+
+    hyperparams = config_params.copy()
+
+
+def _is_valid_hyperparam(key, value):
+    if key.startswith("__") and key.endswith("__"):
+        return False
+    if key == "_":
+        return False
+    if isinstance(value, (types.FunctionType, types.MethodType, types.ModuleType)):
+        return False
+    return True
+
+
+class WandbWrapper:
+    def __init__(self, experiment_id, debug, wandb_kwargs, local_tensorboard=None):
+        """
+        project_name is the git root folder name
+        """
+        # Calling wandb.method is equivalent to calling self.run.method
+        # I'd rather to keep explicit tracking of which run this object is following
+        wandb_kwargs["mode"] = wandb_kwargs.get("mode", "offline" if debug else "online")
+        if not debug:
+            wandb_kwargs["settings"] = wandb_kwargs.get("settings", wandb.Settings(start_method="fork"))
+        self.run = wandb.init(name=experiment_id, **wandb_kwargs)
+
+        self.tensorboard = local_tensorboard
+        self.objects_path = os.path.join(ARTIFACTS_PATH, "objects/", self.run.name)
+        os.makedirs(self.objects_path, exist_ok=True)
+
+        def register_param(name, value, prefix=""):
+            if not _is_valid_hyperparam(name, value):
+                return
+
+            if name == "_extra_modules_":
+                for module in value:
+                    for __k in dir(module):
+                        __v = getattr(module, __k)
+                        register_param(__k, __v, prefix=module.__name__.replace(".", "_"))
+            else:
+                name = prefix + wandb_escape + name
+                # if the parameter was not set by a sweep
+                if not name in wandb.config._items:
+                    print(f"setting {name}={str(value)}")
+                    setattr(wandb.config, name, str(value))
+                else:
+                    print(
+                        f"not setting {name} to {str(value)}, "
+                        f"str because its already {getattr(wandb.config, name)}, "
+                        f"{type(getattr(wandb.config, name))}"
+                    )
+
+        for k, v in hyperparams.items():
+            register_param(k, v)
+
+    def add_scalar(self, tag: str, scalar_value: float, global_step: Optional[int] = None):
+        if scalar_value != scalar_value:
+            warnings.warn(f"{tag} is {scalar_value} at {global_step} :(")
+
+        scalar_value = float(scalar_value)  # silently remove extra data such as torch gradients
+        self.run.log({tag: scalar_value}, step=global_step, commit=False)
+        if self.tensorboard:
+            self.tensorboard.add_scalar(tag, scalar_value, global_step=global_step)
+
+    def add_scalars(self, dict_of_scalars: Dict[str, float], global_step: int = None, prefix: str = ""):
+        for k, v in dict_of_scalars.items():
+            self.add_scalar(prefix + k, v, global_step)
+
+    def add_figure(self, tag, figure, global_step=None, close=True):
+        self.run.log({tag: figure}, global_step)
+        if close:
+            plt.close(figure)
+
+        if self.tensorboard:
+            self.tensorboard.add_figure(tag, figure, global_step=None, close=True)
+
+    @staticmethod
+    def add_histogram(tag, values, global_step=None):
+        if len(values) <= 2:
+            raise ValueError("histogram requires at least 3 values")
+
+        if isinstance(values, (tuple, list)) and len(values) == 2:
+            wandb.log({tag: wandb.Histogram(np_histogram=values)}, step=global_step, commit=False)
+        else:
+            wandb.log({tag: wandb.Histogram(values)}, step=global_step, commit=False)
+
+    def plot(self, tag, values, global_step=None):
+        wandb.log({tag: wandb.Image(values)}, step=global_step, commit=False)
+        plt.close()
+
+    def add_object(self, tag, obj, global_step=None):
+        if not TORCH_ENABLED:
+            raise NotImplementedError
+
+        local_path = os.path.join(self.run.dir, f"{tag}-{global_step}.pt")
+        with open(local_path, "wb") as fout:
+            try:
+                torch.save(obj, fout, pickle_module=cloudpickle)
+            except Exception as e:
+                raise e
+
+        self.run.save(local_path, base_path=self.run.dir)
+        return local_path
+
+    def watch(self, *args, **kwargs):
+        self.run.watch(*args, **kwargs)
+
+    def close(self):
+        pass
+
+    def record(self, tag, value, global_step=None, exclude=None):
+        # Let wandb figure it out.
+        self.run.log({tag: value}, step=global_step, commit=False)
+
+    def dump(self, step=None):
+        self.run.log({}, step=step, commit=True)
+
+
+def deploy(host: str = "", sweep_definition: Union[str, tuple] = "", proc_num: int = 1, wandb_kwargs=None,
+           extra_slurm_headers="", extra_modules=None, disabled=False, interactive=False, run_per_agent=None,
+           wandb_run_name=None
+           ) -> WandbWrapper:
+    """
+    :param host: The host to deploy to.
+    :param sweep_definition: Either a yaml file or a string containing the sweep id to resume from
+    :param proc_num: The number of parallel jobs to run.
+    :param wandb_kwargs: Kwargs to pass to wandb.init
+    :param extra_slurm_headers: Extra slurm headers to add to the job script
+    :param extra_modules: Extra modules to module load
+    :param disabled: If true does not run jobs in the cluster and invokes wandb.init with disabled=True.
+    :param interactive: Not yet implemented.
+    :param run_per_agent: If set to a number, each agent will run `run_per_agent` experiments and then exit.
+    :param wandb_run_name: If set, will use this name for the wandb run.
+    :return: A tensorboard-like object that can be used to log data.
+    """
+    if wandb_kwargs is None:
+        wandb_kwargs = {}
+    if extra_modules is None:
+        extra_modules = [
+            "python/3.7",
+            "pytorch/1.7",
+        ]
+    if not any("python" in m for m in extra_modules):
+        warnings.warn("No python module found, are you sure?")
+    if interactive:
+        raise NotImplementedError("Not implemented yet")
+
+    extra_slurm_headers = extra_slurm_headers.strip()
+    debug = sys.gettrace() is not None and not os.environ.get('BUDDY_DEBUG_DEPLOYMENT', False)
+    running_on_cluster = "SLURM_JOB_ID" in os.environ.keys() or "BUDDY_IS_DEPLOYED" in os.environ.keys()
+    local_run = not host and not running_on_cluster
+
+    try:
+        git_repo = git.Repo(search_parent_directories=True)
+    except git.InvalidGitRepositoryError:
+        raise ValueError(f"Could not find a git repo")
+
+    project_name = experiment_buddy.utils.get_project_name(git_repo)
+
+    if local_run and sweep_definition:
+        raise NotImplementedError(
+            "Local sweeps are not supported.\n"
+            f"SLURM_JOB_ID is {os.environ.get('SLURM_JOB_ID', 'KeyError')}\n"
+            f"BUDDY_IS_DEPLOYED is {os.environ.get('BUDDY_IS_DEPLOYED', 'KeyError')}\n"
+        )
+    if (local_run or sweep_definition) and interactive:
+        raise NotImplementedError("Remote debugging requires a remote host and no sweep")
+
+    wandb_kwargs = {'project': project_name, **wandb_kwargs}
+    common_kwargs = {'debug': debug, 'wandb_kwargs': wandb_kwargs, }
+    dtm = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
+    logger = None
+
+    if disabled:
+        tb_dir = os.path.join(git_repo.working_dir, ARTIFACTS_PATH, "tensorboard", "DISABLED", dtm)
+        wandb_kwargs["mode"] = "disabled"
+        logger = WandbWrapper(f"buddy_disabled_{dtm}", local_tensorboard=_setup_tb(logdir=tb_dir), **common_kwargs)
+    elif running_on_cluster:
+        if interactive:
+            with open("~/buddy_remote_debugger", "r") as fin:
+                debugger_ip, debugger_port = fin.read().split(":")
+            import pydevd_pycharm
+            pydevd_pycharm.settrace(debugger_ip, port=debugger_port, stdoutToServer=True, stderrToServer=True)
+        else:
+            print("using wandb")
+            experiment_id = f"{git_repo.head.commit.message.strip()}"
+            jid = datetime.datetime.now().strftime("%b%d_%H-%M-%S")
+            jid += os.environ.get("SLURM_JOB_ID", "")
+            # TODO: turn into a big switch based on scheduler
+            logger = WandbWrapper(f"{experiment_id}_{jid}", local_tensorboard=None, **common_kwargs)
+    elif debug and not interactive:
+        experiment_id = "DEBUG_RUN"
+        tb_dir = os.path.join(git_repo.working_dir, ARTIFACTS_PATH, "tensorboard/", experiment_id, dtm)
+        logger = WandbWrapper(f"{experiment_id}_{dtm}", local_tensorboard=_setup_tb(logdir=tb_dir), **common_kwargs)
+    else:
+        ensure_torch_compatibility()
+        if sweep_definition and isinstance(sweep_definition, tuple):
+            experiment_id = "None, rerunning old sweep"
+        else:
+            experiment_id = wandb_run_name if wandb_run_name is not None else _ask_experiment_id(host, sweep_definition)
+        print(f"experiment_id: {experiment_id}")
+        if local_run:
+            tb_dir = os.path.join(git_repo.working_dir, ARTIFACTS_PATH, "tensorboard/", experiment_id, dtm)
+            return WandbWrapper(f"{experiment_id}_{dtm}", local_tensorboard=_setup_tb(logdir=tb_dir), **common_kwargs)
+        else:
+            _commit_and_sendjob(host, experiment_id, sweep_definition, git_repo, project_name, proc_num, extra_slurm_headers,
+                                wandb_kwargs, extra_modules, interactive, run_per_agent)
+            sys.exit()
+
+    return logger
+
+
+def ensure_torch_compatibility():
+    if not os.path.exists("requirements.txt"):
+        return
+
+    with open("requirements.txt") as fin:
+        reqs = fin.read()
+        # torch, vision or audio.
+        matches = re.search(r"torch==.*cu.*", reqs)
+        if "torch" in reqs and not matches:
+            # https://mila-umontreal.slack.com/archives/CFAS8455H/p1624292393273100?thread_ts=1624290747.269100&cid=CFAS8455H
+            warnings.warn("""torch rocm4.2 version will be installed on the cluster which is not supported specify torch==1.7.1+cu110 in requirements.txt instead""")
+
+
+def _ask_experiment_id(cluster, sweep):
+    title = f'{"[CLUSTER" if cluster else "[LOCAL"}'
+    if sweep:
+        title = f"{title}-SWEEP"
+    title = f"{title}]"
+
+    try:
+        import tkinter.simpledialog  # fails on the server or colab
+        logging.info("Name your run in the pop-up window!")
+        root = tkinter.Tk()
+        root.withdraw()
+        experiment_id = tkinter.simpledialog.askstring(title, "experiment_id")
+        root.destroy()
+    except:
+        if os.environ.get('BUDDY_CURRENT_TESTING_BRANCH', ''):
+            import uuid
+            experiment_id = f'TESTING_BRANCH-{os.environ["BUDDY_CURRENT_TESTING_BRANCH"]}-{uuid.uuid4()}'
+        else:
+            experiment_id = input(f"Running on {title}\ndescribe your experiment (experiment_id):\n")
+
+    experiment_id = (experiment_id or "no_id").replace(" ", "_")
+    if cluster:
+        experiment_id = f"[CLUSTER] {experiment_id}"
+    return experiment_id
+
+
+def _setup_tb(logdir):
+    print("http://localhost:6006")
+    return tensorboardX.SummaryWriter(logdir=logdir)
+
+
+def _open_ssh_session(hostname: str) -> fabric.Connection:
+    try:
+        ssh_session = fabric.Connection(host=hostname, connect_timeout=10, forward_agent=True)
+        ssh_session.run("")
+    except SSHException as e:
+        raise SSHException(
+            "SSH connection failed!,"
+            f"Make sure you can successfully run `ssh {hostname}` with no parameters, "
+            f"any parameters should be set in the ssh_config file"
+        )
+    return ssh_session
+
+
+def _ensure_scripts_directory(ssh_session: fabric.Connection, extra_slurm_header: str, working_dir: str) -> str:
+    retr = ssh_session.run("mktemp -d -t experiment_buddy-XXXXXXXXXX")
+    remote_tmp_folder = retr.stdout.strip() + "/"
+    ssh_session.put(f'{SCRIPTS_PATH}/common/common.sh', remote_tmp_folder)
+
+    scripts_dir = os.path.join(SCRIPTS_PATH, experiment_buddy.utils.get_backend(ssh_session, working_dir))
+
+    for file in os.listdir(scripts_dir):
+        if extra_slurm_header and file in ("run_sweep.sh", "srun_python.sh"):
+            new_tmp_file = _insert_extra_header(extra_slurm_header, os.path.join(scripts_dir, file))
+            ssh_session.put(new_tmp_file, remote_tmp_folder)
+        else:
+            ssh_session.put(os.path.join(scripts_dir, file), remote_tmp_folder)
+
+    return remote_tmp_folder
+
+
+def _insert_extra_header(extra_slurm_header, script_path):
+    tmp_script_path = f"/tmp/{os.path.basename(script_path)}"
+    with open(script_path) as f_in, open(tmp_script_path, "w") as f_out:
+        rows = f_in.readlines()
+        first_free_idx = 1 + next(i for i in reversed(range(len(rows))) if "#SBATCH" in rows[i])
+        rows.insert(first_free_idx, f"\n{extra_slurm_header}\n")
+        f_out.write("\n".join(rows))
+    return tmp_script_path
+
+
+def _check_or_copy_wandb_key(ssh_session: fabric.Connection):
+    try:
+        ssh_session.run("test -f $HOME/.netrc")
+    except UnexpectedExit:
+        print(f"Wandb api key not found in {ssh_session.host}. Copying it from {DEFAULT_WANDB_KEY}")
+        ssh_session.put(DEFAULT_WANDB_KEY, ".netrc")
+
+
+def log_cmd(cmd, retr):
+    print("################################################################")
+    print(f"## {cmd}")
+    print("################################################################")
+    print(retr)
+    print("################################################################")
+
+
+def _commit_and_sendjob(hostname: str, experiment_id: str, sweep_definition: str, git_repo: git.Repo, project_name: str,
+                        proc_num: int, extra_slurm_header: str, wandb_kwargs: dict, extra_modules=List[str], interactive=False, count_per_agent=None):
+    entrypoint, extra_modules, git_url, hash_commit, scripts_folder, ssh_session = commit(
+        experiment_id, extra_modules, extra_slurm_header, git_repo, hostname)
+
+    if interactive:
+        allocate_interactive(entrypoint, experiment_id, extra_modules, git_url, hash_commit,
+                             project_name, scripts_folder, ssh_session, wandb_kwargs)
+    else:
+        send_jobs(entrypoint, experiment_id, extra_modules, git_url, hash_commit, extra_slurm_header,
+                  proc_num, project_name, scripts_folder, ssh_session, sweep_definition, wandb_kwargs, count_per_agent)
+
+
+def allocate_interactive(entrypoint, experiment_id, extra_modules, git_url, hash_commit,
+                         project_name, scripts_folder, ssh_session, wandb_kwargs):
+    raise NotImplemented
+    # ssh_session.run("/opt/slurm/bin/salloc --gres=gpu:1 -t 12:00:00 --partition=unkillable", pty=True, asynchronous=True)
+
+    # Send to inputfile:
+
+    # assume it's the latest pycharm version
+    # venv is not created by default shoudl be buddy-env ?
+    ssh_session.run(f"source $HOME/venv/bin/activate && pip install --upgrade pydevd-pycharm", pty=True)
+
+    # On the cluster add the following to the source file:
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    local_ip = requests.get("https://api.ipify.org/?format=raw").text
+    local_port = random.randint(10000, 60000)
+    ssh_session.run(f"echo {local_ip}:{local_port} > ~/buddy_remote_debugger", pty=True)
+
+    # ssh_command = f"bash -l {scripts_folder}/run_experiment.sh {git_url} {entrypoint} {hash_commit} {extra_modules}"
+
+    print(ssh_command)
+
+
+def send_jobs(
+        entrypoint, experiment_id, extra_modules, git_url, hash_commit, extra_slurm_header,
+        proc_num, project_name, scripts_folder, ssh_session, sweep_definition, wandb_kwargs, count_per_agent):
+    if sweep_definition:
+        if isinstance(sweep_definition, str):
+            sweep_id = _load_sweep(entrypoint, experiment_id, project_name, sweep_definition, wandb_kwargs)
+        else:
+            sweep_id, hash_commit = sweep_definition  # TODO: this branch should query wandb for the old parameters {git_url}, {hash_commit} and possibly {extra_modules}
+        ssh_command = f"/opt/slurm/bin/sbatch {scripts_folder}/run_sweep.sh {git_url} {sweep_id} {hash_commit} {extra_modules} {count_per_agent}"
+    else:
+        ssh_command = f"bash -l {scripts_folder}/run_experiment.sh {git_url} {entrypoint} {hash_commit} {extra_modules}"
+        print("monitor your run on https://wandb.ai/")
+    print(ssh_command)
+    for _ in tqdm.trange(proc_num):
+        time.sleep(1)
+        ssh_session.run(ssh_command)
+
+
+def commit(experiment_id, extra_modules, extra_slurm_header, git_repo, hostname):
+    if experiment_id.endswith("!!"):
+        extra_slurm_header += "\n#SBATCH --partition=unkillable"
+    elif experiment_id.endswith("!"):
+        extra_slurm_header += "\n#SBATCH --partition=main"
+    extra_modules = "@".join(extra_modules)
+    ssh_session = _open_ssh_session(hostname)
+    scripts_folder = _ensure_scripts_directory(ssh_session, extra_slurm_header, git_repo.working_dir)
+    hash_commit = git_sync(experiment_id, git_repo)
+    _check_or_copy_wandb_key(ssh_session)
+    git_url = git_repo.remotes[0].url
+    entrypoint = os.path.relpath(sys.argv[0], git_repo.working_dir)
+    return entrypoint, extra_modules, git_url, hash_commit, scripts_folder, ssh_session
+
+
+def _load_sweep(entrypoint, experiment_id, project, sweep_yaml, wandb_kwargs):
+    with open(sweep_yaml, 'r') as stream:
+        data_loaded = yaml.safe_load(stream)
+
+    if data_loaded["program"] != entrypoint:
+        raise ValueError(f'YAML {data_loaded["program"]} does not match the entrypoint {entrypoint}')
+
+    wandb_stdout = subprocess.check_output([
+        "wandb", "sweep",
+        "--name", f'"{experiment_id}"',
+        "--project", project,
+        *(["--entity", wandb_kwargs["entity"]] if "entity" in wandb_kwargs else []),
+        sweep_yaml
+    ], stderr=subprocess.STDOUT).decode("utf-8").split("\n")
+
+    row = next(row for row in wandb_stdout if "Run sweep agent with:" in row)
+    print(next(row for row in wandb_stdout if "View" in row))
+
+    sweep_id = row.split()[-1].strip()
+    return sweep_id
+
+
+def git_sync(experiment_id, git_repo):
+    if any(url.lower().startswith('https://') for url in git_repo.remote('origin').urls):
+        raise Exception("Can't use HTTPS urls for your project, please, switch to GIT urls\n"
+                        "Look here for more infos https://docs.github.com/en/github/getting-started-with-github/"
+                        "getting-started-with-git/managing-remote-repositories#changing-a-remote-repositorys-url")
+
+    active_branch = git_repo.active_branch.name
+    try:
+        subprocess.check_output(f"git checkout --detach", shell=True)  # move changest to snapshot branch
+        subprocess.check_output(f"git add .", shell=True)
+
+        try:
+            subprocess.check_output(f"git commit --no-verify -m '{experiment_id}'", shell=True)
+        except subprocess.CalledProcessError as e:
+            git_hash = git_repo.commit().hexsha
+            # Ensure the code is remote
+            subprocess.check_output(f"git push {git_repo.remotes[0]} {active_branch}", shell=True)
+        else:
+            git_hash = git_repo.commit().hexsha
+            tag_name = f"snapshot/{active_branch}/{git_hash}"
+            subprocess.check_output(f"git tag {tag_name}", shell=True)
+            subprocess.check_output(f"git push {git_repo.remotes[0]} {tag_name}", shell=True)  # send to online repo
+            subprocess.check_output(f"git reset HEAD~1", shell=True)  # untrack the changes
+    finally:
+        subprocess.check_output(f"git checkout {active_branch}", shell=True)
+    return git_hash
