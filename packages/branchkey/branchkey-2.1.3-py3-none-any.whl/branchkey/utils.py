@@ -1,0 +1,1 @@
+AGGREGATED_OUTPUT_DIR = "./aggregated_output"
