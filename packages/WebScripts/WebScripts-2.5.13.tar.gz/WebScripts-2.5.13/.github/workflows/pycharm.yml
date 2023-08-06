@@ -1,0 +1,16 @@
+name: Pycharm Security
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: PyCharm Python Security Scanner
+        uses: tonybaloney/pycharm-security@1.24.2
