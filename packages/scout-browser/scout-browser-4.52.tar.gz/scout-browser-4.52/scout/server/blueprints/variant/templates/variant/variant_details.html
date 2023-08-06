@@ -1,0 +1,343 @@
+{% macro gtcall_panel(variant) %}
+  <div class="card panel-default">
+    <div class="panel-heading">
+      GT call
+      {% if variant.is_par %}
+        <span class="badge badge-info">PAR</span>
+      {% endif %}
+    </div>
+    <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th rowspan="2">Sample</th>
+            <th rowspan="2">Genotype (GT)</th>
+            <th colspan="2" title="Unfiltered count of reads that support a given allele.">Allele depth (AD)</th>
+            {% if variant.category == "cancer" %}
+              <th rowspan="2" colspan="1" title="Variant Allele Frequency.">Variant Allele Frequency (VAF)</th>
+            {% elif variant.category == "sv" %}
+              <th rowspan="2" colspan="1" title="SV caller specific quality score. Note different scales for different callers.">SV quality</th>
+            {% elif variant.category == "str" %}
+              <th rowspan="2" colspan="1">ExpansionHunter support</th>
+            {% else %}
+	      {% if variant.chromosome in ["MT","M"] %}
+                <th rowspan="2" colspan="1" title="Variant Allele Frequency.">Variant Allele Frequency (VAF)</th>
+	      {% endif %}
+              <th rowspan="2" colspan="1" title="Phred-scaled confidence that the true genotype is the one provided in GT (max=99).">Genotype quality (GQ)</th>
+            {% endif %}
+            <tr>
+              <th>Reference</th>
+              <th>Alternative</th>
+            </tr>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sample in variant.samples %}
+            <tr {{ 'class="danger"' if sample.is_affected }}>
+              <td>{{ sample.display_name }}</td>
+              <td class="text-center">{{ sample.genotype_call }}</td>
+              {% if sample.allele_depths %}
+                  {% for number in sample.allele_depths %}
+                    <td class="text-right">
+                      {% if number == -1 %}
+                        <small>N/A</small>
+                      {% else %}
+                        {{ number }}
+                      {% endif %}
+                    </td>
+                  {% endfor %}
+              {% else %}
+                  <td class="text-right"><small>N/A</small></td>
+                  <td class="text-right"><small>N/A</small></td>
+              {% endif %}
+
+              {% if variant.category == "snv" and variant.chromosome in ["MT","M"] %}
+                <td>
+                  {% if sample.alt_frequency and sample.alt_frequency != -1 %}
+                    {{ (100*sample.alt_frequency)|round(2) }}%
+                  {% else %}
+		    N/A
+                  {% endif %}
+                </td>
+              {% endif %}
+              {% if variant.category == "cancer" %}
+                {% set cancer_var = namespace() %}
+                {% if sample.sample_id == variant.tumor.ind_id %}
+                  {% set cancer_var.vaf = variant.tumor.alt_freq|round(4) %}
+                {% elif sample.sample_id == variant.normal.ind_id %} <!--normal-->
+                  {% set cancer_var.vaf = variant.normal.alt_freq|round(4) %}
+                {% else %}
+                  {% set cancer_var.vaf = "N/A" %}
+                {% endif %}
+                <td class="text-right">{{ cancer_var.vaf }}</td>
+              {% else %}
+                <td class="text-right">
+                {% if variant.category == "sv" %}
+                  {% if sample.genotype_quality not in ["None", None, "-1", -1] %}
+                    {{ sample.genotype_quality }}
+                  {% else %}
+                    <small>N/A</small>
+                  {% endif %} (<small>VQ</small>
+                  {% if variant.quality not in ["None", None, "-1", -1] %}
+                    {{variant.quality}}
+                  {% else %}
+                    <small>N/A</small>
+                  {% endif%})
+                {% elif variant.category == "str" %}
+                    <small>{{ sample.so }}</small>
+                {% else %}
+                  {{ sample.genotype_quality }}
+                {% endif %}
+                </td>
+              {% endif %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="panel-footer">
+      {% for name, caller in variant.callers %}
+        <span class="badge badge-secondary">{{ name }}: {{ caller }}</span>
+      {% endfor %}
+    </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro frequencies(variant) %}
+  <div class="card panel-default">
+    <div class="panel-heading">Frequencies</div>
+    <div class="card-body">
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Source</th>
+            <th scope="col">Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for freq_name, value, link in variant.frequencies %}
+          <tr>
+            <td>
+              {% if link %}
+                <a href="{{ link }}" target="_blank">{{ freq_name }}</a>
+              {% else %}
+                {{ freq_name }}
+              {% endif %}
+            </td>
+            <td>
+              {% if value %}
+                <span class="badge badge-secondary">{{ value|human_decimal }}</span>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro observations_panel(variant, observations, case) %}
+  <div class="card panel-default">
+    <div class="panel-heading d-flex justify-content-between">
+      <a class="text-white" href="https://github.com/moonso/loqusdb" target="_blank">Local observations</a>
+      <span data-toggle="tooltip" title="Nr of observations is the total number of occurrences in the loqusdb instance. Missing links on greyed out case names for shared local case variants might be caused by variants not loaded after a rerun or inexact SV matching. Only names of collaborator cases are shown.">?</span>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Nr obs.</th>
+            <th scope="col">Nr homo.</th>
+            <th scope="col">Total nr.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ observations.observations|default('N/A') }}</td>
+            <td>{{ observations.homozygote|default('N/A') }}</td>
+            <td>{{ observations.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">
+      <span title="Shows maximum 10 cases"><strong>Cases</strong></span>
+        {% if observations['cases'] %}
+          {% for data in observations['cases'] %}
+            {% if data.variant and data.variant.category == "snv"%}
+              <a class="ml-3" href="{{ url_for('variant.variant', institute_id=data.case.owner, case_name=data.case.display_name, variant_id=data.variant._id) }}">{{ data.case.display_name }}</a>
+            {% elif data.variant and data.variant.category == "sv"%}
+              <a class="ml-3" href="{{ url_for('variant.sv_variant', institute_id=data.case.owner, case_name=data.case.display_name, variant_id=data.variant._id) }}">{{ data.case.display_name }}</a>
+            {% else %}
+              <span class="text-muted ml-3" >{{ data.case.display_name }}</span>
+            {% endif %}
+          {% endfor %}
+          {% if observations['cases']|length >= 10 %}
+          ...
+          {% endif%}
+        {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro old_observations(variant, obs_date) %}
+{% if "SHOW_OBSERVED_VARIANT_ARCHIVE" in config and config["SHOW_OBSERVED_VARIANT_ARCHIVE"] == true %}
+  <div class="card panel-default">
+    <div class="panel-heading">
+      <a class="text-white" href="https://github.com/moonso/loqusdb" target="_blank">Local observations (archive {{obs_date or '2017-05-31'}})</a>
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Nr obs.</th>
+            <th scope="col">Nr homo.</th>
+            <th scope="col">Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ variant.local_obs_old|default('N/A') }}</td>
+            <td>{{ variant.local_obs_hom_old|default('N/A') }}</td>
+            <td>{% if variant.local_obs_old_freq %} {{variant.local_obs_old_freq|round(6)}} {% else %} N/A {% endif %}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% endmacro %}
+
+{% macro severity_list(variant) %}
+  <div class="card panel-default">
+    <div class="panel-heading">Severity</div>
+    <div class="card-body">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <a href="https://sift.bii.a-star.edu.sg/www/SIFT_help.html" target="_blank">SIFT</a>
+          <span class="float-right">
+            {% if variant.sift_predictions  %}
+              {{ variant.sift_predictions|join(', ') }}</span>
+            {% else %}
+               {{ "-" }}
+            {% endif %}
+          </span>
+        </li>
+        <li class="list-group-item">
+          <a href="https://sites.google.com/site/revelgenomics/about" target="_blank" data-toggle="tooltip"
+            title="An ensemble score based on 13 individual scores for predicting the pathogenicity of missense variants. Scores range from 0 to 1. The larger the score the more likely the SNP has damaging effect" >REVEL score</a>
+          <span class="float-right">
+          {% if variant.revel  %}
+             {{ variant.revel }}
+          {% else %}
+             {{ "-" }}
+          {% endif %}
+          </span>
+        </li>
+        <li class="list-group-item">
+          <a href="http://database.liulab.science/dbNSFP" target="_blank" data-toggle="tooltip"
+             title="REVEL scores were ranked among all REVEL scores in dbNSFP. The REVEL rank score is the ratio of the rank of the score over the total number of REVEL scores in dbNSFP">REVEL rank score</a>
+          <span class="float-right">
+          {% if variant.revel_score  %}
+             {{ variant.revel_score }}
+          {% else %}
+             {{ "-" }}
+          {% endif %}
+          </span>
+        </li>
+        <li class="list-group-item">
+          <a href="http://genetics.bwh.harvard.edu/pph2/" target="_blank">Polyphen</a>
+          <span class="float-right">
+          {% if variant.polyphen_predictions %}
+            {{ variant.polyphen_predictions|join(', ') }}
+          {% else %}
+             {{ "-" }}
+          {% endif %}
+          </span>
+        </li>
+        <li class="list-group-item">
+          SPIDEX
+          <span class="float-right">{{ variant.spidex_human }}</span>
+        </li>
+        <li class="list-group-item">
+          <a href="https://doi.org/10.1016/j.cell.2018.12.015" target="_blank">SpliceAI</a> <a href="https://github.com/Illumina/SpliceAI" target="_blank">DS max</a>
+          <span class="float-right control-label" data-toggle="tooltip" data-html="true" data-placement="bottom"
+              title="<strong>{% if variant.spliceai_scores %}
+                 {% for entry in variant.spliceai_scores %}
+                    SpliceAI highest delta score {{ entry }} </strong> at position {{ variant.spliceai_positions[loop.index0]}} relative to this variant.
+                    <br>All scores and positions(relative to variant):<br>
+                    {%  if variant.spliceai_predictions[loop.index0] is not none %}
+                       {{ variant.spliceai_predictions[loop.index0]|join("<br>")}}
+                    {%  endif %}
+                  {% endfor %}
+              {% else %}
+              'No SpliceAI positions annotated for this variant.' {% endif %}">
+            {{ variant.spliceai_scores|join(', ') or "-"}}
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro conservations(variant) %}
+  <div class="card panel-default">
+    <div class="panel-heading">Conservation</div>
+    <div class="card-body">
+      <ul class="list-group">
+        <li class="list-group-item">
+          PHAST
+          <span class="float-right">{{ variant.phast_conservation|join(', ') or '-' }}</span>
+        </li>
+        <li class="list-group-item">
+          GERP
+          <span class="float-right">{{ variant.gerp_conservation|join(', ') or '-' }}</span>
+        </li>
+        <li class="list-group-item">
+          phyloP
+          <span class="float-right">{{ variant.phylop_conservation|join(', ') or '-' }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endmacro %}
+
+
+{% macro mappability_list(variant) %}
+  {% set superdups_fracmatches = [] %}
+  {% for gene in variant.genes %}
+    {% for transcript in gene.transcripts %}
+      {% if transcript.superdups_fracmatch %}
+        {% for superdup in transcript.superdups_fracmatch %}
+          {% do superdups_fracmatches.append(superdup) %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% set superdups_fracmatches = superdups_fracmatches|sort %}
+  {% if superdups_fracmatches %}
+    <li class="list-group-item">
+      <span>mapping to {{superdups_fracmatches|length}} segm. dups. (min matching:{{ superdups_fracmatches|first|float|round(3) }}, max matching:{{ superdups_fracmatches|last|float|round(3) }})</span>
+    </li>
+  {% else %}
+    <li class="list-group-item">
+      <p class="card-text">-</p>
+    </li>
+  {% endif %}
+{% endmacro %}
+
+{% macro mappability(variant) %}
+  <div class="card panel-default">
+    <div class="panel-heading">Mappability (<a class="text-white" href="http://genome.ucsc.edu/cgi-bin/hgTrackUi?g=genomicSuperDups" target="_blank">fracMatch</a>)</div>
+    <div class="panel-body">
+      <ul class="list-group">
+        {{ mappability_list(variant) }}
+      </ul>
+    </div>
+  </div>
+{% endmacro %}
