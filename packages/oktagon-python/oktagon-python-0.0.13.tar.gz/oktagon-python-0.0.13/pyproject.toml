@@ -1,0 +1,29 @@
+[tool.isort]
+src_paths = ["oktagon_python", "tests", "scripts"]
+profile = "black"
+indent = 4
+combine_star = true
+combine_as_imports = true
+lines_after_imports = 2
+known_pytest = ["pytest"]
+known_first_party = ["oktagon_python", "versioneer"]
+sections = ["FUTURE", "STDLIB", "PYTEST", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+
+[tool.black]
+line-length = 119
+
+[tool.pylint.messages_control]
+max-line-length=119
+disable = [
+    "missing-docstring",
+    "raise-missing-from",
+]
+
+[tool.pytest.ini_options]
+addopts = "-vvv -s" # TODO --mypy-ini-file=mypy.ini
+testpaths = ["tests/"]
+asyncio_mode="strict"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
