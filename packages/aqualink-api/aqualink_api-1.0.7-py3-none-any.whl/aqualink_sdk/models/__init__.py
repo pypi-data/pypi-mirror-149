@@ -1,0 +1,71 @@
+# flake8: noqa
+
+# import all models into this package
+# if you have many models here with many references from one model to another this may
+# raise a RecursionError
+# to avoid this, import only the models that you directly need like:
+# from from aqualink_sdk.model.pet import Pet
+# or import this package, but before doing it, use:
+# import sys
+# sys.setrecursionlimit(n)
+
+from aqualink_sdk.model.collection import Collection
+from aqualink_sdk.model.collection_data_dto import CollectionDataDto
+from aqualink_sdk.model.coordinates import Coordinates
+from aqualink_sdk.model.create_collection_dto import CreateCollectionDto
+from aqualink_sdk.model.create_region_dto import CreateRegionDto
+from aqualink_sdk.model.create_region_dto_polygon import CreateRegionDtoPolygon
+from aqualink_sdk.model.create_site_application_dto import CreateSiteApplicationDto
+from aqualink_sdk.model.create_site_dto import CreateSiteDto
+from aqualink_sdk.model.create_site_survey_point_dto import CreateSiteSurveyPointDto
+from aqualink_sdk.model.create_survey_dto import CreateSurveyDto
+from aqualink_sdk.model.create_survey_media_dto import CreateSurveyMediaDto
+from aqualink_sdk.model.create_user_dto import CreateUserDto
+from aqualink_sdk.model.daily_data import DailyData
+from aqualink_sdk.model.data_uploads import DataUploads
+from aqualink_sdk.model.data_uploads_delete_dto import DataUploadsDeleteDto
+from aqualink_sdk.model.deploy_spotter_dto import DeploySpotterDto
+from aqualink_sdk.model.edit_survey_dto import EditSurveyDto
+from aqualink_sdk.model.edit_survey_media_dto import EditSurveyMediaDto
+from aqualink_sdk.model.exclude_spotter_dates_dto import ExcludeSpotterDatesDto
+from aqualink_sdk.model.exclusion_dates import ExclusionDates
+from aqualink_sdk.model.historical_monthly_mean import HistoricalMonthlyMean
+from aqualink_sdk.model.inline_object import InlineObject
+from aqualink_sdk.model.inline_object1 import InlineObject1
+from aqualink_sdk.model.inline_response200 import InlineResponse200
+from aqualink_sdk.model.inline_response2001 import InlineResponse2001
+from aqualink_sdk.model.inline_response2001_sofar_wave_model import InlineResponse2001SofarWaveModel
+from aqualink_sdk.model.inline_response2001_sofar_wave_model_wind_gust_speed import InlineResponse2001SofarWaveModelWindGustSpeed
+from aqualink_sdk.model.inline_response200_sofar_wave_model import InlineResponse200SofarWaveModel
+from aqualink_sdk.model.inline_response200_sofar_wave_model_wind_gust_speed import InlineResponse200SofarWaveModelWindGustSpeed
+from aqualink_sdk.model.inline_response400 import InlineResponse400
+from aqualink_sdk.model.inline_response401 import InlineResponse401
+from aqualink_sdk.model.inline_response404 import InlineResponse404
+from aqualink_sdk.model.latest_data import LatestData
+from aqualink_sdk.model.region import Region
+from aqualink_sdk.model.set_admin_level_dto import SetAdminLevelDto
+from aqualink_sdk.model.site import Site
+from aqualink_sdk.model.site_application import SiteApplication
+from aqualink_sdk.model.site_survey_point import SiteSurveyPoint
+from aqualink_sdk.model.sofar_latest_data_dto import SofarLatestDataDto
+from aqualink_sdk.model.sofar_live_data_dto import SofarLiveDataDto
+from aqualink_sdk.model.sofar_live_data_dto_site import SofarLiveDataDtoSite
+from aqualink_sdk.model.sofar_live_data_dto_spotter_position import SofarLiveDataDtoSpotterPosition
+from aqualink_sdk.model.spotter_data_dto import SpotterDataDto
+from aqualink_sdk.model.survey import Survey
+from aqualink_sdk.model.survey_media import SurveyMedia
+from aqualink_sdk.model.survey_media_sensor_data import SurveyMediaSensorData
+from aqualink_sdk.model.survey_media_sensor_data_hobo import SurveyMediaSensorDataHobo
+from aqualink_sdk.model.survey_media_sensor_data_noaa import SurveyMediaSensorDataNoaa
+from aqualink_sdk.model.survey_media_sensor_data_spotter import SurveyMediaSensorDataSpotter
+from aqualink_sdk.model.time_series_point import TimeSeriesPoint
+from aqualink_sdk.model.time_series_value_dto import TimeSeriesValueDto
+from aqualink_sdk.model.update_collection_dto import UpdateCollectionDto
+from aqualink_sdk.model.update_region_dto import UpdateRegionDto
+from aqualink_sdk.model.update_site_application_dto import UpdateSiteApplicationDto
+from aqualink_sdk.model.update_site_dto import UpdateSiteDto
+from aqualink_sdk.model.update_site_survey_point_dto import UpdateSiteSurveyPointDto
+from aqualink_sdk.model.update_site_with_application_dto import UpdateSiteWithApplicationDto
+from aqualink_sdk.model.user import User
+from aqualink_sdk.model.user_location import UserLocation
+from aqualink_sdk.model.video_stream import VideoStream
