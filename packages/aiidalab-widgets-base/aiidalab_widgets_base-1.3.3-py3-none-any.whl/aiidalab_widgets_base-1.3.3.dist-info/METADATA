@@ -1,0 +1,108 @@
+Metadata-Version: 2.1
+Name: aiidalab-widgets-base
+Version: 1.3.3
+Summary: Reusable widgets for AiiDAlab applications.
+Home-page: https://github.com/aiidalab/aiidalab-widgets-base
+Author: The AiiDAlab team
+Author-email: aiidalab@materialscloud.org
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: AiiDA
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: aiida-core (~=1.0)
+Requires-Dist: aiidalab (>=21.07.3)
+Requires-Dist: aiidalab-eln (~=0.1)
+Requires-Dist: ansi2html (~=1.6)
+Requires-Dist: ase (<3.20)
+Requires-Dist: bokeh (~=2.0)
+Requires-Dist: deprecation (~=2.1)
+Requires-Dist: ipytree (~=0.2)
+Requires-Dist: ipywidgets (~=7.6)
+Requires-Dist: jupyter-client (<7)
+Requires-Dist: more-itertools (~=8.0)
+Requires-Dist: nbconvert (<6)
+Requires-Dist: nglview (~=3.0)
+Requires-Dist: numpy (~=1.17)
+Requires-Dist: optimade-client (==2021.8.24)
+Requires-Dist: pandas (~=1.0)
+Requires-Dist: scikit-learn (~=0.24)
+Requires-Dist: vapory (~=0.1.2)
+Provides-Extra: dev
+Requires-Dist: bumpver (==2021.1114) ; extra == 'dev'
+Requires-Dist: pre-commit (==2.10.1) ; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: MarkupSafe (<2.1) ; extra == 'docs'
+Requires-Dist: myst-nb ; extra == 'docs'
+Requires-Dist: pydata-sphinx-theme ; extra == 'docs'
+Requires-Dist: sphinx ; extra == 'docs'
+Requires-Dist: sphinxcontrib-contentui ; extra == 'docs'
+Requires-Dist: sphinxcontrib-details-directive ; extra == 'docs'
+
+[![Documentation Status](https://readthedocs.org/projects/aiidalab-widgets-base/badge/?version=latest)](https://aiidalab-widgets-base.readthedocs.io/en/latest/?badge=latest)
+
+# AiiDAlab Widgets
+
+[AiiDAlab](https://materialscloud.org/aiidalab) applications typically involve some of following steps:
+
+ * Prepare the input for a calculation (e.g. an atomic structure).
+ * Select computational resources and submit a calculation to AiiDA.
+ * Monitor a running calculation.
+ * Find and analyze the results of a calculation.
+
+The AiiDAlab widgets help with these common tasks.
+
+## Documentation
+
+Hosted on [aiidalab-widgets-base.readthedocs.io](https://aiidalab-widgets-base.readthedocs.io).
+
+## For maintainers
+
+To create a new release, clone the repository, install development dependencies with `pip install -e '.[dev]'`, and then execute `bumpver update [--major|--minor|--patch] [--tag [alpha|beta|rc]]`.
+This will:
+
+  1. Create a tagged release with bumped version and push it to the repository.
+  2. Trigger a GitHub actions workflow that creates a GitHub release and publishes it on PyPI.
+
+Additional notes:
+
+  - Use the `--dry` option to preview the release change.
+  - The release tag (e.g. a/b/rc) is determined from the last release.
+    Use the `--tag` option to switch the release tag.
+  - This packages follows semantic versioning.
+
+## License
+
+MIT
+
+## Citation
+
+Users of AiiDAlab are kindly asked to cite the following publication in their own work:
+
+A. V. Yakutovich et al., Comp. Mat. Sci. 188, 110165 (2021).
+[DOI:10.1016/j.commatsci.2020.110165](https://doi.org/10.1016/j.commatsci.2020.110165)
+
+## Contact
+
+aiidalab@materialscloud.org
+
+## Acknowledgements
+
+This work is supported by the [MARVEL National Centre for Competency in Research](<http://nccr-marvel.ch>)
+funded by the [Swiss National Science Foundation](<http://www.snf.ch/en>), as well as by the [MaX
+European Centre of Excellence](<http://www.max-centre.eu/>) funded by the Horizon 2020 EINFRA-5 program,
+Grant No. 676598.
+
+![MARVEL](miscellaneous/logos/MARVEL.png)
+![MaX](miscellaneous/logos/MaX.png)
+
+
