@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.w3school.com.cn"
+           xmlns="http://www.w3school.com.cn"
+           elementFormDefault="qualified">
+    <xs:element name="interface" type="interface"/>
+    <xs:complexType name="interface">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                接口定义
+                中文名：接口
+                类型：标签
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="server" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       服务器地址
+                       中文名：服务器
+                       类型：标签
+                       标签值：服务器地址，可使用${}表达式
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="port" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       端口
+                       中文名：端口
+                       类型：标签
+                       标签值：端口，可使用${}表达式
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="path" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       协议为http或https时需要说明路径
+                       中文名：路径
+                       类型：标签
+                       标签值：路径，可使用${}表达式
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="header" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       请求头
+                       中文名：请求头
+                       类型：标签
+                       标签值：请求头，可使用${}表达式
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="param" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       请求参数
+                       中文名：请求体
+                       类型：标签
+                       标签值：请求参数，可使用${}表达式
+                       说明：对于get请求，当同时指定了body和param时，将以body为准
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="body" type="body" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation><![CDATA[
+                       请求体
+                       中文名：请求体
+                       类型：标签
+                       标签值：请求体，可使用${}表达式
+                    ]]></xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="files" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="file" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:string">
+                                        <xs:attribute name="name" use="required"/>
+                                        <xs:attribute name="mime">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:enumeration value="multipart/form-data"/>
+                                                    <xs:enumeration value="image/jpeg"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:attribute>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="protocol" type="protocol" use="required"/>
+        <xs:attribute name="method" type="method"/>
+        <xs:attribute name="desc" type="desc" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="body">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="type" type="type" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="method">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                        当协议为http时，需要选择此项
+                       中文名：数据类型
+                       类型：属性
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:restriction>
+            <xs:enumeration value="get">
+                <xs:annotation>
+                    <xs:documentation>
+                        get请求
+                        中文名：get请求
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="post">
+                <xs:annotation>
+                    <xs:documentation>
+                        post请求
+                        中文名：post请求
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="put">
+                <xs:annotation>
+                    <xs:documentation>
+                        put请求
+                        中文名：put请求
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="patch">
+                <xs:annotation>
+                    <xs:documentation>
+                        patch请求
+                        中文名：patch请求
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="delete">
+                <xs:annotation>
+                    <xs:documentation>
+                        delete请求
+                        中文名：delete请求
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="type">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                        请求体数据类型
+                       中文名：数据类型
+                       类型：属性
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:restriction>
+            <xs:enumeration value="json">
+                <xs:annotation>
+                    <xs:documentation>
+                        json数据
+                        中文名：json数据
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="form_gb18030">
+                <xs:annotation>
+                    <xs:documentation>
+                        表单数据，传送时，会使用gb18030对表单数据格式进行编码
+                        中文名：表单数据
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="key_value">
+                <xs:annotation>
+                    <xs:documentation>
+                        表单
+                        中文名：表单
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="xml">
+                <xs:annotation>
+                    <xs:documentation>
+                        xml数据
+                        中文名：xml数据
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="sql">
+                <xs:annotation>
+                    <xs:documentation>
+                        sql语句
+                        中文名：sql语句
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="string">
+                <xs:annotation>
+                    <xs:documentation>
+                        字符串
+                        中文名：字符串
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="protocol">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                        接口的协议
+                       中文名：协议
+                       类型：属性
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:restriction>
+            <xs:enumeration value="http">
+                <xs:annotation>
+                    <xs:documentation>
+                        http协议
+                        中文名：http协议
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="https">
+                <xs:annotation>
+                    <xs:documentation>
+                        https协议
+                        中文名：https协议
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="tcp">
+                <xs:annotation>
+                    <xs:documentation>
+                        tcp协议
+                        中文名：tcp协议
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="sql">
+                <xs:annotation>
+                    <xs:documentation>
+                        数据库接口
+                        中文名：数据库接口
+                        类型：属性值
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="desc">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                        接口的描述
+                       中文名：描述
+                       类型：属性
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

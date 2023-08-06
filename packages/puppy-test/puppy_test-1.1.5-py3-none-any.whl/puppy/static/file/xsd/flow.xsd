@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.w3school.com.cn"
+           xmlns="http://www.w3school.com.cn"
+           elementFormDefault="qualified">
+    <xs:include schemaLocation="scene.xsd"/>
+    <xs:element name="flow" type="flowType"/>
+    <xs:complexType name="flowType">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                流程定义
+                中文名：流程
+                类型：标签
+                子属性：流程的参数
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="common_" maxOccurs="unbounded"/>
+            <xs:element name="return" type="return" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:anyAttribute processContents="skip"/>
+    </xs:complexType>
+    <xs:group name="common_">
+        <xs:choice>
+            <xs:element name="flow" type="flow"/>
+            <xs:element name="set" type="set"/>
+            <xs:element name="interface" type="interface"/>
+            <xs:element name="selenium" type="selenium"/>
+            <xs:element name="if" type="if_"/>
+            <xs:element name="while" type="while_"/>
+            <xs:element name="for" type="for_"/>
+            <xs:element name="sql" type="sqlTag"/>
+            <xs:element name="sleep" type="sleep"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="common_inner_">
+        <xs:choice>
+            <xs:element name="flow" type="flow"/>
+            <xs:element name="set" type="set"/>
+            <xs:element name="interface" type="interface"/>
+            <xs:element name="selenium" type="selenium"/>
+            <xs:element name="if" type="if_inner_"/>
+            <xs:element name="while" type="while_"/>
+            <xs:element name="for" type="for_"/>
+            <xs:element name="sql" type="sqlTag"/>
+            <xs:element name="sleep" type="sleep"/>
+        </xs:choice>
+    </xs:group>
+    <xs:complexType name="if_">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                分支结构
+                中文名：分支
+                类型：标签
+                说明：
+                    --当ex属性所说明的表达式计算值为真时，执行其子标签的内容
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="common_" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="return" type="return"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="ex" use="required" type="ex"/>
+        <xs:attribute name="desc" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+                    if标签的描述
+                    中文名：描述
+                    类型：属性
+                ]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="db_info" type="db_info"/>
+    </xs:complexType>
+    <xs:complexType name="if_inner_">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                分支结构
+                中文名：分支
+                类型：标签
+                说明：
+                    --当ex属性所说明的表达式计算值为真时，执行其子标签的内容
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="common_" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="break" type="break"/>
+                <xs:element name="continue" type="continue"/>
+                <xs:element name="return" type="return"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="ex" use="required" type="ex"/>
+        <xs:attribute name="desc" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+                    if标签的描述
+                    中文名：描述
+                    类型：属性
+                ]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+         <xs:attribute name="db_info" type="db_info"/>
+    </xs:complexType>
+    <xs:complexType name="while_">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                循环结构
+                中文名：循环
+                类型：标签
+                说明：
+                    --当ex属性所说明的表达式计算值为真时，执行其子标签的内容
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:group ref="cycle_"/>
+        <xs:attribute name="ex" use="required" type="ex"/>
+        <xs:attribute name="desc" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+                    while标签的描述
+                    中文名：描述
+                    类型：属性
+                ]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="count"/>
+         <xs:attribute name="db_info" type="db_info"/>
+    </xs:complexType>
+    <xs:complexType name="for_">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                for遍历
+                中文名：for遍历
+                类型：标签
+                说明：
+                    --items可以是列表或字典
+                    --对列表或字典进行遍历
+            ]]></xs:documentation>
+        </xs:annotation>
+        <xs:group ref="cycle_"/>
+        <xs:attribute name="key" use="required">
+            <xs:annotation>
+                <xs:documentation><![CDATA[
+                    遍历数据的单项名称
+                    中文名：单项名称
+                    类型：属性
+                    说明：
+                        --如果遍历的是列表，仅需提供1个名称
+                        --如果遍历的是字典，需提供2个名称，用英文逗号隔开
+                ]]></xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="items" use="required"/>
+        <xs:attribute name="desc" use="required"/>
+         <xs:attribute name="db_info" type="db_info"/>
+    </xs:complexType>
+    <xs:group name="cycle_">
+        <xs:sequence>
+            <xs:group ref="common_inner_" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:choice minOccurs="0">
+                <xs:element name="break" type="break"/>
+                <xs:element name="continue" type="continue"/>
+                <xs:element name="return" type="return"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+    <xs:complexType name="return">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                       说明返回值
+                       名称：返回值
+                       类型：标签
+                       说明：
+                       --属性value和标签值均可说明返回值，选一个即可
+                       --属性value和标签值均可使用${}表达式
+                    ]]></xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:restriction base="xs:string">
+                <xs:attribute name="value">
+                    <xs:annotation>
+                        <xs:documentation><![CDATA[
+                                           要返回的值
+                                           名称：值
+                                           类型：属性
+                                        ]]></xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>
