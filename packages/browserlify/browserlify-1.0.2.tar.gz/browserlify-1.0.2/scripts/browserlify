@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+import os
+import sys
+import json
+import argparse
+from browserlify import Option
+from browserlify.command import pdf, get_content, screenshot, scrape
+
+version_text = """browserlify.com cli tool - 20220507"""
+
+
+def handle_result(args, result):
+    if args.output == '-':
+        sys.stdout.buffer.write(result)
+        return
+
+    open(args.output, 'wb').write(result)
+
+
+def args_to_option(args):
+    opt = Option(args.token)
+    if hasattr(args, 'flows') and args.flows:
+        opt.flows = json.loads(open(args.flows).read())
+
+    opt.wait_load = getattr(args, 'waitload', None)
+    opt.proxy = getattr(args, 'proxy', None)
+
+    # pdf
+    opt.full_page = getattr(args, 'fullpage', None)
+    opt.paper = getattr(args, 'paper', None)
+
+    # screenshot
+    opt.format = getattr(args, 'format', None)
+    opt.flip = getattr(args, 'flip', None)
+    opt.flop = getattr(args, 'flop', None)
+    opt.rotate = getattr(args, 'rotate', None)
+    opt.quality = getattr(args, 'quality', None)
+
+    return opt
+
+
+def handle_pdf(args):
+    opt = args_to_option(args)
+    c = pdf(args.url[0], opt, args.endpoint)
+    handle_result(args, c)
+
+
+def handle_screenshot(args):
+    opt = args_to_option(args)
+    c = screenshot(args.url[0], opt, args.endpoint)
+    handle_result(args, c)
+
+
+def handle_content(args):
+    opt = args_to_option(args)
+    c = get_content(args.url[0], opt, args.endpoint)
+    handle_result(args, c)
+
+
+def handle_scrape(args):
+    opt = args_to_option(args)
+    c = scrape(args.url[0], opt, args.endpoint)
+    handle_result(args, c)
+
+
+def init_common_opt(parser):
+    parser.add_argument('-t', '--token', default=os.getenv('TOKEN'),
+                        help='API token, from https://browserlify.com')
+    parser.add_argument('--endpoint', default=os.getenv('ENDPOINT', 'https://api.browserlify.com'),
+                        help='endpoint, default is https://api.browserlify.com')
+    parser.add_argument('-f', '--flows', help='flows json file')
+    parser.add_argument('-p', '--proxy', help='proxy server addr')
+    parser.add_argument('-w', '--waitload', type=int,
+                        help='wait document load until timeout, in milliseconds')
+
+    parser.add_argument('--fullpage', action='store_true',
+                        help='all content fit into one page')
+    parser.add_argument('-o', '--output', default='-',
+                        help='output filename, default is stdout')
+    parser.add_argument('url', nargs=1,
+                        help='website must start with http:// or https://')
+    return parser
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='browserlify cli tool', formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--version', '-v', action="version",
+                        version=version_text)
+
+    subparsers = parser.add_subparsers(help='commands help')
+    cmd_pdf = subparsers.add_parser('pdf', help='pdf generation help')
+    cmd_pdf.set_defaults(func=handle_pdf)
+    init_common_opt(cmd_pdf)
+    cmd_pdf.add_argument('--paper', default='A4',
+                         help='paper format, default A4')
+
+    cmd_screenshot = subparsers.add_parser(
+        'screenshot', help='take screenshot help')
+    cmd_screenshot.set_defaults(func=handle_screenshot)
+    init_common_opt(cmd_screenshot)
+
+    cmd_screenshot.add_argument('--format', default='png',
+                                help='image format, png|jpeg|webp, default png')
+
+    cmd_screenshot.add_argument('--flip', action='store_true',
+                                help='flip image')
+    cmd_screenshot.add_argument('--flop', action='store_true',
+                                help='flop image')
+    cmd_screenshot.add_argument('--rotate', type=int,
+                                help='rotate image with degree, default 0')
+    cmd_screenshot.add_argument('--quality', type=int,
+                                help='image quality, only for jpeg')
+
+    cmd_content = subparsers.add_parser(
+        'content', help='get content help')
+    cmd_content.set_defaults(func=handle_content)
+    init_common_opt(cmd_content)
+
+    cmd_scrape = subparsers.add_parser(
+        'scrape', help='web scrape help')
+    cmd_scrape.set_defaults(func=handle_scrape)
+    init_common_opt(cmd_scrape)
+
+    args = parser.parse_args()
+
+    if not hasattr(args, 'token') or not args.token:
+        parser.print_usage()
+        print('the token arguments are required: -t/--token')
+        sys.exit(-1)
+
+    if hasattr(args, 'func'):
+        args.func(args)
+    else:
+        parser.print_usage()
+        print('command: pdf, scrape, screenshot, content')
+        sys.exit(-1)
+
+
+if __name__ == "__main__":
+    main()
