@@ -1,0 +1,199 @@
+Metadata-Version: 2.1
+Name: datadings
+Version: 3.4.5
+Summary: datadings is a collection of tools to prepare datasets for machine learning. It's easy to use, space-efficient, and blazingly fast. 
+Author: Joachim Folz
+Author-email: joachim.folz@dfki.de
+License: MIT
+Project-URL: Documentation, https://datadings.readthedocs.io
+Project-URL: Source, https://gitlab.com/jfolz/datadings
+Project-URL: Tracker, https://gitlab.com/jfolz/datadings/issues
+Keywords: datadings datasets data sets image classification semantic segmentation saliency
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Description-Content-Type: text/x-rst; charset=UTF-8
+License-File: LICENSE
+Requires-Dist: gdown (>=3.0.0)
+Requires-Dist: msgpack (!=0.6.0,<2.0.0,>=0.5.0)
+Requires-Dist: msgpack-numpy (<1.0.0,>=0.4.2)
+Requires-Dist: natsort (>=4.0.4)
+Requires-Dist: numpy (<2.0.0,>=1.17.0)
+Requires-Dist: Pillow (<10.0.0,>=7.0.0)
+Requires-Dist: requests (<3.0.0,>=2.0.0)
+Requires-Dist: scipy (<2.0.0,>=0.17.0)
+Requires-Dist: simplebloom (<2.0.0,>=1.0.2)
+Requires-Dist: simplejpeg (<2.0.0,>=1.2.5)
+Requires-Dist: tqdm (<5.0.0,>=4.23.0)
+Requires-Dist: pyzmq (>=18.1.1)
+Provides-Extra: geo
+Requires-Dist: GDAL (>=2.4.0) ; extra == 'geo'
+
+datadings is a collection of tools to prepare datasets for machine
+learning, based on two simple principles
+
+    Datasets are collections of individual data samples.
+
+    Each sample is a dictionary with descriptive keys.
+
+For supervised training with images samples are dictionaries like this::
+
+    {"key": unique_key, "image": imagedata, "label": label}
+
+`msgpack <http://msgpack.org>`_ is used as an efficient storage
+format for most supported datasets.
+
+Check out the `documentation <https://datadings.readthedocs.io>`_
+for more details.
+
+
+
+Supported datasets
+==================
+
+================  ============================
+Dataset           Short Description           
+================  ============================
+ADE20k_           Scene Parsing, Segmentation
+ANP460_           own Eye-Tracking dataset (Jalpa)
+CAMVID_           Motion-based Segmentation
+CAT2000_          MIT Saliency
+CIFAR_            32x32 color image classification with 10/100 classes
+Cityscapes_       Segmentation, Semantic understanding of urban street
+                  scenes
+Coutrot1_         Eye-Tracking, Saliency
+FIGRIMFixation_   Eye-Tracking, Saliency
+ILSVRC2012_       Imagenet Large Scale Visual Recognition Challenge
+ImageNet21k_      A superset of ILSVRC2012 with 11 M images for 10450 classes
+InriaBuildings_   Inria Areal Image Labeling Dataset (Buildings),
+                  Segmentation, Remote Sensing
+MIT1003_          Eye-Tracking, Saliency, Learning to predict where
+                  humans look
+MIT300_           Eye-Tracking, Saliency
+Places2017_       MIT Places, Scene Recognition
+Places365_        MIT Places365, Scene Recognition
+RIT18_            High-Res Multispectral Semantic Segmentation,
+                  Remote Sensing
+SALICON2015_      Saliency in Context, Eye-Tracking
+SALICON2017_      Saliency in Context, Eye-Tracking
+VOC2012_          Pascal Visual Object Classes Challenge
+Vaihingen_        Remote Sensing, Semantic Object Classification,
+                  Segmentation
+YFCC100m_         Yahoo Flickr Creative Commons 100 M pics
+================  ============================
+
+
+.. _ADE20k: http://groups.csail.mit.edu/vision/datasets/ADE20K/
+.. _ANP460: 
+.. _CAMVID: http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/
+.. _CAT2000: http://saliency.mit.edu/results_cat2000.html
+.. _CIFAR: https://www.cs.toronto.edu/~kriz/cifar.html
+.. _Cityscapes: https://www.cityscapes-dataset.com/
+.. _Coutrot1: http://antoinecoutrot.magix.net/public/databases.html
+.. _FIGRIMFixation: http://figrim.mit.edu/index_eyetracking.html
+.. _ILSVRC2012: http://www.image-net.org/challenges/LSVRC/2012/
+.. _ImageNet21k: https://image-net.org/download.php
+.. _InriaBuildings: https://project.inria.fr/aerialimagelabeling/
+.. _MIT300: http://saliency.mit.edu/results_mit300.html
+.. _MIT1003: http://people.csail.mit.edu/tjudd/WherePeopleLook/index.html
+.. _Places365: http://places2.csail.mit.edu/
+.. _Places2017: http://places.csail.mit.edu/
+.. _RIT18: https://github.com/rmkemker/RIT-18
+.. _SALICON2015: http://salicon.net/challenge-2015/
+.. _SALICON2017: http://salicon.net/challenge-2017/
+.. _Vaihingen: http://www2.isprs.org/commissions/comm3/wg4/2d-sem-label-vaihingen.html
+.. _VOC2012: http://host.robots.ox.ac.uk/pascal/VOC/voc2012/
+.. _YFCC100m: http://yfcc100m.appspot.com/about
+
+
+
+Command line tools
+==================
+
+* *datadings-write*
+  creates new dataset files.
+* *datadings-cat*
+  prints the (abbreviated) contents of a dataset file.
+* *datadings-shuffle*
+  shuffles an existing dataset file.
+* *datadings-merge*
+  merges two or more dataset files.
+* *datadings-split*
+  splits a dataset file into two or more subsets.
+* *datadings-bench*
+  runs some basic read performance benchmarks.
+
+
+
+Basic usage
+===========
+
+Each dataset defines modules to read and write in the
+``datadings.sets`` package.
+For most datasets the reading module only contains additional
+metadata like class labels and distributions.
+
+Let's consider the *MIT1003* dataset as an example.
+
+``MIT1003_write`` is an executable that creates dataset files.
+It can be called directly or through *datadings-write*.
+Three files will be written:
+
+* ``MIT1003.msgpack`` contains sample data
+* ``MIT1003.msgpack.index`` contains index for random access
+* ``MIT1003.msgpack.md5`` contains MD5 hashes of both files
+
+Reading all samples sequentially,
+using a ``MsgpackReader`` as a context manager::
+
+    with MsgpackReader('MIT1003.msgpack') as reader:
+        for sample in reader:
+            [do dataset things]
+
+This standard iterator returns dictionaries.
+Use the ``rawiter()`` method to get samples as messagepack encoded
+bytes instead.
+
+Reading specific samples::
+
+    reader.seek_key('i14020903.jpeg')
+    print(reader.next()['key'])
+    reader.seek_index(100)
+    print(reader.next()['key'])
+
+Reading samples as raw bytes::
+
+    raw = reader.rawnext()
+    for raw in reader.rawiter():
+        print(type(raw), len(raw))
+
+Number of samples::
+
+    print(len(reader))
+
+You can also change the order and selection of iterated samples
+with augments.
+For example, to randomize the order of samples, wrap the reader
+in a ``Shuffler``::
+
+    from datadings.reader import Shuffler
+    with Shuffler(MsgpackReader('MIT1003.msgpack')) as reader:
+        for sample in reader:
+            # do dataset things, but in random order!
+
+A common use case is to iterate over the whole dataset multiple times.
+This can be done with the ``Cycler``::
+
+    from datadings.reader import Cycler
+    with Cycler(MsgpackReader('MIT1003.msgpack')) as reader:
+        for sample in reader:
+            # do dataset things, but FOREVER!
+
+
+
