@@ -1,0 +1,12 @@
+<tal:comment replace="nothing">
+    Assume h1 is the top page heading
+</tal:comment>
+
+<h2 class="rss-title" tal:condition="items">Some feed title displayed only if there are any items</h2>
+
+<div class="rss-item" tal:repeat="item items">
+    <h3 class="rss-item-title" tal:content="python:item['title']">Item title</h3>
+    <i class="rss-item-published" tal:content="python:item['created_at']">Published</i>
+    <i class="rss-item-updated" tal:content="python:item['updated_at']">Last updated</i>
+    <p class="rss-item-content" tal:content="structure python:item['messageBody']">Item content</p>
+</div>

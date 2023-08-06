@@ -1,0 +1,103 @@
+stages:
+  - test
+  - build
+  - check
+  - deploy
+
+mdcheck:
+  stage: test
+  image: it4innovations/docker-mdcheck:latest
+  script:
+    - mdl -r ~MD013,~MD033 *.md
+
+shellcheck:
+  stage: test
+  image: it4innovations/docker-shellcheck:latest
+  script:
+    - find . -type f -name "*.sh" -print0 | xargs -r -0 shellcheck
+
+#pylint:
+#  stage: test
+#  image: it4innovations/docker-pycheck:latest
+#  script:
+#    - export PYTHONIOENCODING=UTF-8
+#    - export LC_CTYPE=en_US.UTF-8
+#    - export IT4I_FACTORY_PREBUILD=1
+#    - pip install mustache pystache==0.5.4 setuptools-git-version setuptools-markdown
+#    - pip install $(paste -d " " -s it4i.portal.clients.egg-info/requires.txt)
+#    - find . -type f -name "*.py" -print0 | xargs -r -0 pylint --max-line-length=129 --disable=duplicate-code
+
+build:
+  stage: build
+  image: it4innovations/docker-pypi:latest
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/it4i.portal.clients*tar.gz
+  script:
+    - export PYTHONIOENCODING=UTF-8
+    - export LC_CTYPE=en_US.UTF-8
+    - export IT4I_FACTORY_PREBUILD=1
+    - pip install mustache pystache==0.5.4 setuptools-git-version setuptools-markdown
+    - echo "output_engine = mustache(\"restructuredtext\")" >> .gitchangelog.rc
+    - gitchangelog >> docs/HISTORY.txt
+    - cat docs/HISTORY.txt
+    - echo "output_engine = mustache(\"markdown\")" >> .gitchangelog.rc
+    - echo >> README.md
+    - gitchangelog | sed -r '1,/^# Changelog$/s/^(# Changelog)$/#\1/' >> README.md
+    - python setup.py --version
+    - echo "version = '$(python setup.py --version)'" >> version.py
+    - python setup.py sdist
+
+python safety:
+  stage: check
+  image: it4innovations/docker-pycheck:latest
+  script:
+    - source /opt/.venv/bin/activate
+    - pip install --upgrade pip setuptools
+    - pip install dist/it4i.portal.clients*tar.gz
+    - pip list
+    - pip freeze | safety check --stdin --full-report
+
+install test:
+  stage: check
+  image: it4innovations/docker-pypi:latest
+  script:
+    - echo "[main]" >> /home/vop999/.it4ifree
+    - echo "api_url = https://scs.it4i.cz/api/v1/" >> /home/vop999/.it4ifree
+    - echo "it4ifreetoken = $IT4FREETOKEN" >> /home/vop999/.it4ifree
+    - chown vop999:vop999 /home/vop999/.it4ifree
+    - pip install dist/it4i.portal.clients*tar.gz
+    - su - vop999 -c 'it4icheckaccess -l vop999 -c barbora -q qexp'
+    - su - vop999 -c 'it4idedicatedtime; RETVAL=$?; if [ $RETVAL = 0 ] || [ $RETVAL = 99 ]; then true; else false; fi'
+    - su - vop999 -c 'it4ifree'
+    - su - vop999 -c 'it4ifree -a'
+    - su - vop999 -c 'it4ifree -p'
+    - su - vop999 -c 'it4ifsusage'
+    - su - vop999 -c 'it4imotd'
+    - su - vop999 -c 'it4imotd -m important'
+    - su - vop999 -c 'it4imotd -t "/usr/local/lib/python2.7/dist-packages/it4i/portal/clients/templates/it4imotd.pt-sample"'
+    - rm /home/vop999/.it4ifree
+
+version check:
+  stage: check
+  image: it4innovations/docker-pypi:latest
+  script:
+    - export IT4I_FACTORY_PREBUILD=1
+    - python setup.py --version
+    - export BUILD_VERSION="$(python setup.py --version)"
+    - export PUBLISHED_VERSION="$(yolk -V it4i.portal.clients | sed 's/it4i\.portal\.clients//' | grep -Eo '[0-9.]+')"
+    - export EGG_VERSION=$(grep -E "^Version:" it4i.portal.clients.egg-info/PKG-INFO | grep -Eo "[0-9.]+")
+    - CMP_VERSION="$(cmp-version $EGG_VERSION $PUBLISHED_VERSION)"
+    - if [ $CMP_VERSION -eq 1 ]; then true; else echo "Egg info is older/same version as module already available from public pypi repository. Please run python setup.py egg_info and commit changes"; false; fi
+    - CMP_VERSION="$(cmp-version $BUILD_VERSION $PUBLISHED_VERSION)"
+    - if [ $CMP_VERSION -eq 1 ]; then true; else echo 'Git tag is older/same version as module already available from public pypi repository. Please run git tag -a <version> -m "<version>"'; false; fi
+
+upload:
+  stage: deploy
+  image: it4innovations/docker-pypi:latest
+  script:
+    - twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" dist/it4i.portal.clients*tar.gz
+  only:
+    - master
+  when: manual
