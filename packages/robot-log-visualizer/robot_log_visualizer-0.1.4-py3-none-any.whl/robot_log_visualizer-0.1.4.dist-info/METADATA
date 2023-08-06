@@ -1,0 +1,106 @@
+Metadata-Version: 2.1
+Name: robot-log-visualizer
+Version: 0.1.4
+Summary: Visualizer for robot logger
+Home-page: https://github.com/ami-iit/robot-log-visualizer
+Author: Giulio Romualdi
+Author-email: giulio.romualdi@gmail.com
+License: BSD3
+Project-URL: Changelog, https://github.com/ami-iit/robot-log-visualizer/releases
+Project-URL: Tracker, https://github.com/ami-iit/robot-log-visualizer/issues
+Project-URL: Source, https://github.com/ami-iit/robot-log-visualizer
+Keywords: robotics,visualization
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development
+Classifier: Framework :: Robot Framework
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3 :: Only
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: idyntree (>=5.0.1)
+Requires-Dist: meshcat
+Requires-Dist: numpy
+Requires-Dist: PyQt5
+Requires-Dist: PyQtWebEngine
+Requires-Dist: pyqtconsole
+Requires-Dist: matplotlib
+Requires-Dist: h5py
+Requires-Dist: icub-models (>=1.23.2)
+
+# 🤖 robot-log-visualizer
+
+`robot-log-visualizer` implements a python visualizer to display the data logged with
+[`YarpRobotLoggerDevice`](https://github.com/ami-iit/bipedal-locomotion-framework/tree/master/devices/YarpRobotLoggerDevice) application.
+
+## 📝 Install
+
+Please follow one of the following method to use the software
+
+### 🐍 Install from `pip` with apt python
+
+Install `python3`, if not installed (in **Ubuntu 20.04**):
+
+```console
+sudo apt install python3.8 python3-virtualenv swig
+```
+
+Create a [virtual environment](https://docs.python.org/3/library/venv.html#venv-def) and activate it. For example:
+```console
+python3 -m venv visualizer-env
+. visualizer-env/bin/activate
+```
+
+Inside the virtual environment, install the library from `pip`:
+
+```console
+pip install robot-log-visualizer
+```
+
+
+### 📦 Use the `AppImage`
+If you are in a Linux distribution you can use the [`AppImage`](https://appimage.org/).
+Please run the following command on your terminal. Remeber to change the `version` number in the following command
+```console
+version=0.1.4
+wget https://github.com/ami-iit/robot-log-visualizer/releases/download/v${version}/robot-log-visualizer-${version}-x86_64.AppImage
+chmod a+x robot-log-visualizer-${version}-x86_64.AppImage
+```
+
+Run the application
+```console
+./robot-log-visualizer-${version}-x86_64.AppImage
+```
+
+### 👷 Install latest version (not recommended)
+If you want to use the latest feature of the `robot-log-visualizer` you can install it with the
+following command
+```console
+python -m pip install git+https://github.com/ami-iit/robot-log-visualizer.git
+```
+
+## 🏃 Example
+
+Once you have install the `robot-log-visualizer` you can run it from the terminal
+
+https://user-images.githubusercontent.com/16744101/150236773-a71b1cb3-884c-42bf-b03c-dca1491e55f2.mp4
+
+You can navigate the dataset thanks to the slider or by pressing `Ctrl-f` and `Ctrl-b` to move
+forward and backward.
+
+##  🐛 Bug reports and support
+All types of [issues](https://github.com/ami-iit/robot-log-visualizer/issues/new) are welcome.
+
+## 📝 License
+Materials in this repository are distributed under the following license:
+
+> All software is licensed under the BSD 3-Clause License. See [LICENSE](https://github.com/ami-iit/robot-log-visualizer/blob/main/LICENSE) file for details.
+
+
