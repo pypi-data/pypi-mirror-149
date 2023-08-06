@@ -1,0 +1,84 @@
+[tool.poetry]
+name = "patito"
+version = "0.1.0"
+description = "A dataframe modelling library built on top of polars and pydantic."
+authors = ["Jakob Gerhard Martinussen <jakobgm@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/kolonialno/patito"
+repository = "https://github.com/kolonialno/patito"
+keywords = ["validation", "dataframe"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pydantic = ">=1.9.0"
+polars = ">=0.13.18"
+# Required for typing.Literal in python3.7
+typing-extensions = "*"
+pandas = {version = ">=1.4.0", optional = true, python = "^3.8"}
+duckdb = {version = ">=0.3.2", optional = true, python = "^3.8"}
+pyarrow = {version = ">=7.0.0", optional = true, python = "^3.8"}
+coverage = {version = ">=6.3.2", extras = ["toml"]}
+
+[tool.poetry.extras]
+duckdb = ["duckdb", "pyarrow"]
+pandas = ["pandas"]
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+coverage = "^6.3.2"
+flake8 = "^4.0.1"
+flake8-annotations = "^2.9.0"
+flake8-bandit = "^3.0.0"
+flake8-black = "^0.3.2"
+flake8-bugbear = "^22.4.25"
+flake8-isort = "^4.1.1"
+isort = "^5.10.1"
+pyright = "^1.1.239"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pytest-watcher = "^0.2.3"
+xdoctest = "^1.0.0"
+
+mypy = ">=0.950"
+types-setuptools = ">=57.4.14"
+pandas-stubs = ">=1.2.0"
+Sphinx = "<=4.4.0"
+sphinx-rtd-theme = "^1.0.0"
+sphinx-autobuild = "^2021.3.14"
+codecov = "^2.1.12"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["patito"]
+# TODO: Remove once DuckDB-API becomes public
+omit = ["src/patito/duckdb.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "if not _PANDAS_AVAILABLE:",
+  "except ImportError:",
+]
+fail_under = 100
+show_missing = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pyright]
+exclude = ["noxfile.py"]
+
+[tool.mypy]
+# TODO: Remove once DuckDB wrapper becomes public API
+exclude = [
+  "src/patito/duckdb.py",
+]
