@@ -1,0 +1,141 @@
+Metadata-Version: 2.1
+Name: aoa
+Version: 6.0.0rc5
+Summary: Python client for Teradata AnalyticOps Accelerator (AOA)
+Home-page: UNKNOWN
+Author: Teradata
+Author-email: teradata.corporation@teradatacorporation.com
+License: UNKNOWN
+Description: # Teradata AnalyticOps Client
+        
+        - [Official Documentation](#official-documentation)
+        - [Release Notes](#release-notes)
+        
+        ## Official Documentation
+        
+        The official documentation for the SDK and CLI can be found in the following links
+        
+        - [SDK]()
+        - [CLI]()
+        
+        ## Release Notes
+        
+        ### 5.0.0
+        
+        - Feature: Add simpler teradataml context creation via aoa_create_context
+        - Feature: Add database to connections
+        - Feature: Support for human-readable model folder names
+        - Feature: Improve UX of aoa run
+        - Feature: Improved error messages for users related to auth and configure
+        - Refactor: Package refactor of aoa.sto.util to aoa.util.sto
+        - Bug: cli listing not filtering archived entities
+        - Cleanup: Remove pyspark support from CLI
+        - 
+        
+        ### 4.1.12
+        
+        - Bug: aoa connection add now hides password symbols
+        - Bug: sto.util.cleanup_cli() used hardcoded models table
+        - Feature: sto.util.check_sto_version() checks In-Vantage Python version compatibility
+        - Feature: sto.util.collect_sto_versions() fetches dict with Python and packages versions
+        
+        ### 4.1.11
+        
+        - Bug: aoa run (evaluation) for R now uses the correct scoring file
+        
+        ### 4.1.10
+        
+        - Bug: aoa init templates were out of date
+        - Bug: aoa run (score) didn't read the dataset template correctly
+        - Bug: aoa run (score) tried to publish to prometheus 
+        - Bug: aoa run (score) not passing model_table kwargs
+        
+        ### 4.1.9
+        
+        - Bug: Histogram buckets incorrectly offset by 1 for scoring metrics
+        
+        ### 4.1.7
+        
+        - Bug: Quoted and escaped exported connection environmental variables
+        - Bug: aoa clone with `path` argument didn't create .aoa/config.yaml in correct directory
+        - Feature: aoa clone without `path` now uses repository name by default
+        - Feature: update BYOM import to upload artefacts before creating version 
+        
+        ### 4.1.6
+        
+        - Feature: Added local connections feature with Stored Password Protection
+        - Feature: Self creation of .aoa/config.yaml file when cloning a repo
+        - Bug: Fix argparse to use of common arguments
+        - Feature: Support dataset templates for listing datasets and selecting dataset for train/eval
+        - Bug: Fix aoa run for batch scoring, prompts for dataset template instead of dataset
+        - Bug: Fix batch scoring histograms as cumulative
+        
+        ### 4.1.5
+        
+        - Bug: Fix computing stats
+        - Feature: Autogenerate category labels and support for overriding them
+        - Feature: Prompt for confirmation when retiring/archiving
+        
+        ### 4.1.4
+        
+        - Feature: Retiring deployments and archiving projects support
+        - Feature: Added support for batch scoring monitoring
+        
+        ### 4.1.2
+        
+        - Bug: Fix computing stats
+        - Bug: Fix local SQL model training and evaluation
+        
+        ### 4.1
+        
+        - Bug: CLI shows archived entities when listing datasets, projects, etc
+        - Bug: Adapt histogram bins depending on range of integer types.
+        
+        ### 4.0
+        
+        - Feature: Extract and record dataset statistics for Training, Evaluation
+        
+        ### 3.1.1
+        
+        - Feature: `aoa clone` respects project branch
+        - Bug: support Source Model ID from the backend
+        
+        ### 3.1
+        
+        - Feature: ability to separate evaluation and scoring logic into separate files for Python/R
+        
+        ### 3.0
+        
+        - Feature: Add support for Batch Scoring in run command
+        - Feature: Added STO utilities to extract metadata for micro-models
+        
+        ### 2.7.2
+        
+        - Feature: Add support for OAUTH2 token refresh flows
+        - Feature: Add dataset connections api support
+        
+        ### 2.7.1
+        
+        - Feature: Add TrainedModelArtefactsApi
+        - Bug: pyspark cli only accepted old resources format
+        - Bug: Auth mode not picked up from environment variables 
+        
+        ### 2.7.0 
+        
+        - Feature: Add support for dataset templates
+        - Feature: Add support for listing models (local and remote), datasets, projects
+        - Feature: Remove pykerberos dependency and update docs
+        - Bug: Fix tests for new dataset template api structure
+        - Bug: Unable to view/list more than 20 datasets / entities of any type in the cli 
+        
+        ### 2.6.2
+         - Bug: Added list resources command.
+         - Bug: Remove all kerberos dependencies from standard installation, as they can be now installed as an optional feature.
+         - Feature: Add cli support for new artefact path formats
+         
+        ### 2.6.1 
+         - Bug: Remove pykerberos as an installation dependency. 
+        
+Platform: UNKNOWN
+Requires-Python: >=3.5.2
+Description-Content-Type: text/markdown
