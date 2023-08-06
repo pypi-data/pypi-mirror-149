@@ -1,0 +1,105 @@
+#!python
+# This file is placed in the Public Domain.
+
+
+"Prosector. Reconsider. OTP-CR-117/19."
+
+
+import os
+import readline
+import sys
+import termios
+import time
+import traceback
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from genocide.obj import Config
+
+
+Config.console = False
+Config.name = "genocide"
+Config.workdir = os.path.expanduser("~/.genocide")
+
+
+from genocide.evt import Command
+from genocide.hdl import Callbacks, Commands, Handler, dispatch
+from genocide.irc import IRC, Output
+from genocide.mdl import init as mdlinit
+from genocide.obj import Object, format
+from genocide.rss import Fetcher
+from genocide.sui import init as suiinit
+
+
+import genocide.all
+
+
+class Console(Handler, Output):
+
+    cache = Object()
+
+    def announce(self, txt):
+        pass
+
+    def cmd(self, txt):
+        c = Command()
+        c.channel = "#botd"
+        c.orig = repr(self)
+        c.txt = txt
+        self.handle(c)
+        c.wait()
+
+    def handle(self, e):
+        Handler.handle(self, e)
+        e.wait()
+
+    def poll(self):
+        e = Command()
+        e.channel = "#genocide"
+        e.cmd = ""
+        e.txt = input("> ")
+        e.orig = repr(self)
+        if e.txt:
+            e.cmd = e.txt.split()[0]
+        return e
+
+    def raw(self, txt):
+        print(txt)
+
+
+def warp(func):
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        func()
+    except (EOFError, KeyboardInterrupt):
+        print("")
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
+        for err in Callbacks.errors:
+            traceback.print_exception(type(err), err, err.__traceback__)
+
+
+def main():
+    Callbacks.add("command", dispatch)
+    c = Console()
+    if "-c" in sys.argv:
+        Config.console = True
+    elif len(sys.argv) > 1:
+        return c.cmd(" ".join(sys.argv[1:]))
+    print("GENOCIDE started at %s" % time.ctime(time.time()).replace("  ", " "))
+    if not Config.console:
+        i = IRC()
+        i.start()
+        print(format(i.cfg, skip="realname,sleep,username"))
+        f = Fetcher()
+        f.start()
+        mdlinit()
+    c.start()
+    while 1:
+        time.sleep(1.0)
+
+
+warp(main)
