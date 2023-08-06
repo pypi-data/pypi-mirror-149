@@ -1,0 +1,34 @@
+Metadata-Version: 2.1
+Name: pwnchk
+Version: 0.0.1
+Summary: Check if a password has been pwned
+Home-page: https://github.com/fionn/pwnchk
+Author: Fionn Fitzmaurice
+License: UNKNOWN
+Project-URL: Source Code, https://github.com/fionn/pwnchk
+Project-URL: Changelog, https://github.com/fionn/pwnchk/tags
+Project-URL: Documentation, https://github.com/fionn/pwnchk/blob/master/README.md
+Project-URL: Bug Tracker, https://github.com/fionn/pwnchk/issues
+Project-URL: PyPI, https://pypi.org/project/pwnchk/
+Project-URL: Download, https://github.com/fionn/pwnchk/archive/refs/heads/master.zip
+Keywords: haveibeenpwned,password
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Security :: Cryptography
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pylint ; extra == 'dev'
+Requires-Dist: mypy ; extra == 'dev'
+Requires-Dist: types-requests ; extra == 'dev'
+
+# Pwnchk
+
+Check a password against a database of breaches.
+
+This queries the [pwned passwords](https://haveibeenpwned.com/Passwords) API v2. The password never leaves your machine, only a prefix of the SHA1, which guarantees _k_-anonymity.
+
+
