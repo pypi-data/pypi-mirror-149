@@ -1,0 +1,863 @@
+#!python
+
+#
+# newslinkrss - RSS feed generator for generic sites
+# Copyright (C) 2020  Alexandre Erwin Ittner <alexandre@ittner.com.br>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+import sys
+import re
+import datetime
+import argparse
+import traceback
+from html.parser import HTMLParser
+import urllib3
+
+import dateutil.parser
+import PyRSS2Gen
+import requests
+
+HAVE_LXML = False
+try:
+    import lxml.html
+    import lxml.html.clean
+    import lxml.etree
+
+    HAVE_LXML = True
+except ModuleNotFoundError:
+    pass
+
+
+DEFAULT_USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0"
+)
+
+
+def _first_valid_attr_in_list(attrs, name):
+    """Interpret an attribute list from HtmlParser.handle_starttag and get the
+    value of the first attribute with the given name.  It should be only one
+    but, of course, nobody can force people to only write sane HTML.
+    """
+    for itm in attrs:
+        if (len(itm) > 1) and (itm[0] == name):
+            return itm[1]
+    return None
+
+
+class CollectLinksParser(HTMLParser):
+    def __init__(self, url_patt=None, max_items=None, base_url=None):
+        HTMLParser.__init__(self)
+        self.url_patt = url_patt
+        self.max_items = max_items
+        self.base_url = base_url
+        self.links = []
+        self.limit_reached = False
+        self._found_links = set()
+        self._last_link_text = None
+        self._grab_link_text = False
+        self._last_link = None
+
+    def handle_starttag(self, tag, attrs):
+        if (self.max_items is not None) and (len(self.links) >= self.max_items):
+            self.limit_reached = True
+            return
+
+        if tag == "a":
+            href = _first_valid_attr_in_list(attrs, "href")
+            if not href:
+                return
+
+            href = href.split("#", 2)[0]  # Strip URL fragment.
+            if self.base_url:
+                href = requests.compat.urljoin(self.base_url, href)
+
+            # Try to noe follow the same link more than once. We need to
+            # repeat this check later due to redirects.
+            if href not in self._found_links and (
+                not self.url_patt or re.match(self.url_patt, href)
+            ):
+                self._last_link_text = []
+                self._grab_link_text = True
+                self._last_link = href
+
+    def handle_data(self, data):
+        if self._grab_link_text:
+            text = data.strip()
+            if text != "":
+                self._last_link_text.append(text)
+
+    def handle_endtag(self, tag):
+        if tag == "a":
+            link_text = ""
+            if self._grab_link_text:
+                self._grab_link_text = False
+                link_text = " ".join(self._last_link_text)
+            if self._last_link and self._last_link not in self._found_links:
+                self._found_links.add(self._last_link)
+                self.links.append((self._last_link, link_text))
+            self._last_link = False
+
+
+class CollectAttributesParser(HTMLParser):
+    """A state machine that parses HTML from a web page and extract some
+    useful attributes.
+
+    The following properties are set with useful informaiton:
+    title     - String with the page title or None
+    base      - String with the base URL or None
+    canonical - String with the Canonical URL for the page or None
+    description - String with a best-guest for a description or None
+    changed   - Datetime with a best-guest for the modification time or None
+    """
+
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self._title_lst = None
+        self._in_head = False
+        self.title = None
+        self.base = None
+        self.description = None
+        self.canonical = None
+        self.changed = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "head":
+            # Will fail on nested heads, but who is insane enough to do this?!
+            self._in_head = True
+
+        if self._in_head and tag == "base":
+            self.base = _first_valid_attr_in_list(attrs, "href")
+
+        if self._in_head and (tag == "title") and (not self.title):
+            self._title_lst = []
+
+        if self._in_head and tag == "link":
+            # <link rel="xxxx" href="yyyy" />
+            rel = _first_valid_attr_in_list(attrs, "rel")
+            href = _first_valid_attr_in_list(attrs, "href")
+            if rel == "canonical" and not self.canonical:
+                self.canonical = href
+
+        if self._in_head and tag.lower() == "meta":
+            # <meta name="xxxx" content="yyyy" />
+            # <meta property="xxxx" content="yyyy" />
+            name = _first_valid_attr_in_list(attrs, "name")
+            prop = _first_valid_attr_in_list(attrs, "property")
+            content = _first_valid_attr_in_list(attrs, "content")
+
+            # Attributes defined by the Open Graph Protocol: A lot of sites
+            # which refuse to provide feeds have this nice attributes so their
+            # contents appear nicely when linked on Facebook, Twitter and so.
+            # These can provide a lot of useful information.
+
+            if (
+                prop == "article:published_time"
+                or prop == "article:modified_time"
+                or prop == "og:updated_time"
+                or name == "article:published_time"
+                or name == "article:modified_time"
+                or name == "og:updated_time"
+            ):
+                # Content is a date in ISO format.
+                # <meta property="article:published_time" content="2020-09-13T20:00:00+00:00" />
+                # <meta property="article:modified_time" content="2020-09-13T20:01:42+00:00" />
+                try:
+                    dt = dateutil.parser.parse(content)
+                    if (not self.changed) or (self.changed < dt):
+                        self.changed = dt
+                except:
+                    pass
+
+            if prop == "og:url" and not self.canonical:
+                # <meta property="og:url" content="xxxxx">
+                self.canonical = content
+
+            if prop in ("og:description", "twitter:description") or (
+                name and name.lower() == "description"
+            ):
+                if len(content) > 8 and (
+                    (not self.description) or (len(content) > len(self.description))
+                ):
+                    self.description = content
+
+    def handle_data(self, data):
+        if self._title_lst is not None:
+            self._title_lst.append(data.strip())
+
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self._in_head = False
+
+        if tag == "title" and self._title_lst is not None:
+            self.title = "".join(self._title_lst)
+            self._title_lst = None
+
+
+def try_date_from_str(src, date_rx, date_fmt):
+    rdate = None
+    try:
+        m = re.match(date_rx, src)
+        if not m:
+            return None
+        date_txt = m.group(1)
+        if date_fmt:
+            rdate = datetime.datetime.strptime(date_txt, date_fmt)
+        else:
+            # No date format, use dateutil's best guess.
+            rdate = dateutil.parser.parse(date_txt)
+    except (AttributeError, IndexError, ValueError):
+        pass
+    return rdate
+
+
+def make_feed_item_follow(session, url, used_urls, args, link_text, base_attrs):
+
+    attr_parser = CollectAttributesParser()
+    description = ""
+    req = None
+    page_text = ""
+    tree = None
+    try:
+        req = session.get(url, timeout=args.http_timeout, stream=True)
+        if req.url in used_urls:
+            return None
+        used_urls.add(req.url)
+        chunk_size = 1024 * min(100, args.max_page_length)
+        if req.status_code == 200:
+            if attr_parser.description:
+                description = attr_parser.description
+            consumed_size = 0
+            for chunk in req.iter_content(chunk_size=chunk_size, decode_unicode=True):
+                if consumed_size >= 1024 * args.max_page_length:
+                    break
+                consumed_size += len(chunk)
+                attr_parser.feed(chunk)
+                page_text += chunk
+        else:
+            description += "Page returned status code %d<br/>" % req.status_code
+    except (
+        urllib3.exceptions.ReadTimeoutError,
+        requests.exceptions.Timeout,
+    ):
+        # We should handle this somehow.
+        return None
+    finally:
+        if req:
+            req.close()
+
+    # Give a meaningful title for this entry.
+    clean_title = attr_parser.title or link_text or attr_parser.canonical or req.url
+    if clean_title == base_attrs.title:
+        # The title is the same as the one from base url, a typical thing
+        # from horribly-designed news pages (and also happens on a
+        # government site I need to consult from time to time), so
+        # replace it with the contents of the link text, which should
+        # give a bit more useful information for the reader.
+        description += "Original title: %s<br/>" % clean_title
+        clean_title = link_text
+
+    description += "Link text: %s" % link_text
+    clean_title = clean_title[: args.max_title_length]
+    item_url = attr_parser.canonical or req.url
+
+    # Try to get a meaningful last modification date.
+    date = None
+    if attr_parser.changed:
+        date = attr_parser.changed
+    if not date and args.date_from_text:
+        date = try_date_from_str(clean_title, args.date_from_text, args.text_date_fmt)
+    if not date and args.date_from_url:
+        date = try_date_from_str(item_url, args.date_from_url, args.url_date_fmt)
+    if not date and HAVE_LXML and args.date_from_xpath:
+        try:
+            tree = lxml.html.document_fromstring(page_text)
+            for res in tree.xpath(args.date_from_xpath):
+                date = try_date_from_str(
+                    res, args.xpath_date_regex, args.xpath_date_fmt
+                )
+                if date:
+                    break
+        except (lxml.etree.XPathEvalError, lxml.etree.ParserError):
+            pass
+
+    # We need a date but the page have none. Skip this entry.
+    if args.require_dates and not date:
+        return None
+
+    if HAVE_LXML and args.with_body:
+        try:
+            if tree is None:
+                # Evil premature optimization: perhaps we already parsed the
+                # document looking for dates.
+                tree = lxml.html.document_fromstring(page_text)
+            res = tree.xpath(args.body_xpath)
+            if res and res[0] is not None:
+                cleaner = lxml.html.clean.Cleaner()
+                clean_body = cleaner.clean_html(res[0])
+                description = lxml.html.tostring(
+                    clean_body, pretty_print=False, encoding="unicode"
+                )
+        except (lxml.etree.ParserError):
+            pass
+
+    if date:
+        # PyRSS2Gen ignores tzinfos and requires the date to be explicitly in UTC.
+        date = datetime.datetime.fromtimestamp(date.timestamp(), datetime.timezone.utc)
+    return PyRSS2Gen.RSSItem(
+        title=clean_title,
+        link=item_url,
+        description=description,
+        guid=PyRSS2Gen.Guid(req.url),
+        pubDate=date,
+    )
+
+
+def make_feed_item_nofollow(url, used_urls, args, link_text, base_attrs):
+    if url in used_urls:
+        return None
+    used_urls.add(url)
+    clean_title = link_text[: args.max_title_length]
+    date = None
+    if args.date_from_text:
+        date = try_date_from_str(link_text, args.date_from_text, args.text_date_fmt)
+    if not date and args.date_from_url:
+        date = try_date_from_str(url, args.date_from_url, args.url_date_fmt)
+    # We need a date but the page have none. Skip this entry.
+    if args.require_dates and not date:
+        return None
+
+    if date:
+        # PyRSS2Gen ignores tzinfos and requires the date to be explicitly in UTC.
+        date = datetime.datetime.fromtimestamp(date.timestamp(), datetime.timezone.utc)
+    return PyRSS2Gen.RSSItem(
+        title=clean_title,
+        link=url,
+        description=link_text,
+        guid=PyRSS2Gen.Guid(url),
+        pubDate=date,
+    )
+
+
+def write_feed(rss, args):
+    if args.output:
+        with open(args.output, "w") as fp:
+            rss.write_xml(fp, encoding="utf-8")
+    else:
+        rss.write_xml(sys.stdout, encoding="utf-8")
+
+
+def make_exception_feed(exc, args=None):
+    cmdline = " ".join(sys.argv)
+    stack_trace = traceback.format_exc()
+    msg = (
+        "An error occurred when generating this feed."
+        + "<br/> <br/>"
+        + "<strong>Command line:</strong> <code>"
+        + cmdline
+        + "</code>"
+        + "<br /><br />"
+        + "<strong>Exception:</strong> "
+        + str(exc)
+        + "<br /><br />"
+        + "<strong>Stack trace:</strong> <pre>"
+        + stack_trace
+        + "\n</pre>"
+    )
+
+    itm = PyRSS2Gen.RSSItem(
+        title="newslinkrss error: " + str(exc)[:64],
+        link="data:" + cmdline,
+        description=msg,
+    )
+
+    rss = PyRSS2Gen.RSS2(
+        title="Error: " + cmdline,
+        link=args.url if args else None,
+        description="Failed to generate feed.",
+        # PyRSS2Gen ignores tzinfos and requires the date to be explicitly in UTC.
+        lastBuildDate=datetime.datetime.now(datetime.timezone.utc),
+        items=[itm],
+    )
+    write_feed(rss, args)
+
+
+def test_links(link_grabber, args):
+    args.no_exception_feed = True
+    if link_grabber.limit_reached:
+        print("# Limit of %d links was reached." % (link_grabber.max_items))
+    for itm in link_grabber.links:
+        print("- " + itm[0])
+        if itm[1] and itm[1] != "":
+            print("    text: " + itm[1])
+        if args.date_from_url:
+            date = try_date_from_str(itm[0], args.date_from_url, args.url_date_fmt)
+            if date:
+                print("    url-date:  " + str(date))
+        if itm[1] and args.date_from_text:
+            date = try_date_from_str(itm[1], args.date_from_text, args.text_date_fmt)
+            if date:
+                print("    text-date: " + str(date))
+        print("")
+
+
+def make_feed(args):
+
+    base_url = args.url
+    session = requests.Session()
+    session.headers = {
+        "User-Agent": args.user_agent,
+    }
+
+    page_content = ""
+    req = None
+    try:
+        req = session.get(base_url, timeout=args.http_timeout, stream=True)
+        chunk_size = 1024 * min(100, args.max_first_page_length)
+        consumed_size = 0
+        for chunk in req.iter_content(chunk_size=chunk_size, decode_unicode=True):
+            if consumed_size >= 1024 * args.max_first_page_length:
+                break
+            consumed_size += len(chunk)
+            page_content += chunk
+    finally:
+        if req:
+            req.close()
+
+    # Get relevant attributes from base URL.
+    base_attrs = CollectAttributesParser()
+    base_attrs.feed(page_content)
+
+    # From now, we should use req.url because of redirects.
+    session.headers["Referer"] = req.url
+    request_base = base_attrs.base or req.url
+
+    # Grab any links of interest from the base URL.
+    link_grabber = CollectLinksParser(args.link_pattern, args.max_links, request_base)
+    link_grabber.feed(page_content)
+    base_links = link_grabber.links
+
+    if args.test:
+        test_links(link_grabber, args)
+        return
+
+    # URLs that where already processed (considering redirects).
+    used_urls = set()
+
+    rss_items = []
+    for itm in base_links:
+        if args.follow:
+            ret_item = make_feed_item_follow(
+                session, itm[0], used_urls, args, itm[1], base_attrs
+            )
+        else:
+            ret_item = make_feed_item_nofollow(
+                itm[0], used_urls, args, itm[1], base_attrs
+            )
+        if ret_item:
+            rss_items.append(ret_item)
+
+    title = base_attrs.title or base_url
+    title = title[: args.max_title_length]
+
+    rss = PyRSS2Gen.RSS2(
+        title=args.title or title,
+        link=base_url,
+        description=base_attrs.description
+        or base_attrs.title
+        or base_attrs.canonical
+        or base_url,
+        # PyRSS2Gen ignores tzinfos and requires the date to be explicitly in UTC.
+        lastBuildDate=datetime.datetime.now(datetime.timezone.utc),
+        items=rss_items,
+    )
+    write_feed(rss, args)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Forcibly generate RSS feeds from generic sites",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+
+    parser.add_argument(
+        "-n",
+        "--max-links",
+        action="store",
+        default=50,
+        type=int,
+        help="Maximum number of links to follow.",
+    )
+
+    parser.add_argument(
+        "-l",
+        "--max-title-length",
+        action="store",
+        default=150,
+        type=int,
+        help="Maximum length of a feed title, in characters.",
+    )
+
+    parser.add_argument(
+        "-p",
+        "--link-pattern",
+        action="store",
+        default=".+",
+        metavar="REGEX",
+        help=(
+            "A regular expression to filter the URLs of links that the "
+            "script will follow or capture to generate every feed item."
+        ),
+    )
+
+    parser.add_argument(
+        "-T",
+        "--title",
+        action="store",
+        default=None,
+        help=(
+            "Use this alternate title for the feed instead of the one "
+            "discovered from the URL."
+        ),
+    )
+
+    parser.add_argument(
+        "-A",
+        "--date-from-url",
+        action="store",
+        default=None,
+        metavar="REGEX",
+        help=(
+            "Interpret date and time od the feed item from the URL. This can "
+            "spare us from downloading the entire target page in some sites "
+            "and blogs that put a parseable date in its URL (e.g.: "
+            '"https://example.org/posts/2020/09/22/happy-hobbit-day/") or '
+            "be our only option if the website provides no date at all. The "
+            "argument is a regular expression containing a single capture "
+            "group that extracts the date (or date and time) from the URL. "
+            "For the previous example, this regex would be "
+            '"/posts/(\\d{4}/\\d{2}/\\d{2})/", which will return "2020/09/22"'
+            "to be interpreted as year/month/day. For other formats, see "
+            "option --url-date-fmt. The date/time will be used only as it "
+            "returns at least the year, month and day (this script will use "
+            "hours and minutes if they are available, but it is very rare "
+            "for sites to put this information in URLs). "
+            "When using --follow, the date detected from this option will "
+            "only be used if the page provides no date of its own. "
+            "KNOWN BUG: Currently the code assumes that the date is in the "
+            "same timezone as the system running this script."
+        ),
+    )
+
+    parser.add_argument(
+        "--url-date-fmt",
+        action="store",
+        default="%Y/%m/%d",
+        metavar="DATE FORMAT",
+        help=(
+            "The date format to be used with option --date-from-url. This "
+            "value is a format string as specified by strftime(), and *must* "
+            "contain at least the formats for year, month and date. This "
+            "script can use hours and minutes if they are available, but "
+            "it is very rare for sites to put this information in URLs."
+            "If this format is empty, the code will try to interpret it as "
+            "some common date/time formats."
+        ),
+    )
+
+    parser.add_argument(
+        "-a",
+        "--date-from-text",
+        action="store",
+        default=None,
+        metavar="REGEX",
+        help=(
+            "Interpret date and time of the feed item from the link text. "
+            "This can spare us from downloading the entire target page in "
+            "some sites and blogs that put a parseable its links or be our "
+            "only option if the website provides no date at all. The argument "
+            "is a regular expression containing a single capture group that "
+            "extracts the date (or date and time) from the text, and the "
+            "resulting capture will be interpreted according to the format "
+            "given in option --text-date-fmt (unlike --url-date-fmt, there "
+            "is no commonly used format, so the default will probably not "
+            "work for you). The date/time will be used only as it returns at "
+            "least the year, month and day. "
+            "When using --follow, the date detected from this option will "
+            "only be used if the page provides no date of its own. "
+            "KNOWN BUG: Currently the code assumes that the date is in the "
+            "same timezone as the system running this script."
+        ),
+    )
+
+    parser.add_argument(
+        "--text-date-fmt",
+        action="store",
+        default=None,
+        metavar="DATE_FORMAT",
+        help=(
+            "The date format to be used with option --text-from-url. This "
+            "value is a format string as specified by strftime(), and *must* "
+            "contain at least the formats for year, month and date."
+            "If this format is not given or empty, the code will try to "
+            "interpret it as some common date/time formats."
+        ),
+    )
+
+    if HAVE_LXML:
+        parser.add_argument(
+            "--date-from-xpath",
+            action="store",
+            default=None,
+            metavar="XPATH_EXPRESSION",
+            help=(
+                "Use a XPath expression to get the text containing the date "
+                "and time the page was published. This allows picking the "
+                "date from any element present in the page, but at the cost "
+                "of some complexity and *requires* downloading the candidate "
+                "pages by passing option --follow (--max-page-length can "
+                "also be used to limit the amount of downloaded data, but "
+                "if the required element is not in it, the date won't be "
+                "available). "
+                "Notice that options --date-from-xpath, --xpath-date-regex, "
+                "and --xpath-date-fmt work together as a pipeline, first "
+                "getting the text from elements in the page, then optionally "
+                "selecting a substring from it, and then parsing it as date "
+                "and time. "
+                "Example: the XPath expression '//span[@class=\"published-date\"]/@datetime' "
+                'will pick the date from attribute "datetime" from the first '
+                '"span" tag that has an attribute named "class" with value '
+                'equal to "published-date".'
+            ),
+        )
+
+        parser.add_argument(
+            "--xpath-date-regex",
+            action="store",
+            default="(.+)",
+            metavar="REGEX",
+            help=(
+                "A regular expression containing a single group that is used "
+                "to select the part of the text returned by --date-from-xpath, "
+                "that will then be parsed as a date using the format given "
+                "by option --xpath-date-fmt. This option may be useful when "
+                "the XPath expression required to select the exact text just "
+                "becomes too complicated or verbose and doing it in two steps "
+                "just becomes easier. This option can be safely omitted if "
+                "this step is not necessary, as the default regex select the "
+                "complete input. "
+                "Notice that options --date-from-xpath, --xpath-date-regex, "
+                "and --xpath-date-fmt work together as a pipeline, first "
+                "getting the text from elements in the page, then optionally "
+                "selecting a substring from it, and then parsing it as date "
+                "and time. "
+            ),
+        )
+
+        parser.add_argument(
+            "--xpath-date-fmt",
+            action="store",
+            default=None,
+            metavar="DATE_FORMAT",
+            help=(
+                "The date format to be used with option --date-from-xpath. "
+                "This value is a format string as specified by strftime(), and "
+                "*must* contain at least the formats for year, month and date. "
+                "Notice that options --date-from-xpath, --xpath-date-regex, "
+                "and --xpath-date-fmt work together as a pipeline, first "
+                "getting the text from elements in the page, then optionally "
+                "selecting a substring from it, and then parsing it as date "
+                "and time. If this format is not given or empty, the code "
+                "will try to interpret it as some common date/time formats."
+            ),
+        )
+
+    parser.add_argument(
+        "--test",
+        action="store_true",
+        default=False,
+        help=(
+            "Do not generate the feed, but just print to stdout the "
+            "information that was discovered and would be used to generate "
+            "the feed. Useful for debugging link and date patterns."
+        ),
+    )
+
+    parser.add_argument(
+        "-f",
+        "--follow",
+        action="store_true",
+        default=False,
+        help=(
+            "Follow every link matching the pattern and download the page to "
+            "gather more information. It is slower, sends extra requests to "
+            "the site and transfers more data (sometimes a lot more!), but "
+            "allows higher quality feeds."
+        ),
+    )
+
+    if HAVE_LXML:
+        parser.add_argument(
+            "-B",
+            "--with-body",
+            action="store_true",
+            default=False,
+            help=(
+                "Include the page body in the feed, i.e., build a complete "
+                "feed. This option requires --follow to work and some "
+                "caution is required as it is pretty easy to generate "
+                "gigantic feeds by following too many links or reading too "
+                "much data from them. Careful usage of options --max-links "
+                "and --max-page-length is required! The program will only "
+                "pick the contents of the <body> element of the pages, up to "
+                "the point that --max-page-length allowed it to be loaded. "
+                "SECURITY: this program does some effort to remove malicious "
+                "content (e.g. scripts) inserted by the page, but the output "
+                "is still considered unsafe and we understand that feed "
+                "readers *must* handle it in the same way they deal with "
+                "potentially malicious feeds loaded from the network. If "
+                "your feed reader treats feeds generated by local commands "
+                "more liberally, please do not use this option."
+            ),
+        )
+
+        parser.add_argument(
+            "--body-xpath",
+            action="store",
+            type=str,
+            default="/html/body",
+            metavar="XPATH_EXPRESSION",
+            help=(
+                "A XPath expression selecting the HTML element to be "
+                "included in the body of the feed entry when option "
+                "--with-body is used. By default, this includes the entire "
+                '"body" HTML element, but sometimes a more restricted '
+                "selection is welcome, for example, one that includes only "
+                "the relevant text of a news article, leaving out menus, "
+                "headers, related news, etc."
+            ),
+        )
+
+    parser.add_argument(
+        "--require-dates",
+        action="store_true",
+        default=False,
+        help=(
+            "Only include an entry in the feed if it has a valid date found "
+            "from any supported method. Very useful when filtering blogs and "
+            "news sites."
+        ),
+    )
+
+    parser.add_argument(
+        "-U",
+        "--user-agent",
+        action="store",
+        default=DEFAULT_USER_AGENT,
+        help=(
+            "Set the user agent to identify ourselves to the site. Some sites "
+            "can send different types of content according to it or just "
+            "deny access do unknown UAs, so the best option is just "
+            "impersonate a commonly used browser."
+        ),
+    )
+
+    parser.add_argument(
+        "--max-page-length",
+        action="store",
+        default=2048,
+        type=int,
+        help=(
+            "Maximum amount of data, in kilobytes, to download from a single "
+            "HTTP request for the pages followed when using option --follow. "
+            "If this limit is exceeded, any remaining data will be discarded. "
+            "Very important when following links because any of them can led "
+            "us into downloading a DVD ISO or something like. This option "
+            'does not applies to the "first" page, i.e. the one which URL '
+            "is given in command line and it is used as starting point for "
+            "the entire process; for this limit, use option "
+            "--max-first-page-length"
+        ),
+    )
+
+    parser.add_argument(
+        "--max-first-page-length",
+        action="store",
+        default=2048,
+        type=int,
+        help=(
+            "Maximum amount of data, in kilobytes, to download from the "
+            "first page, i.e. the one which URL is given in command line to "
+            "start the process. This is important because the server can "
+            "generate and infinite amount of data, redirect us to a "
+            "DVD ISO or anything else. For limiting the pages downloaded "
+            "when following links (option --follow), see option "
+            "--max-page-length"
+        ),
+    )
+
+    parser.add_argument(
+        "-t",
+        "--http-timeout",
+        action="store",
+        default=2.0,
+        type=float,
+        help="Timeout for HTTP(S) requests, in seconds",
+    )
+
+    parser.add_argument(
+        "-E",
+        "--no-exception-feed",
+        action="store_true",
+        default=False,
+        help=(
+            "Do not generate feed entries for runtime errors. "
+            "The default behavior is to have the information about any "
+            "failures that happen when processing the feed returned as the "
+            "feed itself, so the user will see it there. However, this "
+            "option allows disabling this for moments where it makes more "
+            "sense, e.g. when debugging."
+        ),
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        action="store",
+        metavar="FILENAME",
+        help=(
+            "Output file to save the feed. If not given, it will be written"
+            " to stdout."
+        ),
+    )
+
+    parser.add_argument(
+        "url", action="store", help="URL of the website to generate the feed"
+    )
+
+    args = parser.parse_args()
+
+    try:
+        make_feed(args)
+    except Exception as exc:
+        if args.no_exception_feed:
+            raise exc
+        make_exception_feed(exc, args)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
