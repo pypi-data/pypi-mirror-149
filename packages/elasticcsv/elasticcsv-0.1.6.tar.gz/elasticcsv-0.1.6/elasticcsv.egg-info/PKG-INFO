@@ -1,0 +1,80 @@
+Metadata-Version: 2.1
+Name: elasticcsv
+Version: 0.1.6
+Summary: Elasctic load CSV utility
+Home-page: 
+Author: juguerre
+Author-email: juguerre@gmail.com
+License: MIT
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+# Elastic CSV Loader
+
+This command line utility loads csv file into a elasticsearch index, using a provided yaml config file.
+
+Considerations:
+
+- CSV files MUST include a header with field names
+- Header field names will be used as elastic index fields
+- A `@timestamp` and `date`  fields will be added to all indexed docs
+  - A `date` logic date could be forced through command parameter.
+- Depending on `elastic_index.data_format.parent_data_object` value, all original csv header fields
+  will be arranged under a `data` parent object.
+
+Indexed data will use the same field names that
+
+## Install
+
+```shell
+pip install --upgrade elasticcsv
+```
+
+## Run
+
+### Elastic Connection Config
+
+Connection configuration is based in a YAML text file (`connection.yaml`) that must be present in
+command directory.
+
+Sample `connection.yaml`
+
+
+```yaml
+elastic_connection:
+  proxies:
+    http: "http://user:pass@proxy.url:8080"
+    https: "http://user:pass@proxy.url:8080"
+  user: myuser
+  password: mypassword
+  node: my.elastic.node
+  port: 9200
+elastic_index:
+  data_format:
+    parent_data_object: true
+```
+
+### Run command
+
+```shell
+> csv2es load-csv --help
+Usage: csv2es load-csv [OPTIONS]
+
+  Loads csv to elastic index
+
+Options:
+  --csv PATH               CSV File  [required]
+  --sep TEXT               CSV field sepator  [required]
+  --index TEXT             Elastic Index  [required]
+  --logic_date [%Y-%m-%d]  Date reference for interfaces
+  --help                   Show this message and exit.
+```
+
+Example:
+
+```shell
+csv2es load-csv --csv ./pathtomyfile/file.csv --index myindex --sep ";"
+```
+
+
