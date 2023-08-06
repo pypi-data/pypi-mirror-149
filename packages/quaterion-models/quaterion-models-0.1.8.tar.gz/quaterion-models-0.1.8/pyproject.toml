@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "quaterion-models"
+version = "0.1.8"
+description = "The collection of building blocks building fine-tunable metric learning models"
+authors = ["generall <andrey@vasnetsov.com>"]
+packages = [
+    {include = "quaterion_models"},
+]
+readme = "README.md"
+homepage = "https://github.com/qdrant/quaterion-models"
+repository = "https://github.com/qdrant/quaterion-models"
+keywords = ["framework", "metric-learning", "similarity", "deep-learning", "pytorch"]
+
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.10"
+torch = ">=1.8.2"
+numpy = "^1.21.2"
+gensim = {version = "^4.1.2", optional = true}
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+Sphinx = "^4.4.0"
+qdrant-sphinx-theme = { git = "https://github.com/qdrant/qdrant_sphinx_theme.git", branch = "master" }
+black = "^22.3.0"
+
+[tool.poetry.extras]
+fasttext = ["gensim"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "setuptools"]
+build-backend = "poetry.core.masonry.api"
