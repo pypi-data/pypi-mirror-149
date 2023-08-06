@@ -1,0 +1,46 @@
+Metadata-Version: 2.1
+Name: gbm-autosplit
+Version: 0.0.7
+Summary: LightGBM/XGBoost interface which tunes n_estimator by splitting data, then refit with entire data
+Home-page: https://github.com/not-so-fat/gbm_autosplit
+Author: @not-so-fat
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: lightgbm (>=3.2.1)
+Requires-Dist: xgboost (>=1.6.0)
+Requires-Dist: pandas (>=1.2.4)
+
+# gbm_autosplit
+
+GBM scikit-learn interfaces which performs "early stopping" with single data set during `fit`.
+
+"Early stopping" is great practice to tune the number of estimators for gradient boosting models. 
+However it is not difficult to use it in tuning module in scikit-learn such as RandomizedSearchCV / GridSearchCV
+because to use early stopping module requires two data sets but scikit learn does not have such interface.
+
+To solve this situation, this interface performs following steps with in `fit`.
+1. Split original input data into two randomly
+2. Estimate `n_estimators` by using split data set with early stopping
+3. Perform `fit` by using entire data set with estimated `n_estimators`
+
+
+## Install
+
+```
+pip install gbm_autosplit
+```
+
+## Usage
+
+```
+import gbm_autosplit
+
+estimator = gbm_autosplit.LGBMClassifier()
+estimator.fit(x, y)
+```
+
