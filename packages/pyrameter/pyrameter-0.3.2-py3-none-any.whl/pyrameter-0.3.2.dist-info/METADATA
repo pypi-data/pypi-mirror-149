@@ -1,0 +1,84 @@
+Metadata-Version: 2.1
+Name: pyrameter
+Version: 0.3.2
+Summary: Structure, sample, and savor hyperparameter searches
+Home-page: https://github.com/jeffkinnison/pyrameter
+Author: Jeff Kinnison
+Author-email: jkinniso@nd.edu
+License: UNKNOWN
+Keywords: machine_learning hyperparameters
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Description-Content-Type: text/markdown
+Requires-Dist: dill
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pymongo
+Requires-Dist: scipy
+Requires-Dist: scikit-learn
+Requires-Dist: six
+
+# pyrameter
+
+`pyrameter` is a library for designing hierarchical parameter searches with
+continuous and discrete domains, and then search those spaces.
+
+1. [Installation](#installation)
+2. [Dependencies](#dependencies)
+3. [A Short Example](#a-short-example)
+
+## Installation
+
+```
+pip install pyrameter
+```
+
+## Dependencies
+
+- `numpy`
+- `scipy`
+- `scikit-learn`
+- `pymongo`
+- `dill`
+- `six`
+
+## A Short Example
+
+```python
+import math
+import pyrameter
+
+# Minimize the sin function
+def objective(params):
+    return math.sin(params['x'])
+
+# Uniformly sample values over [0, pi]
+space = {
+    'x': pyrameter.uniform(0, math.pi),
+
+}
+
+# Set up the search with an experiment key, the domains to search, and
+# random search to generate values.
+opt = pyrameter.FMin('sin_exp', space, 'random')
+
+# Try 1000 values of x and store the result.
+for i in range(1000):
+    trial = opt.generate()
+    trial.objective = objective(trial.hyperparameters)
+
+# Print the x that minimized sin
+print(opt.optimum)
+```
+
+
