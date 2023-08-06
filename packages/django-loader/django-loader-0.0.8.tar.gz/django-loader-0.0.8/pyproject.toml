@@ -1,0 +1,162 @@
+# ******************************************************************************
+#
+# django-loader, a configuration and secret loader for Django
+#
+# Copyright 2021-2022 Jeremy A Gray <gray@flyquackswim.com>.
+#
+# SPDX-License-Identifier: MIT
+#
+# ******************************************************************************
+
+[build-system]
+
+# Setuptools.
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Poetry.
+# requires = ["poetry_core>=1.0.0"]
+# build-backend = "poetry.core.masonry.api"
+
+[tool]
+
+[tool.black]
+
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+    \.git
+    | \.pytest_cache
+    | __pycache__
+    | htmlcov
+  )/
+)
+'''
+force_exclude = '.*/migrations/.*'
+
+[tool.coverage.run]
+
+omit = ["*migrations*"]
+
+[tool.isort]
+
+ensure_newline_before_comments = true
+force_single_line = true
+include_trailing_comma = true
+line_length = 88
+multi_line_output = 3
+use_parentheses = true
+skip = "migrations"
+
+[tool.pccc]
+
+header_length = 50
+body_length = 72
+rewrap = false
+spell_check = false
+repair = false
+
+types = [
+  "depends",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "refactor",
+  "release",
+  "style",
+  "test",
+]
+
+scopes = [
+  "loader",
+  "fake",
+  "tooling",
+]
+
+footers = [
+  "signed-off-by"
+]
+
+required_footers = [
+  "signed-off-by"
+]
+
+[tool.poetry]
+
+authors = ["Jeremy A Gray <gray@flyquackswim.com>"]
+description = "django-loader:  a configuration and secret loader for Django"
+name = "django-loader"
+version = "0.0.8"
+license = "MIT"
+maintainers = ["Jeremy A Gray <gray@flyquackswim.com>"]
+readme = "README.rst"
+homepage = "https://github.com/jeremyagray/django-loader"
+repository = "https://github.com/jeremyagray/django-loader"
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Framework :: Django :: 2.2",
+  "Framework :: Django :: 3.2",
+  "Framework :: Django :: 4.0",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Internet :: WWW/HTTP :: Site Management",
+]
+
+packages = [
+  { include = "loader" },
+]
+
+include = [
+  "README.rst",
+  "docs/*.*",
+]
+
+[tool.poetry.dependencies]
+
+Django = "^2.2 || ^3.2 || ^4.0"
+bespon = "^0.6"
+python = ">3.7,<4.0"
+"ruamel.yaml" = "^0"
+toml = "^0"
+
+[tool.poetry.dev-dependencies]
+
+Sphinx = "^4"
+black = { version = "*", allow-prereleases = true }
+coverage = {version = "^6", extras = ["toml"]}
+flake8 = "^4"
+flake8-docstrings = "^1"
+hypothesis = "^6"
+isort = "^5"
+pccc = "^0"
+pre-commit = "^2"
+pyfakefs = "^4"
+pytest = "^7"
+pytest-cov = "^3"
+pytest-django = "^4"
+tox = "^3"
+twine = "^4"
+
+[tool.poetry.scripts]
+
+django-loader = "loader:main"
+
+[tool.poetry.urls]
+
+"Issues" = "https://github.com/jeremyagray/django-loader/issues"
+"Documentation" = "https://django-loader.readthedocs.io/"
+"Repository" = "https://github.com/jeremyagray/django-loader"
+
+[tool.pytest.ini_options]
+
+DJANGO_SETTINGS_MODULE = "fake.settings"

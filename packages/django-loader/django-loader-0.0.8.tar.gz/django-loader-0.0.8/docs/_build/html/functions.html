@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Functions &#8212; django-loader 0.0.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CLI Arguments" href="cli.html" />
+    <link rel="prev" title="README" href="readme.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="loader">
+<h2>loader<a class="headerlink" href="#loader" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.dump_secrets">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">dump_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TOML'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.dump_secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump a secrets dictionary to the specified format.</p>
+<p>Dump a secrets dictionary to the specified format, defaulting to
+TOML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmt</strong> (<em>string</em><em>, </em><em>default=&quot;TOML&quot;</em>) – The dump format, one of <code class="docutils literal notranslate"><span class="pre">TOML</span></code>, <code class="docutils literal notranslate"><span class="pre">JSON</span></code>, <code class="docutils literal notranslate"><span class="pre">YAML</span></code>,
+<code class="docutils literal notranslate"><span class="pre">BespON</span></code>, or <code class="docutils literal notranslate"><span class="pre">ENV</span></code>.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – A dictionary of configuration variables.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.generate_secret_key">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">generate_secret_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#loader.generate_secret_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a secret key for a Django app.</p>
+<p>Generate a secret key for a Django app, using
+<code class="docutils literal notranslate"><span class="pre">django.core.management.utils.get_random_secret_key</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A random secret key.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.load_environment">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">load_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DJANGO_ENV_'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.load_environment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Django configuration variables from the enviroment.</p>
+<p>This function searches the environment for variables prepended
+with <code class="docutils literal notranslate"><span class="pre">prefix</span></code>.  Currently, this function only reliably works for
+string variables, but hopefully will work for other types,
+dictionaries, and lists in the future.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prefix</strong> (string, default=”<a href="#id1"><span class="problematic" id="id2">DJANGO_ENV_</span></a>”) – Prefix for environment variables.  This prefix should be
+prepended to all valid variable names in the environment.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary, possibly empty, of configuration variables and
+values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.load_file">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_bad_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.load_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to load configuration variables from <code class="docutils literal notranslate"><span class="pre">fn</span></code>.</p>
+<p>Attempt to load configuration variables from <code class="docutils literal notranslate"><span class="pre">fn</span></code>.  If <code class="docutils literal notranslate"><span class="pre">fn</span></code>
+does not exist or is not a recognized format, return an empty
+dict.  Raises <code class="docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> if the file exists and does
+not match a recognized format unless <code class="docutils literal notranslate"><span class="pre">raise_bad_format</span></code> is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>string</em>) – Filename from which to load configuration values.</p></li>
+<li><p><strong>raise_bad_format</strong> (<em>boolean</em><em>, </em><em>default=True</em>) – Determine whether to raise
+<code class="docutils literal notranslate"><span class="pre">django.core.exceptions.ImproperlyConfigured</span></code> if the file
+format is not recognized.  Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary, possibly empty, of configuration variables and
+values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>django.core.exceptions.ImproperlyConfigured</strong> – Raises an <code class="docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> exception if the file
+    format is not recognized and <code class="docutils literal notranslate"><span class="pre">raise_bad_format</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.load_secrets">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">load_secrets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.env'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DJANGO_ENV_'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.load_secrets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a list of configuration variables.</p>
+<p>Return a dictionary of configuration variables, as loaded from a
+configuration file or the environment.  Values passed in as
+<code class="docutils literal notranslate"><span class="pre">args</span></code> or as the value in <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> will be used as the
+configuration variable’s default value if one is not found in the
+configuration file or environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>string</em><em>, </em><em>default=&quot;.env&quot;</em>) – Configuration filename, defaults to <code class="docutils literal notranslate"><span class="pre">.env</span></code>.  May be in TOML,
+JSON, YAML, or BespON formats.  Formats will be attempted in this
+order.</p></li>
+<li><p><strong>prefix</strong> (string, default=”<a href="#id3"><span class="problematic" id="id4">DJANGO_ENV_</span></a>”) – Prefix for environment variables.  This prefix will be
+prepended to all variable names before searching for them in
+the environment.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Dictionary with configuration variables as keys and default
+values as values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of configuration variables and their values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.main">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#loader.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run as script, to access <code class="docutils literal notranslate"><span class="pre">dump()</span></code> functions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.merge">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">defaults</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge configuration from defaults, file, and environment.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.validate_falsy">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">validate_falsy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.validate_falsy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is falsy.</p>
+<p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is falsy according to
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">https://docs.python.org/3/library/stdtypes.html#truth-value-testing</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>any</em>) – Configuration variable to validate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">val</span></code> is falsy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>django.core.exceptions.ImproperlyConfigured</strong> – Raises an <code class="docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> exception on truthy values,
+    with an error message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.validate_not_empty_string">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">validate_not_empty_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.validate_not_empty_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is not an empty string.</p>
+<p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is not an empty string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>any</em>) – Configuration variable to validate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">val</span></code> is not an empty string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>django.core.exceptions.ImproperlyConfigured</strong> – Raises an <code class="docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> exception on empty strings,
+    with an error message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loader.validate_truthy">
+<span class="sig-prename descclassname"><span class="pre">loader.</span></span><span class="sig-name descname"><span class="pre">validate_truthy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loader.validate_truthy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is truthy.</p>
+<p>Validate that <code class="docutils literal notranslate"><span class="pre">val</span></code> is truthy according to
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#truth-value-testing">https://docs.python.org/3/library/stdtypes.html#truth-value-testing</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>any</em>) – Configuration variable to validate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">val</span></code> is truthy.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>boolean</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>django.core.exceptions.ImproperlyConfigured</strong> – Raises an <code class="docutils literal notranslate"><span class="pre">ImproperlyConfigured</span></code> exception on falsy values,
+    with an error message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">django-loader</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">README</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#what-is-django-loader">What is django-loader?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#roadmap">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#usage">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#configuration">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#copyright-and-license">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#author">Author</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#loader">loader</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI Arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="readme.html" title="previous chapter">README</a></li>
+      <li>Next: <a href="cli.html" title="next chapter">CLI Arguments</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Jeremy A Gray.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/functions.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
