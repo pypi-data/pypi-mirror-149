@@ -1,0 +1,62 @@
+# json_stock
+
+下の方に日本語の説明があります
+
+## Overview
+- JSON-based database
+- Very simple to operate, but fast, and supports parallel processing.
+- DB itself behaves like "one big JSON"
+- description is under construction.
+
+## Usage
+```python
+import json_store as jst
+
+# open DB
+test_db = jst.JsonStock("./test_db/")
+print(test_db)
+# create table
+test_db["test_table"] = {}
+# get table
+test_table = test_db["test_table"]
+print(test_table)
+# create new value
+test_table["test"] = {"hello": "world!!"}
+# read value
+print(test_table["test"])
+# iterate (listup all keys in the table)
+print([key for key in test_table])
+# delete value
+del test_table["test"]
+# delete table
+del test_db["test_table"]
+```
+
+## 概要
+- JSONベースのデータベース
+- 操作が非常に単純だが、高速で、並列処理にも対応
+- DB自体が「1つの大きなJSON」のように振る舞う
+
+## 使用例
+```python
+import json_store as jst
+
+# DBを開く (存在しない場合はディレクトリが自動的に作成される)
+test_db = jst.JsonStock("./test_db/")
+print(test_db)
+# テーブルの作成 (右辺は必ず空の辞書である必要がある)
+test_db["test_table"] = {}
+# テーブルの取得
+test_table = test_db["test_table"]
+print(test_table)
+# テーブルの"test"キーにデータを登録 (すでにキーが存在する場合は上書き)
+test_table["test"] = {"hello": "world!!"}
+# テーブルの"test"キーに束縛されたデータを読み出す
+print(test_table["test"])
+# for文脈でテーブルの全キーを巡回
+print([key for key in test_table])
+# "test"キーの値を削除
+del test_table["test"]
+# テーブルの削除
+del test_db["test_table"]
+```
