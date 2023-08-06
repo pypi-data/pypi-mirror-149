@@ -1,0 +1,19 @@
+{% extends 'clients/_common.html' %}
+{% load static %}
+
+{% block clients %}
+<!-- ======= Clients Section ======= -->
+<section id="clients" class="clients">
+  <div class="container">
+    {% if clients|length > 0 %}
+    <div class="row">
+      {% for filename in clients %}
+      <div class="col-lg-2 col-md-4 col-6 d-flex align-items-center" data-aos="zoom-in" data-aos-delay="{% cycle '100' '200' '300' '400' '500' '600' %}">
+        <img src="{% static 'img/clients/'|add:filename|add:'.png' %}" class="img-fluid" alt="">
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section><!-- End Clients Section -->
+{% endblock %}
