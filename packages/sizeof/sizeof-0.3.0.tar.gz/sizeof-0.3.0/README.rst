@@ -1,0 +1,108 @@
+======
+sizeof
+======
+
+Simple function for determining the memory usage of common Python values and objects.
+
+|pypi| |readthedocs| |actions| |coveralls|
+
+.. |pypi| image:: https://badge.fury.io/py/sizeof.svg
+   :target: https://badge.fury.io/py/sizeof
+   :alt: PyPI version and link.
+
+.. |readthedocs| image:: https://readthedocs.org/projects/sizeof/badge/?version=latest
+   :target: https://sizeof.readthedocs.io/en/latest/?badge=latest
+   :alt: Read the Docs documentation status.
+
+.. |actions| image:: https://github.com/lapets/sizeof/workflows/lint-test-cover-docs/badge.svg
+   :target: https://github.com/lapets/sizeof/actions/workflows/lint-test-cover-docs.yml
+   :alt: GitHub Actions status.
+
+.. |coveralls| image:: https://coveralls.io/repos/github/lapets/sizeof/badge.svg?branch=main
+   :target: https://coveralls.io/github/lapets/sizeof?branch=main
+   :alt: Coveralls test coverage summary.
+
+Package Installation and Usage
+------------------------------
+The package is available on `PyPI <https://pypi.org/project/sizeof/>`_::
+
+    python -m pip install sizeof
+
+The library can be imported in the usual ways::
+
+    import sizeof
+    from sizeof import sizeof
+
+The ``sizeof`` function can be applied to any value or object. By default, the function returns the memory consumed by that value or object (and **not** by any of the objects to which it may contain references)::
+
+    >>> from sizeof import sizeof
+    >>> sizeof(123.0123)
+    16
+
+The amount of memory consumed for any given value or object is in part determined by the host architecture and the version of Python being used. The ``arch`` function can be used to determine whether the architecture is 32-bit or 64-bit::
+
+    >>> from sizeof import arch
+    >>> arch()
+    32
+
+The ``deep`` argument makes it possible to calculate the memory consumed by an object and all of it descendants by reference::
+
+    >>> sizeof([]) # Size of an empty list.
+    28
+    >>> sizeof([1]), sizeof([1, 2]) # Size of reference is 4.
+    (32, 36)
+    >>> sizeof(3) # Size of an integer.
+    14
+    >>> sizeof([1, 2, 3]) == 28 + (3 * 4)
+    True
+    >>> sizeof([1, 2, 3], deep=True) == 28 + (3 * (4 + 14))
+    True
+
+Note that all of the examples above may lead to different results on your system and in your environment.
+
+Documentation
+-------------
+.. include:: toc.rst
+
+The documentation can be generated automatically from the source files using `Sphinx <https://www.sphinx-doc.org/>`_::
+
+    cd docs
+    python -m pip install -r requirements.txt
+    sphinx-apidoc -f -E --templatedir=_templates -o _source .. ../setup.py && make html
+
+Testing and Conventions
+-----------------------
+All unit tests are executed and their coverage is measured when using `pytest <https://docs.pytest.org/>`_ (see ``setup.cfg`` for configuration details)::
+
+    python -m pip install pytest pytest-cov
+    python -m pytest
+
+Alternatively, all unit tests are included in the module itself and can be executed using `doctest <https://docs.python.org/3/library/doctest.html>`_::
+
+    python sizeof/sizeof.py -v
+
+Style conventions are enforced using `Pylint <https://www.pylint.org/>`_::
+
+    python -m pip install pylint
+    python -m pylint sizeof
+
+Contributions
+-------------
+In order to contribute to the source code, open an issue or submit a pull request on the `GitHub page <https://github.com/lapets/sizeof>`_ for this library.
+
+Versioning
+----------
+The version number format for this library and the changes to the library associated with version number increments conform with `Semantic Versioning 2.0.0 <https://semver.org/#semantic-versioning-200>`_.
+
+Publishing
+----------
+This library can be published as a `package on PyPI <https://pypi.org/project/sizeof/>`_ by a package maintainer. Install the `wheel <https://pypi.org/project/wheel/>`_ package, remove any old build/distribution files, and package the source into a distribution archive::
+
+    python -m pip install wheel
+    rm -rf dist *.egg-info
+    python setup.py sdist bdist_wheel
+
+Next, install the `twine <https://pypi.org/project/twine/>`_ package and upload the package distribution archive to PyPI::
+
+    python -m pip install twine
+    python -m twine upload dist/*
