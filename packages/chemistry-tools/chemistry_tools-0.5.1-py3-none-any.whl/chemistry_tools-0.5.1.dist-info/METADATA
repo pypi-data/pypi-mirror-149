@@ -1,0 +1,302 @@
+Metadata-Version: 2.1
+Name: chemistry-tools
+Version: 0.5.1
+Summary: Python tools for analysis of chemical compounds.
+Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
+License: LGPL-3.0-or-later
+Keywords: chemistry,utility
+Home-page: https://github.com/domdfcoding/chemistry_tools
+Project-URL: Issue Tracker, https://github.com/domdfcoding/chemistry_tools/issues
+Project-URL: Source Code, https://github.com/domdfcoding/chemistry_tools
+Project-URL: Documentation, https://chemistry_tools.readthedocs.io/en/latest
+Platform: Windows
+Platform: macOS
+Platform: Linux
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Database :: Front-Ends
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.6
+Requires-Dist: apeye>=0.9.1
+Requires-Dist: cachecontrol[filecache]>=0.12.6
+Requires-Dist: domdf-python-tools>=1.1.0
+Requires-Dist: enum-tools>=0.1.3
+Requires-Dist: lockfile>=0.12.2
+Requires-Dist: memoized-property>=1.0.3
+Requires-Dist: numpy>=1.19.1; platform_system != "Windows"
+Requires-Dist: numpy!=1.19.4,>=1.19.3; platform_system == "Windows"
+Requires-Dist: pandas>=1.0.1
+Requires-Dist: quantities>=0.12.4
+Requires-Dist: requests>=2.24.0
+Requires-Dist: cawdrey>=0.1.7; extra == 'pubchem'
+Requires-Dist: mathematical>=0.1.13; extra == 'pubchem'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation == "PyPy" and python_version >= "3.8" and platform_system == "Windows") and extra == 'pubchem'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation == "PyPy" and python_version >= "3.7" and platform_system != "Windows") and extra == 'pubchem'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation != "PyPy") and extra == 'pubchem'
+Requires-Dist: pillow<9.0.0,>=7.0.0; (platform_python_implementation == "PyPy" and python_version == "3.7" and platform_system == "Windows") and extra == 'pubchem'
+Requires-Dist: pillow<8.0.0,>=7.0.0; (platform_python_implementation == "PyPy" and python_version == "3.6") and extra == 'pubchem'
+Requires-Dist: pyparsing>=2.4.6; extra == 'pubchem'
+Requires-Dist: tabulate>=0.8.9; extra == 'pubchem'
+Requires-Dist: cawdrey>=0.1.7; extra == 'formulae'
+Requires-Dist: mathematical>=0.1.13; extra == 'formulae'
+Requires-Dist: pyparsing>=2.4.6; extra == 'formulae'
+Requires-Dist: tabulate>=0.8.9; extra == 'formulae'
+Requires-Dist: typing-extensions>=4.1.1; extra == 'formulae'
+Requires-Dist: matplotlib>=3.0.0; (platform_machine != "aarch64" or python_version > "3.6") and extra == 'plotting'
+Requires-Dist: matplotlib<=3.2.2; (platform_machine == "aarch64" and python_version == "3.6") and extra == 'plotting'
+Requires-Dist: beautifulsoup4>=4.7.0; extra == 'toxnet'
+Requires-Dist: beautifulsoup4>=4.7.0; extra == 'all'
+Requires-Dist: cawdrey>=0.1.7; extra == 'all'
+Requires-Dist: mathematical>=0.1.13; extra == 'all'
+Requires-Dist: matplotlib>=3.0.0; (platform_machine != "aarch64" or python_version > "3.6") and extra == 'all'
+Requires-Dist: matplotlib<=3.2.2; (platform_machine == "aarch64" and python_version == "3.6") and extra == 'all'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation == "PyPy" and python_version >= "3.8" and platform_system == "Windows") and extra == 'all'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation == "PyPy" and python_version >= "3.7" and platform_system != "Windows") and extra == 'all'
+Requires-Dist: pillow>=7.0.0; (platform_python_implementation != "PyPy") and extra == 'all'
+Requires-Dist: pillow<9.0.0,>=7.0.0; (platform_python_implementation == "PyPy" and python_version == "3.7" and platform_system == "Windows") and extra == 'all'
+Requires-Dist: pillow<8.0.0,>=7.0.0; (platform_python_implementation == "PyPy" and python_version == "3.6") and extra == 'all'
+Requires-Dist: pyparsing>=2.4.6; extra == 'all'
+Requires-Dist: tabulate>=0.8.9; extra == 'all'
+Requires-Dist: typing-extensions>=4.1.1; extra == 'all'
+Provides-Extra: pubchem
+Provides-Extra: formulae
+Provides-Extra: plotting
+Provides-Extra: toxnet
+Provides-Extra: all
+Description-Content-Type: text/x-rst
+
+
+=====================
+Chemistry Tools
+=====================
+
+.. start short_desc
+
+**Python tools for analysis of chemical compounds.**
+
+.. end short_desc
+
+.. start shields
+
+.. list-table::
+	:stub-columns: 1
+	:widths: 10 90
+
+	* - Docs
+	  - |docs| |docs_check|
+	* - Tests
+	  - |actions_linux| |actions_windows| |actions_macos| |coveralls|
+	* - PyPI
+	  - |pypi-version| |supported-versions| |supported-implementations| |wheel|
+	* - Anaconda
+	  - |conda-version| |conda-platform|
+	* - Activity
+	  - |commits-latest| |commits-since| |maintained| |pypi-downloads|
+	* - QA
+	  - |codefactor| |actions_flake8| |actions_mypy|
+	* - Other
+	  - |license| |language| |requires|
+
+.. |docs| image:: https://img.shields.io/readthedocs/chemistry_tools/latest?logo=read-the-docs
+	:target: https://chemistry_tools.readthedocs.io/en/latest
+	:alt: Documentation Build Status
+
+.. |docs_check| image:: https://github.com/domdfcoding/chemistry_tools/workflows/Docs%20Check/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22Docs+Check%22
+	:alt: Docs Check Status
+
+.. |actions_linux| image:: https://github.com/domdfcoding/chemistry_tools/workflows/Linux/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22Linux%22
+	:alt: Linux Test Status
+
+.. |actions_windows| image:: https://github.com/domdfcoding/chemistry_tools/workflows/Windows/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22Windows%22
+	:alt: Windows Test Status
+
+.. |actions_macos| image:: https://github.com/domdfcoding/chemistry_tools/workflows/macOS/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22macOS%22
+	:alt: macOS Test Status
+
+.. |actions_flake8| image:: https://github.com/domdfcoding/chemistry_tools/workflows/Flake8/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22Flake8%22
+	:alt: Flake8 Status
+
+.. |actions_mypy| image:: https://github.com/domdfcoding/chemistry_tools/workflows/mypy/badge.svg
+	:target: https://github.com/domdfcoding/chemistry_tools/actions?query=workflow%3A%22mypy%22
+	:alt: mypy status
+
+.. |requires| image:: https://dependency-dash.herokuapp.com/github/domdfcoding/chemistry_tools/badge.svg
+	:target: https://dependency-dash.herokuapp.com/github/domdfcoding/chemistry_tools/
+	:alt: Requirements Status
+
+.. |coveralls| image:: https://img.shields.io/coveralls/github/domdfcoding/chemistry_tools/master?logo=coveralls
+	:target: https://coveralls.io/github/domdfcoding/chemistry_tools?branch=master
+	:alt: Coverage
+
+.. |codefactor| image:: https://img.shields.io/codefactor/grade/github/domdfcoding/chemistry_tools?logo=codefactor
+	:target: https://www.codefactor.io/repository/github/domdfcoding/chemistry_tools
+	:alt: CodeFactor Grade
+
+.. |pypi-version| image:: https://img.shields.io/pypi/v/chemistry_tools
+	:target: https://pypi.org/project/chemistry_tools/
+	:alt: PyPI - Package Version
+
+.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/chemistry_tools?logo=python&logoColor=white
+	:target: https://pypi.org/project/chemistry_tools/
+	:alt: PyPI - Supported Python Versions
+
+.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/chemistry_tools
+	:target: https://pypi.org/project/chemistry_tools/
+	:alt: PyPI - Supported Implementations
+
+.. |wheel| image:: https://img.shields.io/pypi/wheel/chemistry_tools
+	:target: https://pypi.org/project/chemistry_tools/
+	:alt: PyPI - Wheel
+
+.. |conda-version| image:: https://img.shields.io/conda/v/domdfcoding/chemistry_tools?logo=anaconda
+	:target: https://anaconda.org/domdfcoding/chemistry_tools
+	:alt: Conda - Package Version
+
+.. |conda-platform| image:: https://img.shields.io/conda/pn/domdfcoding/chemistry_tools?label=conda%7Cplatform
+	:target: https://anaconda.org/domdfcoding/chemistry_tools
+	:alt: Conda - Platform
+
+.. |license| image:: https://img.shields.io/github/license/domdfcoding/chemistry_tools
+	:target: https://github.com/domdfcoding/chemistry_tools/blob/master/LICENSE
+	:alt: License
+
+.. |language| image:: https://img.shields.io/github/languages/top/domdfcoding/chemistry_tools
+	:alt: GitHub top language
+
+.. |commits-since| image:: https://img.shields.io/github/commits-since/domdfcoding/chemistry_tools/v0.5.1
+	:target: https://github.com/domdfcoding/chemistry_tools/pulse
+	:alt: GitHub commits since tagged version
+
+.. |commits-latest| image:: https://img.shields.io/github/last-commit/domdfcoding/chemistry_tools
+	:target: https://github.com/domdfcoding/chemistry_tools/commit/master
+	:alt: GitHub last commit
+
+.. |maintained| image:: https://img.shields.io/maintenance/yes/2022
+	:alt: Maintenance
+
+.. |pypi-downloads| image:: https://img.shields.io/pypi/dm/chemistry_tools
+	:target: https://pypi.org/project/chemistry_tools/
+	:alt: PyPI - Downloads
+
+.. end shields
+
+
+Installation
+================
+
+.. start installation
+
+``chemistry_tools`` can be installed from PyPI or Anaconda.
+
+To install with ``pip``:
+
+.. code-block:: bash
+
+	$ python -m pip install chemistry_tools
+
+To install with ``conda``:
+
+	* First add the required channels
+
+	.. code-block:: bash
+
+		$ conda config --add channels https://conda.anaconda.org/conda-forge
+		$ conda config --add channels https://conda.anaconda.org/domdfcoding
+
+	* Then install
+
+	.. code-block:: bash
+
+		$ conda install chemistry_tools
+
+.. end installation
+
+
+lookup and pubchem adapted from PubChemPy
+=========================================
+Python interface to the PubChem REST API
+
+|
+
+Copyright 2017 Matt Swain <m.swain@me.com>
+
+https://github.com/mcs07/PubChemPy
+
+Available under the MIT License
+
+
+SpectrumSimilarity
+======================================
+Perform mass spectrum similarity calculations
+
+|
+
+Adapted from SpectrumSimilarity.R
+
+Part of OrgMassSpecR
+
+Copyright 2011-2017 Nathan Dodder <nathand@sccwrp.org>
+
+https://cran.r-project.org/web/packages/OrgMassSpecR/index.html
+
+Available under the BSD 2-Clause License
+
+
+elements and formulae
+=========================
+
+Provides properties for the elements in the periodic table, and functions
+for parsing formulae and calculating isotope distributions.
+
+Calculations are based on the isotopic composition of the elements. Mass
+deficiency due to chemical bonding is not taken into account.
+
+Examples of valid formulae are ``H2O``, ``[2H]2O``, ``CH3COOH``, ``EtOH``,
+``CuSO4.5H2O``, and ``(COOH)2``. Formulae are case sensitive.
+
+|
+
+Based on ChemPy (https://github.com/bjodah/chempy)
+
+Copyright (c) 2015-2018, Björn Dahlgren
+
+All rights reserved.
+
+|
+
+Also based on molmass (https://github.com/cgohlke/molmass)
+
+Copyright (c) 1990-2020, Christoph Gohlke
+
+All rights reserved.
+
+Licensed under the BSD 3-Clause License
+
+|
+
+Also based on Pyteomics (https://github.com/levitsky/pyteomics)
+
+Copyright (c) 2011-2015, Anton Goloborodko & Lev Levitsky
+
+Licensed under the Apache License
