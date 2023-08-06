@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"command"
+
+
+import sys
+
+
+from genocide.obj import Config
+
+
+Config.name = "genocidecmd"
+Config.workdir = "/var/lib/genocide/"
+
+
+from genocide.evt import Command
+from genocide.hdl import Callbacks, Handler, dispatch
+
+
+import genocide.all
+
+
+class CLI(Handler):
+
+    def cmd(self, txt):
+        e = Command()
+        e.parse(txt, repr(self))
+        self.handle(e)
+        e.wait()
+
+    def raw(self, txt):
+        print(txt)
+        sys.stdout.flush()
+
+
+def main():
+    Callbacks.add("command", dispatch)
+    Callbacks.threaded = False
+    c = CLI()
+    return c.cmd(" ".join(sys.argv[1:]))
+
+
+main()
