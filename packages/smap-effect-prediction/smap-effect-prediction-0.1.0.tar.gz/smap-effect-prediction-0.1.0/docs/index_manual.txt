@@ -1,0 +1,130 @@
+SMAP effect predictor
+
+	Scope & Quick Start
+		Scope 
+			Run software SMAP haplotype-window to create an integrated master table with all detected alleles per locus per sample
+			Three simple command lines (reference preparation, read mapping, haplotyping).
+			A haplotype is the entire DNA sequence (not encoded) of an amplicon with positional links to the reference gene sequence
+			Goal:
+				Develop software SMAP effect-predictor to create a master table with discrete genotype calls for association with phenotype: 
+				Ref/WT | het KO | Hom KO (KO = predicted strong impact on protein function)
+
+			Program concept improves:
+				Modular, compatibility throughout entire workflow
+				Flexibility in design (scalability to complex multi-guide design)
+				Customized aggregation of effects per haplotype (thresholds)
+				Customized aggregation of alleles per locus
+				Single command line operation
+				Traceable output (genotype table, alignments, VCF-encoded variants, predicted proteins)
+				Biology-driven decisions
+
+		Guidelines for effect prediction
+
+		Quick Start and options
+			Mandatory arguments
+			General Options
+				General options
+				Collect (all positional and sequence information)
+				Annotate (the allele, score effects on gene structure and protein sequence)
+                    open question: will effects only be considered in the editing window? can not be the case as some edits span outside the editing window (really long indels).
+					score initiation of start site : loss of ATG means protein length = 0.
+					score splicing acceptor or donor site: truncate protein at last splicing donor site. Remove all downstream exons.
+					score translated protein, create a pair-wise alignment to ref, calculate % identity with reference and % coverage of reference (multiply both scores to obtain % conserved length):
+					Aggregate (impact per haplotype)
+						score conserved length in % intervals: 100% = no effect, 95-100% = low impact, 75-95% = medium impact, <75% is high impact. Interval borders can be set at command line. 
+				Filter (remove noise, like false positive edits; sequence variants outside the expected editing window)
+				Aggregate (haplotypes per locus, cumulative allele/effect frequency per locus), false positives are not considered (will effectively be aggregated under "ref").
+				Discretize (switch to WT | het KO | hom KO)
+
+		Output
+			graphical output
+				summary stats per aggregation type
+			tabular output
+				pre-aggregation table: locusID, haplotype, overlap_edit_window, impact scores (several columns: Start/Splice/alignRef/%conserved), %AF per sample
+				post-aggregation table: locus ID, impact, (aggregated haplotypes as comma separated list), %_allele_freq per sample
+			gff output
+
+	Feature Description
+		Observations that complicate interpretation:
+			many different alleles detected across samples (variation in editing outcomes)
+			not all edits affect the protein function
+			de novo alleles at subsequent generations
+			mosaicism within plants (yet phenotype is “whole plant” single observation)
+			SNPs outside ‘expected’ edit region (false positives / heterozygous genotypes)
+			quantitative values (relative read depth, association is easier with discrete genotype calls)
+			flexible/scalable designs with multiple amplicons and multiple guides per gene are possible
+			Background heterozygosity in wild type splits editing frequencies per allele (flanking SNP in amplicon)
+		Concepts for “cleaning up”:
+			Ignore variation that does not result from CRISPR-cas edits (filter by region of interest)
+			Different mutant alleles may lead to KO
+			Project mutation onto gene structure: mutation => guide => amplicon => gene => protein
+			Evaluate effect of mutation on encoded protein
+			Aggregate per locus all counts of alleles that lead to KO (like 1-ref)
+			The rest are considered as alleles that do not affect the protein
+			Discretize at appropriate level of protein impact
+			Alternatively: filter but no aggregation (associate phenotype per allele)
+
+	How It Works
+		Preparing input files with SMAP design and SMAP haplotype-window
+		Step 1. Collect (all positional and sequence information needed to predict protein of mutated allele)
+			Types of information:
+				Position of CDS in reference genome, extract reference gene sequence (+), 
+				Position of CDS/ORF in gene
+				Position of amplicon in gene
+				Position of guide in amplicon
+				Alleles detected per locus per sample
+			Derived information:
+				protein sequence, guide sequence, expected cut site, region of interest
+
+		Step 2. Align each haplotype to its reference
+			filter edits in ROI
+				how to deal with SNPs, combinations of insertions and deletions?
+			some designs use multiple amplicons and/or guides per gene
+
+		Step 3. Annotate (the allele, score effects on gene structure and protein sequence)
+			possible structural changes to screen for:
+				syn/non-syn SNP: amino acid change
+				In frame indel 
+				Size of in frame indel
+				Out of frame indel
+				Shift of stop codon (premature, postponed)
+				Non-native amino acid sequence (OOF)
+				Position in the protein length
+				% remaining protein similarity to WT/Ref
+				Ranking of effects, discretise effects, thresholds?
+				Loss of splicing site (donor/acceptor)
+
+		Step 4. Filter (out noise)
+            by haplotype/effect frequency
+		Step 5. Aggregate (effects per haplotype, on impact; rules, priorities)
+		Step 6. Aggregate (haplotypes per locus, cumulative allele/effect frequency per locus)
+		Step 7. Discretize (switch from cumulative frequency to WT | het KO| hom KO)
+			Discretize may be before or after aggregation of haplotypes per locus (associate phenotype per allele)
+
+	Example Data
+		Illustration of aggregation
+			aggregate by haplotype
+			aggregate by effect
+
+	Recommendations & Troubleshooting
+		Collect (input files)
+		Annotation rules (assumptions on effect prediction, which types of edits are scored per impact class (no, minor, major))
+		Filtering out noise (frequency, position, type of polymorphism) 
+        Level of aggregation
+			aggregate by haplotype
+			aggregate by effect
+		Discretize
+			discretization rules (switch from cumulative frequency to WT | het KO| hom KO)
+
+		Troubleshooting
+	
+	Summary of Commands
+		Mandatory arguments
+		General Options
+			general options
+			Collect options
+			Annotate options
+			Filter options
+			Aggregate effects by haplotype options
+			Aggregate haplotypes by locus options
+			Discretize options

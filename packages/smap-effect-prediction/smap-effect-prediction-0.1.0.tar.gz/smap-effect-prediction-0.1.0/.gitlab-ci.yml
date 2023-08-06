@@ -1,0 +1,86 @@
+image: python:3
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+stages:
+  - linting
+  - test
+  - staging
+  - coverage
+
+flake8:
+  stage: linting
+  image: python:3.8
+  before_script:
+    - python -V
+    - python -m venv .venv
+    - pip install -U pip
+    - source .venv/bin/activate
+    - pip install flake8
+  script:
+    - flake8 --verbose .
+
+test3.8:
+  stage: test
+  image: python:3.8
+  before_script:
+    - python -V
+    - python -m venv .venv
+    - pip install -U pip wheel
+    - source .venv/bin/activate
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.9:
+  stage: test
+  image: python:3.9
+  before_script:
+    - python -V
+    - python -m venv .venv
+    - pip install -U pip wheel
+    - source .venv/bin/activate
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+test3.10:
+  stage: test
+  image: python:3.10
+  before_script:
+    - python -V
+    - python -m venv .venv
+    - pip install -U pip wheel
+    - source .venv/bin/activate
+    - pip install .
+
+  script:
+    - python -m unittest discover -v -s ./test -p test_*.py
+
+coverage:
+  stage: coverage
+  before_script:
+    - pip install -U pip
+    - pip install .
+    - pip install coverage
+  script:
+    - coverage run --source smap_effect_prediction -m unittest discover -s test/ -p "test_*.py" &> /dev/null
+    - coverage report -m
+  coverage: /TOTAL.*\s+(\d+%)$/
+
+test_documentation:
+  stage: test
+  image: python:3.8
+  before_script:
+    - pip install -U pip
+    - pip install .[docs]
+  script:
+    - cd docs
+    - sphinx-build -M html . build -W
