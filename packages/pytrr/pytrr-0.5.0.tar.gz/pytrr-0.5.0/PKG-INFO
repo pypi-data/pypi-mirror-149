@@ -1,0 +1,69 @@
+Metadata-Version: 1.1
+Name: pytrr
+Version: 0.5.0
+Summary: A package for reading GROMACS .trr files
+Home-page: https://github.com/andersle/pytrr
+Author: Anders Lervik
+Author-email: andersle@gmail.com
+License: LGPLv2.1+
+Description: .. image:: https://travis-ci.org/andersle/pytrr.svg?branch=master
+            :target: https://travis-ci.org/andersle/pytrr
+        
+        .. image:: https://coveralls.io/repos/github/andersle/pytrr/badge.svg?branch=master
+            :target: https://coveralls.io/github/andersle/pytrr?branch=master
+        
+        
+        
+        #####
+        pytrr
+        #####
+        
+        ``pytrr`` is a Python package for reading .trr [1]_ files from GROMACS [2]_.
+        
+        ``pytrr`` is intended as a lightweight, pure Python, library for reading .trr
+        trajectories and it gives access to positions, velocities, etc.
+        as numpy arrays.
+        
+        Example
+        =======
+        
+        .. code:: python
+        
+           from pytrr import GroTrrReader
+        
+           with GroTrrReader('traj.trr') as trrfile:
+               for frame in trrfile:
+                   print(frame['step'])
+                   frame_data = trrfile.get_data()
+                   print(frame_data['x'][0])
+        
+        
+        Installation
+        ============
+        
+        pytrr can be installed via pip:
+        
+        ``pip install pytrr``
+        
+        
+        References
+        ==========
+        
+        .. [1] http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+        .. [2] http://www.gromacs.org/
+        
+Keywords: gromacs simulation trr
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)
+Classifier: Natural Language :: English
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Topic :: Scientific/Engineering :: Physics
