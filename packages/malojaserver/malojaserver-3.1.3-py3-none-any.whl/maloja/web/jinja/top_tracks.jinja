@@ -1,0 +1,30 @@
+{% extends "abstracts/base.jinja" %}
+{% block title %}Maloja - #1 Tracks{% endblock %}
+
+
+<!-- find representative -->
+
+{% set entries = dbc.get_top_tracks(filterkeys,limitkeys,delimitkeys) %}
+{% set repr = entries | find_representative('track','scrobbles') %}
+{% set img = "/favicon.png" if repr is none else images.get_track_image(repr.track) %}
+
+
+{% block content %}
+		<table class="top_info">
+			<tr>
+				<td class="image">
+					<div style="background-image:url('{{ img }}')"></div>
+				</td>
+				<td class="text">
+					<h1>#1 Tracks</h1><br/>
+					<span>{{ limitkeys.timerange.desc(prefix=True) }}</span>
+
+					<br/><br/>
+					{% include 'snippets/timeselection.jinja' %}
+				</td>
+			</tr>
+		</table>
+
+		{% include 'partials/top_tracks.jinja' %}
+
+{% endblock %}
