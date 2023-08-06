@@ -1,0 +1,10 @@
+# This orchestration will deploy nodejs and install it on the target system.
+#
+---
+
+# Install nodejs
+- jobs:
+  - RUN: >-
+      curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
+
+  - RUN: dnf install -y nodejs
