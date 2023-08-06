@@ -1,0 +1,1 @@
+snake_case_functions = ('elastix_registration_method', 'transformix_filter', 'transformix_deformation_field', 'transformix_jacobian','transformix_pointset',)
