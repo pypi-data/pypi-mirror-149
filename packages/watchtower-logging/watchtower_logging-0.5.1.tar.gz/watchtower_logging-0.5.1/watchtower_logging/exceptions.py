@@ -1,0 +1,1 @@
+class loggingException(Exception): pass
