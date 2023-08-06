@@ -1,0 +1,198 @@
+{% extends 'allianceauth/base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% load evelinks %}
+{% load pvefilters %}
+
+{% block page_title %}New Entry{% endblock page_title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/new_entry_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_checkbox.css' %}">
+    <style>
+        .red-heart {
+            color: #E4115C;
+            transform: scale(2, 2);
+        }
+
+        .selected-user {
+            color: #259c21;
+            transform: scale(1.5, 1.5);
+        }
+
+        .unselected-user {
+            transform: scaleX(-1);
+            color: #ff5e00;
+        }
+    </style>
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">{{ rotation.name }}</h1>
+        <div class="row vertical-flexbox-row2">
+            <div class="col-sm-8">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center">New Entry</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form id="entry-form" method="POST"> {% csrf_token %}
+                            {{ roleforms.management_form }}
+                            <div id="roles-div">
+                                <span class="head">Role</span>
+                                <span class="head">Value</span>
+                                <span class="head">Delete</span>
+
+                                {% for rform in roleforms %}
+                                    {{ rform.name }}
+                                    <span id="roles_form-{{ forloop.counter0 }}-name_span" class="head">{{ rform.name.value }}</span>
+                                    {{ rform.value }}
+                                    <button type="button" id="delete-role-{{ forloop.counter0 }}" class="btn btn-danger btn-sm" style="transform: scale(0.5, 0.5);"><i class="fas fa-times" id="remove-role-icon-{{ forloop.counter0 }}"></i></button>
+                                {% endfor %}
+                                
+                            </div>
+                            <div style="margin-top: 10px; text-align: center;">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newRoleModal"><i class="fas fa-plus"></i></button>
+                            </div>
+                            <hr>
+                            <div class="field" style="margin-bottom: 20px;">
+                                <button type="button" id="drifterButton" class="btn btn-info" onclick="incrementEstimatedTotal(300000000)">Drifter</button>
+                                <button type="button" id="garrisonButton" class="btn btn-info" onclick="incrementEstimatedTotal(253400000)">Garrison</button>
+                                <button type="button" id="strongholdButton" class="btn btn-info" onclick="incrementEstimatedTotal(234900000)">Stronghold</button>
+                                <button type="button" id="citadelButton" class="btn btn-info" onclick="incrementEstimatedTotal(310100000)">Citadel</button>
+                                <button type="button" id="bastionButton" class="btn btn-info" onclick="incrementEstimatedTotal(445600000)">Bastion</button>
+                                <button type="button" id="theMirrorButton" class="btn btn-info" onclick="incrementEstimatedTotal(363200000)">The Mirror</button>
+                            </div>
+                            {{ entryform.non_field_errors }}
+                            <div class="field">
+                                {{ entryform.estimated_total.label_tag }}
+                                {{ entryform.estimated_total }}
+                                <button type="button" id="incrementAllButton" class="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Increment All Shares"><i class="fas fa-user-plus"></i></button>
+                                <button type="button" id="incrementSelectedButton" class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Increment Selected Shares"><i class="fas fa-user-cog"></i></button>
+                                <button type="button" id="decrementSelectedButton" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Decrement Selected Shares"><i class="fas fa-user-cog"></i></button>
+                                <button type="button" id="decrementAllButton" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Decrement All Shares"><i class="fas fa-user-minus"></i></button>
+                            </div>
+                            {{ entryform.estimated_total.errors }}
+                            <hr>
+                            {{ shareforms.management_form }}
+                            <div id="users">
+                                {% if shareforms.initial_form_count > 0 %}
+                                    <span class="head">Select</span>
+                                    <span class="head">User's Main Char</span>
+                                    <span class="head">Character</span>
+                                    <span class="head">Role</span>
+                                    <span class="head">Setup</span>
+                                    <span class="head">Count</span>
+                                    <span class="head">Delete</span>
+                                {% else %}
+                                    <span class="all-cols head">No character yet</span>
+                                {% endif %}
+
+                                {% for sform in shareforms %}
+                                    {% comment %} Selected character {% endcomment %}
+                                    <label for="select-share-checkbox-{{ forloop.counter0 }}" class="custom-checkbox" id="select-share-label-{{ forloop.counter0 }}" style="transform: none;">
+                                        <input type="checkbox" class="setup" id="select-share-checkbox-{{ forloop.counter0 }}" checked>
+                                        <i class="fas fa-arrow-right checked selected-user"></i>
+                                        <i class="fas fa-running unchecked unselected-user"></i>
+                                    </label>
+
+                                    {% comment %} User {% endcomment %}
+                                    {{ sform.user }}
+                                    <div id="profile-div-{{ forloop.counter0 }}">
+                                        <img src="{{ sform.user.value|get_main_character|character_portrait_url:32 }}" class="img-circle" style="margin-right: 1rem;" id="profile-pic-{{ forloop.counter0 }}">
+                                        <span id="username-span-{{ forloop.counter0 }}" style="margin-left: 5px;">{{ sform.user.value|get_main_character|get_char_attr:"character_name" }}</span>
+                                    </div>
+
+                                    {% comment %} Character {% endcomment %}
+                                    {{ sform.character }}
+                                    <div id="character-div-{{ forloop.counter0 }}">
+                                        <img src="{{ sform.character.value|get_char_attr:"portrait_url_32" }}" class="img-circle" style="margin-right: 1rem;" id="character-pic-{{ forloop.counter0 }}">
+                                        <span id="character_name-span-{{ forloop.counter0 }}" style="margin-left: 5px;">{{ sform.character.value|get_char_attr:"character_name" }}</span>
+                                    </div>
+
+                                    {% comment %} Fleet Role {% endcomment %}
+                                    <select name="form-{{ forloop.counter0 }}-role" id="id_form-{{ forloop.counter0 }}-role" class="form-control" style="height: auto;">
+                                        {% for rolef in roleforms %}
+                                            {% if rolef.name.value == sform.role.value %}
+                                                <option value="{{ rolef.name.value }}" selected>{{ rolef.name.value }}</option>
+                                            {% else %}
+                                                <option value="{{ rolef.name.value }}">{{ rolef.name.value }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    
+                                    {% comment %} Helped setup {% endcomment %}
+                                    <label for="id_form-{{ forloop.counter0 }}-helped_setup" class="custom-checkbox red-heart" id="helped_setup-label-{{ forloop.counter0 }}">
+                                        {{ sform.helped_setup }}
+                                        <i class="far fa-heart unchecked"></i>
+                                        <i class="fas fa-heart checked"></i>
+                                    </label>
+
+                                    {% comment %} Site Count {% endcomment %}
+                                    {{ sform.site_count }}
+
+                                    {% comment %} Delete Button {% endcomment %}
+                                    <button type="button" id="delete-row-{{ forloop.counter0 }}" class="btn btn-danger btn-sm" style="transform: scale(0.5, 0.5);"><i class="fas fa-times" id="delete-icon-{{ forloop.counter0 }}"></i></button>
+
+                                {% endfor %}
+                            </div>
+                            <div style="text-align: right; margin-top: 15px;">
+                                <a href="{% url 'allianceauth_pve:rotation_view' rotation.pk %}" class="btn btn-danger">Back</a>
+                                <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center">Search Characters</h3>
+                    </div>
+                    <div class="panel-body" style="padding-bottom: 30px;">
+                        <div class="field">
+                            <input type="text" name="search-bar" id="search-bar-id" placeholder="Search" style="width: 70%;">
+                            <button type="button" class="btn btn-info" id="search-bar-btn">Search</button>
+                        </div>
+                        <hr>
+                        <div id="search-results">
+                            <span class="all-cols head">No results</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="newRoleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Role</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="roleForm">
+                        <div class="form-group row">
+                            <label for="id_roleName" style="margin-right: 15px;">Role Name:</label>
+                            <input type="text" name="roleName" id="id_roleName">
+                        </div>
+                        <div class="form-group row">
+                            <label for="id_roleValue" style="margin-right: 50px;">Value:</label>
+                            <input type="number" name="roleValue" id="id_roleValue">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="submitNewRoleButton" data-dismiss="modal">Confirm</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_javascript %}
+    <script src="{% static 'js/new_entry_js.js' %}"></script>
+{% endblock extra_javascript %}
+
+{% block extra_script %}
+{% endblock extra_script %}
