@@ -1,0 +1,75 @@
+# Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
+[tool.poetry]
+name = "aws-service-catalog-puppet"
+version = "0.170.1"
+description = "Making it easier to deploy ServiceCatalog products"
+classifiers = ["Development Status :: 5 - Production/Stable", "Intended Audience :: Developers", "Programming Language :: Python :: 3", "License :: OSI Approved :: Apache Software License", "Operating System :: OS Independent", "Natural Language :: English"]
+homepage = "https://service-catalog-tools-workshop.com/"
+readme = "README.md"
+repository = "https://github.com/awslabs/aws-service-catalog-puppet-framework"
+authors = ["Eamonn Faherty <aws-service-catalog-tools@amazon.com>"]
+packages = [
+    { include = "servicecatalog_puppet", from = "." },
+]
+include = ["servicecatalog_puppet"]
+
+[tool.poetry.scripts]
+servicecatalog-puppet = "servicecatalog_puppet.cli:cli"
+
+[tool.poetry.urls]
+issues = "https://github.com/awslabs/aws-service-catalog-puppet-framework/issues"
+
+[tool.poetry.dev-dependencies]
+codecov = "^2.1.7"
+behave = "^1.2.6"
+pylint = "^2.5.3"
+black = "^19.10b0"
+pycodestyle = "^2.6.0"
+nose2 = "^0.10.0"
+
+[tool.dephell.main]
+versioning = "semver"
+from = {format = "poetrylock", path = "poetry.lock"}
+envs = ["main"]
+to = {format = "poetry", path = "pyproject.toml"}
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4" 
+requests = "2.26.0"
+pyyaml = "==5.4"
+jinja2 = "==2.11.3"
+click = "7.0"
+boto3 = "1.20.5"
+better-boto = "0.42.0"
+terminaltables = "3.1.0"
+colorclass = "2.2.0"
+luigi = "3.0.2"
+psutil = "5.7.0"
+cfn-flip = "1.2.3"
+networkx = "2.5"
+troposphere = "3.1.0"
+awacs = "2.0.2"
+jmespath = "0.10.0"
+deepdiff = "5.3.0"
+deepmerge = "0.2.1"
+yamale = "3.0.8"
+botocore = "1.23.5"
+certifi = "2020.6.20"
+charset-normalizer = "2.0.7"
+decorator = "4.4.2"
+docutils = "0.15.2"
+idna = "2.8"
+Jinja2 = "2.11.3"
+lockfile = "0.12.2"
+MarkupSafe = "1.1.1"
+ordered-set = "4.0.2"
+python-daemon = "2.1.2"
+python-dateutil = "2.8.1"
+PyYAML = "5.4"
+s3transfer = "0.5.0"
+six = "1.15.0"
+tornado = "5.1.1"
+typing-extensions = "3.10.0.2"
+urllib3 = "1.26.7"
