@@ -1,0 +1,9 @@
+{% if settings.settings.light_mode %}
+{% set pathstatic = ".." %}
+{% else %}
+{% set pathstatic = "." %}
+{% endif %}
+{% set image = Image.get(link + "/" + pathstatic, section.image) %}
+<section class="panorama">
+  <img src="{{ pathstatic }}/{{ image.thumbnail((None, 800)) }}">
+</section>

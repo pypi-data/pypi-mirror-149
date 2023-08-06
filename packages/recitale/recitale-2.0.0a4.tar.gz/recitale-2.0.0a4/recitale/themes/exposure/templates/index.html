@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" href="static/css/fonts.css"  media="screen,projection"/>
+<link type="text/css" rel="stylesheet" href="static/css/style.css"  media="screen,projection"/>
+{% if settings.custom_css %}
+<link type="text/css" rel="stylesheet" href="static/css/custom.css"  media="screen,projection"/>
+{% endif %}
+{% endblock %}
+
+{% block logo %}
+{% if sub_index %}
+<div class="back-to-home">
+  <hr>
+  <a href="../">
+    <div id="logo" src="static/img/logo.svg">
+      Back
+    </div>
+  </a>
+</div>
+{% else %}
+<img id="logo" src="static/img/logo.svg"/>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="galleries-grid">
+  {% for galleries_line in galleries|reverse|batch(3)|reverse %}
+  {% if galleries_line|length > 1 %}
+  {% set no_big_gallery_cover = true %}
+  {% endif %}
+  <div class="galleries-line covers-{{ galleries_line|length }}">
+    {% for gallery in galleries_line|reverse %}<!-- comment tricks against space between inline-block
+    --><div class="gallery-square">
+      <a href="{{ gallery.name }}">
+        <div class="gallery-title">
+          <h2>{{ gallery.title }}</h2>
+          {% if gallery.sub_title %}<h3>{{ gallery.sub_title }}</h3>{% endif %}
+          {% if settings.show_date and gallery.date %}<div class="gallery-datetime">{{ gallery.date|local_date("dd MMMM yyyy") }}</div>{% endif %}
+          {% if gallery.tags %}<div class="gallery-tag">IN {% for tag in gallery.tags -%} <span> {{ tag }}</span> {% endfor -%}</div>{% endif %}
+        </div>
+      </a>
+      {% if gallery.cover_type == "video" %}
+      {% set video = Video.get(gallery.link, gallery.cover) %}
+      {% set vid = video.reencode((1280, 720)) %}
+      {% set format = settings.ffmpeg.extension %}
+      <div class="gallery-cover">
+        <video autoplay loop muted class="fillWidth">
+	  <source src="{{ gallery.link }}/{{ vid }}" type="video/{{ format }}">
+        </video>
+	<img class="fillWidth" alt="" src="{{ gallery.link }}/{{ video.thumbnail((None, 900)) }}">
+      </div>
+      {% else %}
+      {% set cover = Image.get(gallery.link, gallery.cover) %}
+      {% if no_big_gallery_cover %}
+      <div class="gallery-cover" style="background-image: url('{{ gallery.name }}/{{ cover.thumbnail((None, 900)) }}'), url('{{ gallery.name }}/{{ cover.thumbnail((None, 150)) }}');"></div>
+      {% else %}
+      <div class="gallery-cover" style="background-image: url('{{ gallery.name }}/{{ cover.thumbnail((None, 1366)) }}'), url('{{ gallery.name }}/{{ cover.thumbnail((None, 900)) }}');"></div>
+      {% endif %}
+      {% endif %}
+    </div><!-- comment tricks against space between inline-block
+    -->{% endfor %}
+  </div>
+  {% endfor %}
+</div>
+<p style="visibility: hidden">.</p>
+{% if settings.settings.night_mode %}
+<script type="text/javascript" src="./static/js/jquery.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+if (localStorage.getItem("mode_night") == "true") {
+  $('body').addClass('night');
+  document.getElementById("toggle-box-checkbox").checked = true;
+}
+
+$('#toggle-box-checkbox').on('change', function(){
+  if(this.checked){
+    $('body').addClass('night');
+    localStorage.setItem("mode_night", true);
+  }else{
+    $('body').removeClass('night');
+    localStorage.setItem("mode_night", false);
+  }
+});
+</script>
+{% endif %}
+{% endblock %}

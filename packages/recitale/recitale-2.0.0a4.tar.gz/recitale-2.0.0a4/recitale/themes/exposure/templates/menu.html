@@ -1,0 +1,22 @@
+<nav>
+  <div class="nav-wrapper">
+    <ul>
+      {% for line in settings.menu %}
+      {% set rowloop = loop %}
+      {% for file_name, menu_name in line.items() %}
+      {# We test if it's a URI reference or not #}
+      {% if ':' in file_name and not file_name.startswith('./') %}
+      {% set file_name = file_name %}
+      {% else %}
+      {% set file_name = "../"+file_name %}
+      {% endif %}
+      {% if rowloop.first %}
+      <li><a href={{ file_name }} class=first-item-menu>{{ menu_name  }}</a></li>
+      {% else %}
+      <li><a href={{ file_name }} class=item-menu>{{ menu_name }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,27 @@
+{% set absolute_url = settings.url + "/" + link + "/" %}
+{% if settings.settings.light_mode %}
+{% set pathstatic = ".." %}
+{% set absolute_url = absolute_url + pathstatic + "/" %}
+{% else %}
+{% set pathstatic = "." %}
+{% endif %}
+<meta property="og:title" content="{{ gallery.title }}"/>
+{% if gallery.cover %}
+{% if gallery.cover.type == "video" %}
+{% set cover = Video.get(link + "/" + pathstatic, gallery.cover) %}
+{% else %}
+{% set cover = Image.get(link + "/" + pathstatic, gallery.cover) %}
+{% endif %}
+<meta property="og:image" content="{{ absolute_url }}{{ cover.thumbnail((None, 900)) }}"/>
+{% endif %}
+<meta property="og:site_name" content="{{ settings.title }}"/>
+{% if gallery.description %}
+<meta property="og:description" content="{{ gallery.description }}"/>
+{% endif %}
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="{{ gallery.date }}">
+{% if gallery.tags %}
+{% for tag in gallery.tags %}
+<meta property="article:tag" content="{{ tag }}">
+{% endfor %}
+{% endif %}

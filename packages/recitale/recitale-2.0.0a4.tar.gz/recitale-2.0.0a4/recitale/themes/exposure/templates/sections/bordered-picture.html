@@ -1,0 +1,51 @@
+{% if section.background %}
+<div class="bg-section" style="background: {{ section.background }};">
+  {% endif %}
+  {% if section.image.type == "video" %}
+  {% set video = Video.get(link, section.image) %}
+  {% set format = settings.ffmpeg.extension %}
+  {% set caption = section.text %}
+  {% set vid = video.reencode((1280, 720)) %}
+  <section class="bordered-picture baguette" style="position: relative;">
+    <div class="caption">
+        <img class="lazy" data-src="{{ video.thumbnail((None, 2000)) }}" src="./../static/img/11-14.svg" alt="">
+        <video class="lazy" id="{{ vid }}" onclick="goFullscreen('{{ vid }}');" data-src="{{ vid }}" data-poster="{{ video.thumbnail((None, 2000)) }}" alt="" loop="loop" preload="none" autoplay muted {% if video.controls %}controls="true"{% endif %}>
+        <source src="{{ vid }}" type="video/{{ format }}">
+      </video>
+      {% if caption %}
+      <div class="caption__overlay">
+        <h5 class="caption__overlay__title">{{ caption }}</h5>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+  {% else %}
+  {% set image = Image.get(link, section.image) %}
+  {% set caption = section.text %}
+  <section class="bordered-picture baguette">
+    <div class="caption">
+      <a href="{{ image.copy() }}" {% if caption %}data-caption="{{ caption }}"{% endif %}
+         data-at-450="{{ image.thumbnail((None, 450)) }}"
+         data-at-800="{{ image.thumbnail((None, 800)) }}"
+         data-at-1366="{{ image.thumbnail((None, 1366)) }}"
+         data-at-1920="{{ image.thumbnail((None, 1920)) }}"
+         >
+         <picture>
+           <source data-srcset="{{ image.thumbnail((None, 450)) }}" media="(max-width: 450px)"/>
+           <source data-srcset="{{ image.thumbnail((None, 800)) }}" media="(max-width: 800px)"/>
+           <source data-srcset="{{ image.thumbnail((None, 1366)) }}" media="(max-width: 1366px)"/>
+           <source data-srcset="{{ image.thumbnail((None, 1920)) }}" media="(max-width: 1920px)"/>
+           <img class="lazy" src="{% if caption %}./../static/img/11-14.svg{% endif %}" data-src="{{ image.thumbnail((None, 1920)) }}" alt=""/>
+         </picture>
+        {% if caption %}
+        <div class="caption__overlay">
+          <h5 class="caption__overlay__title">{{ caption }}</h5>
+        </div>
+        {% endif %}
+      </a>
+    </div>
+  </section>
+  {% endif %}
+  {% if section.background %}
+</div>
+{% endif %}

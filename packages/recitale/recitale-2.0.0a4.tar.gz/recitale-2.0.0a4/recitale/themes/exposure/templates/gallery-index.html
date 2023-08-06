@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <!--Let browser know website is optimized for mobile-->
+    <link type="text/css" rel="stylesheet" href="../static/css/style-page.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% if gallery.description %}
+    <meta name="description" content="{{ gallery.description }}" />
+    {% endif %}
+    {% if gallery.lang %}
+    <meta name="language" content="{{ gallery.lang }}" />
+    {% endif %}
+    {% if settings.settings.og %}
+    {% include "opengraph.html" %}
+    {% endif %}
+    <title>{{ gallery.title }} · {{ settings.title }}</title>
+  </head>
+  <body>
+    {% if settings.settings.night_mode %}
+    <div class="floating-menu">
+      <label class="switch">
+        <input type="checkbox" id="toggle-box-checkbox">
+        <span class="slider round"></span>
+      </label>
+    </div>
+    {% endif %}
+    {% for section in gallery.sections %}
+    {% include "sections/" + section.type + ".html" %}
+    {% endfor %}
+    {% if settings.share %}
+    {% include "share.html" %}
+    {% endif %}
+    <div class="back-to-home">
+      <hr>
+      <a href="../">
+        <div id="logo" src="./../static/img/logo.svg">
+          HOME
+        </div>
+      </a>
+    </div>
+    <link type="text/css" rel="stylesheet" href="../static/css/fonts.css"  media="screen,projection"/>
+    {% if settings.custom_css %}
+    <link type="text/css" rel="stylesheet" href="../static/css/custom.css"  media="screen,projection"/>
+    {% endif %}
+    {% if gallery.panorama_enabled or gallery.audio_enabled or settings.settings.night_mode %}
+    <script type="text/javascript" src="../static/js/jquery.min.js" charset="utf-8"></script>
+    {% endif %}
+    <link type="text/css" rel="stylesheet" href="../static/css/baguetteBox.min.css"  media="screen,projection"/>
+    <script type="text/javascript" src="../static/js/baguetteBox.min.js" charset="utf-8"></script>
+    {% if gallery.panorama_enabled %}
+    <link type="text/css" rel="stylesheet" href="../static/css/panorama_viewer.css"  media="screen,projection"/>
+    <script type="text/javascript" src="../static/js/jquery.panorama_viewer.min.js" charset="utf-8"></script>
+    {% endif %}
+    <script type="text/javascript" src="../static/js/lazyload.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../static/js/picturefill.min.js" charset="utf-8"></script>
+    {% if gallery.audio_enabled %}
+    <link type="text/css" rel="stylesheet" href="../static/css/mediaelementplayer.css"  media="screen,projection"/>
+    <script type="text/javascript" src="../static/js/mediaelement-and-player.min.js" charset="utf-8"></script>
+    {% endif %}
+    <script type="text/javascript">
+{% if settings.settings.night_mode %}
+if (localStorage.getItem("mode_night") == "true") {
+  $('body').addClass('night');
+  document.getElementById("toggle-box-checkbox").checked = true;
+}
+
+$('#toggle-box-checkbox').on('change', function(){
+  if(this.checked){
+    $('body').addClass('night');
+    localStorage.setItem("mode_night", true);
+  }else{
+    $('body').removeClass('night');
+    localStorage.setItem("mode_night", false);
+  }
+});
+{% endif %}
+  baguetteBox.run(".baguette");
+
+  {% if gallery.panorama_enabled %}
+  $(".panorama").panorama_viewer({
+    repeat: true,
+    direction: "horizontal",
+    animationTime: 150,
+    easing: "linear",
+    overlay: true
+  });
+  {% endif %}
+
+{% if gallery.audio_enabled %}
+$('audio').mediaelementplayer({
+  alwaysShowControls: true,
+  features: ['playpause','progress','volume'],
+  audioVolume: 'horizontal',
+  audioWidth: 450,
+  audioHeight: 30,
+  iPadUseNativeControls: true,
+  iPhoneUseNativeControls: true,
+  AndroidUseNativeControls: true
+});
+{% endif %}
+
+function goFullscreen(id) {
+  var element = document.getElementById(id);
+  element.setAttribute("controls", true);
+
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen();
+  }  
+}
+
+var lazyLoadInstance = new LazyLoad({
+    elements_selector: ".lazy"
+});
+
+{% if settings.settings.light_mode %}
+var slowLoad = window.setTimeout( function() {
+  var html_node = document.getElementsByTagName('html')[0];
+  var div = document.createElement('div');
+  div.setAttribute('id', 'slow-notice');
+  var t1 = document.createTextNode("The website is taking a long time to load.");
+  var br = document.createElement('br');
+  var t2 = document.createTextNode("You can switch to the ");
+  var a = document.createElement('a');
+  a.setAttribute('href', './light');
+  a.innerHTML = 'Light Weight Site';
+
+  var dismiss = document.createElement('span');
+  dismiss.innerHTML = '[x] dismiss';
+  dismiss.setAttribute('class', 'dismiss');
+  dismiss.onclick = function() {
+    html_node.removeChild(div);
+  }
+
+  var dismiss_container = document.createElement('div');
+  dismiss_container.appendChild(dismiss);
+  dismiss_container.setAttribute('class', 'dismiss-container');
+
+  div.appendChild(t1);
+  div.appendChild(br);
+  div.appendChild(t2);
+  div.appendChild(a);
+  div.appendChild(dismiss_container);
+
+  html_node.appendChild(div);
+}, 10000 );
+
+window.addEventListener( 'load', function() {
+  try {
+    window.clearTimeout( slowLoad );
+    html_node.removeChild(div);
+  } catch (e){
+    // that's okay.
+  }
+
+});
+{% endif %}
+    </script>
+    {% include "footer.html" %}
+  </body>
+</html>
