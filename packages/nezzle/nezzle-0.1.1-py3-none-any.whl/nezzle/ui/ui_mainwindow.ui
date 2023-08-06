@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1347</width>
+    <height>833</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="ui_centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QFrame" name="ui_mainFrame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QTabWidget" name="ui_mainTabWidget">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="tabsClosable">
+          <bool>false</bool>
+         </property>
+         <property name="movable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="ui_menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1347</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="ui_menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="ui_actionOpenNetwork"/>
+    <addaction name="separator"/>
+    <addaction name="ui_actionSaveNetwork"/>
+    <addaction name="separator"/>
+    <addaction name="ui_actionExportImage"/>
+    <addaction name="separator"/>
+    <addaction name="ui_actionExit"/>
+   </widget>
+   <widget class="QMenu" name="ui_menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="ui_actionViewNavigationDock"/>
+    <addaction name="ui_actionViewConsoleDock"/>
+    <addaction name="ui_actionViewHistoryDock"/>
+   </widget>
+   <widget class="QMenu" name="ui_menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="ui_actionUndo"/>
+    <addaction name="ui_actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="ui_actionCopy"/>
+    <addaction name="ui_actionPaste"/>
+   </widget>
+   <widget class="QMenu" name="ui_menuGraphics">
+    <property name="title">
+     <string>Graphics</string>
+    </property>
+    <widget class="QMenu" name="ui_menuLock">
+     <property name="title">
+      <string>Lock</string>
+     </property>
+     <addaction name="ui_actionLockNodes"/>
+     <addaction name="ui_actionLockEdges"/>
+     <addaction name="ui_actionLockLabels"/>
+    </widget>
+    <widget class="QMenu" name="ui_menuConvert">
+     <property name="title">
+      <string>Convert</string>
+     </property>
+     <addaction name="ui_actionToEllipseNode"/>
+     <addaction name="ui_actionToRectangleNode"/>
+     <addaction name="separator"/>
+     <addaction name="ui_actionToStraightEdge"/>
+     <addaction name="ui_actionToCurvedEdge"/>
+     <addaction name="ui_actionToVerticalElbowEdge"/>
+     <addaction name="ui_actionToHorizontalElbowEdge"/>
+    </widget>
+    <addaction name="ui_menuLock"/>
+    <addaction name="ui_menuConvert"/>
+    <addaction name="separator"/>
+    <addaction name="ui_actionSelectAll"/>
+   </widget>
+   <widget class="QMenu" name="ui_menuLayout">
+    <property name="title">
+     <string>Layout</string>
+    </property>
+    <widget class="QMenu" name="ui_menuAlign">
+     <property name="title">
+      <string>Align</string>
+     </property>
+     <addaction name="ui_actionAlignLeft"/>
+     <addaction name="ui_actionAlignCenter"/>
+     <addaction name="ui_actionAlignRight"/>
+     <addaction name="separator"/>
+     <addaction name="ui_actionAlignTop"/>
+     <addaction name="ui_actionAlignMiddle"/>
+     <addaction name="ui_actionAlignBottom"/>
+     <addaction name="separator"/>
+     <addaction name="ui_actionDistributeHorizontally"/>
+     <addaction name="ui_actionDistributeVertically"/>
+    </widget>
+    <addaction name="ui_menuAlign"/>
+   </widget>
+   <addaction name="ui_menuFile"/>
+   <addaction name="ui_menuEdit"/>
+   <addaction name="ui_menuView"/>
+   <addaction name="ui_menuGraphics"/>
+   <addaction name="ui_menuLayout"/>
+  </widget>
+  <widget class="QStatusBar" name="ui_statusbar"/>
+  <widget class="DockWidget" name="ui_navigationDock">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="windowTitle">
+    <string>Navigation</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="ui_controlDockContents">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QGroupBox" name="ui_groupNavigation">
+       <property name="title">
+        <string>Networks</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="NetworkTreeView" name="ui_navigationTree">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="ui_groupCode">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>130</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>From Python Code</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <widget class="QWidget" name="widget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetDefaultConstraint</enum>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <property name="spacing">
+              <number>10</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetDefaultConstraint</enum>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetDefaultConstraint</enum>
+               </property>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>File</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="ui_codeFilePathEdit"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetDefaultConstraint</enum>
+               </property>
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>5</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="ui_openCodeButton">
+                 <property name="text">
+                  <string>Open</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>5</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="ui_runButton">
+                 <property name="text">
+                  <string>Run</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Minimum</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>2</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="DockWidget" name="ui_consoleDock">
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Console</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="ui_consoleDockConetents">
+    <layout class="QVBoxLayout" name="verticalLayout_10">
+     <item>
+      <widget class="QTabWidget" name="ui_consoleTabWidget">
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="ui_visStyleDock">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Visual Style</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="ui_visStyleDockLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QTabWidget" name="ui_styleTabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <property name="movable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="ui_nodeTabLayout">
+        <attribute name="title">
+         <string>Node</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QTableView" name="ui_nodeStyleTable">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="ui_edgeTabLayout">
+        <attribute name="title">
+         <string>Edge</string>
+        </attribute>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QTableView" name="ui_edgeStyleTable"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="DockWidget" name="ui_historyDock">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>History</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="HistoryView" name="ui_historyView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="ui_actionSaveNetwork">
+   <property name="text">
+    <string>Save Network</string>
+   </property>
+  </action>
+  <action name="ui_actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="ui_actionOpenNetwork">
+   <property name="text">
+    <string>Open Network</string>
+   </property>
+  </action>
+  <action name="ui_actionNewView">
+   <property name="text">
+    <string>New View</string>
+   </property>
+  </action>
+  <action name="ui_actionSaveSimulation">
+   <property name="text">
+    <string>Save Simulation</string>
+   </property>
+  </action>
+  <action name="ui_actionOpenSimulation">
+   <property name="text">
+    <string>Open Simulation</string>
+   </property>
+  </action>
+  <action name="ui_actionViewNavigationDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Navigation</string>
+   </property>
+  </action>
+  <action name="ui_actionViewConsoleDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="ui_actionViewVisualStyleDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Visual Style</string>
+   </property>
+  </action>
+  <action name="ui_actionExportImage">
+   <property name="text">
+    <string>Export Image</string>
+   </property>
+  </action>
+  <action name="ui_actionCopy">
+   <property name="text">
+    <string>Copy</string>
+   </property>
+  </action>
+  <action name="ui_actionPaste">
+   <property name="text">
+    <string>Paste</string>
+   </property>
+  </action>
+  <action name="actionLock_Nodes">
+   <property name="text">
+    <string>Lock Nodes</string>
+   </property>
+  </action>
+  <action name="actionLock_Edges">
+   <property name="text">
+    <string>Lock Edges</string>
+   </property>
+  </action>
+  <action name="ui_actionLockNodes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Lock Nodes</string>
+   </property>
+  </action>
+  <action name="ui_actionLockEdges">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Lock Edges</string>
+   </property>
+  </action>
+  <action name="ui_actionLockLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Lock Labels</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignLeft">
+   <property name="text">
+    <string>Align Left</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignCenter">
+   <property name="text">
+    <string>Align Center</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignRight">
+   <property name="text">
+    <string>Align Right</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignTop">
+   <property name="text">
+    <string>Align Top</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignMiddle">
+   <property name="text">
+    <string>Align Middle</string>
+   </property>
+  </action>
+  <action name="ui_actionAlignBottom">
+   <property name="text">
+    <string>Align Bottom</string>
+   </property>
+  </action>
+  <action name="ui_actionDistributeHorizontally">
+   <property name="text">
+    <string>Distribute Horizontally</string>
+   </property>
+  </action>
+  <action name="ui_actionDistributeVertically">
+   <property name="text">
+    <string>Distribute Vertically</string>
+   </property>
+  </action>
+  <action name="ui_actionSelectAll">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+  </action>
+  <action name="ui_actionToCurvedEdge">
+   <property name="text">
+    <string>To Curved Edge</string>
+   </property>
+  </action>
+  <action name="ui_actionToStraightEdge">
+   <property name="text">
+    <string>To Straight Edge</string>
+   </property>
+  </action>
+  <action name="ui_actionToVerticalElbowEdge">
+   <property name="text">
+    <string>To Vertical Elbow Edge</string>
+   </property>
+  </action>
+  <action name="ui_actionToHorizontalElbowEdge">
+   <property name="text">
+    <string>To Horizontal Elbow Edge</string>
+   </property>
+  </action>
+  <action name="ui_actionToEllipseNode">
+   <property name="text">
+    <string>To Ellipse Node</string>
+   </property>
+  </action>
+  <action name="ui_actionToRectangleNode">
+   <property name="text">
+    <string>To Rectangle Node</string>
+   </property>
+  </action>
+  <action name="ui_actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+  </action>
+  <action name="ui_actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="ui_actionViewHistoryDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>NetworkTreeView</class>
+   <extends>QTreeView</extends>
+   <header>nezzle/widgets/networktreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HistoryView</class>
+   <extends>QListView</extends>
+   <header>nezzle/widgets/historyview</header>
+  </customwidget>
+  <customwidget>
+   <class>DockWidget</class>
+   <extends>QDockWidget</extends>
+   <header>nezzle/widgets/dockwidget</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
