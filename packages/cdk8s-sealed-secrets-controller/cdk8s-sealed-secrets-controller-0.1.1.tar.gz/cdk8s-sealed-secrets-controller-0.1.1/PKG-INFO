@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: cdk8s-sealed-secrets-controller
+Version: 0.1.1
+Summary: @opencdk8s/cdk8s-sealed-secrets-controller
+Home-page: https://github.com/opencdk8s/cdk8s-sealed-secrets-controller.git
+Author: Gagan Singh<gaganpreet.singh@smallcase.com>
+License: Apache-2.0
+Project-URL: Source, https://github.com/opencdk8s/cdk8s-sealed-secrets-controller.git
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: JavaScript
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Typing :: Typed
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# cdk8s-sealed-secrets-controller
+
+Extends APIObjects for sealed secrets controller.
+
+## Usage:
+
+```
+import { Construct } from 'constructs';
+import { App, Chart, ChartProps } from 'cdk8s';
+import { SealedSecretsTemplate } from '@opencdk8s/cdk8s-sealed-secrets-controller';
+
+export class MyChart extends Chart {
+  constructor(scope: Construct, id: string, props: ChartProps = { }) {
+    super(scope, id, props);
+      new SealedSecretsTemplate(this, 'example', {});
+    }
+}
+
+const app = new App();
+new MyChart(app, 'example');
+app.synth();
+```
+
+
