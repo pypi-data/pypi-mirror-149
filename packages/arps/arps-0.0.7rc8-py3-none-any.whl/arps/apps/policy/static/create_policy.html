@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+  <body onload="load_touchpoints();">
+
+    <h2>MAS Status</h2>
+
+    <p id="agents_directory_status"></p>
+    <p id="am_fetched"></p>
+
+    <h2>Create policy</h2>
+
+    <label>Policy name:</label>
+    <input id="policy_name" name="policy_name"/>
+
+    <label>Policy description:</label>
+    <input id="policy_description" description="policy_description"/>
+
+    <br>
+    <hr>
+    <table>
+      <tr>
+	<td>Type</td>
+	<td>Touchpoint</td>
+	<td>Operation</td>
+	<td>Value</td>
+      </tr>
+      <tr>
+	<td>Condition</td>
+	<td>
+	  <select id="sensors" name="sensors"></select>
+	</td>
+	<td>
+	  <select id="operator">
+	    <option>Greater</option>
+	    <option>Greater Equal</option>
+	    <option>Equal</option>
+	    <option>Not Equal</option>
+	    <option>Less Equal</option>
+	    <option>Less</option>
+	  </select>
+	</td>
+	<td>
+	  <input id="sensor_threshold" name="sensor_threshold"/>
+	</td>
+      </tr>
+      <tr>
+	<td>Action</td>
+	<td>
+	  <select id="actuators" name="actuators"></select>
+	</td>
+	<Td>---</td>
+	<td>
+	  <input id="actuator_action" name="actuator_action"/>
+	</td>
+      </tr>
+    </table>
+    <br>
+
+    <button type="button"
+	    onclick="post();">
+      Post policy</button>
+    <br>
+
+    <p id="demo"></p>
+    <script src="create_policy.js"></script>
+    <script src="load_touchpoints.js"></script>
+
+  </body>
+</html>
