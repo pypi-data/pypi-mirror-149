@@ -1,0 +1,337 @@
+..  -*- coding: utf-8 -*-
+
+Demo scenario for conference cube
+=================================
+
+We create a `SemWeb.pro conference` program for our testing scenario.
+
+    >>> if rql('Conference COUNT(C)')[0][0]:
+    ...     raise KeyboardInterrupt('please, start from a fresh instance.')
+
+
+Conference SemWeb.pro
+---------------------
+
+Create the conference planned in July 2010 at Logilab.
+
+    >>> description = u"SemWeb.pro is the next major conference"
+    >>> from datetime import date, datetime
+    >>> start, end = date(2010, 7, 12), date(2010, 7, 15)
+    >>> url_id = u"ced_conf"
+    >>> location = create_entity(u'PostalAddress', street=u"104, boulevard Blanqui",
+    ...                          postalcode=u"75013", city=u"Paris")
+    >>> conf = create_entity('Conference', title=u"SemWeb.pro", take_place_at=location, start_on=start, end_on=end, url_id=url_id)
+    >>> conf
+    <Entity Conference ...>
+
+Put the description into the datastore.
+
+    >>> conf.cw_set(description=description)
+
+Store the conference entity.
+
+    >>> commit()
+
+Program Hosts
+"""""""""""""
+
+Onstage, SemWeb is hosted by key directors and its media initiatives.
+
+    >>> group = rql('CWGroup G WHERE G name "managers"').get_entity(0, 0)
+    >>> _ = create_entity('CWUser', login=u"bporowsk", upassword=u"", in_group=group,
+    ...                             firstname=u"Bruno", surname=u"Porowski", is_chair_at=conf)
+    >>> chairman = create_entity('CWUser', login=u"cvardy", upassword=u"", in_group=group,
+    ...                             firstname=u"Chris", surname=u"Vardy", is_chair_at=conf, is_reviewer_at=conf)
+    >>> _ = create_entity('CWUser', login=u"jcereghi", upassword=u"", in_group=group,
+    ...                             firstname=u"June", surname=u"Cereghino", is_chair_at=conf, is_reviewer_at=conf)
+
+Store all the chair men data.
+
+    >>> commit()
+
+To help debugging, we add `admin` as a valid reviewer.
+
+    >>> admin = rql('Any U WHERE U is CWUser, U login "admin"').get_entity(0, 0)
+    >>> conf.cw_set(reverse_is_reviewer_at=admin)
+    >>> commit()
+
+Sponsorship
+"""""""""""
+
+Conference needs often several sponsors to exist. We can have different levels of sponsorship.
+
+But first, add the sponsors logos (images). They are *mandatory* in schema.
+
+    >>> from os.path import dirname, join, abspath
+    >>> from cubicweb import Binary
+    >>> logodir = abspath(join(dirname(__file__), "data/acceptance/"))
+    >>> g_logos = {"Shell": "Shell_logo_1.jpg",   "ELE": "ELE_logo_1.jpg"}
+    >>> s_logos = {"Untel": "Untel_logo_2.jpg",   "NOVIA": "novia_logo_2.jpg"}
+    >>> b_logos = {"Orange": "orange_logo_3.jpg", "BBQ": "BBQ_logo_3.jpg",
+    ...            "PELL": "Pell_logo_3.jpg"}
+    >>> for name, f in g_logos.items():
+    ...   data = Binary(open(join(logodir, f), "rb").read())
+    ...   g_logos[name] = create_entity("File", data_name=str(name), data_format=u"image/jpeg",
+    ...                                         data=data)
+    >>> for name, f in s_logos.items():
+    ...   data = Binary(open(join(logodir, f), "rb").read())
+    ...   s_logos[name] = create_entity("File", data_name=str(name), data_format=u"image/jpeg",
+    ...                                         data=data)
+    >>> for name, f in b_logos.items():
+    ...   data = Binary(open(join(logodir, f), "rb").read())
+    ...   b_logos[name] = create_entity("File", data_name=str(name), data_format=u"image/jpeg",
+    ...                                         data=data)
+    >>> commit()
+
+Gold
+~~~~
+
+    >>> gold = create_entity('SponsorShip', title=u'Gold sponsorship', level=u'Gold', sponsoring_conf=conf)
+    >>> _ = create_entity('Sponsor', title=u"Shell", is_sponsor=gold,
+    ...                              has_logo=g_logos["Shell"])
+    >>> _ = create_entity('Sponsor', title=u"ELE", is_sponsor=gold,
+    ...                              has_logo=g_logos["ELE"])
+
+Silver
+~~~~~~
+
+    >>> silver = create_entity('SponsorShip', title=u'Silver sponsorship', level=u'Silver', sponsoring_conf=conf)
+    >>> _ = create_entity('Sponsor', title=u"Untel", is_sponsor=silver,
+    ...                              has_logo=s_logos["Untel"])
+    >>> _ = create_entity('Sponsor', title=u"NOVIA", is_sponsor=silver,
+    ...                              has_logo=s_logos["NOVIA"])
+
+Bronze
+~~~~~~
+
+    >>> bronze = create_entity('SponsorShip', title=u'Bronze sponsorship', level=u'Bronze', sponsoring_conf=conf)
+    >>> _ = create_entity('Sponsor', title=u"Orange", is_sponsor=bronze,
+    ...                              has_logo=b_logos["Orange"])
+    >>> _ = create_entity('Sponsor', title=u"BBQ World Service", is_sponsor=bronze,
+    ...                              has_logo=b_logos["BBQ"])
+    >>> _ = create_entity('Sponsor', title=u"PELL", is_sponsor=bronze,
+    ...                              has_logo=b_logos["PELL"])
+
+Store all the sponsor data content.
+
+    >>> commit()
+
+
+Program Guide
+-------------
+
+Sessions
+~~~~~~~~
+
+Create now the different tracks (sessions).
+
+    >>> track1 = create_entity('Track', title=u"Session 1: Global Century", in_conf=conf)
+    >>> track2 = create_entity('Track', title=u"Session 2: Human Systems", in_conf=conf)
+    >>> track3 = create_entity('Track', title=u"Session 3: Found in Translation", in_conf=conf)
+    >>> track4 = create_entity('Track', title=u"Session 4: Irrational Choices", in_conf=conf)
+    >>> track5 = create_entity('Track', title=u"Session 5: Session 9: Healthier Together", in_conf=conf)
+    >>> track6 = create_entity('Track', title=u"Session 6: Different by Design", in_conf=conf)
+    >>> track7 = create_entity('Track', title=u"Session 7: Creatures Great and Small", in_conf=conf)
+    >>> track8 = create_entity('Track', title=u"Session 8: Adventures in Fairness", in_conf=conf)
+    >>> track9 = create_entity('Track', title=u"Session 9: The Unknown Brains", in_conf=conf)
+    >>> track10 = create_entity('Track', title=u"Session 10: Who's the Teacher?", in_conf=conf)
+    >>> track11 = create_entity('Track', title=u"Session 11: The Tiny Blue Dot", in_conf=conf)
+    >>> track12 = create_entity('Track', title=u"Session 12: Waging Peace", in_conf=conf)
+    >>> commit()
+
+Location
+""""""""
+Any track must have a valid location (by default: just a character string)
+Only managers and chair men can modify conferences data.
+
+..  >>> tracks = rql('Track T').entities()
+..  >>> _ = [t.cw_set(location=u"Paris") for t in list(tracks)]
+..  >>> commit()
+
+
+Schedule
+--------
+
+Consider now that a call for talk proposal is given.
+
+    >>> conf.cw_set(call_open=True)
+    >>> commit()
+
+Speakers
+~~~~~~~~
+
+Put some speaker to the database.
+
+    >>> group = rql('CWGroup G WHERE G name "users"').get_entity(0, 0)
+    >>> speakers = {u'speaker1': dict(firstname=u"Jamil", surname=u"Stfleur"),
+    ...             u'speaker2': dict(firstname=u"Naif", surname=u"Torrie"),
+    ...             u'speaker3': dict(firstname=u"Julian", surname=u"Rattray"),
+    ...             u'speaker4': dict(firstname=u"Eben", surname=u"Keenom"),
+    ...             u'speaker5': dict(firstname=u"Mitchell", surname=u"Effinger"),
+    ...             u'speaker6': dict(firstname=u"David", surname=u"Stars "),
+    ...             u'speaker7': dict(firstname=u"Patrick", surname=u"Wiesel"),
+    ...             u'speaker8': dict(firstname=u"Tom", surname=u"Carran"),
+    ...             u'speaker9': dict(firstname=u"Jason", surname=u"Pech"),
+    ...             u'speaker10': dict(firstname=u"Marcel", surname=u"Medling"),
+    ...             u'speaker11': dict(firstname=u"Adrian", surname=u"Meyerhoff"),
+    ...             u'speaker12': dict(firstname=u"Thomas", surname=u"Froelich"),
+    ...             u'speaker13': dict(firstname=u"Karsu", surname=u"Lanzo"),
+    ...             u'speaker14': dict(firstname=u"Peter", surname=u"Stmary"),
+    ...             u'speaker15': dict(firstname=u"Ze", surname=u"Waterbury"),
+    ...             u'speaker16': dict(firstname=u"Toni", surname=u"Pitman"),
+    ...             u'speaker17': dict(firstname=u"Neil", surname=u"Homchick"),
+    ...             u'speaker18': dict(firstname=u"John", surname=u"Ledy"),
+    ...             u'speaker19': dict(firstname=u"Iain", surname=u"Klecha"),
+    ...             u'speaker20': dict(firstname=u"Sheena", surname=u"Tischner"),
+    ...             u'speaker21': dict(firstname=u"Jessica", surname=u"Scarnato"),
+    ...             u'speaker22': dict(firstname=u"Tim", surname=u"Lucke"),
+    ...             u'speaker23': dict(firstname=u"Maz", surname=u"Pirolli"),
+    ...             u'speaker24': dict(firstname=u"Steven", surname=u"Udoh"),
+    ...             u'speaker25': dict(firstname=u"Mor", surname=u"Krupka"),
+    ...             u'speaker26': dict(firstname=u"Tan", surname=u"Gertelman"),
+    ...             u'speaker27': dict(firstname=u"Annie", surname=u"Regulus"),
+    ...             u'speaker28': dict(firstname=u"Stefano", surname=u"Calixte"),
+    ...             u'speaker29': dict(firstname=u"Nic", surname=u"Meline"),
+    ...             u'speaker30': dict(firstname=u"Miwa", surname=u"Troyan"),
+    ...             u'speaker31': dict(firstname=u"David", surname=u"Naputi"),
+    ...             u'speaker32': dict(firstname=u"Christien", surname=u"Mcmain"),
+    ...             u'speaker33': dict(firstname=u"Gero", surname=u"Paulos"),
+    ...             u'speaker34': dict(firstname=u"Inge", surname=u"Laferney"),
+    ...             u'speaker35': dict(firstname=u"Sugata", surname=u"Marinos"),
+    ...             u'speaker36': dict(firstname=u"Peter", surname=u"Hilgert"),
+    ...             u'speaker37': dict(firstname=u"Joseph", surname=u"Wubbel"),
+    ...             u'speaker38': dict(firstname=u"William", surname=u"Kassebaum"),
+    ...             u'speaker39': dict(firstname=u"Emily", surname=u"Flagler"),
+    ...             u'speaker40': dict(firstname=u"Arthur", surname=u"Itani"),
+    ...             u'speaker41': dict(firstname=u"Lewis", surname=u"Hanning"),
+    ...             u'speaker42': dict(firstname=u"Matt", surname=u"Tangney"),
+    ...             u'speaker43': dict(firstname=u"Zainab", surname=u"Rerko"),
+    ...             u'speaker44': dict(firstname=u"Laurie", surname=u"Desonia"),
+    ...             u'speaker45': dict(firstname=u"Mallika", surname=u"Schlesselman"),
+    ...             u'speaker46': dict(firstname=u"Dimitar", surname=u"Lann"),
+    ...             u'speaker47': dict(firstname=u"Sebastian", surname=u"Kovalcheck"),
+    ...             u'speaker48': dict(firstname=u"Elif", surname=u"Lands"),
+    ...             u'speaker49': dict(firstname=u"Rachel", surname=u"Presson"),
+    ...             u'speaker50': dict(firstname=u"Heribert", surname=u"Zietlow"),
+    ...             u'speaker51': dict(firstname=u"Chris", surname=u"Music"),
+    ...             u'speaker52': dict(firstname=u"Stefan", surname=u"Eissinger"),
+    ...             u'speaker53': dict(firstname=u"Conrad", surname=u"Dreckman"),
+    ...             u'speaker54': dict(firstname=u"Sheryl", surname=u"Waldock"),
+    ...             u'speaker55': dict(firstname=u"Ethan", surname=u"Rehberg"),
+    ...             u'speaker56': dict(firstname=u"Auret", surname=u"Jeffers"),
+    ... }
+
+    Just update required attributes on the fly.
+    >>> for speaker, values in speakers.items(): values.update(upassword=u"", in_group=group, login=speaker)
+
+    Creation loop...
+    >>> for speaker, values in speakers.items():
+    ...     speakers[speaker] = create_entity('CWUser', **values)
+
+.. **** (needed in vim...)
+
+One of the chair men is a speaker also.
+
+    >>> speakers["speaker57"] = chairman
+
+Now, all the speakers are registered. We will create and assign every talk.
+
+    >>> commit()
+
+Talks
+~~~~~
+
+In our example, we will use the same attachment for all the talks.
+
+    >>> talk_attachment = create_entity("File", data_name=u"attachment", data_format=u"application/pdf",
+    ...                                         data=Binary(bytes(join(logodir, "Programme_SemWebPro2010.pdf"), "utf-8")))
+    >>> commit()
+
+Fill the sessions with some of expected talks:
+
+    >>> _ = create_entity('Talk', title=u"Global Century",
+    ...                           start_time=datetime(2010, 7, 12, 9, 0),
+    ...                           end_time=datetime(2010, 7, 12, 10, 45),
+    ...                           reverse_leads=speakers["speaker37"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track1)
+    >>> _ = create_entity('Talk', title=u"Human Systems",
+    ...                           start_time=datetime(2010, 7, 12, 11, 45),
+    ...                           end_time=datetime(2010, 7, 12, 13, 30),
+    ...                           reverse_leads=speakers["speaker42"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track2)
+    >>> _ = create_entity('Talk', title=u"Found in Translation",
+    ...                           start_time=datetime(2010, 7, 13, 3, 30),
+    ...                           end_time=datetime(2010, 7, 13, 5, 15),
+    ...                           reverse_leads=speakers["speaker48"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track3)
+    >>> _ = create_entity('Talk', title=u"Creatures Great and Small",
+    ...                           start_time=datetime(2010, 7, 14, 3, 30),
+    ...                           end_time=datetime(2010, 7, 14, 5, 15),
+    ...                           reverse_leads=speakers["speaker11"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track7)
+    >>> _ = create_entity('Talk', title=u"The Tiny Blue Dot",
+    ...                           start_time=datetime(2010, 7, 15, 3, 30),
+    ...                           end_time=datetime(2010, 7, 15, 5, 15),
+    ...                           reverse_leads=speakers["speaker9"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track11)
+    >>> _ = create_entity('Talk', title=u"Waging Peace",
+    ...                           start_time=datetime(2010, 7, 15, 6, 15),
+    ...                           end_time=datetime(2010, 7, 15, 8, 0),
+    ...                           reverse_leads=speakers["speaker3"],
+    ...                           has_attachments=talk_attachment,
+    ...                           in_conf=conf, in_track=track12)
+
+Record the talks (and validate them by schema).
+
+    >>> commit()
+
+Add some tags to help navigation
+""""""""""""""""""""""""""""""""
+
+    >>> tag = create_entity('Tag', name=u"SemWeb Talk!")
+    >>> for talk in rql('Talk T').entities():
+    ...     talk.cw_set(reverse_tags=tag)
+    >>> commit()
+
+Stop the call proposal.
+
+    >>> conf.cw_set(call_open=False)
+    >>> commit()
+
+
+Reviewing talks
+~~~~~~~~~~~~~~~
+.. class reviews(RelationDefinition):
+    subject = ('CWUser',)
+    object = 'Talk'
+    cardinality = '**'
+
+
+Registration
+------------
+
+The registration to the conference is open.
+
+    >>> conf.cw_set(reg_open=True)
+    >>> commit()
+
+.. add attendees
+
+Registration is now closed.
+
+    >>> conf.cw_set(reg_open=False)
+    >>> commit()
+
+
+Make some comments
+------------------
+
+.. class comments(RelationDefinition):
+    subject = 'Comment'
+    object = 'Talk'
+    cardinality='1*'

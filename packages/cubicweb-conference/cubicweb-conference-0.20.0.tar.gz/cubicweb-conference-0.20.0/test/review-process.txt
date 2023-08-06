@@ -1,0 +1,80 @@
+.. -*- coding: utf-8 -*-
+
+=========================
+Conference Review Process
+=========================
+
+:author: Nicolas Chauvat
+
+.. contents::
+
+This document describes (and tests) the formal review process implemented in
+cubicweb-conference.
+
+First, let us create a conference with a single track and a few users, that will
+act respectively as manager (Alice), conference chair (Bob), reviewer (Carlos),
+presenter (Dylan) and delegate (Eva).
+
+.. tip::
+
+   >>> conf = create_entity('Conference', title=u'TheCubicWebConf')
+   >>> track = create_entity('Track', title=u'TheTrack')
+   >>> track.cw_set(in_conf=conf)
+   >>> alice = create_entity('CWUser', login=u'alice.manager', firstname=u'Alice',
+   ...                       surname=u'Manager', upassword=u'toto')
+   >>> bob = create_entity('CWUser', login=u'bob.chair', firstname=u'Bob',
+   ...                     surname=u'Chair', upassword=u'toto')
+   >>> bob.cw_set(is_chair_at=conf)
+   >>> carlos = create_entity('CWUser', login=u'carlos.reviewer', firstname=u'Carlos',
+   ...                        surname=u'Reviewer', upassword=u'toto')
+   >>> carlos.cw_set(is_reviewer_at=conf)
+   >>> dylan = create_entity('CWUser', login=u'dylan.presenter', firstname=u'Dylan',
+   ...                       surname=u'Presenter', upassword=u'toto')
+   >>> eva = create_entity('CWUser', login=u'ewan.delegate', firstname=u'Eva',
+   ...                     surname=u'Delegate', upassword=u'toto')
+   >>> commit()
+
+Now, Dylan will answer the call for papers by creating a talk and submitting it.
+
+.. tip::
+
+   >>> # XXX how to connect as dylan to check permissions ?
+   >>> dy_talk = create_entity('Talk', title=u'TheTalk')
+   >>> dy_talk.cw_set(in_track=track, in_conf=conf)
+   >>> commit()
+   >>> dy_talk.fire_transition('submit your work')
+   >>> commit()
+
+Bob will then assign carlos to review that talk.
+
+.. tip::
+
+   >>> # XXX how to connect as bob to check permissions ?
+   >>> dy_talk.fire_transition('send to reviewer')
+   >>> dy_talk.cw_set(reverse_reviews=carlos)
+   >>> commit()
+
+Carlos will ask the author to modify his abstract a bit.
+
+.. tip::
+
+   >>> # XXX how to connect as carlos to check permissions ?
+   >>> dy_talk.fire_transition('need correction')
+   >>> commit()
+
+Dylan will modify his abstract.
+
+.. tip::
+
+   >>> # XXX how to connect as dylan to check permissions ?
+   >>> dy_talk.cw_set(description=u'the description')
+   >>> dy_talk.fire_transition('resend to reviewer')
+   >>> commit()
+
+And Carlos will eventually accept the modified abstract.
+
+.. tip::
+
+   >>> # XXX how to connect as carlos to check permissions ?
+   >>> dy_talk.fire_transition('accept talk')
+   >>> commit()
