@@ -1,0 +1,116 @@
+Metadata-Version: 2.1
+Name: MtySdk
+Version: 0.0.8
+Summary: This is a demo
+Home-page: https://gitee.com/hexingchi/mty-sdk.git
+Author: Credi He
+Author-email: 17316365004@sina.cn
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+# MtySdk介绍
+
+- MtySdk目前是为麦田云际公司内部成员公司开发的局域网服务API.
+
+# 快速入门
+
+## 安装
+`pip install MtySdk`
+
+## 数据回测
+```py
+#encoding: utf-8
+from MtySdk import *
+
+# 使用员工账号连接系统
+api = MtyApi(auth=MtyAuth('account', 'password'))
+# 按需求注册服务
+math = api.query_math('kq_m_shfe_au','2018-01-02','2018-01-04')
+
+# 注册成功情况下消费服务
+while api.is_having():
+    result = api.get_math(math)
+    print(result)
+
+# 关闭服务
+api.close();
+```
+
+## 开仓平仓
+```py
+#encoding: utf-8
+from MtySdk import *
+
+# 使用员工账号连接系统
+api = MtyApi(auth=MtyAuth('account', 'password'))
+# 1 . 开仓 按需求注册服务
+math = api.query_math('CZCE.MA209C2850',None,None)
+print(math)
+
+# 注册成功情况下消费服务
+while True:
+    result = api.get_math(math)
+    print(result)
+
+    if result is None :
+        api.close();
+        break
+
+    if result['datetime'] == '2018-01-02 09:10:00':
+        # 开仓
+        api.openoptions(math, result, 'BUY', result['close'], 1)
+
+    if result['datetime'] == '2018-01-02 09:25:00':
+        # 平仓
+        api.closeposition(math, result, 'SELL', result['close'], 1)
+
+# 展示收益曲线
+showline(math['testplanid'])
+```
+
+## 期货交易手续费
+```py
+#encoding: utf-8
+from MtySdk import *
+
+# 使用员工账号连接系统
+api = MtyApi(auth=MtyAuth('account', 'password'))
+print('CZCE.RM209手续费：',api.queryServiceCharge(1,"CZCE.RM209","OPEN",3847.0))
+
+api.close();
+```
+
+## 期货交易保证金
+```py
+#encoding: utf-8
+from MtySdk import *
+
+# 使用员工账号连接系统
+api = MtyApi(auth=MtyAuth('account', 'password'))
+print('CZCE.RM209交易所需保证金：',api.queryEarnestMoney(1,"CZCE.RM209",3847.0,"BUY",None))
+print('CZCE.RM209C3700交易所需保证金：', api.queryEarnestMoney(1, "CZCE.RM209C3700", 287, "SELL", 3847.0))
+
+api.close();
+```
+
+## 历史数据上传
+```py
+from MtyApi import *
+
+#   上传文件本地地址
+filePath   = 'E:\\CZCE.CF107P12600.csv';
+#   品种名称
+sysbolname = 'CZCE.CF107P12600';
+
+#   数据清洗
+dataApi = DataApi()
+list = dataApi.clearMath(filePath)
+
+#   数据上传
+dataApi.upload(symboname=sysbolname,username='accountname',password='password',mathlist=list)
+```
+
