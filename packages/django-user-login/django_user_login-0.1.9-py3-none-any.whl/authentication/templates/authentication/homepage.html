@@ -1,0 +1,72 @@
+{% extends 'authentication/layout.html' %}
+
+
+{% load static %}
+
+{% block style %}{% endblock %}
+{% block title %}My Account{% endblock %}
+
+
+{% block body %}
+<div class="container mt-3 text-center">
+    <div class="row" id="personDetailsDiv"></div>
+    {% include 'authentication/home_modals.html' with request=request %}
+    <div class="btn-group" style="display: none;">
+        <!-- Edit Profile Button trigger modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#editProfileModal" id="editProfileModalBtn" hidden>
+            Edit Profile
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmPasswordModal" id="confirmPasswordModalBtn" hidden>
+            Confirm Password
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#changeEmailFormModal" id="changeEmailFormModalBtn" hidden>
+            Change Email
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verifyRecoveryModal" id="verifyRecoveryFormModalBtn" hidden>
+            Verify Register
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pswdChngSuccessMsg" id="pswdChngSuccessMsgBtn" hidden>
+            password change success
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block static %}
+<script src="{% static 'authentication/js/homepage.js' %}"></script>
+<script id="PersonDetailsHandlebars" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div class="col-12">
+        <div style="text-align: start;">
+            <h5>
+                Your Profile
+                <a href="" class="text-decoration-none" onclick="editprofile(event, '{{username}}');">
+                    <i class="bi bi-pencil-fill text-primary fs-5"></i>
+                </a>
+            </h5>
+        </div>
+        <hr>
+        <div class="row fs-4">
+            <div class="col-sm-4">First Name</div>
+            <div class="col-sm-8">{{first_name}}</div>
+            <hr>
+            <div class="col-sm-4">Last Name</div>
+            <div class="col-sm-8">{{last_name}}</div>
+            <hr>
+            <div class="col-sm-4">Username</div>
+            <div class="col-sm-8" id="username">{{username}}</div>
+            <hr>
+            <div class="col-sm-4">Email</div>
+            <div class="col-sm-8">
+                {{email}}
+                <a href="" class="text-decoration-none" onclick="editProfileEmail(event, '{{username}}');">
+                    <i class="bi bi-pencil-fill text-primary fs-5"></i>
+                </a>
+            </div>
+            <hr>
+        </div>
+    </div>
+    {% endverbatim %}
+</script>
+{% endblock %}

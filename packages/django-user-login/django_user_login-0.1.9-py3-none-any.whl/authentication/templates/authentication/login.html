@@ -1,0 +1,47 @@
+{% extends 'authentication/layout.html' %}
+{% load static %}
+
+{% block style %}{% endblock %}
+{% block title %}Login{% endblock %}
+
+
+{% block body %}
+{% include 'authentication/auth_modals.html' %}
+<div class="container">
+    <div class="row mt-5 text-center">
+        <div class="col-xl-4 col-lg-3 col-md-2 col-1"></div>
+        <div class="col-xl-4 col-lg-6 col-md-8 col-10">
+            <div class="card text-center border-0 bg-white text-dark" style="width: 100%;">
+                <div class="card-body">
+                    <h4 class="card-title">Login</h4>
+                    <h6 class="card-subtitle mb-2" style="color: red;">
+                        {% if login_error %}
+                        {{login_error}}
+                        {% else %}
+                        <br>
+                        {% endif %}
+                    </h6>
+                    <form class="card-text mb-3" action="" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="loginFormUsername" class="form-label"><span class="requirement">*</span>Username / Email Address</label>
+                            <input type="text" class="form-control" id="loginFormUsername" name="username" placeholder="Username or Email Address" autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginFormPassword" class="form-label"><span class="requirement">*</span>Password</label>
+                            <input type="password" class="form-control" id="loginFormPassword" name="password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-outline-dark w-100">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-3 col-md-2 col-1"></div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block static %}
+<script src="{% static 'authentication/js/login.js' %}"></script>
+{% endblock %}

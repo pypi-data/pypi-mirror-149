@@ -1,0 +1,32 @@
+<header id="auhsiteheader">
+<nav class="navbar navbar-expand-md navbar-light bg-white text-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="right" title="Homepage">
+            <i class="bi bi-house text-dark fs-5"></i>
+            <span class="badge rounded-pill bg-dark text-white fs-5">{{SITE_TITLE}}</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authSiteHeaderNavBar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="authSiteHeaderNavBar">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                {% if not request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#recoverModal"><span>Recover</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#registerModal"><span>Register</span></a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#changePasswordModal"><span>Change Password</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authentication:logout' %}"><span>Logout</span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+</header>

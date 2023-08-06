@@ -1,0 +1,311 @@
+<div class="btn-group" style="display: none;">
+    <!-- Login Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" hidden>
+        Login
+    </button>
+    <!-- Register Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal" hidden>
+        Register
+    </button>
+    <!-- Verify registration Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verifyRegisterModal" id="verifyRegisterModalBtn" hidden>
+        Verify Register
+    </button>
+    <!-- Registration Success Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#regSuccessMsg" id="regSuccessMsgBtn" hidden>
+        Reg Verify Success
+    </button>
+    <!-- Recover Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverModal" hidden>
+        Recover
+    </button>
+    <!-- Verify Recovery Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verifyRecoveryModal" id="verifyRecoveryFormModalBtn" hidden>
+        Verify Register
+    </button>
+    <!-- Password Change Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pswdChngFormModal" id="pswdChngFormModalBtn" hidden>
+        password change
+    </button>
+    <!-- Password Change Successful Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pswdChngSuccessMsg" id="pswdChngSuccessMsgBtn" hidden>
+        password change success
+    </button>
+</div>
+  
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close auth-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <br>
+                <form class="mb-3" id="modalLoginForm" onsubmit="login(event);">
+                    <div class="mb-3">
+                        <label for="modalLoginFormUsername" class="form-label"><span class="requirement">*</span>Username / Email Address</label>
+                        <input type="text" class="form-control" id="modalLoginFormUsername" placeholder="Username or Email Address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalLoginFormPassword" class="form-label"><span class="requirement">*</span>Password</label>
+                        <input type="password" class="form-control" id="modalLoginFormPassword" placeholder="Password">
+                    </div>
+                </form>
+                <div class="errormessage" id="login_error"><br></div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="modalLoginForm" class="btn btn-sm btn-outline-dark w-100 auth-btn">
+                    Login
+                    <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                </button>
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#recoverModal">Recover</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                <button type="button" class="btn-close auth-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <br>
+                <form class="row g-3" id="registerForm" onsubmit="register(event);">
+                    <div class="col-md-6">
+                        <label for="registerFormFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
+                        <input type="text" class="form-control" id="registerFormFirstName" placeholder="First Name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="registerFormLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
+                        <input type="text" class="form-control" id="registerFormLastName" placeholder="Last Name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="registerFormUsername" class="form-label"><span class="requirement">*</span>Username</label>
+                        <input type="text" class="form-control" id="registerFormUsername" placeholder="Username" aria-describedby="usernameHelp">
+                        <div id="usernameHelp" class="form-text text-dark">6 to 10 characters / alpha-numeric</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="registerFormEmail" class="form-label"><span class="requirement">*</span>Email Address</label>
+                        <input type="email" class="form-control" id="registerFormEmail" placeholder="Email Address" aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text text-dark">Enter a valid email address.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="registerFormPassword1" class="form-label"><span class="requirement">*</span>Password</label>
+                        <input type="password" class="form-control" id="registerFormPassword1" placeholder="Password" aria-describedby="password1Help">
+                        <div id="password1Help" class="form-text text-dark">Between 8 to 20 characters.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="registerFormPassword2" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                        <input type="password" class="form-control" id="registerFormPassword2" placeholder="Confirm Password" aria-describedby="password2Help">
+                        <div id="password2Help" class="form-text text-dark">Must include an alphabet, a digit and a special character.</div>
+                    </div>
+                </form>
+                <div class="errormessage" id="register_error"><br></div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="registerForm" class="btn btn-sm btn-outline-dark w-100 auth-btn">
+                    Continue
+                    <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                </button>
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-dismiss="modal" id="closeRegisterFormBtn">Close</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#recoverModal">Recover</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Verify Registration Modal -->
+<div class="modal fade" id="verifyRegisterModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="verifyRegisterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifyRegisterModalLabel">Verify Your Email Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeVerifyRegFormBtn" disabled></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="errormessage" id="verifyRegistrationError"><br></div>
+                <h6 id="verifyRegistrationEmailDiv"></h6>
+                <form class="mb-3" id="verifyRegisterForm" onsubmit="verifyRegistration(event);">
+                    <div class="mb-3">
+                        <label for="verifyRegistrationFormCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                        <input type="text" class="form-control" id="verifyRegistrationFormCode" placeholder="Verification Code" aria-describedby="VerifyRegisterHelp">
+                        <div id="VerifyRegisterHelp" class="form-text text-dark">Check your Inbox/Spam folder for the verification code.</div>
+                    </div>
+                </form>
+                <a href="" class="hover auth-link" onclick="resendVerificationCodeReg(event);">Resend verification Code</a>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" onclick="cancelVerifyRegistration();" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="verifyRegisterForm" class="btn btn-sm btn-outline-dark w-25 auth-btn">
+                        Verify
+                        <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Registration Successful Modal -->
+<div class="modal fade" id="regSuccessMsg" tabindex="-1" aria-labelledby="regSuccessMsgLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="regSuccessMsgLabel">Registration Successful</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You have successfully registered your account.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Recover Modal -->
+<div class="modal fade" id="recoverModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="recoverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recoverModalLabel">Recover Password</h5>
+                <button type="button" class="btn-close auth-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <br>
+                <form class="mb-3" id="modalRecoverForm" onsubmit="recover(event);">
+                    <div class="mb-3">
+                        <label for="modalRecoverFormUsername" class="form-label"><span class="requirement">*</span>Username / Email Address</label>
+                        <input type="text" class="form-control" id="modalRecoverFormUsername" placeholder="Username or Email Address">
+                    </div>
+                </form>
+                <div class="errormessage" id="pswdRecovery_error"><br></div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="modalRecoverForm" class="auth-btn btn btn-sm btn-outline-dark w-100">
+                    Continue
+                    <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                </button>
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-dismiss="modal" id="closeRecoveryFormBtn">Close</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Verify Password Recovery Modal -->
+<div class="modal fade" id="verifyRecoveryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="verifyRecoveryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifyRecoveryModalLabel">Verify Your Email Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled id="closeVerifyRecoveryFormBtn"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="errormessage" id="verifyRecoveryError"><br></div>
+                <h6 id="verifyRecoveryEmailDiv"></h6>
+                <form class="mb-3" id="verifyRecoveryForm" onsubmit="verifyRecovery(event);">
+                    <div class="mb-3">
+                        <label for="verifyRecoveryFormCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                        <input type="text" class="form-control" id="verifyRecoveryFormCode" placeholder="Verification Code" aria-describedby="VerifyRegisterHelp">
+                        <div id="VerifyRegisterHelp" class="form-text text-dark">Check your Inbox/Spam folder for the verification code.</div>
+                    </div>
+                </form>
+                <a href="" class="hover auth-link" onclick="resendVerificationCodeRecovery(event);">Resend verification Code</a>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group w-100">
+                    <button type="button" class="btn btn-sm btn-outline-dark w-25 auth-btn" onclick="cancelVerifyRecovery();" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="verifyRecoveryForm" class="btn btn-sm btn-outline-dark w-25 auth-btn">
+                        Verify
+                        <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Password Change Form Modal -->
+<div class="modal fade" id="pswdChngFormModal" tabindex="-1" aria-labelledby="pswdChngFormModalLabel" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark text-center">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pswdChngFormModalLabel">Change Your Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled id="closePswdChngFrmBtn"></button>
+            </div>
+            <div class="modal-body">
+                <div id="pswdChngFormEmailDiv"></div>
+                <form id="pswdChng_form" onsubmit="change_password(event);">
+                    <input type="text" class="form-control" id="pswdChngFormInput3" placeholder="Username" hidden>
+                    <div class="mb-3">
+                        <label for="pswdChngFormInput1" class="form-label"><span class="requirement">*</span>Password</label>
+                        <input type="password" class="form-control" id="pswdChngFormInput1" placeholder="Password" required aria-describedby="recoverPassword1Help">
+                        <div id="recoverPassword1Help" class="form-text text-dark">Between 8 to 20 characters.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pswdChngFormInput2" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                        <input type="password" class="form-control" id="pswdChngFormInput2" placeholder="Confirm Password" required aria-describedby="recoverPassword2Help">
+                        <div id="recoverPassword2Help" class="form-text text-dark">Must include an alphabet, a digit and a special character.</div>
+                    </div>
+                </form>
+                <div class="errormessage" id="pswdChng_error"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group w-100">
+                    <button type="button" class="w-25 btn btn-outline-dark btn-sm auth-btn" data-bs-dismiss="modal" onclick="cancelVerifyRecovery();">Cancel</button>
+                    <button type="submit" class="w-25 btn btn-outline-dark btn-sm auth-btn" form="pswdChng_form">
+                        <span class="spinner-border spinner-border-sm auth-spinner" role="status" aria-hidden="true" hidden></span>
+                        Update
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Password Change Successful Modal -->
+<div class="modal fade" id="pswdChngSuccessMsg" tabindex="-1" aria-labelledby="pswdChngSuccessMsgLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pswdChngSuccessMsgLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                You have successfully recovered your account.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
