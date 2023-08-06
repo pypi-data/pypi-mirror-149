@@ -1,0 +1,49 @@
+{%- macro automodule(modname, options) -%}
+.. automodule:: {{ modname }}
+{%- for option in options %}
+   :{{ option }}:
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro toctree(docnames) -%}
+.. toctree::
+   :maxdepth: 1
+{% for docname in docnames %}
+   {{ docname }}
+{%- endfor %}
+{%- endmacro %}
+
+{%- if is_namespace %}
+{{- [pkgname, "namespace"] | join(" ") | e | heading }}
+{% else %}
+{{- pkgname.split('.')[-1] | replace("_", " ") | title | e | heading }}
+{% endif %}
+
+{# ===== Function summary ===== #}
+{%- if submodules %}
+Functions
+---------
+{% for submodule in submodules %}
+
+{{ submodule }}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodsumm:: {{ submodule }}
+    :functions-only:
+    :nosignatures:
+
+{%- endfor %}
+{%- endif %}
+
+{# ===== Submodule/subpackage summary ===== #}
+{%- if subpackages %}
+Subpackages
+-----------
+{{ toctree(subpackages) }}
+{% endif %}
+
+{%- if submodules %}
+Submodules
+----------
+{{ toctree(submodules) }}
+{%- endif %}
