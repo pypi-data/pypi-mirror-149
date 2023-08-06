@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: sourcery-analytics
+Version: 1.0.0
+Summary: sourcery-analytics is a library and command-line interface (CLI) for analyzing the code quality of Python packages, modules, or source code.
+Home-page: https://github.com/sourcery-ai/sourcery-analytics
+Keywords: cli,code-quality,python
+Author: Ben Martineau
+Author-email: ben@sourcery.ai
+Requires-Python: >=3.9,<4.0
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: astroid (==2.11.2)
+Requires-Dist: more-itertools (==8.12.0)
+Requires-Dist: rich (==12.3.0)
+Requires-Dist: typer (==0.4.1)
+Project-URL: Documentation, https://sourcery-analytics.sourcery.ai/
+Description-Content-Type: text/markdown
+
+# Sourcery Analytics
+
+![PyPI](https://img.shields.io/pypi/v/sourcery-analytics)
+
+`sourcery-analytics` is a command line tool and library for statically analyzing Python code quality.
+
+Get started by installing using `pip`:
+
+```commandline
+pip install sourcery-analytics
+```
+
+This will install `sourcery-analytics` as a command-line tool.
+To analyze a single Python file, use the `analyze` subcommand:
+
+```commandline
+sourcery-analytics analyze path/to/file.py
+```
+
+Example:
+
+```commandline
+sourcery-analytics analyze sourcery_analytics/analysis.py
+```
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Method                                      ┃ length ┃ cyclomatic_complexity ┃ cognitive_complexity ┃ working_memory ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+│ sourcery_analytics.analysis.analyze         │      5 │                     1 │                    0 │              8 │
+│ sourcery_analytics.analysis.analyze_methods │      4 │                     1 │                    1 │             12 │
+└─────────────────────────────────────────────┴────────┴───────────────────────┴──────────────────────┴────────────────┘
+```
+
+Alternatively, import and run analysis using the library:
+
+```python
+from sourcery_analytics import analyze_methods
+source = """
+    def cast_spell(self, spell):
+        if self.power < spell.power:
+            raise InsufficientPower
+        print(f"{self.name} cast {spell.name}!")
+"""
+analyze_methods(source)
+# [{'method_qualname': '.cast_spell', 'method_length': 3, 'method_cyclomatic_complexity': 1, 'method_cognitive_complexity': 1, 'method_working_memory': 6}]
+```
+
+For more, see the [docs](https://sourcery-analytics.sourcery.ai/).
