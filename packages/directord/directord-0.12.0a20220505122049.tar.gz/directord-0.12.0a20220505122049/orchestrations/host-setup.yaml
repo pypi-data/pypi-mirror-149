@@ -1,0 +1,8 @@
+# This is a simple host setup orchestration which should be safe to run on all RHEL/CentOS deployments.
+#
+---
+
+- jobs:
+  - RUN: dnf -y install chrony crudini
+  - RUN: systemctl start chronyd
+  - RUN: systemctl enable chronyd
