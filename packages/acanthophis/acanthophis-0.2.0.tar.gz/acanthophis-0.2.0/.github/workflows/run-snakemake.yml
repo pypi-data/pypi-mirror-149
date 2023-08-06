@@ -1,0 +1,31 @@
+name: Workflow CI
+
+on:
+  push:
+    branches: "**"
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  runsnkmk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: setup-mamba
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          mamba-version: "*"
+          channels: bioconda,kdm801,conda-forge,defaults
+          channel-priority: true
+      
+      - name: setup and run Snakemake
+        shell: bash -el {0}
+        run: |
+          mamba info
+          pushd example
+          source setup.sh
+          snakemake --snakefile Snakefile -j 4 --use-conda --conda-frontend mamba
+          popd
+
