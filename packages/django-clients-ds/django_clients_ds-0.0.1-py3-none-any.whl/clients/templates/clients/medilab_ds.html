@@ -1,0 +1,16 @@
+{% extends 'clients/_common.html' %}
+{% load static %}
+
+{% block clients %}
+<div class="clients-top">
+  <div class="container clients" data-aos="zoom-in">
+    <div class="d-flex flex-wrap flex-row justify-content-evenly">
+      {% for filename in clients %}
+        <div class="align-items-center m-4">
+          <img src="{% static 'img/clients/'|add:filename|add:'.png' %}" class="img-fluid" alt="">
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
