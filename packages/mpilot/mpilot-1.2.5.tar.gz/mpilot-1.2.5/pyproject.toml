@@ -1,0 +1,64 @@
+[tool.black]
+line-length = 120
+target-version = ['py38']
+
+[tool.poetry]
+name = "mpilot"
+version = "1.2.5"
+description = "MPilot is a plugin-based, environmental modeling framework"
+authors = ["Conservation Biology Institute"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/consbio/mpilot"
+homepage = "https://consbio.github.io/mpilot/"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 3"
+]
+packages = [
+    { include = "mpilot"}
+]
+
+[tool.poetry.dependencies]
+python = "~2.7 || >=3.6"
+ply = "^3.11"
+six = "*"
+click = [
+    { version = "^8.0.4", python = ">=3.6" },
+    { version = "^7.1.2", python = "~2.7"}
+]
+numpy = [
+    { version = "^1.19.4", python = ">=3.6" },
+    { version = "<=1.16.6", python = "~2.7" }
+]
+netCDF4 = [
+    { version = "<1.5.6", optional = true }
+]
+cftime = [
+    { version = "==1.5.1.1", optional = true }
+]
+packaging = "*"
+
+[tool.poetry.dev-dependencies]
+black = { version = "^20.8b1", python = ">=3.6" }
+mock = { version = "^3.0.5", python = "~2.7" }
+setuptools = { version = "^44.1.1", python = "~2.7" }
+sphinx = [
+    { version = "^3.5.1", python = ">=3.6", optional = true }
+]
+sphinx-material = [
+    { version = "^0.0.32", python = ">=3.6", optional = true }
+]
+
+[tool.poetry.extras]
+netcdf = ["netCDF4", "cftime"]
+
+[tool.poetry.scripts]
+mpilot = 'mpilot.cli.mpilot:main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
