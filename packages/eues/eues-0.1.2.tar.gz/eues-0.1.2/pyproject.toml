@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "eues"
+version = "0.1.2"
+description = "Einnahmeüberschussrechnung"
+authors = ["Marco Heins <ruttercrash@posteo.de>"]
+packages = [
+	{ include = "eues" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+pdoc = "^11.2.0"
+pylint = "^2.13.8"
+radon = "^5.1.0"
+mccabe = "^0.7.0"
+mypy = "^0.950"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-v -x --cov=eues --cov-report=term-missing"
