@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: GPJax
+Version: 0.4.3
+Summary: Didactic Gaussian processes in Jax.
+Home-page: UNKNOWN
+Author: Thomas Pinder
+Author-email: t.pinder2@lancaster.ac.uk
+License: LICENSE
+Keywords: gaussian-processes jax machine-learning bayesian
+Platform: UNKNOWN
+Requires-Dist: jax (==0.3.2)
+Requires-Dist: jaxlib (==0.3.2)
+Requires-Dist: optax (>=0.1.0)
+Requires-Dist: chex (==0.1.3)
+Requires-Dist: distrax (>=0.1.2)
+Requires-Dist: tensorflow (==2.8.0)
+Requires-Dist: tensorflow-probability (==0.16.0)
+Requires-Dist: tqdm (>=4.0.0)
+Requires-Dist: ml-collections (==0.1.0)
+Provides-Extra: dev
+Requires-Dist: black ; extra == 'dev'
+Requires-Dist: isort ; extra == 'dev'
+Requires-Dist: pylint ; extra == 'dev'
+Requires-Dist: flake8 ; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: furo (==2020.12.30b24) ; extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: pytest ; extra == 'tests'
+
+GPJax aims to provide a low-level interface to Gaussian process models. Code is written entirely in Jax to enhance readability, and structured so as to allow researchers to easily extend the code to suit their own needs. When defining GP prior in GPJax, the user need only specify a mean and kernel function. A GP posterior can then be realised by computing the product of our prior with a likelihood function. The idea behind this is that the code should be as close as possible to the maths that we would write on paper when working with GP models.
+
