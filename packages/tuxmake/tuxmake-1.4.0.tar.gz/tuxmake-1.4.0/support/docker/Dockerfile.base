@@ -1,0 +1,73 @@
+ARG BASE
+FROM ${BASE}
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY conf/ /srv/tuxmake-conf
+
+RUN . /etc/os-release \
+    && if [ "${VERSION_CODENAME}" = "" ]; then exit; fi \
+    && echo "deb http://deb.debian.org/debian ${VERSION_CODENAME}-backports main" > /etc/apt/sources.list.d/backports.list \
+    && pinning=/srv/tuxmake-conf/pinning-${VERSION_CODENAME} \
+    && if [ -f "${pinning}" ]; then cp "${pinning}" /etc/apt/preferences.d/; fi
+
+# Heavyweight: package installation
+# This list of packages was seeded from kernelci's base image
+# https://github.com/kernelci/kernelci-core/blob/master/jenkins/dockerfiles/build-base/Dockerfile
+# docutils-common, python3-docutils are only needed for building BPF
+# kselftests.
+RUN apt-get update \
+    && apt-get install auto-apt-proxy --assume-yes \
+    && (timeout --signal=KILL 10s auto-apt-proxy || apt-get purge -qy auto-apt-proxy) \
+    && apt-get install --assume-yes --no-install-recommends --option=debug::pkgProblemResolver=yes \
+        procps \
+        apt-transport-https \
+        ca-certificates \
+        bash \
+        bc \
+        bison \
+        bsdmainutils \
+        bzip2 \
+        ccache \
+        cpio \
+        dpkg-dev \
+        docutils-common \
+        dwarves \
+        flex \
+        gettext \
+        git \
+        gzip \
+        iproute2 \
+        jq \
+        kmod \
+        libssl-dev \
+        libelf-dev \
+        lz4 \
+        lzop \
+        make \
+        pkg-config \
+        python3 \
+        python3-docutils \
+        rsync \
+        socat \
+        sparse \
+        tar \
+        u-boot-tools \
+        wget \
+        zstd \
+        xz-utils
+
+RUN wget -O /etc/apt/trusted.gpg.d/tuxmake.gpg \
+        https://tuxmake.org/packages/signing-key.gpg \
+    && echo 'deb https://tuxmake.org/packages/ ./' > /etc/apt/sources.list.d/tuxmake.list \
+    && apt-get update \
+    && apt-get install --assume-yes tuxmake
+
+# Lightweight: base container customizations
+COPY tuxmake-check-environment /usr/local/bin/
+RUN true \
+    && useradd --create-home tuxmake \
+    && ln -s /usr/bin/python3 /usr/local/bin/python \
+    && true
+
+# vim: ft=dockerfile
