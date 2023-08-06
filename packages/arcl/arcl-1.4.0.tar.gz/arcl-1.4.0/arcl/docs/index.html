@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>archimedes API documentation</title>
+<meta name="description" content="The full documentation is avaiable here: https://docs.optimeering.no/ …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<link rel="shortcut icon" href="#">
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>archimedes</code></h1>
+</header>
+
+
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="archimedes.compact_print"><code class="name flex">
+<span>def <span class="ident">compact_print</span></span>(<span>df: pandas.core.frame.DataFrame, show_mapping: bool = False, all_rows: bool = False) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prints a compact version of the DataFrame</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; df = archimedes.load_data(&quot;fmri&quot;)
+&gt;&gt;&gt; arhcimedes.compact_print(df, True, False)
+        a   b     c         d         e
+0     s13  18  stim  parietal -0.017552
+1      s5  14  stim  parietal -0.080883
+...   ...  ..   ...       ...       ...
+1062  s11   7   cue   frontal -0.025367
+1063   s0   0   cue  parietal -0.006899
+...
+[1064 rows x 5 columns]
+This is a compact version of the dataframe, with columns:
+{'a': 'subject', 'b': 'timepoint', 'c': 'event', 'd': 'region', 'e': 'signal'}
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>The dataframe that you want to print</dd>
+<dt><strong><code>show_mapping</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Set to True to print the column name mapping. Defaults to False.</dd>
+<dt><strong><code>all_rows</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Set to True if you want to print all rows. Defaults to False.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compact_print(
+    df: pd.DataFrame, show_mapping: bool = False, all_rows: bool = False
+) -&gt; None:
+    &#34;&#34;&#34;Prints a compact version of the DataFrame
+
+    Example:
+        &gt;&gt;&gt; df = archimedes.load_data(&#34;fmri&#34;)
+        &gt;&gt;&gt; arhcimedes.compact_print(df, True, False)
+                a   b     c         d         e
+        0     s13  18  stim  parietal -0.017552
+        1      s5  14  stim  parietal -0.080883
+        ...   ...  ..   ...       ...       ...
+        1062  s11   7   cue   frontal -0.025367
+        1063   s0   0   cue  parietal -0.006899
+        ...
+        [1064 rows x 5 columns]
+        This is a compact version of the dataframe, with columns:
+        {&#39;a&#39;: &#39;subject&#39;, &#39;b&#39;: &#39;timepoint&#39;, &#39;c&#39;: &#39;event&#39;, &#39;d&#39;: &#39;region&#39;, &#39;e&#39;: &#39;signal&#39;}
+
+    Args:
+        df (pd.DataFrame): The dataframe that you want to print
+        show_mapping (bool, optional): Set to True to print the column name mapping. Defaults to False.
+        all_rows (bool, optional): Set to True if you want to print all rows. Defaults to False.
+    &#34;&#34;&#34;
+    df_ = df.copy()
+    num_columns = len(df_.columns)
+    actual_columns = df_.columns
+    compact_columns = REPLACEMENT_NAMES[0:num_columns]
+    mapping = dict(zip(compact_columns, actual_columns))
+    df_.columns = compact_columns
+    if all_rows:
+        pd.set_option(&#34;display.max_rows&#34;, None)
+        print(df_)
+        pd.set_option(&#34;display.max_rows&#34;, 10)
+    else:
+        print(df_)
+    if show_mapping:
+        print(&#34;This is a compact version of the dataframe, with columns:&#34;)
+        pprint(mapping)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.deploy"><code class="name flex">
+<span>def <span class="ident">deploy</span></span>(<span>model, model_name, cron=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deploy a model</p>
+<p>As for run model, 'model' can here be one of:
+- "app:main"
+- "../app.py"
+- "<function>"
+# we implement this one first</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deploy(model, model_name, cron=None):
+    &#34;&#34;&#34;Deploy a model
+    
+    As for run model, &#39;model&#39; can here be one of:
+        - &#34;app:main&#34;
+        - &#34;../app.py&#34;
+        - &#34;&lt;function&gt;&#34;  # we implement this one first
+    &#34;&#34;&#34;
+    _configure_prefect_server_endpoint()
+    from prefect import task, Flow, client
+    from prefect.environments.storage import Docker
+    from prefect.schedules import Schedule
+    from prefect.schedules.clocks import CronClock
+
+    if cron:
+        schedule = Schedule(clocks=[CronClock(cron)])
+    else:
+        schedule = None
+
+    context = _setup()
+
+    project_name = context[&#34;project_name&#34;]
+    prefect_client = client.Client(api_server=config.prefect.api_server)
+    _create_prefect_project_if_not_exist(prefect_client, project_name)
+
+    model_type, model_to_run = _typecheck_model(model)
+
+    def wrapper_func():
+        return run(model_to_run, model_name, local_mlflow=False)
+
+    only_task = task(wrapper_func, name=model_to_run.__name__)
+    flow = Flow(
+        name=model_name,
+        tasks=[only_task],
+        schedule=schedule,
+    )
+
+    flow.storage = Docker(
+        registry_url=config.prefect.docker_registry_url,
+        dockerfile=&#39;Dockerfile&#39;,
+    )
+    flow.register(project_name=project_name)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.full_print"><code class="name flex">
+<span>def <span class="ident">full_print</span></span>(<span>df: pandas.core.frame.DataFrame) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prints the full DataFrame</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; df = archimedes.load_data(&quot;fmri&quot;)
+&gt;&gt;&gt; arhcimedes.full_print(df)
+    subject  timepoint event    region    signal
+0        s13         18  stim  parietal -0.017552
+1         s5         14  stim  parietal -0.080883
+2        s12         18  stim  parietal -0.081033
+3        s11         18  stim  parietal -0.046134
+4        s10         18  stim  parietal -0.037970
+5         s9         18  stim  parietal -0.103513
+6         s8         18  stim  parietal -0.064408
+7         s7         18  stim  parietal -0.060526
+...
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
+<dd>The dataframe that you want to print</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def full_print(df: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;Prints the full DataFrame
+
+    Example:
+        &gt;&gt;&gt; df = archimedes.load_data(&#34;fmri&#34;)
+        &gt;&gt;&gt; arhcimedes.full_print(df)
+            subject  timepoint event    region    signal
+        0        s13         18  stim  parietal -0.017552
+        1         s5         14  stim  parietal -0.080883
+        2        s12         18  stim  parietal -0.081033
+        3        s11         18  stim  parietal -0.046134
+        4        s10         18  stim  parietal -0.037970
+        5         s9         18  stim  parietal -0.103513
+        6         s8         18  stim  parietal -0.064408
+        7         s7         18  stim  parietal -0.060526
+        ...
+
+    Args:
+        df (pd.DataFrame): The dataframe that you want to print
+    &#34;&#34;&#34;
+    pd.set_option(&#34;display.max_rows&#34;, None)
+    print(df)
+    # print(df.tail(1))
+    pd.set_option(&#34;display.max_rows&#34;, 10)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>series_ids: List[str], price_areas: List[str] = None, start: str = None, end: str = None, flatten_columns: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get any number of time series.</p>
+<p>This function can be used to fetch time series from the Archimedes Database.
+To see which series are available, use <code><a title="archimedes.list_ids" href="#archimedes.list_ids">list_ids()</a></code>.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; archimedes.get(
+&gt;&gt;&gt;     series_ids=[&quot;NP/AreaPrices&quot;],
+&gt;&gt;&gt;     price_areas=[&quot;NO1&quot;, &quot;NO2&quot;],
+&gt;&gt;&gt;     start=&quot;2020-06-20T04:00:00+00:00&quot;,
+&gt;&gt;&gt;     end=&quot;2020-06-28T04:00:00+00:00&quot;,
+&gt;&gt;&gt; )
+series_id                 NP/AreaPrices
+price_area                          NO1   NO2
+from_dt
+2020-06-20T04:00:00+00:00          1.30  1.30
+2020-06-20T05:00:00+00:00          1.35  1.35
+...                                 ...   ...
+2020-06-28T03:00:00+00:00          0.53  0.53
+2020-06-28T04:00:00+00:00          0.55  0.55
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series_ids</code></strong> :&ensp;<code>List[str]</code></dt>
+<dd>The series ids to get.</dd>
+<dt><strong><code>price_areas</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>The price areas to pick, all price areas if None. Defaults to None.</dd>
+<dt><strong><code>start</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The first datetime to fetch (inclusive). Returns all if None. Defaults to None.</dd>
+<dt><strong><code>end</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>The last datetime to fetch (exclusive). Returns all if None. Defaults to None.</dd>
+<dt><strong><code>flatten_columns</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>The column names are flattened if True. Defaults to False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>DataFrame with all the time series data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(
+    series_ids: List[str],
+    price_areas: List[str] = None,
+    start: str = None,
+    end: str = None,
+    flatten_columns: bool = False,
+):
+    &#34;&#34;&#34;Get any number of time series.
+
+    This function can be used to fetch time series from the Archimedes Database.
+    To see which series are available, use `list_ids()`.
+
+    Example:
+        &gt;&gt;&gt; archimedes.get(
+        &gt;&gt;&gt;     series_ids=[&#34;NP/AreaPrices&#34;],
+        &gt;&gt;&gt;     price_areas=[&#34;NO1&#34;, &#34;NO2&#34;],
+        &gt;&gt;&gt;     start=&#34;2020-06-20T04:00:00+00:00&#34;,
+        &gt;&gt;&gt;     end=&#34;2020-06-28T04:00:00+00:00&#34;,
+        &gt;&gt;&gt; )
+        series_id                 NP/AreaPrices
+        price_area                          NO1   NO2
+        from_dt
+        2020-06-20T04:00:00+00:00          1.30  1.30
+        2020-06-20T05:00:00+00:00          1.35  1.35
+        ...                                 ...   ...
+        2020-06-28T03:00:00+00:00          0.53  0.53
+        2020-06-28T04:00:00+00:00          0.55  0.55
+
+    Args:
+        series_ids (List[str]): The series ids to get.
+        price_areas (List[str], optional): The price areas to pick, all price areas if None. Defaults to None.
+        start (str, optional): The first datetime to fetch (inclusive). Returns all if None. Defaults to None.
+        end (str, optional): The last datetime to fetch (exclusive). Returns all if None. Defaults to None.
+        flatten_columns (bool, optional): The column names are flattened if True. Defaults to False.
+
+    Returns:
+        DataFrame with all the time series data
+    &#34;&#34;&#34;
+    if db == None:
+        raise ValueError(db_error_msg)
+
+    if isinstance(series_ids, str):
+        series_ids = [series_ids]
+
+    if isinstance(price_areas, str):
+        price_areas = [price_areas]
+
+    if price_areas == None:
+        price_areas = archimedes.constants.ALL_PRICE_AREAS
+
+    if start == None:
+        start = archimedes.constants.DATE_LOW
+    else:
+        start = pd.to_datetime(start)
+
+    if end == None:
+        end = archimedes.constants.DATE_HIGH
+    else:
+        end = pd.to_datetime(end)
+
+    # begin test tomorrow
+    query = &#34;&#34;&#34;
+    SELECT c.series_id, c.from_dt, c.price_area, c.value, c.version FROM (
+        SELECT * FROM nordpool
+        UNION
+        SELECT * FROM statnett
+    ) as c
+    WHERE c.series_id IN :series_ids
+    AND c.price_area IN :price_areas
+    AND c.from_dt &gt;= :start
+    AND c.from_dt &lt; :end
+    &#34;&#34;&#34;
+    rows = db.query(
+        query,
+        series_ids=tuple(series_ids),
+        price_areas=tuple(price_areas),
+        start=start,
+        end=end,
+    )
+    df = rows.export(&#34;df&#34;)
+    # df = df.set_index([&#34;from_dt&#34;, &#34;series_id&#34;, &#34;price_area&#34;, &#34;version&#34;]).unstack(&#34;series_id&#34;).unstack(&#34;price_area&#34;)
+    df = df.sort_values(by=[&#34;from_dt&#34;, &#34;version&#34;])
+    df = df.pivot_table(
+        values=&#34;value&#34;,
+        columns=[&#34;series_id&#34;, &#34;price_area&#34;],
+        index=&#34;from_dt&#34;,
+        aggfunc=&#34;last&#34;,
+    )
+    if flatten_columns:
+        new_columns = [&#34;/&#34;.join(list(column)) for column in df.columns]
+        df.columns = new_columns
+    df = df.astype(float)
+    return df</code></pre>
+</details>
+</dd>
+<dt id="archimedes.get_latest"><code class="name flex">
+<span>def <span class="ident">get_latest</span></span>(<span>series_ids: List[str], price_areas: List[str] = None, flatten_columns: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the most recent data for any number of time series.</p>
+<p>This function is similar to <code><a title="archimedes.get" href="#archimedes.get">get()</a></code>, but only fetches data from the past 48 hours,
+potentially including future hours as well (as in the case of Spot price data).</p>
+<p>@TODO: Add an argument <code>hours</code> that allows the 'lookback' period to be extended
+to an arbitrary number of hours.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; # Calling this function at 2020-03-15T10:15:00
+&gt;&gt;&gt; archimedes.get_latest(
+&gt;&gt;&gt;     series_ids=[&quot;NP/AreaPrices&quot;, &quot;NP/ConsumptionImbalancePrices&quot;],
+&gt;&gt;&gt;     price_areas=[&quot;NO1&quot;],
+&gt;&gt;&gt; )
+series_id                 NP/AreaPrices  NP/ConsumptionImbalancePrices
+price_area                          NO1                            NO1
+from_dt
+2020-03-14T04:11:00+00:00          1.30                           1.30
+2020-03-14T05:12:00+00:00          1.35                           1.35
+...                                 ...                            ...
+2020-03-15T22:00:00+00:00          0.53                            NaN
+2020-03-15T23:00:00+00:00          0.55                            NaN
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>series_ids</code></strong> :&ensp;<code>List[str]</code></dt>
+<dd>The series ids to get.</dd>
+<dt><strong><code>price_areas</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>The price areas to pick, all price areas if None. Defaults to None.</dd>
+<dt><strong><code>flatten_columns</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>The column names are flattened if True. Defaults to False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>DataFrame with all the time series data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_latest(
+    series_ids: List[str],
+    price_areas: List[str] = None,
+    flatten_columns: bool = False,
+):
+    &#34;&#34;&#34;Get the most recent data for any number of time series.
+
+    This function is similar to `get()`, but only fetches data from the past 48 hours,
+    potentially including future hours as well (as in the case of Spot price data).
+
+    @TODO: Add an argument `hours` that allows the &#39;lookback&#39; period to be extended
+    to an arbitrary number of hours.
+
+    Example:
+        &gt;&gt;&gt; # Calling this function at 2020-03-15T10:15:00
+        &gt;&gt;&gt; archimedes.get_latest(
+        &gt;&gt;&gt;     series_ids=[&#34;NP/AreaPrices&#34;, &#34;NP/ConsumptionImbalancePrices&#34;],
+        &gt;&gt;&gt;     price_areas=[&#34;NO1&#34;],
+        &gt;&gt;&gt; )
+        series_id                 NP/AreaPrices  NP/ConsumptionImbalancePrices
+        price_area                          NO1                            NO1
+        from_dt
+        2020-03-14T04:11:00+00:00          1.30                           1.30
+        2020-03-14T05:12:00+00:00          1.35                           1.35
+        ...                                 ...                            ...
+        2020-03-15T22:00:00+00:00          0.53                            NaN
+        2020-03-15T23:00:00+00:00          0.55                            NaN
+
+    Args:
+        series_ids (List[str]): The series ids to get.
+        price_areas (List[str], optional): The price areas to pick, all price areas if None. Defaults to None.
+        flatten_columns (bool, optional): The column names are flattened if True. Defaults to False.
+
+    Returns:
+        DataFrame with all the time series data
+    &#34;&#34;&#34;
+    now_dt = pd.Timestamp.now(tz=&#34;utc&#34;)
+    print(now_dt)
+    start_dt = now_dt - datetime.timedelta(days=2)
+    # +14 days should be enough in all cases now:
+    end_dt = now_dt + datetime.timedelta(days=14)
+
+    df = get(
+        series_ids=series_ids,
+        price_areas=price_areas,
+        start=start_dt.isoformat(),
+        end=end_dt.isoformat(),
+        flatten_columns=flatten_columns
+    )
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="archimedes.list_ids"><code class="name flex">
+<span>def <span class="ident">list_ids</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List all the series ids available.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; archimedes.list_ids()
+                            series_id
+0   NP/NegativeProductionImbalancePrices
+1                      SN/FRRADownVolume
+..                                   ...
+38                 NP/OrdinaryDownVolume
+39                    NP/SpecialUpVolume
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_ids():
+    &#34;&#34;&#34;List all the series ids available.
+
+    Example:
+        &gt;&gt;&gt; archimedes.list_ids()
+                                    series_id
+        0   NP/NegativeProductionImbalancePrices
+        1                      SN/FRRADownVolume
+        ..                                   ...
+        38                 NP/OrdinaryDownVolume
+        39                    NP/SpecialUpVolume
+    &#34;&#34;&#34;
+    if db is None:
+        raise ValueError(db_error_msg)
+    query = &#34;&#34;&#34;
+    SELECT distinct series_id from nordpool
+    UNION
+    SELECT distinct series_id from statnett
+    &#34;&#34;&#34;
+    rows = db.query(query)
+    return rows.export(&#34;df&#34;)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.load_latest_model"><code class="name flex">
+<span>def <span class="ident">load_latest_model</span></span>(<span>project_name: str, model_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load the latest model for a given project and model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>project_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the project</dd>
+<dt><strong><code>model_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the model</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_latest_model(project_name: str, model_name: str):
+    &#34;&#34;&#34;Load the latest model for a given project and model
+
+    Args:
+        project_name (str): The name of the project
+        model_name (str): The name of the model
+    &#34;&#34;&#34;
+    mlflow.set_experiment(project_name)
+    df = mlflow.search_runs()
+    df = df[df[&#34;tags.mlflow.runName&#34;] == model_name]
+    latest_run_id = df.iloc[0][&#34;run_id&#34;]
+    run = mlflow.get_run(latest_run_id)
+    return run</code></pre>
+</details>
+</dd>
+<dt id="archimedes.log"><code class="name flex">
+<span>def <span class="ident">log</span></span>(<span>message: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Log a message</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>str</code></dt>
+<dd>The message to log</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def log(message: str):
+    &#34;&#34;&#34;Log a message
+
+    Args:
+        message (str): The message to log
+    &#34;&#34;&#34;
+    logging.info(message)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>func: Union[Callable, str], model_name: str, local_mlflow: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Run a function, without deploying it.</p>
+<p>The first argument can be either a function, the path to a python file or a
+string on the format app:myfunction.</p>
+<h2 id="example">Example</h2>
+<pre><code class="python-repl">&gt;&gt;&gt; def myfunction():
+&gt;&gt;&gt;     x = 2
+&gt;&gt;&gt;     print(f&quot;The number x is {x}&quot;)
+&gt;&gt;&gt; archimedes.run(myfunction, &quot;My first function&quot;)
+INFO:   Starting run at 2020-08-20T23:03:53.788115
+INFO:   MLFlow URI: /Users/jo/mlruns
+hello
+INFO:   Ending run at 2020-08-20T23:03:53.794075
+INFO:   The run took 0:00:00.005960
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>func</code></strong> :&ensp;<code>Union[Callable, str]</code></dt>
+<dd>The function to deploy.</dd>
+<dt><strong><code>model_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the model you're running.</dd>
+<dt><strong><code>local_mlflow</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, uses the local MLFlow. Defaults to False.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(func: Union[Callable, str], model_name: str, local_mlflow: bool = False):
+    &#34;&#34;&#34;Run a function, without deploying it.
+
+    The first argument can be either a function, the path to a python file or a
+    string on the format app:myfunction.
+
+    Example:
+        &gt;&gt;&gt; def myfunction():
+        &gt;&gt;&gt;     x = 2
+        &gt;&gt;&gt;     print(f&#34;The number x is {x}&#34;)
+        &gt;&gt;&gt; archimedes.run(myfunction, &#34;My first function&#34;)
+        INFO:   Starting run at 2020-08-20T23:03:53.788115
+        INFO:   MLFlow URI: /Users/jo/mlruns
+        hello
+        INFO:   Ending run at 2020-08-20T23:03:53.794075
+        INFO:   The run took 0:00:00.005960
+
+    Args:
+        func (Union[Callable, str]): The function to deploy.
+        model_name (str): The name of the model you&#39;re running.
+        local_mlflow (bool, optional): If True, uses the local MLFlow. Defaults to False.
+    &#34;&#34;&#34;
+    context = _setup(local_mlflow)
+    mlflow.set_experiment(context[&#34;project_name&#34;])
+    mlflow.start_run(run_name=model_name,)
+    mlflow.set_tags(context)
+    mlflow.set_tag(&#34;run_type&#34;, &#34;MANUAL&#34;)
+    run_start = datetime.datetime.utcnow()
+    logging.info(&#34;Starting run at %s&#34; % run_start.isoformat())
+    log(&#34;MLFlow URI: %s&#34; % mlflow.get_tracking_uri())
+    func()
+    mlflow.end_run()
+    run_end = datetime.datetime.utcnow()
+    run_delta = run_end - run_start
+    logging.info(&#34;Ending run at %s&#34; % run_end.isoformat())
+    logging.info(&#34;The run took %s&#34; % run_delta)</code></pre>
+</details>
+</dd>
+<dt id="archimedes.store"><code class="name flex">
+<span>def <span class="ident">store</span></span>(<span>x, name, show=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Store x in mlflow.</p>
+<p>x can either be a dataframe, or a value.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt>x (): The thing to store</dt>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the thing</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def store(x, name, show=False):
+    &#34;&#34;&#34;Store x in mlflow.
+
+    x can either be a dataframe, or a value.
+
+    Args:
+        x (): The thing to store
+        name (str): The name of the thing
+    &#34;&#34;&#34;
+    if isinstance(x, pd.DataFrame):
+        _store_dataframe(x, name)
+    elif isinstance(x, dict):
+        _store_dict(x, name)
+    elif isinstance(x, matplotlib.figure.Figure):
+        _store_plot(x, name, show)
+    elif isinstance(x, int):
+        _store_metric(x, name)
+    elif isinstance(x, float):
+        _store_metric(x, name)
+    else:
+        raise TypeError(&#34;%s type not implemented yet.&#34; % type(x))</code></pre>
+</details>
+</dd>
+<dt id="archimedes.store_test_results"><code class="name flex">
+<span>def <span class="ident">store_test_results</span></span>(<span>y_true: pandas.core.series.Series, y_pred: pandas.core.series.Series, show: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Store the results of a model</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y_true</code></strong> :&ensp;<code>pd.Series</code></dt>
+<dd>The actual target values</dd>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>pd.Series</code></dt>
+<dd>The predicted target values</dd>
+<dt><strong><code>show</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If True, also show the charts on screen. Defaults to False.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def store_test_results(y_true: pd.Series, y_pred: pd.Series, show: bool=False):
+    &#34;&#34;&#34;Store the results of a model
+
+    Args:
+        y_true (pd.Series): The actual target values
+        y_pred (pd.Series): The predicted target values
+        show (bool, optional): If True, also show the charts on screen. Defaults to False.
+    &#34;&#34;&#34;
+    _plot_test_results_scatter(y_true, y_pred, show)
+    _plot_test_results_lines(y_true, y_pred, show)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="archimedes.compact_print" href="#archimedes.compact_print">compact_print</a></code></li>
+<li><code><a title="archimedes.deploy" href="#archimedes.deploy">deploy</a></code></li>
+<li><code><a title="archimedes.full_print" href="#archimedes.full_print">full_print</a></code></li>
+<li><code><a title="archimedes.get" href="#archimedes.get">get</a></code></li>
+<li><code><a title="archimedes.get_latest" href="#archimedes.get_latest">get_latest</a></code></li>
+<li><code><a title="archimedes.list_ids" href="#archimedes.list_ids">list_ids</a></code></li>
+<li><code><a title="archimedes.load_latest_model" href="#archimedes.load_latest_model">load_latest_model</a></code></li>
+<li><code><a title="archimedes.log" href="#archimedes.log">log</a></code></li>
+<li><code><a title="archimedes.run" href="#archimedes.run">run</a></code></li>
+<li><code><a title="archimedes.store" href="#archimedes.store">store</a></code></li>
+<li><code><a title="archimedes.store_test_results" href="#archimedes.store_test_results">store_test_results</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>
