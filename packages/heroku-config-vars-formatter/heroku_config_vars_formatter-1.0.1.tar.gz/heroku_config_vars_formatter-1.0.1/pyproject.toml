@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "heroku_config_vars_formatter"
+version = "1.0.1"
+description = "A small utility to set Heroku config vars in a shell."
+authors = ["Martin Winkel <martin@pythomation.de>"]
+
+[tool.poetry.scripts]
+heroku_config_vars_formatter = "heroku_config_vars_formatter.main:main"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+pyperclip = "^1.8.2"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+isort = "^5.10.1"
+mypy = "^0.942"
+flake8 = "^4.0.1"
+pre-commit = "^2.18.1"
+pytest = "^7.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+xfail_strict = true
+python_files = [
+    "tests.py",
+    "test_*.py"
+]
+
+[tool.black]
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+known_first_party = "src"
+known_third_party = ""
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+ignore_missing_imports = true
