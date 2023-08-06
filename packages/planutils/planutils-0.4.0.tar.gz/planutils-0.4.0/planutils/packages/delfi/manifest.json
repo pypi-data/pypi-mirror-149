@@ -1,0 +1,29 @@
+{
+    "name": "Delfi1 cost-optimal planner, winner of IPC2018",
+    "description": "https://bitbucket.org/ipc2018-classical/team23/src/ipc-2018-seq-opt/",
+    "install-size": "652M",
+    "dependencies": [],
+    "endpoint": {
+        "services": {
+            "solve": {
+                "args": [
+                    {
+                        "name": "domain",
+                        "type": "file",
+                        "description": "domain file"
+                    },
+                    {
+                        "name": "problem",
+                        "type": "file",
+                        "description": "problem file"
+                    }
+                ],
+                "call": "delfi {domain} {problem} plan",
+                "return": {
+                    "type": "generic",
+                    "files": "*plan*"
+                }
+            }
+        }
+    }
+}

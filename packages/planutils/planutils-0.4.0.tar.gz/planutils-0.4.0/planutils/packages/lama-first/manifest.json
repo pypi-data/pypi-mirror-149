@@ -1,0 +1,31 @@
+{
+    "name": "LAMA-FIRST",
+    "description": "http://fast-downward.org/",
+    "install-size": "20K",
+    "dependencies": [
+        "downward"
+    ],
+    "endpoint": {
+        "services": {
+            "solve": {
+                "args": [
+                    {
+                        "name": "domain",
+                        "type": "file",
+                        "description": "domain file"
+                    },
+                    {
+                        "name": "problem",
+                        "type": "file",
+                        "description": "problem file"
+                    }
+                ],
+                "call": "lama-first {domain} {problem}",
+                "return": {
+                    "type": "generic",
+                    "files": "*plan*"
+                }
+            }
+        }
+    }
+}

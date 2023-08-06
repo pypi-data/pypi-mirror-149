@@ -1,0 +1,29 @@
+{
+    "name": "The OPTIC temporal planner",
+    "description": "The OPTIC temporal planner (see https://github.com/roveri-marco/optic)",
+    "install-size": "297MB",
+    "dependencies": [],
+    "endpoint": {
+        "services": {
+            "solve": {
+                "args": [
+                    {
+                        "name": "domain",
+                        "type": "file",
+                        "description": "domain file"
+                    },
+                    {
+                        "name": "problem",
+                        "type": "file",
+                        "description": "problem file"
+                    }
+                ],
+                "call": "optic {domain} {problem} >> plan",
+                "return": {
+                    "type": "log",
+                    "files": "*plan*"
+                }
+            }
+        }
+    }
+}
