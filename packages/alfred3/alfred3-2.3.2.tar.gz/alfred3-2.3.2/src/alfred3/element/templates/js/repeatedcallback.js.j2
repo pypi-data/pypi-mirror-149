@@ -1,0 +1,33 @@
+$(document).ready(function () {
+
+function alertOnFail() {
+    alert("Could not establish a connection to the server. Please check your internet connection and do not close this page. If the problem persists, please contact the administrator.");
+}
+
+setInterval(function() {
+            
+{% if submit_first %}
+    var data = $("#form").serializeArray();
+    $.post("{{ set_data_url }}", data)
+    //.fail(alertOnFail);
+    //.fail(function(){console.log("FAIL")})
+    //.done(function(){console.log("SUCCESS")})
+{% endif %}
+
+$.get( "{{ url }}", function(data) {
+    
+    if ("{{ followup }}" == "refresh") {
+        move(direction="stay");
+    } else if ("{{ followup }}" == "custom") {
+        {{ custom_js }}
+    } else if ("{{ followup }}" != "none") {
+        move(direction="{{ followup }}");
+    }
+})
+// .done(function() {console.log("done")})
+// .fail(alertOnFail)
+// .always(function() {console.log("always")})
+;
+}, 
+{{ interval }} * 1000)
+});
