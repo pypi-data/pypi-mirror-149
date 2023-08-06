@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: ufinder
+Version: 1.0.0
+Summary: Search URL paths with UFinder.
+Author: Jaedson Silva
+Author-email: imunknowuser@protonmail.com
+License: MIT
+Project-URL: Source Code, https://github.com/jaedsonpys/ufinder
+Project-URL: License, https://github.com/jaedsonpys/ufinder/blob/master/LICENSE
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP :: Indexing/Search
+Classifier: Topic :: Security
+Description-Content-Type: text/markdown
+
+# UFinder - URL path search
+
+UFinder performs a search for paths (routes or directories) at the given URL, showing all those available on the site.
+
+## Links
+
+- [UFinder - URL path search](#ufinder---url-path-search)
+  - [Links](#links)
+- [Installation](#installation)
+- [Using UFinder](#using-ufinder)
+- [License](#license)
+
+# Installation
+
+You can download UFinder using the PIP package manager:
+
+```bash
+pip install ufinder 
+```
+
+Or install manually:
+
+```bash
+git clone git@github.com:jaedsonpys/ufinder.git
+cd ufinder
+python3 setup.py install
+```
+
+# Using UFinder
+
+Using UFinder is **very simple**, you can define which wordlist to use, and how many threads will be used to search that URL. First of all, you must put the `search` command:
+
+```bash
+ufinder search https://github.com --wordlist ./mywordlist.txt
+```
+
+With that, you can now perform a search on the site. The default number of threads is 4, you can change this using the `--threads` argument, putting the number of threads after it:
+
+```bash
+ufinder search https://github.com --wordlist ./mywordlist.txt --threads 2
+```
+
+Simple.
+
+# License
+
+This project uses the `MIT license`.
+
