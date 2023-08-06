@@ -1,0 +1,16 @@
+include COPYING
+include README.rst
+include CHANGELOG.rst
+include AUTHORS
+include INSTALL.rst
+include LICENSE.rst
+include cddlib/COPYING
+include cddlib/README
+include cddlib/AUTHORS
+include cddlib/ChangeLog
+include cddlib.pxi.in cdd.pyx cdd.c
+recursive-include cddlib/lib-src *.h *.c
+graft docs/_build/html
+prune docs/_build/html/.git
+exclude docs/_build/html/.nojekyll
+include docs/_build/latex/pycddlib.pdf
