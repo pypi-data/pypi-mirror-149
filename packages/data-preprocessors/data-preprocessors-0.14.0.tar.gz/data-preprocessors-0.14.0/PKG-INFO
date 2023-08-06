@@ -1,0 +1,93 @@
+Metadata-Version: 2.1
+Name: data-preprocessors
+Version: 0.14.0
+Summary: An easy to use tool for Data Preprocessing specially for Text Preprocessing
+Home-page: https://github.com/MusfiqDehan/data-preprocessors
+License: MIT
+Keywords: nlp,data-preprocessors,data-preprocessing,text-preprocessing,data-science
+Author: Md. Musfiqur Rahaman
+Author-email: musfiqur.rahaman@northsouth.edu
+Requires-Python: >=3.6,<4.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Communications
+Classifier: Topic :: Education
+Classifier: Topic :: Software Development
+Classifier: Topic :: Text Processing
+Classifier: Topic :: Text Processing :: Linguistic
+Project-URL: Repository, https://github.com/MusfiqDehan/data-preprocessors
+Description-Content-Type: text/markdown
+
+<h1>
+    <img src="https://github.com/MusfiqDehan/data-preprocessors/raw/master/branding/logo.png">
+</h1>
+
+[![](https://img.shields.io/pypi/v/data-preprocessors.svg)](https://pypi.org/project/data-preprocessors/)
+[![Downloads](https://static.pepy.tech/personalized-badge/data-preprocessors?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads)](https://pepy.tech/project/data-preprocessors)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1mJuRfIz__uS3xoFaBsFn5mkLE418RU19?usp=sharing)
+[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/keras-team/keras-io/blob/master/examples/vision/ipynb/mnist_convnet.ipynb)
+
+<p>
+    An easy to use tool for Data Preprocessing specially for Text Preprocessing
+</p>
+
+## **Table of Contents**
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Functions](#functions)
+    - [Split Textfile](#split-textfile)
+    - [Parallel Corpus Builder](#split-textfile)
+    - [Remove Punc](#split-textfile)
+
+## **Installation**
+Install the latest stable release<br>
+**For windows**<br>
+`$ pip install -U data-preprocessors`
+
+**For Linux/WSL2**<br>
+`$ pip3 install -U data-preprocessors`
+
+## **Quick Start**
+```python
+from data_preprocessors import text_preprocessor as tp
+sentence = "bla! bla- ?bla ?bla."
+sentence = tp.remove_punc(sentence)
+print(sentence)
+
+>> bla bla bla bla
+```
+
+## **Functions**
+### Split Textfile
+
+```python
+from data_preprocessors import text_preprocessor as tp
+tp.split_textfile(
+    main_file_path="example.txt",
+    train_file_path="splitted/train.txt",
+    val_file_path="splitted/val.txt",
+    test_file_path="splitted/test.txt",
+    train_size=0.6,
+    val_size=0.2,
+    test_size=0.2,
+    shuffle=True,
+    seed=42
+)
+
+# Total lines:  500
+# Train set size:  300
+# Validation set size:  100
+# Test set size:  100
+```
+
+
