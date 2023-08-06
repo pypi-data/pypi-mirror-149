@@ -1,0 +1,51 @@
+# Niolithic
+
+A simple Matrix client library wrapped around `matrix-nio`.
+
+It's meant to ressemble the very easy to work with design of `discord.py`. The intention is to make it quicker and simpler to set up a bot regardless of your skill level. But if you want to make a full-blown application or intricate bot, you should use `matrix-nio` as it is.
+
+## Example
+
+```py
+from niolithic import SimpleClient
+
+
+class MyBot(SimpleClient):
+    async def on_ready(self):
+        print('Bot is live!')
+
+    async def on_message(self, room: MatrixRoom, event: RoomMessageText):
+        print(
+            f"Message received in room {room.display_name}\n"
+            f"{room.user_name(event.sender)} | {event.body}"
+        )
+
+        command, *args = event.body.split()
+
+        if command == '!clear':
+            # Remove the last N messages
+            
+            if len(args) < 1:
+                await self.send_text(
+                    room.room_id,
+                    'You need to provide the number of messages to clear out. Ex. `!clear 10`'
+                )
+                return
+
+            limit = int(args[0]) + 1  # Plus 1 to include the command
+            
+            async for message in self.get_messages(
+                    room.room_id, (RoomMessageText,), limit=limit):
+
+                await self.redact_event(message, reason='Mass deletion by `!clear`')
+
+            print(f'{limit} messages redacted.')
+
+
+client = MyBot(
+    'https://matrix.org',       # Homeserver
+    '@username123:matrix.org',  # User ID
+    'MyBot',                    # Device name
+)
+client.run()
+```
