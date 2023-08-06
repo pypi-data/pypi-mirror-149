@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: wm-ssh
+Version: 0.2.0
+Summary: Wikimedia ssh wrapper to expand host names
+Home-page: https://github.com/david-caro/wm-ssh
+License: GPL-3.0-or-later
+Author: David Caro
+Author-email: me@dcaro.es
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: click (>=8.0.3,<9.0.0)
+Requires-Dist: requests (>=2.27.1,<3.0.0)
+Project-URL: Repository, https://github.com/david-caro/wm-ssh
+Description-Content-Type: text/markdown
+
+# wm-ssh
+
+Ssh wrapper to expand wikimedia hostnames.
+
+Currently it will try several sources, heavily using caches:
+* Known working entries
+* Netbox (https://netbox.wikimedia.org)
+* Openstack Browser (https://openstack-browser.toolforge.org)
+
+NOTE: The netbox feature needs you to have a token for netbox.wikimedia.org, see:
+    https://netbox.wikimedia.org/user/api-tokens/
+
+
+# Installation
+## pip
+
+Just `pip install wm-ssh`, that should bring in a new binary, wm-ssh.
+
+## Running from code
+
+Note that this mode will require some tweaks in the auto-completing for it to work.
+
+Clone the code:
+```
+git clone git@github.com:david-caro/wm-ssh.git
+```
+
+Install dependencies with poetry:
+```
+poetry install
+```
+
+Run with poetry:
+```
+poetry run wm-ssh <MYHOST>
+```
+
+
+# Bash completion
+
+You can use the wm-ssh.complete file (source it from your bashrc for example) to achieve bash completion features,
+though they only work with wmcs openstack instances and known hosts.
+
+
