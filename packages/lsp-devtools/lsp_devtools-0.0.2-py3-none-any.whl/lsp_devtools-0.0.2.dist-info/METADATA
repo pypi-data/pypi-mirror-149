@@ -1,0 +1,76 @@
+Metadata-Version: 2.1
+Name: lsp-devtools
+Version: 0.0.2
+Summary: Developer tooling for language servers/clients
+Home-page: https://alcarney.github.io/lsp-devtools
+Author: Alex Carney
+Author-email: alcarneyme@gmail.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/alcarney/lsp-devtools/issues
+Project-URL: Documentation, https://alcarney.github.io/lsp-devtools/
+Project-URL: Source Code, https://github.com/alcarney/lsp-devtools
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: appdirs
+Requires-Dist: pygls (<0.12.0,>=0.11.0)
+Provides-Extra: dev
+Requires-Dist: black ; extra == 'dev'
+Requires-Dist: mypy ; extra == 'dev'
+Requires-Dist: flake8 ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: pytest-cov ; extra == 'dev'
+Requires-Dist: pytest-timeout ; extra == 'dev'
+Requires-Dist: tox ; extra == 'dev'
+Requires-Dist: types-appdirs ; extra == 'dev'
+Requires-Dist: types-setuptools ; extra == 'dev'
+Provides-Extra: prometheus
+Requires-Dist: prometheus-client ; extra == 'prometheus'
+
+# lsp-devtools: Developer tooling for language servers/clients
+
+**This is in very early development.**
+
+There are a few cli commands already
+
+```
+usage: lsp-devtools [-h] {capabilities,record} ...
+
+Development tooling for language servers
+
+options:
+  -h, --help            show this help message and exit
+
+commands:
+  {capabilities,record}
+    capabilities        dummy lsp server for recording a client's capabilities.
+    record              record an LSP session.
+```
+
+```
+usage: lsp-devtools record [-h] [-f FILE] [-r] [--format FORMAT] -- <SERVER_COMMAND>
+
+This command runs the given language server command as a subprocess and records all messages sent between client and server.
+
+options:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  save the log to a text file with the given filename
+
+file options:
+  these options only apply when --file is used
+
+  -r, --raw             record all data, not just parsed messages
+  --format FORMAT       format string to use with the log messages
+```
+
+
