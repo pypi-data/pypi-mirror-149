@@ -1,0 +1,243 @@
+Metadata-Version: 2.1
+Name: hp-procurvearuba
+Version: 1.1.0
+Summary: Provides a class with custom functions for easy management of hp procurve and aruba switches
+Home-page: https://github.com/adraf82/hp_procurvearuba
+Author: Adeel Rauf
+Author-email: adraf2000@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: appdirs (==1.4.4)
+Requires-Dist: attrs (==20.3.0)
+Requires-Dist: bcrypt (==3.2.0)
+Requires-Dist: black (==20.8b1)
+Requires-Dist: cffi (==1.14.4)
+Requires-Dist: click (==7.1.2)
+Requires-Dist: cryptography (==3.3.1)
+Requires-Dist: forwardable (==0.4.1)
+Requires-Dist: future (==0.18.2)
+Requires-Dist: importlib-metadata (==3.3.0)
+Requires-Dist: importlib-resources (==3.3.0)
+Requires-Dist: iniconfig (==1.1.1)
+Requires-Dist: mccabe (==0.6.1)
+Requires-Dist: mock (==4.0.3)
+Requires-Dist: mypy-extensions (==0.4.3)
+Requires-Dist: netmiko (==3.4.0)
+Requires-Dist: ntc-templates (==1.6.0)
+Requires-Dist: packaging (==20.8)
+Requires-Dist: paramiko (==2.7.2)
+Requires-Dist: pathspec (==0.8.1)
+Requires-Dist: pluggy (==0.13.1)
+Requires-Dist: py (==1.10.0)
+Requires-Dist: pycodestyle (==2.6.0)
+Requires-Dist: pycparser (==2.20)
+Requires-Dist: pydocstyle (==6.1.1)
+Requires-Dist: pyflakes (==2.3.1)
+Requires-Dist: pylama (==7.7.1)
+Requires-Dist: PyNaCl (==1.4.0)
+Requires-Dist: pyparsing (==2.4.7)
+Requires-Dist: pyserial (==3.5)
+Requires-Dist: pytest (==6.2.0)
+Requires-Dist: pytest-mock (==3.5.1)
+Requires-Dist: PyYAML (==5.3.1)
+Requires-Dist: regex (==2020.11.13)
+Requires-Dist: scp (==0.13.3)
+Requires-Dist: six (==1.15.0)
+Requires-Dist: snowballstemmer (==2.1.0)
+Requires-Dist: tenacity (==6.2.0)
+Requires-Dist: textfsm (==1.1.0)
+Requires-Dist: toml (==0.10.2)
+Requires-Dist: typed-ast (==1.4.2)
+Requires-Dist: typing-extensions (==3.7.4.3)
+Requires-Dist: zipp (==3.4.0)
+
+<div id="top"></div>
+
+[![Code style][black-shield]][black-url]
+[![PyPI][python-shield]][python-url]
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/adraf82/hp_procurvearuba">
+    <img src="images/switch.jpg" alt="Logo" width="500" height="90">
+  </a>
+
+<h3 align="center">hp_procurvearuba</h3>
+
+  <p align="center">
+    For easy management of hp procurve and aruba switches
+    <br />
+    <a href="https://github.com/adraf82/hp_procurvearuba"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/adraf82/hp_procurvearuba/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/adraf82/hp_procurvearuba/issues">Request Feature</a>
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#installation">Installation</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#getting-started">Getting Started</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+<!-- ABOUT THE PROJECT -->
+
+## About hp_procurvearuba
+The hp_procurvearuba project was created with the aim of simplifying the management of
+HP procurve and aruba switches. The project provides a wrapper around the netmiko HPProcurveSSH
+class consisting of a composite class called HP with custom functions to manage HP procurve and aruba switches.
+
+The project consists of functions that will find and display only the information requested such as the
+find_switch_serial_number function which displays the serial number of the switch;
+
+```sh
+-------------------------
+ HOSTNAME SERIAL_NUMBER
+-------------------------
+   HP_1   SG59FLX6CK
+-------------------------
+```
+There are many other practical functions in the hp_procurvearuba library such as functions for backing up configuration files, uploading configuration files and loading firmware with tftp and sftp.
+
+To view the full list of functions and docstrings inclued in the library see the procurvearuba module [here](https://github.com/adraf82/hp_procurvearuba/tree/main/src/hp_procurvearuba)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+## Installation
+
+The hp_procurvearuba package can be installed with pip as follows;
+
+```sh
+pip install hp_procurvearuba
+```
+
+### Prerequisites
+
+External dependencies for the package will be installed with pip. To see the full list of dependencies see requirements.txt [here](https://github.com/adraf82/hp_procurvearuba/blob/master/requirements.txt)
+
+The hp_procurvearuba project uses textfsm from the ntc-templates library for many functions. Set the environment variable NET_TEXTFSM to point to the index file in ntc-templates as below;
+
+```sh
+export NET_TEXTFSM=/path/to/ntc-templates/ntc_templates/templates
+```
+
+### Getting Started
+
+Create a dictionary with your device details. Here is a list of devices displayed in yaml format;
+
+```sh
+devices:
+- device_type: hp_procurve
+  ip: 192.168.1.1
+  hostname: HP_1
+  password: password
+  username: username
+- device_type: hp_procurve
+  ip: 192.168.1.2
+  hostname: HP_2
+  password: password
+  username: username
+```
+Import the HP class with the following line;
+
+```sh
+from hp_procurvearuba import HP
+```
+Create an instance of the HP class;
+
+```sh
+with open('devices.yml', 'r') as f:
+    device_data = yaml.safe_load(f)
+    device_data = device_data.pop('devices')
+    device_data = device_data
+
+for device in device_data:
+    hp_obj = HP(**device)
+```
+
+Invoke the function you require;
+
+```sh
+hp_obj.sftp_backup_config('192.168.1.3')
+```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+For an example of a useable script and a devices inventory file please refer to the example_script.py and devices.yaml files in [examples](https://github.com/adraf82/hp_procurvearuba/tree/master/examples)
+
+Included in the package is a set of unit tests. Pytest can be run against any of the functions. The full list of test functions can be found in the test_funcs.py file [here](https://github.com/adraf82/hp_procurvearuba/tree/master/tests)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions to the project are welcome. Any contributions you make are **greatly appreciated**. Please fork the repository and create a pull request. Run the tox program inside the root folder hp_procurvearuba when testing your changes. If you are adding a new function to the project, please add an accompanying unit test to the test_funcs.py file [here](https://github.com/adraf82/hp_procurvearuba/tree/master/tests)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- CONTACT -->
+## Contact
+
+Adeel Rauf - adraf2000@gmail.com
+
+Project Link: [https://github.com/adraf82/hp_procurvearuba](https://github.com/adraf82/hp_procurvearuba)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+Credit goes to the creators and maintainers of the following projects;
+
+* [netmiko](https://github.com/ktbyers/netmiko)
+* [ntc-templates](https://github.com/networktocode/ntc-templates)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[black-shield]:https://img.shields.io/badge/code%20style-black-000000.svg
+[black-url]:https://github.com/ambv/black
+[python-shield]:https://img.shields.io/pypi/v/hp_procurvearuba
+[python-url]:https://pypi.org/project/hp-procurvearuba
+
+
