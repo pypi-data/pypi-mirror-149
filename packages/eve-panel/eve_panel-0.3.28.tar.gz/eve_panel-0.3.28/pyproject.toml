@@ -1,0 +1,66 @@
+[tool]
+[tool.poetry]
+name = "eve_panel"
+version = "0.3.28"
+homepage = "https://jmosbacher.github.io/eve-panel"
+documentation = "https://eve-panel.readthedocs.io"
+description = "Top-level package for Eve-Panel."
+authors = ["Yossi Mosbacher <joe.mosbacher@gmail.com>"]
+readme = "README.rst"
+license =  "MIT"
+classifiers=[
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+]
+packages = [
+    { include = "eve_panel" },
+    { include = "tests", format = "sdist" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+eve = "^1.1.3"
+panel = "^0.13.0"
+httpx = "^0.19"
+numpy = "*"
+
+# optional
+dask = { optional = true, version = "*" }
+hvplot = { optional = true, version = "*" }
+
+
+
+[tool.poetry.dev-dependencies]
+bumpversion = "*"
+coverage = "*"
+flake8 = "*"
+invoke = "*"
+isort = "*"
+pylint = "*"
+pytest = "*"
+sphinx = "*"
+tox = "*"
+yapf = "*"
+nbsphinx = "*"
+sphinx-material = "*"
+numpydoc = "*"
+
+[tool.poetry.extras]
+dask = ["dask[dataframe]"]
+plotting = ["hvplot", "xarray"]
+full = ["dask[dataframe]", "hvplot", "xarray"]
+
+[tool.dephell.main]
+versioning = "semver"
+from = {format = "poetry", path = "pyproject.toml"}
+to = {format = "setuppy", path = "setup.py"}
+
+[build-system]
+requires = ["poetry-core>=1.0.8", "setuptools"]
+build-backend = "poetry.core.masonry.api"
