@@ -1,0 +1,30 @@
+# subfinder
+
+- 用于反向地理编码查找Suburb, City和State
+
+- Usage:
+
+  1. 将 Subfinder.py 以及 Suburbs.bat 放入工作文件夹
+
+  2. 在将要使用的python文件中导入SubFinder类
+
+     ```python
+     from subfinder import subfinder
+     ```
+
+  3. 初始化一个SubFinder类对象并调用GetPlace函数
+
+     ```python
+     a = subfinder.subfinder()
+     address = s.GetPlace(-37.96944, 145.04806)
+     ```
+
+  4. 接收的参数以及返回值
+     - GetPlace(float(latitute), float(longtitute)): 传入latitute和longtitude参数, 类型为float
+     - Return: 返回值将会是字典类型的变量, 包含三个keys
+       - "suburb"
+       - "state"
+       - "city"
+
+- Performance:
+  - 单线程单进程情况下运行200000次查询, 耗时6s
