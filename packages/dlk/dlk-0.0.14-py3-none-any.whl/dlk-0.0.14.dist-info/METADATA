@@ -1,0 +1,89 @@
+Metadata-Version: 2.1
+Name: dlk
+Version: 0.0.14
+Summary: dlk: Deep Learning Kit
+Home-page: https://github.com/cstsunfu/dlk
+Author: cstsunfu
+Author-email: cstsunfu@gmail.com
+License: Apache Software License
+Platform: UNKNOWN
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: twine
+Requires-Dist: wheel
+Requires-Dist: setuptools
+Requires-Dist: packaging (>=20.9)
+Requires-Dist: colorlog (>=4.8.0)
+Requires-Dist: smart-open (>=6.0.0)
+Requires-Dist: pyahocorasick (>=1.4.2)
+Requires-Dist: jsoneditor (>=1.4.3)
+Requires-Dist: hjson (>=3.0.2)
+Requires-Dist: numpy (>=1.21.4)
+Requires-Dist: pandas (>=1.2.4)
+Requires-Dist: pandarallel (>=1.5.2)
+Requires-Dist: gensim (>=4.1.2)
+Requires-Dist: tensorboard (>=2.7.0)
+Requires-Dist: google-auth (>=1.8.0)
+Requires-Dist: markdown (>=3.3.4)
+Requires-Dist: requests-oauthlib (>=1.3.0)
+Requires-Dist: tokenizers (>=0.12.0)
+Requires-Dist: datasets (==2.1.0)
+Requires-Dist: tabulate (>=0.8.9)
+Requires-Dist: transformers (==4.17.0)
+Requires-Dist: pytorch-lightning (==1.6.0)
+Requires-Dist: pytest
+
+
+# A Deep Learning ToolKit
+
+This project is WIP.
+
+[Read the Docs](https://dlk.readthedocs.io/en/latest/)
+
+
+## Install
+
+```
+pip install dlk
+
+or 
+git clong this repo and do
+
+python setup.py install
+
+```
+## What is this project do?
+
+* Provide a templete for deep learning (especially for nlp) training and deploy.
+* Provide parameters search.
+* Provide basic architecture search.
+* Provide some basic modules and models.
+* Provide basic deploy method.
+
+## More Feature is Comming
+
+- [ ] Add more documents.
+- [ ] Distill structure.
+- [ ] Adv training.
+- [ ] Add disable tokenizer post process.
+
+- [ ] Predict
+    - [X] Complete the main predict code.
+    - [ ] Test.
+    - [ ] Convert to TorchScript.
+    - [ ] Convert to ONNXRT
+
+* [X] When the high config change the _name of the basic config, the base config should be coverd.
+
+- [ ] One `optimizer` different para groups use different `scheduler`s.
+  
+    - [ ] Ref [diff_schedule](https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.CyclicLR.html#torch.optim.lr_scheduler.CyclicLR)
+    - [ ] Add loss schedule, get best checkpoint by loss.
+
+- [ ] Support LightGBM, it's maybe not necessary? Will split to another package.
+* [ ] Make CRF and more modules which uses the op like `for` and `if` to be scriptable（`for`，`if`）
+* [ ] Validating LSTM module is scriptable or not?
+* [ ] Add UnitTest
+
+
