@@ -1,0 +1,2 @@
+Hysteresis is a library of tools for non-functional curves, with a emphasis on force-deformation hysteresis curves.
+While functions only have one direction, non functional curves change direction, making analyzing them difficult.
