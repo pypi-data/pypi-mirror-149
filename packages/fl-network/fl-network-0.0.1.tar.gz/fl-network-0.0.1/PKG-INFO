@@ -1,0 +1,46 @@
+Metadata-Version: 2.1
+Name: fl-network
+Version: 0.0.1
+Summary: Extensible network framework library for federated learning system
+Home-page: https://github.com/Rostar-github/fedml-network
+Author: Sida Luo
+Author-email: luosida@qq.com
+License: MIT
+Keywords: FedML,Redis,Distribution
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+
+### Extensible network framework library for federated learning system
+
+```python
+from src.fedmlnetwork.device import Device
+from src.fedmlnetwork.paramServer import ParamServer
+
+if __name__ == '__main__':
+    # setup()
+    dev_01 = Device(name="dev_01",
+                    server="param_sys", peers=["dev_02"],
+                    args_from_ser=["weight", "grad"], args_from_peer=[])
+
+    dev_02 = Device(name="dev_02",
+                    server="param_sys", peers=["dev_01"],
+                    args_from_ser=["weight", "grad"], args_from_peer=[])
+
+    server = ParamServer(name="param_sys", devices=["dev_01", "dev_02"], args_from_dev=["weight", "grad"])
+
+
+```
+
+
+
