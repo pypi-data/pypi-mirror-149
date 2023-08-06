@@ -1,0 +1,109 @@
+Metadata-Version: 2.1
+Name: pgflux
+Version: 1.1.0
+Summary: Script for monitoring PostgreSQL databases with InfluxDB
+Author: Michel Albert
+Author-email: michel.albert@post.lu
+License: MIT
+Project-URL: Source, https://github.com/post-luxembourg/pgflux
+Project-URL: Tracker, https://github.com/post-luxembourg/pgflux/issues
+Project-URL: Documentation, https://post-luxembourg.github.io/pgflux/
+Keywords: influxdb,postgresql
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Environment :: Other Environment
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: System :: Monitoring
+Classifier: Typing :: Typed
+Provides-Extra: dev
+Provides-Extra: test
+License-File: LICENSE
+
+pgflux
+======
+
+``pgflux`` is a Python utility to send PostgreSQL metrics to InfluxDB. The
+drivers when developing this tool were:
+
+* **Make it easy to extend:** Authoring new queries should *only* require
+  PostgreSQL knowledge to allow non-devs to easily add/fix/modify the collected
+  metrics. ``pgflux`` does not require you to know Python, InfluxDB nor Grafana
+  to work on the provided SQL queries.
+* **Be independently runnable:** ``pgflux`` should be runnable without first
+  setting up a hugely complex dev-environment. All that is needed is a Python
+  environment and a PostgreSQL server (a Dockerfile for testing is supplied for
+  the latter).
+
+Screenshots
+-----------
+
+It enables Grafana visualisations as seen in the screenshots below:
+
+.. image:: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-01.png
+  :target: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-01.png
+
+.. image:: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-02.png
+  :target: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-02.png
+
+.. image:: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-03.png
+  :target: https://raw.githubusercontent.com/post-luxembourg/pgflux/v1.0.1/docs/_images/grafana-dashboard-03.png
+
+
+Installation
+============
+
+The project can be installed directly via ``pip``::
+
+    python3 -m venv /path/to/virtual-env
+    /path/to/virtual-env/bin/pip install pgflux
+
+The use of a virtual environment is optional, but recommended.
+
+
+Usage
+=====
+
+See https://post-luxembourg.github.io/pgflux/usage.html
+
+
+Development & Extending
+=======================
+
+For detailed instructions, see https://post-luxembourg.github.io/pgflux/development.html
+
+
+NOTE
+----
+
+This project uses ``fabric`` as task runner (see https://fabfile.org). To
+install it use either ``pipx install fabric`` (recommended) or, if you don't
+have ``pipx``: ``pip install --user fabric``.
+
+Commands
+--------
+
+* Listing all available development tasks::
+
+    fab -l
+
+* To set up or refresh the development environment::
+
+    fab develop
+
+* Run PostgreSQL, InfluxDB & Grafana containers (requires ``docker-compose``)::
+
+    fab run-dev-containers
+
+* Run the tests::
+
+    fab test
+
+
