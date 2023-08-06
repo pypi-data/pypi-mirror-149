@@ -1,0 +1,74 @@
+{# -*- coding: utf-8 -*-
+
+  This file is part of Invenio.
+  Copyright (C) 2016-2020 CERN.
+
+  Invenio is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% if custom_base_template|default(false) %}
+  {% extends custom_base_template %}
+{% elif use_theme_basic_template|default(true) %}
+  {%- extends config.BASE_TEMPLATE %}
+{% endif %}
+
+
+{% set title = _("Request ") %}
+
+{% block page_body %}
+  {% block custom_header %}
+    {#  placeholder for custom header fe. community #}
+  {% endblock custom_header %}
+
+  {% block request_header %}
+    <div class="ui container  mt-10 mb-25">
+      <div class="ui grid">
+        <div class="two column row">
+          <div class="column eight wide">
+            {% block request_topic %}
+            {% endblock request_topic %}
+          </div>
+          <div class="column eight wide right aligned">
+            {% block request_actions %}
+              <div id="request-actions"></div>
+            {% endblock request_actions %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock request_header %}
+
+  {% block conversation %}
+    <div class="ui container request-detail-page">
+      <div class="ui header">
+        <h2>
+          <img class="ui avatar image" src="/static/images/square-placeholder.png"
+               alt="member avatar">
+          {{ request.title }}
+        </h2>
+      </div>
+      <div class="ui divider"></div>
+      <div id="request-detail"
+           data-record='{{ request | tojson }}'
+           data-default-query-config='{{ default_query_config | tojson }}'
+      >{# react app root #}</div>
+    </div>
+  {% endblock conversation %}
+{% endblock page_body %}
+
+{% block css %}
+  {% if use_theme_basic_template or custom_base_template |default(true) %}
+    {{ super() }}
+  {% endif %}
+  {{ webpack['invenio-requests-theme.css'] }}
+{% endblock %}
+
+{% block javascript %}
+  {% if use_theme_basic_template or custom_base_template |default(true) %}
+    {{ super() }}
+  {% else %}
+    {% include config.THEME_JAVASCRIPT_TEMPLATE %}
+  {% endif %}
+  {{ webpack['invenio-requests-base.js'] }}
+{% endblock %}
