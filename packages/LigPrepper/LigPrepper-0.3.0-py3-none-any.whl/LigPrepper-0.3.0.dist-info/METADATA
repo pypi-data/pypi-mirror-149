@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: LigPrepper
+Version: 0.3.0
+Summary: Simple program to quickly prepare ligand 3d SDF/MOL2/PDBQT from smiles
+Home-page: https://github.com/aakognole/ligprepper
+Author: Abhishek Kognole
+Author-email: aakognole@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/aakognole/ligprepper/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: rdkit-pypi
+
+# LigPrepper
+
+Simple program to quickly prepare 3D SDF/MOL2/PDBQT files from SMILES for ligands using rdkit & openbabel.
+
+[![PyPI version](https://badge.fury.io/py/LigPrepper.svg)](https://badge.fury.io/py/LigPrepper) [![Downloads](https://pepy.tech/badge/ligprepper)](https://pepy.tech/project/ligprepper)
+
+## Installation:
+
+```
+pip install LigPrepper
+```
+
+## Usage:
+
+#### For single SMILES
+
+```
+LigPrepper.smiles2sdf('c1ccncc1', labels='pyridine')
+
+LigPrepper.smiles2mol2('c1ccncc1', labels='pyridine')
+
+LigPrepper.smiles2pdbqt('c1ccncc1', labels='pyridine')
+```
+
+#### For a list of SMILES
+
+```
+LigPrepper.smiles2sdf(smiles_list, labels=labels_list, mergesdf=False)
+```
+
+#### Want to align molecule to reference molecule in SDF format
+
+```
+LigPrepper.smiles2sdf(smiles_list, labels=labels_list, ref='ref.sdf', mergesdf=False)
+```
+
+
+
