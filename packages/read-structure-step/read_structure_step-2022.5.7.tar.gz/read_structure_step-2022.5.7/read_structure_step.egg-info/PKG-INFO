@@ -1,0 +1,145 @@
+Metadata-Version: 2.1
+Name: read-structure-step
+Version: 2022.5.7
+Summary: A SEAMM plug-in to read common formats in computational chemistry
+Home-page: https://github.com/molssi-seamm/read_structure_step
+Author: Eliseo Marin-R-Rimoldi
+Author-email: meliseo@vt.edu
+License: BSD-3-Clause
+Keywords: SEAMM,plug-in,flowchart,Open Babel,molecules,atomistic,files
+Platform: Linux
+Platform: Mac OS-X
+Platform: Unix
+Platform: Windows
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+License-File: AUTHORS.rst
+
+============================
+SEAMM Read Structure Plug-in
+============================
+
+.. image:: https://img.shields.io/github/issues-pr-raw/molssi-seamm/read_structure_step
+   :target: https://github.com/molssi-seamm/read_structure_step/pulls
+   :alt: GitHub pull requests
+
+.. image:: https://github.com/molssi-seamm/read_structure_step/workflows/CI/badge.svg
+   :target: https://github.com/molssi-seamm/read_structure_step/actions
+   :alt: Build Status
+
+.. image:: https://codecov.io/gh/molssi-seamm/read_structure_step/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/molssi-seamm/read_structure_step
+   :alt: Code Coverage
+
+.. image:: https://img.shields.io/lgtm/grade/python/g/molssi-seamm/read_structure_step.svg?logo=lgtm&logoWidth=18
+   :target: https://lgtm.com/projects/g/molssi-seamm/read_structure_step/context:python
+   :alt: Code Quality
+
+.. image:: https://github.com/molssi-seamm/read_structure_step/workflows/Documentation/badge.svg
+   :target: https://molssi-seamm.github.io/read_structure_step/index.html
+   :alt: Documentation Status
+
+.. image:: https://pyup.io/repos/github/molssi-seamm/read_structure_step/shield.svg
+   :target: https://pyup.io/repos/github/molssi-seamm/read_structure_step/
+   :alt: Updates for Dependencies
+
+.. image:: https://img.shields.io/pypi/v/read_structure_step.svg
+   :target: https://pypi.python.org/pypi/read_structure_step
+   :alt: PyPi VERSION
+
+A SEAMM plug-in to read common formats in computational chemistry
+
+The current version uses Open Babel as an engine to parse various
+formats such as PDB, Mol2 or XYZ and transform them into the SEAMM
+structure format for further use in SEAMM flowcharts.
+
+* Free software: BSD license
+* Documentation: https://molssi-seamm.github.io/read_structure_step/index.html
+* Code: https://github.com/molssi-seamm/read_structure_step
+
+Features
+--------
+
+- Emphasis in ease-of-use and simplicity. The public interface
+  consists of a single function.
+- Automatic file type recognition.
+- OpenBabel as an engine to parse formats, but other engines can be
+  easily implemented.
+- Easily extensible to new formats.
+- Current support for PDB, Mol2 and XYZ files.
+
+Example
++++++++
+
+.. code:: python
+
+ import read_structure_step
+ seamm_structure = read_structure_step.read("spc.xyz")
+
+Acknowledgements
+----------------
+
+This package was created with Cookiecutter_ and the `molssi-seamm/cookiecutter-seamm-plugin`_ project template.
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`molssi-seamm/cookiecutter-seamm-plugin`: https://github.com/molssi-seamm/cookiecutter-seamm-plugin
+
+Developed by the Molecular Sciences Software Institute (MolSSI_),
+which receives funding from the `National Science Foundation`_ under
+award ACI-1547580
+
+.. _MolSSI: https://www.molssi.org
+.. _`National Science Foundation`: https://www.nsf.gov
+
+
+=======
+History
+=======
+
+2021.2.12 (12 February 2021)
+----------------------------
+
+* Updated the README file to give a better description.
+* Updated the short description in setup.py to work with the new installer.
+* Added keywords for better searchability.
+
+2021.2.4 (4 February 2021)
+--------------------------
+
+* Updated for compatibility with the new system classes in MolSystem
+  2021.2.2 release.
+
+2020.12.5 (5 December 2020)
+---------------------------
+
+* Internal: switching CI from TravisCI to GitHub Actions, and in the
+  process moving documentation from ReadTheDocs to GitHub Pages where
+  it is consolidated with the main SEAMM documentation.
+
+2020.8.1 (1 August 2020)
+------------------------
+
+* Removed leftover debug print statements.
+
+0.9 (15 April 2020)
+-------------------
+
+* General bug fixing and code cleanup.
+* Part of release of all modules.
+
+
+0.7.1 (23 November 2019)
+------------------------
+
+* First release on PyPI.
+
+
