@@ -1,0 +1,155 @@
+Metadata-Version: 2.1
+Name: pydrag
+Version: 22.5
+Summary: A modern Last.fm api wrapper
+Home-page: https://github.com/tefra/pydrag
+Author: Christodoulos Tsoulloftas
+Author-email: "chris@komposta.net",
+License: MIT
+Project-URL: Source, https://github.com/tefra/pydrag
+Project-URL: Documentation, https://pydrag.readthedocs.io/
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.6
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: python-dotenv (>=0.10.1)
+Requires-Dist: requests (>=2.21.0)
+Requires-Dist: dataclasses ; python_version < "3.7"
+Provides-Extra: dev
+Requires-Dist: codecov ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: pytest ; extra == 'dev'
+Requires-Dist: pytest-cov ; extra == 'dev'
+Requires-Dist: tox ; extra == 'dev'
+Requires-Dist: vcrpy ; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: sphinx ; extra == 'docs'
+Requires-Dist: sphinx-autodoc-typehints ; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme ; extra == 'docs'
+
+pydrag
+======
+
+
+.. image:: https://github.com/tefra/pydrag/workflows/tests/badge.svg
+    :target: https://github.com/tefra/pydrag/actions
+
+.. image:: https://readthedocs.org/projects/pydrag/badge
+    :target: https://pydrag.readthedocs.io/
+
+.. image:: https://codecov.io/gh/tefra/pydrag/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/tefra/pydrag
+
+.. image:: https://img.shields.io/github/languages/top/tefra/pydrag.svg
+    :target: https://pydrag.readthedocs.io/
+
+.. image:: https://www.codefactor.io/repository/github/tefra/pydrag/badge
+   :target: https://www.codefactor.io/repository/github/tefra/pydrag
+
+.. image:: https://img.shields.io/pypi/pyversions/pydrag.svg
+    :target: https://pypi.org/pypi/pydrag/
+
+.. image:: https://img.shields.io/pypi/v/pydrag.svg
+    :target: https://pypi.org/pypi/pydrag/
+
+----
+
+
+**pydrag** is a modern api wrapper for the `Last.fm <https://www.last.fm/api/>`_ api with a fluent syntax!
+
+
+Quick Start
+-----------
+
+Apply for a last.fm `api key <https://www.last.fm/api/account/create>`_ and write down your **key** and **secret**.
+
+Install
+~~~~~~~
+
+.. code-block:: console
+
+    $ pip install pydrag
+
+
+Example
+~~~~~~~
+
+.. code-block:: python
+
+    >>> from pydrag import User, configure
+    >>> configure(api_key='54062d8af7afdc_not_real_3459048a4')
+    >>> rj = User.find("RJ")
+    >>> rj.real_name
+    'Richard Jones '
+    >>> recent = rj.get_recent_tracks(limit=1, page=1)
+    >>> first = recent.pop()
+    >>> first.name
+    'Fu-Gee-La'
+    >>> similar = first.get_similar(limit=1)
+    >>> similar[0].name
+    'Family Business'
+    >>> similar[0].artist.name
+    'Fugees'
+    >>>
+    >>> for friend in rj.get_friends(recent_tracks=True):
+    ...     friend.name, friend.recent_track.name
+    ...
+    ('meichi', 'Pi')
+    ('demkod', '(bottle back)')
+    ('STBKilla', 'Nowhere Fast')
+    ('keret221', 'Letter Home')
+    ('Lilfix', 'Namorar pra Quê?')
+    ('Yoji', 'Empire State of Mind (feat. Alicia Keys)')
+    ('Kastishka', 'Wipe Your Eyes')
+    ('comingsoon_', 'I Want It All')
+    ('Bagheera', 'Welcome Home')
+
+
+Development
+===========
+
+Use you favorite tool to create a python >= 3.6 virtual environment
+
+.. code-block:: console
+
+   $ git clone git@github.com:tefra/pydrag.git
+   $ pip install .[dev]
+   $ pre-commit install
+   $ pytest
+   $ tox
+
+pydrag uses `vcrpy <https://vcrpy.readthedocs.io/>`_ library to record and replay
+last.fm responses for its unit tests and
+`python-dotenv <https://pypi.org/project/python-dotenv/>`_ to auto-configure itself.
+
+All sensitive information like keys and credentials are automatically censored.
+
+So when it's necessary to record a new response it's super useful to have a
+.env file with your configuration!
+
+.. code-block:: ini
+
+   LASTFM_API_KEY=your_api_key
+   LASTFM_API_SECRET=your_api_secret
+   LASTFM_USERNAME=You
+   LASTFM_PASSWORD=YouPass
+
+
+Changelog: 22.5 (2022-05-08)
+----------------------------
+- Replaced attrs with dataclasses
+- Added support for python 3.10
+
+
