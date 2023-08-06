@@ -1,0 +1,19 @@
+?start: (SH_COMMENT | multivar)+
+
+multivar: section _NL ("\t" (keypair | GIT_COMMENT) _NL*)+
+
+section: "[" KEY ["\"" PARAMETER "\""] "]"
+
+keypair: KEY "=" VALUE
+KEY: LETTER ("_"|"-"|LETTER|DIGIT)*
+PARAMETER: /[^"]+/
+VALUE: /[^\n]+/
+
+GIT_COMMENT: /;[^\n]*/
+
+%import common.DIGIT
+%import common.LETTER
+%import common.SH_COMMENT
+%import common.NEWLINE -> _NL
+
+%ignore " "+
