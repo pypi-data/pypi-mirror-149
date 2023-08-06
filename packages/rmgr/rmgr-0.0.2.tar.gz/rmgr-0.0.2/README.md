@@ -1,0 +1,2 @@
+# rmgr
+A resource manager
