@@ -1,0 +1,71 @@
+Metadata-Version: 2.1
+Name: pyfmtools
+Version: 0.51
+Summary: Library for handling and fitting fuzzy measures
+Home-page: UNKNOWN
+Author: Gleb Beliakov, Norbert Henseler
+Author-email: gleb.beliakov@deakin.edu.au, norbert.henseler@deakin.edu.au
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+# Pyfmtools    
+Pyfmtools provides various tools for handling fuzzy measures, calculating various indices, Choquet and Sugeno integrals, as well as fitting fuzzy measures to empirical data. This package is designed for Python , but it also includes the C++ source files and a user manual.
+Chapter 2 of the user manual provides some background on fuzzy measures. A more detailed overview can be found in [4, 5, 12, 16] and references therein. Chapter 3 of the user manual outlines computational methods used to fit fuzzy measures to empirical data. The description of the programming library pyfmtools is given in Chapter 4. Examples of its usage are provided in Section 4.6.
+To cite pyfmtools package, use references [2–6,21–24]. New in version 4
+Random generation of fuzzy measures of different types, including k-additive, k-interactive, supermodular and submodular, sparse representation of k- additive fuzzy measures.<br>
+### We added in version 3
+We added the concept of K-interactive fuzzy measures, and 4 methods of fitting K-interactive fuzzy measures from data based on linear program- ming. K-interactive fuzzy measures significantly reduce the computational complexity. We also added fitting fuzzy measures in marginal contribution representation and using maximal chains method, which fits only the values directly identifiable from the data. This method is useful for small data sets.
+Fitting fuzzy measures in marginal contribution representation allows simple sub and supermodularity constraints, which can now be enforced.
+See functions fittingKinteractive, fittingKinteractiveAuto, fittingKinter- activeMC, fittingKinteractiveMarginal, fittingKinteractiveMarginalMC.
+We added calculation of new non-additivity and bipartition interaction indices. See functions Bipartition, BipartitionBanzhaf, NonadditivityIndex, NonadditivityIndexMob.<br>
+### We added in version 2
+We added fitting K-maxitive and K-tolerant fuzzy measures, based on linear and mixed integer programming. See functions fittingktolerant and fittingK- maxitive.
+We added a method for fitting sub-modular fuzzy measures reported in [3]. Supermodular fuzzy measure can also be fit by using duality: construct dual data set, fit a sub-modular fuzzy measure and then compute its dual. See function FuzzyMeasureFitLP.
+We added an extra requirement of preservation of output ordering. See function FuzzyMeasureFitLP.
+Fixed many warnings in the lpsolve code.<br>
+
+## Documentation
+[User Manual](http://gbfiles.epizy.com/pyfmtools.pdf)
+
+## Installation
+To install type:
+```python
+$ pip install pyfmtools
+```
+## Usage of the library
+```python
+from _pyfmtools import flib, lib
+```
+Follow these steps in your Python code to use the library:<br>
+- Initialize resources<br>
+- Use library function(s)<br>
+- Free resources<br>
+### Example how to initialize resources
+r=3<br>
+n=3<br>
+env=ffi.new( "struct fm_env *")<br>
+fm.py_fm_init( n, env)<br>
+
+### Example how to free resources
+fm.py_fm_free( env)<br>
+
+## Usage of library functions
+To implement a function follow these steps:
+1. Check size of input arrays. Example:
+2. Check types of input arrays. Example:
+3. Use CFFI type conversion for each input array or pointer. Example:
+4. Call C or C++ function. Example:
+### Parameters
+#### Input parameters:
+See function list
+#### Output parameters:
+See function list 
+
+## Test
+To unit test type:
+```python
+$ test/test.py
+```
+
