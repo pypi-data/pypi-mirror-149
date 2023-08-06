@@ -1,0 +1,516 @@
+<script>
+Vue.component('apijson-table', {
+    delimiters: ['{', '}'],
+    props: [
+        "table",
+        "custom_tcolumns_render_generator",
+        "hook_init", //hook_init(vm), will invoke in mounted()
+        "hook_ajax_params", //hook_ajax_params(method,action,params), will invoke before ajax action
+        "hook_add", //hook_add(vm), customize the add action
+        "hook_viewedit" //hook_viewedit(vm, params), customize the view edit action
+    ],
+    template: `<div>
+    <div v-if="config_editable && config_add_fields!=null"><i-button type="primary" @click="add">Add</i-button> <br><br> </div>
+    <Spin size="large" fix v-if="loading"></Spin>
+    <i-table stripe border :columns="tcolumns" :data="tlist" @on-sort-change="table_on_sort_change"></i-table>
+    <page :total="total" :page-size="query_count" :current.sync="current_page" :page-size-opts="[10, 20, 50, 100, 500]" show-sizer @on-change="page_on_change" @on-page-size-change="page_on_page_size_change"></page>
+    <modal v-model="modal_add" title="Add">
+        <i-form @submit.native.prevent :label-width="100">
+            <form-item v-for="item in add_items" :key="item.key" :label="item.title">
+                <i-input v-if="item.component=='input'" v-model="item.value"></i-input>
+                <checkbox v-if="item.component=='checkbox'" v-model="item.value"></checkbox>
+                <i-input v-if="item.component=='textarea'" v-model="item.value" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></i-input>
+            </form-item>
+            <form-item v-if="config_editable" label="action">
+                <i-button type="info" icon="plus" size="large" @click="real_add">Add</i-button>
+            </form-item>
+        </i-form>
+        <div slot="footer">
+            <i-button type="default" size="large" @click="modal_add=false">Cancel</i-button>
+        </div>
+    </modal>
+    <modal v-model="modal_view" :title="viewedit_label">
+        <i-form @submit.native.prevent :label-width="100">
+            <form-item v-for="item in viewedit_items" :key="item.key" :label="item.title">
+                <i-input v-if="item.component=='input'" v-model="item.value" :readonly="!editable(item)"></i-input>
+                <checkbox v-if="item.component=='checkbox'" v-model="item.value" :disabled="!editable(item)"></checkbox>
+                <i-input v-if="item.component=='textarea'" v-model="item.value" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></i-input>
+            </form-item>
+            <form-item v-if="config_editable" label="action">
+                <i-button type="info" icon="ios-download" size="large" @click="save">Save</i-button>
+            </form-item>
+        </i-form>
+        <div slot="footer">
+            <i-button type="default" size="large" @click="modal_view=false">Cancel</i-button>
+        </div>
+    </modal>
+    <modal v-model="modal_delete" title="Confirm to delete" @on-ok="real_remove">
+        <p>Confirm to delete #{delete_params.row&&delete_params.row.id} in table '{table.model_name}'?</p>
+    </modal>
+</div>`,
+    data: function(){
+        var thisp = this
+        return {
+            loading: false,
+            modal_view: false,
+            viewedit_items: [],
+
+            edit_params: {},
+
+            modal_delete: false,
+            delete_params: {},
+
+            modal_add: false,
+            add_items : [],
+
+            tcolumns: [],
+            tcolumns_preset: {
+                "id": {title:'#',key:'id',width:80},
+                "action": {
+                    title: 'Action',
+                    width: 140,
+                    render: function(h, params){
+                        var delete_button = h('Button', {
+                            props: {
+                                type: 'error',
+                                size: 'small'
+                            },
+                            on: {
+                                click: function(){
+                                    thisp.remove(params)
+                                }
+                            }
+                        }, 'Delete')
+                        var buttons = [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: function(){
+                                        thisp.show(params)
+                                    }
+                                }
+                            }, thisp.viewedit_label)
+                        ]
+                        if (thisp.config_editable) {
+                            buttons.push(delete_button)
+                        }
+                        return h('div', buttons)
+                    }
+                }
+            },
+            tcolumns_render_generator: {
+                checkbox: function(key) {
+                    var render_func = function(h,params){
+                        var row = params.row
+                        return h('Icon',{
+                            attrs:{
+                                type: row[key]?"ios-checkmark":"ios-checkmark-outline",
+                                color: row[key]?"#2d8cf0":"#bbbec4",
+                                size: "25"
+                            },
+                        })
+                    }
+                    return render_func
+                }
+            },
+            tcolumns_init: false,
+            tlist:[],
+            query_count: thisp.table.tableui ? (thisp.table.tableui.default_page_size || 10) : 10,
+            current_page: 1,
+            total: 0,
+            sort_key: "id",
+            sort_order: "-",
+
+            config_editable: false,
+            config_table_fields: null,
+            config_viewedit_fields: null,
+            config_add_fields: null
+        }
+    },
+    computed: {
+        viewedit_label: function(){return this.config_editable?'Edit':'View'}
+    },
+    methods: {
+        tcolumns_custom_render(){
+            for (var k in this.tcolumns) {
+                var c = this.tcolumns[k]
+                if (c.component!=null) {
+                    var g = null
+                    if (this.custom_tcolumns_render_generator!=null) {
+                        g = this.custom_tcolumns_render_generator[c.component]
+                    }
+                    if (g==null) {
+                        g = this.tcolumns_render_generator[c.component]
+                    }
+                    if (g!=null){
+                        c.render = g(c.key)
+                    }
+                }
+            }
+        },
+        ajax_hook: function(method,action,params) {
+            if (this.hook_ajax_params!=null) {
+                var after_hook = this.hook_ajax_params(method,action,params)
+                if (after_hook!=null) {
+                    params = after_hook
+                }
+                else {
+                    console.log("warning: hook_ajax_params('"+method+"','"+action+"',params) return null, so ignore this hook")
+                }
+            }
+            return params
+        },
+        update_list: function(){
+            var thisp = this
+            var arr_params = {
+                "@count":thisp.query_count,
+                "@page":thisp.current_page-1,
+                "@query":2
+            }
+            var model_params = {
+                "@order":thisp.sort_key+thisp.sort_order
+            }
+            if (thisp.table.role!=null && thisp.table.role!="") {
+                model_params["@role"] = thisp.table.role
+            }
+            arr_params[thisp.table.model_name] = model_params
+            var params = {
+                "[]":arr_params,
+                "total@":"/[]/total"
+            }
+            params = thisp.ajax_hook("apijson_get","list",params)
+            thisp.loading = true
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('uliweb_apijson.apijson.views.ApiJson.get')}}",
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    thisp.loading = false
+                    if (data.code==200) {
+                        var arr = data["[]"]
+                        for (var i=0;i<arr.length;i++) {
+                            arr[i] = arr[i][thisp.table.model_name]
+                        }
+
+                        if (!thisp.tcolumns_init) {
+                            if (thisp.config_table_fields!=null){
+                                thisp.tcolumns = thisp.config_table_fields
+                                thisp.tcolumns.push(thisp.tcolumns_preset["action"])
+                                thisp.tcolumns_custom_render()
+                                thisp.tcolumns_init = true
+                            }
+                            else {
+                                thisp.tcolumns.push(thisp.tcolumns_preset["id"])
+                                if (arr.length>0) {
+                                    var item = arr[0]
+                                    for (var k in item){
+                                        if (k!="id") {
+                                            var col = {title:k,key:k}
+                                            if (typeof item[k] ==="boolean") {
+                                                col["width"] = 80
+                                                col["component"] = "checkbox"
+                                            }
+                                            else if (typeof item[k] ==="number") {
+                                                col["width"] = 100
+                                            }
+                                            thisp.tcolumns.push(col)
+                                        }
+                                    }
+                                    thisp.tcolumns.push(thisp.tcolumns_preset["action"])
+                                    thisp.tcolumns_custom_render()
+                                    thisp.tcolumns_init = true
+                                }
+                            }
+                        }
+                        thisp.tlist = arr
+                        thisp.total = data.total
+                    }
+                    else {
+                        thisp.$Notice.error({
+                            title: 'error when get table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                    }
+                }
+            })
+        },
+        show: function(params){
+            if (this.hook_viewedit!=null) {
+                this.hook_viewedit(this,params)
+                return
+            }
+
+            var row = params.row
+            this.viewedit_items = []
+            if (this.config_viewedit_fields!=null) {
+                for (var i in this.config_viewedit_fields) {
+                    var d = this.config_viewedit_fields[i]
+                    d.value = row[d.key]
+                    d.component = d.component || "input"
+                    this.viewedit_items.push(d)
+                }
+            }
+            else {
+                this.viewedit_items.push({key:"id",title:"id",value:row.id,component:"input"})
+                var type2comp = {
+                    "boolean":"checkbox"
+                }
+                for (var k in row){
+                    if (k!="id" && k[0]!="_") {
+                        var value = row[k]
+                        var comp = type2comp[typeof value] || "input"
+                        this.viewedit_items.push({title:k,key:k,value:value,component:comp})
+                    }
+                }
+            }
+            if (this.config_editable){
+                this.edit_params = params
+            }
+            else {
+                this.edit_params = null
+            }
+            this.modal_view = true
+        },
+        editable: function(item){
+            var editable = true
+            if (item.editable!=null) {editable=item.editable}
+            return this.config_editable && editable && (item.key!="id")
+        },
+        remove: function(params){
+            this.delete_params = params
+            this.modal_delete = true
+        },
+        save: function(){
+            var thisp = this
+            var params = {
+                "@tag": thisp.table.request_tag
+            }
+            var record_params = {}
+            var row = thisp.edit_params.row
+
+            //only save modified fields
+            for (var k in thisp.viewedit_items) {
+                var d = thisp.viewedit_items[k]
+                if (d.key=="id"|| d.value!=row[d.key]) {
+                    record_params[d.key] = d.value
+                }
+            }
+            if (thisp.table.role!=null && thisp.table.role!="") {
+                record_params["@role"] = thisp.table.role
+            }
+            params[thisp.table.request_tag] = record_params
+            params = thisp.ajax_hook("apijson_put","update",params)
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('uliweb_apijson.apijson.views.ApiJson.put')}}",
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    if (data.code==200){
+                        thisp.$Notice.success({
+                            title: 'success update #'+row.id+' in table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                        thisp.modal_view = false
+                        thisp.update_list()
+                    }
+                    else {
+                        thisp.$Notice.error({
+                            title: 'error when update #'+row.id+' in table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                    }
+                }
+            })
+        },
+        real_remove: function(){
+            if (this.config_delete_set_deleted) {
+                this.real_remove_set_deleted()
+            }
+            else {
+                this.real_remove_delete()
+            }
+        },
+        real_remove_set_deleted: function(){
+            var thisp = this
+            var params = {
+                "@tag": thisp.table.request_tag
+            }
+            var params_table = {
+                "id": thisp.delete_params.row.id,
+            }
+            params_table[this.config_deleted_field_name] = true
+            params[thisp.table.request_tag] = params_table
+
+            params = thisp.ajax_hook("apijson_put","delete",params)
+
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('uliweb_apijson.apijson.views.ApiJson.put')}}",
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    if (data.code!=200){
+                        thisp.$Notice.error({
+                            title: 'error when remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                        return
+                    }
+                    var result = data[thisp.table.request_tag]
+                    if (result.code!=200){
+                        thisp.$Notice.error({
+                            title: 'error when remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                            desc: result.msg
+                        })
+                        return
+                    }
+                    thisp.$Notice.success({
+                        title: 'success remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                        desc: result.msg
+                    })
+                    thisp.update_list()
+                }
+            })
+        },
+        real_remove_delete: function(){
+            var thisp = this
+            var params = {
+                "@tag": thisp.table.request_tag
+            }
+            var model_params = {
+                "id": thisp.delete_params.row.id
+            }
+            if (thisp.table.role!=null && thisp.table.role!="") {
+                model_params["@role"] = thisp.table.role
+            }
+            params[thisp.table.request_tag] = model_params
+            params = thisp.ajax_hook("apijson_delete","delete",params)
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('uliweb_apijson.apijson.views.ApiJson.delete')}}",
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    if (data.code!=200){
+                        thisp.$Notice.error({
+                            title: 'error when remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                        return
+                    }
+                    var result = data[thisp.table.request_tag]
+                    if (result.code!=200){
+                        thisp.$Notice.error({
+                            title: 'error when remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                            desc: result.msg
+                        })
+                        return
+                    }
+                    thisp.$Notice.success({
+                        title: 'success remove #'+thisp.delete_params.row.id+' in table '+thisp.table.model_name,
+                        desc: result.msg
+                    })
+                    thisp.update_list()
+                }
+            })
+        },
+        add: function(){
+            for (var k in this.add_items){
+                var d = this.add_items[k]
+                d.component = d.component || "input"
+                if (!(d.hasOwnProperty('value'))) {
+                    dvalues = {input:'',checkbox:false}
+                    d.value = dvalues[d.component]
+                }
+            }
+            if (this.hook_add!=null) {
+                this.hook_add(this)
+            }
+            else {
+                this.modal_add = true
+            }
+        },
+        real_add: function(){
+            var thisp = this
+            var params = {
+                "@tag": thisp.table.request_tag
+            }
+            var post_params = {}
+            for (var k in thisp.add_items) {
+                var d = thisp.add_items[k]
+                post_params[d.key] = d.value
+            }
+            if (thisp.table.role!=null && thisp.table.role!="") {
+                post_params["@role"] = thisp.table.role
+            }
+            params[this.table.request_tag] = post_params
+            params = thisp.ajax_hook("apijson_post","add",params)
+            $.ajax({
+                type: "POST",
+                url: "{{=url_for('uliweb_apijson.apijson.views.ApiJson.post')}}",
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function (data) {
+                    if (data.code!=200){
+                        thisp.$Notice.error({
+                            title: 'error when add new record in table '+thisp.table.model_name,
+                            desc: data.msg
+                        })
+                        return
+                    }
+                    var result = data[thisp.table.request_tag]
+                    thisp.$Notice.success({
+                        title: 'success add #'+result.id+' in table '+thisp.table.model_name,
+                        desc: result.msg
+                    })
+                    thisp.update_list()
+                    thisp.modal_add = false
+                }
+            })
+        },
+        table_on_sort_change: function(params){
+            this.sort_key = params.key
+            this.sort_order = params.order=="asc" ? "+" : "-"
+            this.update_list()
+        },
+        page_on_change: function(data) {
+            this.update_list()
+        },
+        page_on_page_size_change: function(data) {
+            this.query_count = data
+            this.current_page = 1
+            this.update_list()
+        }
+    },
+    mounted: function(){
+        if (this.table.tableui!=null){
+            this.config_editable = this.table.tableui.editable || false
+            this.config_table_fields = this.table.tableui.table_fields || null
+            this.config_viewedit_fields = this.table.tableui.viewedit_fields || null
+            this.config_add_fields = this.table.tableui.add_fields || null
+            if (this.config_add_fields!=null) {
+                this.add_items = this.config_add_fields
+            }
+            if (this.table.tableui.default_page_size!=null) {
+                this.query_count = this.table.tableui.default_page_size
+            }
+            this.config_delete_set_deleted = this.table.tableui.delete_set_deleted || false
+            this.config_deleted_field_name = this.table.tableui.deleted_field_name || "deleted"
+        }
+        //if not do this, the first notice will hide behind the navigation bar in uliweb apps
+        this.$Notice.config({top: 100,duration: 8});
+        if (this.hook_init!=null) {
+            this.hook_init(this)
+        }
+        this.update_list()
+    }
+})
+</script>
