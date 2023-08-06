@@ -1,0 +1,1 @@
+from .equations import equations, __version__
