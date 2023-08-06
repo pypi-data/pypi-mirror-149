@@ -1,0 +1,75 @@
+# Module flike
+
+Flike prediction API.
+
+## Functions
+
+`dislike(user_id: str, item_id: str)`
+: Registers a user started item as 'disliked' by the user.
+'Dislike' is referring to any action indicating that a user dislikes the content item.
+E.g., for a video, this could be a user only watching 5% of the video and not finishing it.
+
+    Keyword arguments:
+    user_id -- The unique identifier of the user.
+    item_id -- The unique identifier of the content item.
+
+`inititialize(api_key: str, server_url: str = None, version: str = None)`
+: Initialize the recommender.
+
+    Keyword arguments:
+    api_key -- Your API key
+    server_url -- This is only used for internal testing.
+    version -- Version of the API to use. Defaults to the most current version.
+
+`like(user_id: str, item_id: str)`
+: Registers a user started item as 'liked' by the user.
+'Like' is referring to any action indicating that a user likes the content item.
+E.g., for a video, this could be a user watching more than 85% of the video.
+
+    Keyword arguments:
+    user_id -- The unique identifier of the user.
+    item_id -- The unique identifier of the content item.
+
+`recommend(user_id: str, num_items:int)`
+: Get an array of content items that a user is probable to consume/buy/subscribe/like or similar.
+Recommendations are sorted by descending probability of a user 'liking' them.
+
+    Keyword arguments:
+    user_id -- The unique identifier of the user.
+    num_item -- Number of content items that should be suggested.
+
+`start(user_id: str, item_id: str, correlation_id: str)`
+: Registers a user starting to consume/interact with a content item..
+
+    Keyword arguments:
+    user_id -- The unique identifier of the user.
+    item_id -- The unique identifier of the content item.
+    correlation_id -- The unique identifier of a recommendation. Set this value to attribute a user's interaction to a recommendation.
+
+## Classes
+
+`FlikeException(response: requests.models.Response)`
+: Exception raised by Flike API.
+
+    Attributes:
+        status -- status code of the error (http error code)
+        message -- explanation of the error
+
+    ### Ancestors (in MRO)
+
+    * builtins.Exception
+    * builtins.BaseException
+
+`Recommendation(item_id: str, probability: float)`
+: Recommendation of a content item for a user
+
+    Attributes:
+        item_id -- Unique identifier of the content item being recommended.
+        probability -- Probability of a user 'liking' the recommended item.
+
+`RecommendationsResponse(items: list[flike.Recommendation], correlation_id: str)`
+: Response to a recommendation request.
+
+    Attributes:
+        items -- Recommendations for a user.
+        correlation_id -- Unique identifier of the content item being recommended.
