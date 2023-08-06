@@ -1,0 +1,101 @@
+<!-- add command -->
+<div class="modal fade" id="newCommandModal" tabindex="-1" role="dialog" aria-labelledby="newCommandModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="newCommandModalLabel">New Command</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <form name="new_command_form" id="new_command_form" method="POST" action="/sql-api/updatecommand" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <input name="commandName" onkeypress="return event.charCode != 32" type="text" class="form-control mb-3" placeholder="command name" required> 
+                {% for query in config['queries'] %}
+                <div class="form-check">
+                    <input name="{{query}}" class="form-check-input mb-3" type="checkbox" value="{{query}}">
+                    <label class="form-check-label" for="auto_format_queries_check">{{ query }}</label>
+                </div>
+                {% endfor %}
+            
+                <div class="form-group">
+                    <label>Query order</label>
+                    <textarea name="query_order" class="form-control" style="overflow: auto;" rows="5" placeholder="query_1, query_2"></textarea>
+                    <small class="form-text text-muted">Comma separate the order of the queries.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-success">add</button>
+                </form>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- delete command -->
+{% for command in config['commands'] %}
+<div class="modal fade" id="delete{{command}}Modal" tabindex="-1" role="dialog" aria-labelledby="newCommandModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="newcommandModalLabel">Delete {{ command }}?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-footer">
+            <form action="/sql-api/deletecommand/{{command}}">
+                <button type="submit" class="btn btn-danger">Yes</button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- edit command -->
+{% for command in config['commands'] %}
+<div class="modal fade" id="update{{command}}Modal" tabindex="-1" role="dialog" aria-labelledby="update{{command}}ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="update{{command}}ModalLabel">Edit Command: {{ command }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            <form name="update_command_form" method="POST" action="/sql-api/updatecommand" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <div class="form-group">
+                <input name="commandName"  value="{{ command }}" style="margin: 0px; padding: 0px;" type="text" class="form-control invisible" placeholder="command name" hidden>
+            <!-- <h5>Queries:</h5> -->
+            {% for conn in config['connections'] %}
+                <p class="mt-1 mb-0">{{ conn }}:</p>
+                {% for query in config['queries'] %}
+                {% if config['queries'][query]['connection'] == conn %}
+                <div class="form-check">
+                    <input name="{{query}}" class="form-check-input" type="checkbox" value="{{query}}" {% if query in config['commands'][command]['queries'] %}checked{% endif %}>
+                    <label class="form-check-label" for="auto_format_queries_check">{{ query }}</label>
+                </div>
+                {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </div>
+            <div class="form-group">
+                <label>Query order</label>
+                <textarea name="query_order" class="form-control" style="overflow: auto;" rows="5">{{ ', '.join(config['commands'][command]['queries']) }}</textarea>
+                <small class="form-text text-muted">Comma separate the order of the queries.</small>
+            </div>
+            
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-secondary"><i class="fa fa-save"></i></button>
+            </form>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}

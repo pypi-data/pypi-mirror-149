@@ -1,0 +1,64 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include 'components/header.html' %}  
+  </head>
+  
+  <body style="font-family: 'Nunito', sans-serif; background: #F6F8F9">
+
+    <div class="container">
+
+      <div class="row">
+      <div class="col-md-4" style="font-size: small;">
+        <h4>Tables</h4>
+        {% for table in response['tables'] %}
+            <p>{{ table }}</p>
+            {% endfor %}
+      </div>
+      <div class="col-md-8">
+      <form name="sqlcreator_form" action="/sqlcreator" method="POST">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Connection</label>
+          <select name="connection" class="form-control" id="exampleFormControlSelect1">
+            {% for conn in config['connections'] %}
+            <option {% if conn==query_info['connection'] %}selected{%endif%}>{{ conn }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <textarea style="overflow: auto; margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace;" name="query" placeholder="SELECT id, value &#10;FROM this_table&#10;WHERE value > 10 ORDER BY value DESC" class="form-control" style='overflow: auto; margin-bottom: 5px;' rows=20>{{ query_info['query'] }}</textarea>
+        <button type="submit" class="btn btn-success">Go</button>
+      </form>
+      
+      </div>
+      </div>
+    
+
+    <table class="table table-hover table-bordered align-middle shadow p-3 bg-white rounded" style="font-size: small;">
+      <thead>
+        <tr>
+        {% for row in response['columns'] %}
+        <th>{{ row }}</th>
+        {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in response['results'] %}
+        <tr>
+            {% for col in row %}
+              <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    </div>
+    
+
+  </body>
+  <footer>
+    {% include 'components/footer.html' %}
+  </footer>
+</html>
