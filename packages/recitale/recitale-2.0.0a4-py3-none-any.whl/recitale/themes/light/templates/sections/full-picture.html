@@ -1,0 +1,33 @@
+{% if settings.settings.light_mode %}
+{% set pathstatic = ".." %}
+{% else %}
+{% set pathstatic = "." %}
+{% endif %}
+{% if section.image.type == "video" %}
+{% set video = Video.get(link + "/" + pathstatic, section.image) %}
+{% set format = settings.ffmpeg.extension %}
+{% set vid = video.reencode((1280, 720)) %}
+{% else %}
+{% set image = Image.get(link + "/" + pathstatic, section.image) %}
+{% endif %}
+<div class="full-picture">
+    <div class="image">
+        {% if video %}
+        <video autoplay loop muted class="fillWidth responsive-video">
+          <source src="{{ pathstatic }}/{{ vid }}" type="video/{{ format}}">
+        </video>
+        {% else %}
+        <img  src="{{ pathstatic }}/{{ image.thumbnail((None, 800)) }}">
+        {% endif %}
+    </div>
+    {% if section.text %}
+    <h1>{{ section.text.title }}</h1>
+    <h2>{{ section.text.sub_title }}</h2>
+    {% if section.text.date_end %}
+    <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}  to {{ section.text.date_end|local_date("dd MMMM yyyy") }}</div>
+    {% else %}
+    {% if section.text.date %}
+    <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}</div>{% endif %}
+    {% endif %}
+    {% endif %}
+</div>

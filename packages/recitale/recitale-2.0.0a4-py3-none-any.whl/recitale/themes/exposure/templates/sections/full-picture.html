@@ -1,0 +1,45 @@
+{% if section.image.type == "video" %}
+{% set format = settings.ffmpeg.extension %}
+{% set video = Video.get(link, section.image) %}
+{% set vid = video.reencode((1280, 720)) %}
+<section class="full-picture">
+  <div class="video-container">
+    {% if section.text %}
+    <div class="title-container">
+      <div class="headline animated animatedFadeInUp fadeInUp">
+        <h1>{{ section.text.title }}</h1>
+        <h2>{{ section.text.sub_title }}</h2>
+        {% if section.text.date_end %}
+        <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}  to {{ section.text.date_end|local_date("dd MMMM yyyy") }}</div>
+        {% else %}
+        {% if section.text.date %}
+        <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}</div>{% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    <video autoplay loop muted class="fillWidth">
+      <source src="{{ vid }}" type="video/{{ format }}">
+    </video>
+    <img class="lazy fillWidth responsive-video" src="/../static/img/11-14.svg" data-src="{{ video.thumbnail((None, 2000)) }}">
+  </div>
+</section>
+{% else %}
+{% set image = Image.get(link, section.image) %}
+<section class="lazy full-picture" data-bg="url({{ image.thumbnail((None, 2000)) }})" style="background-position: {% if section.background_position %} {{ section.background_position }} {% else %} 50% 50%{% endif %}; background-repeat: no-repeat; background-attachment: {% if section.fixed %} fixed {% else %} scroll {% endif %};background-size: cover; height: 100%;">
+  {% if section.text %}
+  <div class="picture-text">
+    <div class="picture-text-column animated animatedFadeInUp fadeInUp">
+      <h1>{{ section.text.title }}</h1>
+      <h2>{{ section.text.sub_title }}</h2>
+      {% if section.text.date_end %}
+      <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}  to {{ section.text.date_end|local_date("dd MMMM yyyy") }}</div>
+      {% else %}
+      {% if section.text.date %}
+      <div class="datetime">{{ section.text.date|local_date("dd MMMM yyyy") }}</div>{% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
