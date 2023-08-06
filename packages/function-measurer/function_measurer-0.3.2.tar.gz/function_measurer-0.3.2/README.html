@@ -1,0 +1,47 @@
+<h1>What is measurer?</h1>
+<p>Measurer is easy to use python package for examining and compairing callable objects.</p>
+<h2>Installing</h2>
+<p>This package distributes by Python Packaging Index, aka PyPI, so you can install measurer using pip:</p>
+<code>py -m pip install function_measurer</code>
+<h2>Quick start</h2>
+<p>Let's examine using of this package on little example:</p>
+<code style="white-space: pre-wrap;">from measurer import setTesting
+
+@setTesting(2, 2)
+def summ(a: int, b: int):
+    return a + b
+</code>
+<p>We have function and we want to test it. We use decorator setTesting for it. Arguments given to setTesting passes to summ.</p>
+<p>Let's save this file with name <code>sample.py</code>. After that we open powerShell or cmd and enter this command into the shell:</p>
+<code>py -m measurer sample.py 3 memory</code>
+<p>And we get this:</p>
+<code style="white-space: pre-wrap;">
+--------------------------------------------------------
+| Tests.|Functions.|Iteration 1|Iteration 2|Iteration 3|
+--------------------------------------------------------
+|runtime|      summ|        0.0|        0.0|        0.0|
+--------------------------------------------------------
+</code>
+<p>First coloumn is tests those we have given to our package. In this case we have given only one test. That is runtime. When we give runtime test tester runs testing functions and prints their runtimes. The next column shows functions we have tested. Other coloumns show the results of the testing.</p>
+<h2>Detailed description of using.</h2>
+<p>The first argument in our example is the path to a file that you want to test. The second is the amount of times the functions will be tested. The third argument is test that we want to do with our functions. We can also pass more than one test to this argument and will get a table with results of those tests.</p>
+<table border="1px">
+    <thead><td>Test</td><td>Description</td></thead>
+    <tbody>
+        <tr>
+            <td>runtime</td><td>Measures the runtime of function.</td>
+        </tr>
+        <tr>
+            <td>memory</td><td>Measures the occupied memory.</td>
+        </tr>
+    </tbody>
+</table>
+<p>Also you can write all data into configuration file. If you named the file "config.cfg" you can just add --config argument when you are starting module. In other way you must add name of config file after this argument.</p>
+<p>This is an example of this file:</p>
+<code style="white-space: pre-wrap;">
+[MEASURER_DATA]
+module = sample.py
+iters = 3
+tests = runtime, memory
+</code>
+<p>If you did not understand something try to use <code>-h</code> option. If you found some mistakes in this docs, please make a pull request with correcting of found mistake.</p>
