@@ -1,0 +1,117 @@
+Metadata-Version: 2.1
+Name: tim-client
+Version: 5.1.1
+Summary: TIM Python Client
+Home-page: https://tangent.works
+Author: Tangent Works
+Author-email: info@tangent.works
+License: UNKNOWN
+Project-URL: Documentation, https://docs.tangent.works/
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Provides-Extra: pipeline
+License-File: LICENSE
+
+# TIM Python Client
+
+TIM, or Tangent Information Modeler, is Tangent Works’ automatic model building engine. It is designed specifically for time-series forecasting and anomaly detection.
+
+The TIM Python client introduces an easy and fast way to use TIM in any Python project. As an abstraction over [TIM's API](https://tim-platform.tangent.works/api/v5/swagger-ui.html), it encapsulates the logic into useful and performant functions helping users go from time-series data to insights that can generate business value.
+
+The TIM Python client is a Python SDK to use the TIM Engine (v5). This includes methods to:
+
+- upload a dataset,
+- update a dataset by uploading a new version,
+- delete a dataset,
+- retrieve a list of datasets,
+- retrieve a list of dataset versions,
+- create a forecasting build model job,
+- execute a forecasting job,
+- create and execute a forecasting build model job,
+- create a forecasting predict job
+- create and execute a forecasting predict job,
+- create a forecasting rebuild model job,
+- create and execute a forecasting rebuild model job,
+- retrieve the results of a forecasting job,
+- retrieve a list of forecasting jobs,
+- delete a forecasting job,
+- create an anomaly detection build model job,
+- execute an anomaly detection job,
+- create and execute an anomaly detection build model job,
+- create an anomaly detection detect job,
+- create and execute an anomaly detection detect job,
+- create an anomaly detection rebuild model job,
+- created and execute an anomaly detection rebuild model job,
+- retrieve the results of an anomaly detection job,
+- retrieve a list of anomaly detection jobs,
+- delete an anomaly detection job,
+- retrieve a list of workspaces.
+
+## Usage
+
+### Installation
+
+To install the package run: `pip install tim-client`
+
+### Initialization
+
+```python
+from tim import Tim
+
+client = Tim(email='',password='')
+```
+
+### Methods
+
+Tim provides the following methods:
+
+- `client.upload_dataset`
+- `client.update_dataset`
+- `client.delete_dataset`
+- `client.get_datasets`
+- `client.get_dataset_versions`
+- `client.build_forecasting_model`
+- `client.execute_forecast`
+- `client.build_forecasting_model_and_execute`
+- `client.create_forecast`
+- `client.create_forecast_and_execute`
+- `client.rebuild_forecasting_model`
+- `client.rebuild_forecasting_model_and_execute`
+- `client.clean_forecast`
+- `client.get_forecast_results`
+- `client.get_forecasting_jobs`
+- `client.delete_forecast`
+- `client.build_anomaly_detection_model`
+- `client.execute_anomaly_detection`
+- `client.build_anomaly_detection_model_and_execute`
+- `client.create_anomaly_detection`
+- `client.create_anomaly_detection_and_execute`
+- `client.rebuild_anomaly_detection_model`
+- `client.rebuild_anomaly_detection_model_and_execute`
+- `client.get_anomaly_detection_results`
+- `client.get_anomaly_detection_jobs`
+- `client.delete_anomaly_detection`
+- `client.get_workspaces`
+
+[Release notes](https://docs.tangent.works/Release-Notes/Python-Client/) are available for the different versions.
+
+### Error handling
+
+Minimal validation is performed by the Tim client, errors will be raised by the server.
+
+### Documentation
+
+Full documentation of the API can be found at: https://docs.tangent.works
+
+## About Tangent Works
+
+Tangent Works delivers forecasting and anomaly detection capabilities for time series data in a fast, accurate and explainable way. This enables users to drive business value from predictive analytics, empowers them to take informed decisions and helps them improve processes.
+
+TIM has already been recognized as a winner in multiple competitions, including GEFCom 2017 and the 2017 ANDRITZ Hackathon.
+
+
