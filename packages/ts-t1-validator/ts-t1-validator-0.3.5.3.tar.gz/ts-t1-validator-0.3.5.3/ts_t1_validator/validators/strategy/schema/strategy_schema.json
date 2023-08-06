@@ -1,0 +1,113 @@
+{
+    "title": "Strategy schema",
+    "type": "object",
+    "properties": {
+        "campaign_id": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 15
+        },
+        "name": {
+            "type": "string",
+            "example": "Strategy #1",
+            "maxLength": 128,
+            "minLength": 2
+        },
+        "status": {
+            "type": "boolean",
+            "example": true
+        },
+        "media_type": {
+            "type": "string",
+            "example": "video"
+        },
+        "strategy_type": {
+            "type": "string",
+            "example": "AUD"
+        },
+        "pacing_interval": {
+            "type": "string",
+            "example": "hour"
+        },
+        "pacing_type": {
+            "type": "string",
+            "example": "even"
+        },
+        "bid_price_is_media_only": {
+            "type": "boolean",
+            "example": true
+        },
+        "min_bid": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "format": "double",
+                    "example": 10.2
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "max_bid": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "format": "double",
+                    "example": 10.2
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "use_optimization": {
+            "type": "boolean",
+            "default": false
+        },
+        "goal_type": {
+            "type": "string",
+            "example": "roi"
+        },
+        "goal_value": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "format": "double",
+                    "example": 10.2
+                },
+                {
+                    "type": "integer",
+                    "example": 11
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "roi_target": {
+            "anyOf": [
+                {
+                    "type": "number",
+                    "format": "double",
+                    "example": 10.2
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "frequency_optimization": {
+          "type": "boolean"
+        },
+        "cost_passthrough_cpm_enabled": {
+            "type": "boolean",
+            "default": false
+        },
+        "cost_passthrough_percent_enabled": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "required": ["campaign_id", "name", "status", "media_type", "strategy_type", "frequency_optimization", "bid_price_is_media_only"]
+}
