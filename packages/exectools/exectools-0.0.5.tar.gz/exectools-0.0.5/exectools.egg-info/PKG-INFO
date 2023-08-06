@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: exectools
+Version: 0.0.5
+Summary: TBA
+Home-page: https://github.com/sfinktah/exectools
+Author: Christopher Anderson
+Author-email: sfinktah@github.spamtrak.org
+License: MIT
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 2
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=2.7
+Description-Content-Type: text/x-rst
+License-File: LICENSE.txt
+
+exectools
+
+Using exectools
+===============
+
+.. code-block:: python
+
+    
+    # reload modules before importing
+
+    > from exectools import _import, _from
+    > _import('import foo as bar')
+    > _import('foo as bar')
+    > _import('from foo import bar, kaz')
+    > _from('foo import bar')
+    > _from('foo import bar as kaz')
+
+    # execfile for python 3
+
+    > from exectools import execfile
+    > execfile('file.py')
+
+    # make refresh helpers
+
+    > from exectools import make_refresh
+    > refresh_me = make_refresh(__file__)
+    > refresh_me()
+
+    # unload all modules matching regex pattern
+    > from exectools import unload
+    > unload('exect')
+
+Changelog
+=========
+
+0.0.1: initial release (2021-09-24)
+
+
+
