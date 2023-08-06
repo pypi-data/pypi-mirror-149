@@ -1,0 +1,90 @@
+![Smtp.com logo](https://github.com/smtpcom/smtpcom-python/raw/HEAD/smtpcom-logo.png)
+
+[![Code style:
+black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/smtpcom/smtpcom-python/blob/master/LICENSE)
+
+**Python Library for Quick and Easy Use of the SMTP.com v4 API.**
+
+This library provides support for the SMTP.com public API [SMTP.com API v4 documentation](https://www.smtp.com/resources/api-documentation/).
+
+
+# Installation
+
+### Python version 3.0+ required.
+## Install Package
+```bash
+pip install smtpcom
+```
+## Getting Started
+
+Examples how to send an email via SMTP.com API, more examples for sending can be found [here](https://github.com/smtpcom/smtpcom-python/blob/master/examples/messages/mail.py):
+### With a Helper Class
+
+```python
+import os
+from smtpcom import SMTPAPIClient
+from smtpcom.helpers.mail import (
+    Mail,
+    From,
+    To,
+    Subject,
+    Channel,
+    Content,
+)
+
+# getting api key from env variable SMTPCOM_API_KEY that was present
+smtpcom = SMTPAPIClient(api_key=os.environ.get("SMTPCOM_API_KEY"))
+channel = "some_channel_example"
+# send with html content
+mail = Mail(
+    from_email=From("test_from@example.com"),
+    to_emails=To("test_to@example.com"),
+    subject=Subject("Test"),
+    channel=Channel(channel),
+    contents=Content(
+        content="<html>\n<head></head>\n<body>\nSome HTML content\n</body>\n</html>\n",
+        content_type="text/html",
+        encoding="quoted-printable",
+    ),
+)
+response = smtpcom.send(mail)
+print(response.status_code)
+print(response.body)
+print(response.headers)
+```
+
+### Without a Helper Class
+
+```python
+import os
+from smtpcom import SMTPAPIClient
+
+smtpcom = SMTPAPIClient(api_key=os.environ.get("SMTPCOM_API_KEY"))
+channel = "some_channel_example"
+# send with raw body
+raw_mail_body = {
+    "channel": channel,
+    "recipients": {"to": [{"address": "test_to@example.com"}]},
+    "originator": {"from": {"address": "test_from@example.com"}},
+    "subject": "Test",
+    "body": {
+        "parts": [
+            {
+                "content": "<html>\n<head></head>\n<body>\nSome HTML content\n</body>\n</html>\n",
+                "type": "text/html",
+                "encoding": "quoted-printable",
+            }
+        ]
+    },
+}
+
+response = smtpcom.send(raw_mail_body)
+print(response.status_code)
+print(response.body)
+print(response.headers)
+```
+
+### Additional Examples
+
+You can find additional examples covering all API calls in the [examples](https://github.com/smtpcom/smtpcom-python/tree/master/examples) folder.
