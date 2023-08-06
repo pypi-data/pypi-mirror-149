@@ -1,0 +1,101 @@
+[tool.poetry]
+name = "exodusutils"
+version = "0.1.23"
+license = "Apache-2.0"
+readme = "README.md"
+description = "Utility functions and helper classes for Exodus project"
+authors = ["Tsung-Ju Lii <andylii@mobagel.com>"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+  "Topic :: Internet",
+  "Topic :: Internet :: WWW/HTTP",
+]
+include = [
+  "README.md",
+  "LICENSE.txt",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8.0"
+colorama = "^0.4.4"
+pydantic = "^1.9.0"
+numpy = "1.21"
+scikit-learn = "^1.0.2"
+python-Levenshtein = "^0.12.2"
+pandas = "^1.4.0"
+pymongo = {extras = ["encryption"], version = "^4.0.1"}
+fastapi = "^0.74.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^21.12b0"
+neovim = "^0.3.1"
+isort = "^5.10.1"
+autoflake = "^1.4"
+poethepoet = "^0.12.2"
+mypy = "^0.931"
+bpython = "^0.22.1"
+pytest-cov = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[mypy]
+plugins = "numpy.typing.mypy_plugin"
+
+[tool.poe.env]
+SRC = "exodusutils"
+DIFF.default = ""
+INPLACE.default = "--in-place"
+PYTHONDONTWRITEBYTECODE = "duh"
+
+[tool.poe.tasks]
+_mypy-install-type = "mypy $SRC --ignore-missing-imports --install-types --non-interactive"
+_mypy = "mypy $SRC --ignore-missing-imports"
+_autoflake = "autoflake $SRC -r $INPLACE"
+_isort = "isort $SRC $DIFF --color"
+_black = "black $SRC $DIFF --color"
+_format = ["_autoflake", "_isort", "_black"]
+
+[tool.poe.tasks.format-dry]
+help = "Prints the content of `exodusutils` directory that would be formatted, but don't actaully run it"
+env = { DIFF = "--diff", INPLACE = "" }
+ref = "_format"
+
+[tool.poe.tasks.format]
+help = "Formats the `exodusutils` directory in-place"
+ref = "_format"
+
+[tool.poe.tasks.lint]
+help = "Lints the `exodusutils` directory"
+sequence = ["_mypy-install-type", "_mypy", "_black"]
+env = { DIFF = "--diff", INPLACE = "" }
+
+[tool.poe.tasks.repl]
+help = "Runs a REPL for the repo"
+cmd = "bpython"
+
+[tool.poe.tasks.test]
+help = "Runs test"
+cmd = "pytest --cov=exodusutils tests/"
+
+[tool.poe.tasks.clean]
+help = "Removes generated files"
+cmd  = """
+  rm -rf .coverage
+         .mypy_cache
+         .pytest_cache
+         ./**/__pycache__
+         dist
+         htmlcov
+"""
