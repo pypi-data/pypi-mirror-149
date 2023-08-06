@@ -1,0 +1,21 @@
+---
+# Starting the proxy
+- name: Starting the proxy
+  shell: "nohup kubectl proxy --address='0.0.0.0' --accept-hosts='.*' >&- 2>&- <&- &"
+
+# Assuming that the dashboard is always deployed
+- include: dashboard.yml
+
+# The monitoring stack deployment depends on Helm to be present
+- include: monitoring.yml
+  when: helm_enabled
+
+# NOTE(msimonin): Example on how to create custom resources on the kubernetes cluster
+# - name: Creating the nfs persistance volume and claim
+#   kubernetes:
+#     api_endpoint: 127.0.0.1:8080
+#     insecure: yes
+#     state: present
+#     file_reference: "{{ item }}"
+#   with_fileglob:
+#     - "nfs/*.yaml"
