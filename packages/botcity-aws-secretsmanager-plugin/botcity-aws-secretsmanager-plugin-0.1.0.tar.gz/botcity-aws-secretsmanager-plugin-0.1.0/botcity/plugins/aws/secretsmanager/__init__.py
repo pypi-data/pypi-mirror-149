@@ -1,0 +1,5 @@
+from .plugin import BotSecretsManagerPlugin  # noqa: F401, F403
+
+from . import _version
+
+__version__ = _version.get_versions()['version']
