@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% import "macros/builders.html" as builders %}
+{% import "macros/renderers.html" as renderers %}
+
+{% block content %}
+    {% set namespaces = namespace_inventory({}) %}
+
+    <h1>Class application profiles</h1>
+    <section>
+        <p>This section attempts at reconstructing the profiled shapes for each class. The profile is deduced based
+            on structural patterns for a selected class and their descriptive statistics aggregated by distinct
+            properties.
+        <p>
+            The structural pattern is a triple pattern of the type <em>(subject,predicate,object)</em>, which selects
+            subjects that are instances of a given class and on that collection of individuals identifies all unique
+            predicates used, then for each of those predicate identifies the type of the values used with it (i.e.
+            either the class or the data type). The pattern can be summarised as this: <em>(ClassOfSubjects,
+            distinctPredicate, ClassOfObject)</em>.
+
+            The descriptive statistics account for (a) the number of unique subjects, (b) the number of unique objects
+            (c) number of total occurrences of the pattern (d) minimal, (e) maximal and (f) average number of
+            occurences.
+        </p>
+
+        {% if conf.is_data_from_file %}
+            {{ builders.build_default_file_fingerprint(namespaces) }}
+        {% else %}
+            {{ builders.build_default_endpoint_fingerprint(namespaces) }}
+        {% endif %}
+    </section>
+
+    <h1>Prefixes</h1>
+    <section class="ui basic segment">
+        {{ renderers.render_namespaces(namespaces.namespaces_as_dict()) }}
+    </section>
+{% endblock %}
