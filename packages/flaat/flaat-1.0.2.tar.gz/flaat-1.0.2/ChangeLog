@@ -1,0 +1,588 @@
+CHANGES
+=======
+
+v1.0.2
+------
+
+* change to trigger rtd
+* change to trigger rtd
+* little change for testing integration
+* little change for testing integration
+* little change for testing integration
+* ignore local vim config
+* Fix readthedocs (#61)
+* add egi dev to issuers that support jwt
+* always add issuer to userinfo if not present
+
+v1.0.1
+------
+
+* fix jwk\_uri parsing to ignore keys for JWE and retrieve keys by alg when kid not in header
+
+v1.0.0
+------
+
+* force new AT in tests with audience
+* fix pyright errors
+* update flaa-userinfo usage in docs
+* add tests for flaat-userinfo opts: --audience, --skip\_verify\_jwt
+* add options to disable jwt verification and request audience in flaat-userinfo
+* add tests for audience requirements
+* add support for audience requirement
+* jwt signature verification: search signing keys by type
+* Fix #51
+* Fix test skipping
+* Skip a test if we have no access token
+* Implement jwt verification
+* re-add tests for OneOf
+* Add subclass of N\_Of(n=1) for OneOf
+* remove all instances of OneOf
+* replace OneOf with N\_Of(n=1)
+* handle matches in case its not a list
+* reformat / black
+* Disable coverage artifact
+* Make some arguments Optional
+* Add coverage badge
+* Include pyright in tox runs
+* Exclusively use tox for gh actions
+* Add tox-gh-actions
+* Add user info mocks so the test suite can be run in CI
+* Reorder badges
+* Add CI badge
+* Add .pylintrc
+* Add pylint to linters
+* Run black
+* Run isort
+* Switch github action
+* Remember to checkout the code in the action
+* Try to fix pyright arg
+* Set pyright args
+* Add pyproject.toml
+* Set runs-on
+* Fix checks
+* Add pyright workflow
+* Add more development instructions
+* Remove clutter from the README
+* Add code conventions to development docs
+* Error responses are now JSON
+* Rework the aio example
+* Make auth header handling consistent
+* Fix a bug and add tests for it
+* Add is\_authenticated
+* Make env overrides more consistent
+* Update documentation
+* Make emtpy meta requirements unsatisfiable
+* Add more tests
+* Rework flaat-userinfo logging and args
+* Allow user idp hints for flaat-userinfo
+* Also test token introspection
+* Cache access token issuer mappings
+* Move all cache related things to flaat.caches
+* Rework timeleft calculations
+* Remove UserInfos searching from requirements
+* Make UserInfos more flexible
+* Fix token introspection
+* Rework caching of issuer configs and user infos
+* Add access levels and AuthWorkflow
+* Make requirements more flexible
+* Add IsTrue and AnyOf requirements
+* Rename inject\_user to inject\_object
+* Change args of lazy requirements
+* Implement lazy loading of requirements
+* Fix an exception message
+* Eliminate dead code
+* Rename test helper class
+* Add login\_required again
+* Rename tokentools to access\_tokens
+* Increase test coverage
+* Introduce IssuerConfig class and rework a lot
+* Add more tests for flaat\_userinfo
+* Eliminate dead code
+* Introduce CheckResult
+* Add parameters to inject\_user\_infos
+* Update the examples
+* Add new meta requirements, like "one of"
+* Move config to separate file
+* Support multiple requirements for requires
+* Test requirements directly
+* Move user requirements to separate class
+* Make wrapping less complicated
+* Make decorators more modular
+* Rename an exception
+* Rework access\_token\_info handling
+* Also load test variables from .env
+* Load test access token from oidc agent
+* Switch to new aarc entitlement library
+* Fix async tests
+* Make framework dependencies 'extras'
+* Remove obsolete issuer selection method
+* Update test\_env.sh
+* Fix aio request access
+* Change match argument to int or all
+* Update examples
+* Enhance decorator tests
+* Refactor the userinfo handling
+* Fix async testing
+* Make tests for all frameworks pass
+* Get aio tests working
+* Update project setup files
+* Make code more consistent
+* Update the examples
+* Move framework specific code to submodules
+* Lint flaat
+* Rework tests
+* Move examples to subdir
+
+v0.14.7
+-------
+
+* Move the trusted op list into a constant
+* Add machine readable output to flaat-userinfo
+* Lint some code to make PEP happy
+
+v0.14.6
+-------
+
+* add aai-demo.egi.eu to trusted issuers
+* add aai-demo.egi.eu to trusted issuers
+* fix small wrong reference
+
+v0.14.5
+-------
+
+* remove logsetup
+* use logsetup
+
+v0.14.4
+-------
+
+* add caching for issuer config
+* Add to logging
+* add b2access to known jwt list
+* Split cache in two: accesstoken\_issuer\_cache and issuer\_config\_cache
+* logging change
+* return issuer\_config along with userinfo
+* add get\_issuer\_from\_accesstoken
+* add logging and wlcg
+* fix excludelist; straighten logging
+* straighten logging
+* setup logging
+
+v0.14.2
+-------
+
+* fix #42 find\_issuer\_config\_in\_string return config directly
+
+v0.14.1
+-------
+
+* add more functions to handle "last error" message
+
+v0.14
+-----
+
+* make pylint happier
+* reorganise logging
+* reorganise logging
+* reset verbosity
+* document the logging
+* Change flask port to 8083
+* add ignorance
+* make claim search order configurable
+* fix-environment-override
+* also search for claim in accesstoken (if not found in userinfo)
+* add examples for "hack" and "wlcg"
+* add example for wlcg
+* add wlcg op
+
+v0.13.4
+-------
+
+* add wlcg.cloud.cnaf.infn.it
+
+v0.13.3
+-------
+
+* add liboidcagent in the list of requirements.txt
+
+v0.13.2
+-------
+
+* fix handline of environment variables
+* fix getenv
+
+v0.13
+-----
+
+* add development.rst
+* Document more fine grained support for overriding authorisation
+* Document more fine grained support for overriding authorisation
+* Add more fine grained support for overriding authorisation
+* underscore
+
+v0.12.1
+-------
+
+* copy timeout and safe\_get to issuertools
+* fix #25: add timeout to blocking get call on thread tasks queue s.t. threads finish
+
+v0.12
+-----
+
+* add support for liboidcagent and environment
+* duplicate of flaat\_userinfo.py
+
+v0.11.2
+-------
+
+* move pretty printed entitlement over here
+
+v0.11.1
+-------
+
+* depend on aarc-g002-entitlement >= 0.3
+* remove deprecated "raise\_error\_if\_unparseable" option
+* set verbosity back to 0
+* fix name of test
+
+v0.10.2
+-------
+
+* remove requirement for raise\_error\_if\_unparseable=False
+* configure ports
+* bump version of aarc-g002-entitlement
+* fix case typo in example
+* change for quick testing aarc g002 entitlements
+
+v0.10.1
+-------
+
+* add test\_role\_egi
+* document the settings functions
+
+v0.10.0
+-------
+
+* update documentation
+* relax dependence
+* works for me
+* fix #23
+* adjust to my own groups for testing
+* bump aarc-g002 version
+* fix #21
+* pin fastapi version
+* Add support for FastAPI
+* Fix for json.decoder.JSONDecodeError raised when querying userinfo endpoint with AT returns error
+
+v0.9.1
+------
+
+* Make timeouts (and others) globally configurable
+* Fix resp unassigned before assignment
+* bump version for g002
+* add readthedocs
+* add readthedocs
+* fix some strange paths
+* fix some strange paths
+* remove some strange paths
+* add sphinx-argparse
+* move import after sys.path.insert
+* add path to fix the import error
+* make tox and pyint happier
+
+v0.9
+----
+
+* use v0.2 of aarg-g002-entitlement
+
+v0.8.4
+------
+
+* depend on older version of aarc-g002-entitlement
+
+v0.8.3
+------
+
+* catch readTimeout
+
+v0.8.2
+------
+
+* sending more information to logger
+
+v0.8.1
+------
+
+* add section about trust
+
+v0.8
+----
+
+* rename flaat-get\_userinfo.py to flaat-userinfo
+* removed
+
+v0.7.4
+------
+
+* check for None of trusted\_op\_list
+* add POST and GET explicitly
+* moving userinfo into flaat
+* moving userinfo into flaat
+
+v0.7.3
+------
+
+* add new OP hostnames for helmholtz-aai
+
+v0.7.1
+------
+
+* fix trailing /
+* remove dupes
+
+v0.7
+----
+
+* change default database backend to "memory
+* add methods to pass configuration on to issuertools
+* add class to capture cache configuration
+
+v0.6.1
+------
+
+* Stop processing if issuer not in list of supported OPs; Closes #13
+
+v0.6.2
+------
+
+* add doc building requirements
+* add target for building docs
+* fix errors from automatic generation
+
+v0.6
+----
+
+* fix documentation bugs
+* adjust required version
+* change exception to ValueError, to conform with aarc\_g002\_entitlement v0.1.5
+
+v0.5.6
+------
+
+* remove python2
+* remove .decode()
+* add aiohttp
+
+v0.5.5
+------
+
+* add "/" endpoint to document the other endpoints
+* ignore test files
+* raise exceptions for returning output (configurable, on by default); also fix empty access token error
+* add support for raising exceptions
+
+v0.5.4
+------
+
+* improve error messages
+
+v0.5.3
+------
+
+* add logging and fix "broken cache" problem
+
+v0.5.2
+------
+
+* bump version on aarc entitlements
+* no strict checking, additional logging
+* depend on fixed aarc entitlements
+* catch AttributeError in case no token was found
+* add configargparse to requirements.txt file
+
+v0.5.1
+------
+
+* fix return statement
+* handle ReadTimeout exception
+* add more testcases; remove verbosity
+* add aiohttp example
+* add status codes
+* dont ignore docs
+* add docs
+* mention aiohttp equally to flask
+
+v0.5
+----
+
+* Add logging; add code to support both: flask and aiohttp
+* add logging; only check reqquest form if authZ header didn't have the bearer
+* renamed
+* adapt example to aio
+
+v0.4.3
+------
+
+* fix encoding error in session with Valentin
+* do not encode after base64url\_decode as this may confuse things in DEEPaaS
+* restore old -a behaviour
+* remove comments
+
+v0.4.2
+------
+
+* reduce timeout to 1.2 sec; stop useing iter on result\_q; catch ConnectionError
+* remove foldmarks, reformat argparse
+* add info endpoint to doku
+* add /info endpoint
+* add login.hdf
+* make client connection parameters configurable
+
+v0.4.1
+------
+
+* add tests for tokentools
+* remove superfluous newlines
+* fix regex object returned
+* add version for aarc\_g002\_entitlement
+* add tests for toekntools
+
+v0.4.0
+------
+
+* fix typo
+* add thread pooled search for user info; also add a timeout
+* add thread pooled search for user info; also add a timeout
+* change folding from marker to indent
+* moved aarc\_g002 code to https://github.com/KIT-SCC/aarc-g002-entitlement
+* remove folds
+* improve output
+* remove aarc-g002 testing
+* remove debug code
+
+v0.3.2
+------
+
+* add caching to examples
+* add caching, configurable, default: 300s
+* add verbosity setting
+
+v0.3.1
+------
+
+* add eduteams
+* removed
+* add eduteams
+* add py27
+
+v0.3.0
+------
+
+* remove duplicate OPs
+* update docs
+* rename set\_OP to set\_trusted\_OP
+* add notion of trusted\_OP list and the exclude\_list
+* extend on\_failure with more error info
+* Return error if token expired
+* add 2nd example for valid\_user
+* improve output
+* improve output
+* add -q option
+* Ignore Dockerfile for now
+* add more ignores
+* Refactor token info retrieval; shorten MIT License statement
+* add note about caching; shorten MIT License statement
+* Add get\_timeleft; shorten MIT License statement
+* add sphinx-argparse
+* fix .gitignore
+* full rewrite to use flaat
+* add MIT License
+* add sphinx
+* ignore much more
+* deleted
+
+v0.2.3
+------
+
+* add testing
+* upadte g002 checking with case from Mischa
+
+v0.2.2
+------
+
+* bump version to 0.2.2
+* add DISABLE\_AUTHENTICATION\_AND\_ASSUME\_AUTHENTICATED\_USER option
+* fix non-existent bearer token
+* removed
+* ignorance!
+* bump version
+* Remove todo: Caching
+* bump version to 0.2
+* add caching
+* remove caches
+* remove cache files
+* ignore a lot more stuff
+* reorganise aarc g002 matcer
+* remove python shebang
+* remove executable flags
+* add setuptools
+* add requirements
+* Add MIT License
+* move file to flaat
+* move file to flaat
+* flat => flaat
+* remove py cache
+* rename from flat to flaat
+* rename from flat to flaat
+* move functionality to submodules
+* remove hint to also support google; reduce verbosity
+* add some testign capability
+* remove python version requirement
+* ignore pyc files
+* add support to install for python2.7
+* remove erronous swagger
+* rename to flat
+* put code under the MIT License
+* Add Roadmap
+* Proper title
+* submitted to appint for review
+* fix content
+* fix content
+* fix formatting
+* make sure that claim points to a group
+* adjust examples
+* Fix kit
+* remove code from initial testing
+* not using flask anymore
+* fix typo
+* fix typo
+* Updated to Floidau
+* add google
+* make at detection more robust
+* be more ignorant
+* remove uneeded stuff
+* improve examples: add group lists
+* add lists functionality and docstrings
+* renamed
+* fix verbosity glitch
+* add decorators
+* move parseargs to main
+* complete restructuring
+* as copied from get\_userinfo
+* fix issue with iam
+* add dependencies; remove flask stuff
+* should work fine now; tested with unity and iam
+* should work fine now; tested with unity and iam
+* initial version
+* bump version number to 3.7
+* api-only version of the demo
+* reorganise code
+* ignore pyve
+* add more comments
+* do activate the pyve
+* Add logging, Add try catch around g.oidc\_token\_info
+* state the less obvious, too
+* state the obvious
+* .gitignore
+* Demonstrate flask and OIDC with IAM
+* first commit
