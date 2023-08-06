@@ -1,0 +1,25 @@
+.. include:: ../README.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   installation
+   usage
+   domain
+   processing
+   remo-dataset
+   production-analysis
+   preprocessing-cf
+   cmorization
+   ar
+   contributing
+   authors
+   whats_new
+   api
+
+Indices and tables
+==================
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
