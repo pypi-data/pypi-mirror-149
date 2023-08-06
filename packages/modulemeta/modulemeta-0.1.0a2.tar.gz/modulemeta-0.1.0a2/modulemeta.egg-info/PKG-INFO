@@ -1,0 +1,57 @@
+Metadata-Version: 2.1
+Name: modulemeta
+Version: 0.1.0a2
+Summary: A module metaclass, to make your classes into modules.
+Home-page: https://github.com/megawidget/python-module
+Author: Igor Kaplounenko
+Author-email: megawidget@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# ModuleMeta
+
+Python modules are hard.  `modulemeta` attempts to make them easier to write in the interpreter.
+
+## Basic Usage
+
+```
+>>> import modulemeta as module
+>>> class Wat(metaclass=module):
+...   _ermelon = 5
+...
+...   def ermelon():
+...     return _ermelon
+...
+>>> Wat.ermelon()
+5
+>>> Wat
+<module 'Wat'>
+>>> module
+<class 'module.Module'>
+```
+
+
+## Inheritance
+
+Shockingly, modules cannot be inherited from, therefore they are treated as metaclasses:
+
+```
+import modulemeta as module
+
+
+class Wat(metaclass=module):
+  pass
+
+
+class Wat2(metaclass=Wat):
+  pass
+```
+
+
