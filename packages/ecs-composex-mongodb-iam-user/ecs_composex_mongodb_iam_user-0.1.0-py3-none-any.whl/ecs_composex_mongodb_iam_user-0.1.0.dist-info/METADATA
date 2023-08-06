@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: ecs-composex-mongodb-iam-user
+Version: 0.1.0
+Summary: Compose-X Module to manage MongoDb::Atlas::AwsIamDatabaseUser
+License: MPL-2.0
+Author: johnpreston
+Author-email: john@compose-x.io
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: ecs_composex (>=0.18.0,<0.19.0)
+Project-URL: Compose-X Labs, https://labs.compose-x.io/
+Project-URL: Compose-X Blog, https://blog.compose-x.io/
+Project-URL: ECS ComposeX, https://github.com/compose-x/ecs_composex/
+Description-Content-Type: text/x-rst
+
+################
+mongodb_iam_user
+################
+
+.. image:: https://img.shields.io/pypi/v/ecs_composex_mongodb_iam_user.svg
+        :target: https://pypi.python.org/pypi/ecs_composex_mongodb_iam_user
+
+Compose-X Module to manage MongoDb::Atlas::AwsIamDatabaseUser
+
+
+Use with ECS Compose-X
+========================
+
+Install
+-----------
+
+.. code-block:: bash
+
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install .
+
+Use
+-----
+
+.. code-block:: yaml
+
+    services:
+      frontend:
+        image: nginx
+
+    x-mongodb_iam_user:
+      Properties: {}
+      Lookup: {}
+      Settings: {}
+      Services: {}
+
