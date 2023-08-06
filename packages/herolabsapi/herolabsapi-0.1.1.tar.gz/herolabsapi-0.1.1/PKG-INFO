@@ -1,0 +1,74 @@
+Metadata-Version: 2.1
+Name: herolabsapi
+Version: 0.1.1
+Summary: Python Library for Hero Labs API, creators of the Sonic smart water shut off valve
+Home-page: https://github.com/markvader/herolabsapi
+Author: Mark Breen
+Author-email: markjbreen@gmail.com
+License: MIT
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# herolabsapi
+Python Library for the Hero Labs API
+
+Work In Progress -  Started 31st March 2022
+
+[Hero Labs API Documentation](https://docs.hero-labs.com/)
+
+[Hero Labs API Swagger UI](https://iot-core.hero-labs.com/ape/v1/swaggerui/)
+
+
+## Endpoints
+
+|Method|Endpoint|Description|
+| :--- | :--- | :--- |
+|**Incidents**||
+|GET|/apeâ€‹/v1â€‹/incidents|Get all accessible incidents|
+|GET|/apeâ€‹/v1â€‹/incidentsâ€‹/{id}|Get an incident|
+|PUT|â€‹/apeâ€‹/v1â€‹/incidentsâ€‹/{incident_id}â€‹/action|Transitioning an incident to a different state|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/incidents|Get all incidents for a property|
+|**Properties**||
+|GET|/apeâ€‹/v1â€‹/properties|Get all accessible property|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{id}|Get a property|
+|PATCH|/apeâ€‹/v1â€‹/propertiesâ€‹/{id}|Update a property|
+|PUT|â€‹/apeâ€‹/v1â€‹/propertiesâ€‹/{id}|Update a property|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/incidents|Get all incidents for a property|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/notifications|Get a property notification settings|
+|PUT|â€‹/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/notifications|Update a property notification settings|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/settings|Get a property settings|
+|PUT|â€‹/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/settings|Update a property settings|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/signals|Get all signals for a property|
+|**Property settings**||
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/notifications|Get a property notification settings|
+|PUT|â€‹/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/notifications|Update a property notification settings|
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/settings|Get a property settings|
+|PUT|â€‹/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/settings|Update a property settings|
+|**Signals**||
+|GET|/apeâ€‹/v1â€‹/propertiesâ€‹/{property_id}â€‹/signals|Get all signals for a property|
+|GET|/apeâ€‹/v1â€‹/signals|Get all accessible signals|
+|GET|/apeâ€‹/v1â€‹/signalsâ€‹/{id}|Get a signal|
+|PATCH|/apeâ€‹/v1â€‹/signalsâ€‹/{id}|Update a signal|
+|PUT|â€‹/apeâ€‹/v1â€‹/signalsâ€‹/{id}|Update a signal|
+|GET|/apeâ€‹/v1â€‹/signalsâ€‹/{signal_id}â€‹/sonics|Get all sonics for a signal|
+|**Sonics**||
+|GET|/apeâ€‹/v1â€‹/signalsâ€‹/{signal_id}â€‹/sonics|Get all sonics for a signal|
+|GET|/apeâ€‹/v1â€‹/sonics|Get all accessible sonics|
+|GET|/apeâ€‹/v1â€‹/sonicsâ€‹/{id}|Get a sonic|
+|PATCH|/apeâ€‹/v1â€‹/sonicsâ€‹/{id}|Update a sonic|
+|PUT|â€‹/apeâ€‹/v1â€‹/sonicsâ€‹/{id}|Update a sonic|
+|PUT|â€‹/apeâ€‹/v1â€‹/sonicsâ€‹/{sonic_id}â€‹/valve|Open or close a sonic valve|
+|PUT|â€‹/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{sonic_id}â€‹/valve|Open or close a sonic valve|
+|**Telemetry details**||
+|GET|/apeâ€‹/v1â€‹/sonicsâ€‹/{sonic_id}â€‹/telemetry|Getting the latest telemetry details|
+|GET|/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{sonic_id}â€‹/telemetry|Getting the latest telemetry details|
+|**SonicsWifi**||
+|PUT|â€‹/apeâ€‹/v1â€‹/sonicsâ€‹/{sonic_id}â€‹/valve|Open or close a sonic valve|
+|GET|/apeâ€‹/v1â€‹/sonics_wifi|Get all accessible sonic wifis|
+|GET|/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{id}|Get a sonic wifi|
+|PATCH|/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{id}|Update a sonic wifi|
+|PUT|/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{id}|Update a sonic wifi|
+|PUT|/apeâ€‹/v1â€‹/sonics_wifiâ€‹/{sonic_id}â€‹/valve|Open or close a sonic valve|
+
+
