@@ -1,0 +1,96 @@
+[tool.poetry]
+authors = ["Mamadou S Diallo <msdiallo@samplics.org>"]
+description = "Select, weight and analyze complex sample data"
+license = "MIT"
+name = "samplics"
+version = "0.3.21"
+
+readme = "README.md"
+
+documentation = "https://samplics.org/docs"
+homepage = "https://samplics.org/"
+repository = "https://github.com/survey-methods/samplics"
+
+keywords = ["sampling", "sample", "weighting", "estimation", "survey"]
+
+classifiers = [
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Development Status :: 4 - Beta",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering",
+]
+
+packages = [
+  {include = "samplics", from = "src"},
+]
+
+[tool.poetry.dependencies]
+matplotlib = "^3.4" 
+numpy = "^1.21.4" 
+pandas = "^1.3" 
+python = ">=3.7.1,<3.11" #Pandas 1.0 requires at least Python 3.7.1
+scipy = "^1.7" 
+statsmodels = "^0.13.1" 
+
+[tool.poetry.dev-dependencies]
+black = "^22.3" 
+certifi = "^2021.10.8" 
+codecov = "^2.1.3" 
+flake8 = "^4.0" 
+ipykernel = "^6.13" 
+ipython = "^8.2.0" 
+isort = "^5.10" 
+jupyterlab = "^3.0" 
+mypy = "^0.95" 
+nb-black-only = "^1.0" 
+nbsphinx = "0.7.1" #version 0.8.x has trouble rendering .ipynb files
+nox = "^2022.1.7" 
+pylint = "^2.9" 
+pytest = "^7.1" 
+pytest-cov = "^3.0.0" 
+recommonmark = "^0.7" 
+sphinx = "^4.5" 
+sphinx-autobuild = "^2021.3" 
+sphinx-bootstrap-theme = "^0.8" 
+
+[tool.black]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+line-length = 99
+target-version = ["py37", "py38", "py39","py310"]
+
+[tool.isort]
+atomic = true
+filter_files = true
+force_single_line = false
+include_trailing_comma = true
+known_first_party = "samplics"
+known_pandas = ["pandas", "numpy", "scipy", "statsmodels"]
+line_length = 99
+lines_after_imports = 2
+lines_between_types = 1
+multi_line_output = 3
+profile = "black"
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "PANDAS", "FIRSTPARTY", "LOCALFOLDER"]
+src_paths = ["src", "tests"]
+use_parentheses = true
+
+[build-system]
+build-backend = "poetry.masonry.api"
+requires = ["poetry>=1.0.0"]
