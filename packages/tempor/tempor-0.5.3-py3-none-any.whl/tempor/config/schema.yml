@@ -1,0 +1,28 @@
+type: object
+properties:
+  providers:
+    type: array
+    items:
+      $ref: '#/definitions/provider'
+  default:
+    type: string
+    enum:
+      - aws
+      - azure
+      - digitalocean
+      - gcp
+      - linode
+      - vultr
+definitions:
+  provider:
+    type: object
+    required:
+      - name
+      - region
+      - image
+      - api_token
+    properties:
+      name: 
+        type: string
+      region:
+        type: string
