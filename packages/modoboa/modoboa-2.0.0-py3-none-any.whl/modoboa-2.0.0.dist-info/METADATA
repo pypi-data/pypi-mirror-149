@@ -1,0 +1,147 @@
+Metadata-Version: 2.1
+Name: modoboa
+Version: 2.0.0
+Summary: Mail hosting made simple
+Home-page: http://modoboa.org/
+Author: Antoine Nguyen
+Author-email: tonio@ngyn.org
+License: ISC
+Keywords: email
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django :: 2.2
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: ISC License (ISCL)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Communications :: Email
+Classifier: Topic :: Internet :: WWW/HTTP
+Requires-Python: >=3.7
+License-File: LICENSE
+Requires-Dist: django (<4.0)
+Requires-Dist: django-ckeditor (==6.3.0)
+Requires-Dist: django-phonenumber-field[phonenumbers] (==6.1.0)
+Requires-Dist: django-reversion (==5.0.0)
+Requires-Dist: django-xforwardedfor-middleware (==2.0)
+Requires-Dist: django-otp (==1.1.3)
+Requires-Dist: django-filter
+Requires-Dist: dj-database-url
+Requires-Dist: djangorestframework (<3.14,>=3.11)
+Requires-Dist: drf-spectacular
+Requires-Dist: uritemplate
+Requires-Dist: djangorestframework-simplejwt (==5.1.0)
+Requires-Dist: passlib (~=1.7.4)
+Requires-Dist: bcrypt
+Requires-Dist: dnspython (==2.2.1)
+Requires-Dist: feedparser (==6.0.8)
+Requires-Dist: greenlet (==1.1.2)
+Requires-Dist: gevent (==21.12.0)
+Requires-Dist: jsonfield (==3.1.0)
+Requires-Dist: Pillow
+Requires-Dist: progressbar33 (==2.4)
+Requires-Dist: py-dateutil (==2.2)
+Requires-Dist: cryptography
+Requires-Dist: pytz
+Requires-Dist: requests
+Requires-Dist: lxml
+Requires-Dist: chardet
+Requires-Dist: ovh
+Requires-Dist: oath
+Requires-Dist: redis
+Requires-Dist: rrdtool (>=0.1.10)
+Requires-Dist: qrcode
+Requires-Dist: aiosmtplib
+Requires-Dist: aioredis (==2.0.1)
+Provides-Extra: argon2
+Requires-Dist: argon2-cffi (>=16.1.0) ; extra == 'argon2'
+Provides-Extra: ldap
+Requires-Dist: django-auth-ldap (>=1.3.0) ; extra == 'ldap'
+Provides-Extra: mysql
+Requires-Dist: mysqlclient (<2.1.1) ; extra == 'mysql'
+Provides-Extra: postgresql
+Requires-Dist: psycopg2-binary (<2.9,>=2.8) ; extra == 'postgresql'
+
+################################
+`Modoboa <http://modoboa.org/>`_
+################################
+
+|workflow| |codecov| |latest-version|
+
+Modoboa is a mail hosting and management platform including a modern
+and simplified Web User Interface. It provides useful components such
+as an administration panel or a webmail.
+
+Modoboa integrates with well known software such as `Postfix
+<http://postfix.org/>`_ or `Dovecot <http://dovecot.org/>`_. A SQL
+database (`MySQL <http://www.mysql.com>`_, `PostgreSQL
+<http://www.postgresql.org/>`_ or `SQLite <http://www.sqlite.org>`_)
+is used as a central point of communication between all components.
+
+Modoboa is developed with modularity in mind, expanding it is really
+easy. Actually, all current features are extensions.
+
+It is written in Python 3 and uses the `Django
+<https://www.djangoproject.com>`_, `jQuery <http://jquery.com>`_ and
+`Bootstrap <http://getbootstrap.com/>`_
+frameworks.
+
+*************
+Main features
+*************
+
+* Administration panel
+* Reputation protection: `DNSBL <https://en.wikipedia.org/wiki/DNSBL>`_ checks, `DMARC <https://dmarc.org/>`_ `reports <https://github.com/modoboa/modoboa-dmarc>`_ and more
+* `Amavis <http://www.amavis.org>`_ `frontend <https://github.com/modoboa/modoboa-amavis>`_
+* `Webmail <https://github.com/modoboa/modoboa-webmail>`_
+* `Calendar <https://github.com/modoboa/modoboa-radicale>`_
+* `Address book <https://github.com/modoboa/modoboa-contacts>`_
+* `Per-user Sieve filters <https://github.com/modoboa/modoboa-sievefilters>`_
+* `Autoreply messages for Postfix <https://github.com/modoboa/modoboa-postfix-autoreply>`_
+* `Graphical statistics about email traffic <https://github.com/modoboa/modoboa-stats>`_
+
+*************
+Documentation
+*************
+
+A detailed `documentation <https://modoboa.readthedocs.io/>`_ will help you
+to install, use or extend Modoboa.
+
+*****************
+Demo Installation
+*****************
+
+If you want to try out Modoboa, check out our `demo installation <https://demo.modoboa.org/>`_.
+
+************
+Getting help
+************
+
+If you have any question, you can use the following ways to get help:
+
+* `Discord <https://discord.gg/WuQ3v3PXGR>`_
+* Mailing list: join the `modoboa-users <https://groups.google.com/forum/#!forum/modoboa-users>`_ group on Google Groups
+* Github: open an issue if you found a bug
+
+*************
+External code
+*************
+
+The following external libraries are provided with Modoboa:
+
+* `jQuery version 1.9.1 <http://www.jquery.org/>`_
+* `jQuery-UI 1.10+ <http://jqueryui.com/>`_
+* `Bootstrap version 3.3.7 <http://getbootstrap.com/>`_
+* `Bootstrap datetimepicker <http://eonasdan.github.io/bootstrap-datetimepicker/>`_
+
+.. |latest-version| image:: https://img.shields.io/pypi/v/modoboa.svg
+   :target: https://pypi.python.org/pypi/modoboa/
+   :alt: Latest version on Pypi
+.. |workflow| image:: https://github.com/modoboa/modoboa/workflows/Modoboa%20App/badge.svg
+.. |codecov| image:: http://codecov.io/github/modoboa/modoboa/coverage.svg?branch=master
+   :target: http://codecov.io/github/modoboa/modoboa?branch=master
+
+
