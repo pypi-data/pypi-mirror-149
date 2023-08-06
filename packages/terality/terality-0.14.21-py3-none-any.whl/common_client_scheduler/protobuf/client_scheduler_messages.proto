@@ -1,0 +1,254 @@
+syntax="proto3";
+
+
+/* ##################################### Requests ##################################### */
+
+message ProtobufRequestProto {
+  oneof request {
+    CreateUserRequestProto create_user_request = 1;
+    ImportFromCloudRequestProto import_from_cloud_request = 2;
+    ExportToCloudRequestProto export_to_cloud_request = 3;
+    PandasFunctionRequestProto pandas_function_request = 4;
+    FollowUpRequestProto follow_up_request = 5;
+    ClientErrorContextProto client_error_request = 6;
+    ObjectStorageKeyProto object_storage_key = 7;
+  }
+}
+
+message PandasFunctionRequestProto {
+  string function_type = 1;
+  optional string function_accessor = 2;
+  string function_name = 3;
+  string args = 4;
+  string kwargs = 5;
+  optional bool cache_disabled = 6;
+  optional string options = 7;  // json serialized
+}
+
+message ReplayFunctionRequestProto {
+  string bucket = 1;
+  string key = 2;
+  string user_id = 3;
+  string organization_id = 4;
+}
+
+message FollowUpRequestProto {
+  string function_id = 1;
+}
+
+message UploadProto {
+  string path = 1;
+}
+
+message UploadRequestProto {
+  string path = 1;
+  string transfer_id = 2;
+}
+
+message ExportRequestProto {
+  string path = 1;
+  map<string, string> storage_options = 2;  // values SerdeMixin
+  optional string aws_region = 3;
+}
+
+message ObjectStorageKeyProto {
+  string bucket = 1;
+  string key = 2;
+}
+
+message ClientErrorContextProto {
+  string code = 1;
+  string filename = 2;
+  optional string exception_str = 3;
+}
+
+message AwsPresignedUrlSourceProto {
+  string url = 1;
+  ObjectStorageKeyProto object_key = 2;
+  int64 object_size_bytes = 3;
+  string object_etag = 4;
+}
+
+message ImportFromS3SourceProto {
+  repeated AwsPresignedUrlSourceProto presigned_urls = 1;
+}
+
+message AzureBlobSourceProto {
+  ObjectStorageKeyProto object_key = 1;
+  string shared_access_signature = 2;
+  string storage_account_name = 3;
+  int64 blob_size = 4;
+  string blob_etag = 5;
+}
+
+message ImportFromAzureBlobStorageSourceProto {
+  repeated AzureBlobSourceProto objects = 1;
+}
+
+message ImportFromCloudRequestProto {
+  string service = 1;
+  oneof source {
+    ImportFromS3SourceProto import_from_s3 = 2;
+    ImportFromAzureBlobStorageSourceProto import_from_azure = 3;
+  }
+  optional bool cache_disabled = 4;
+}
+
+message AwsS3ObjectPartExportRequestProto {
+  ObjectStorageKeyProto source_object_key = 1;
+  int64 range_start_byte = 2;
+  int64 range_end_byte = 3;
+  string presigned_url = 4;
+  string multipart_upload_id = 5;
+  int64 part_number = 6;
+  ObjectStorageKeyProto destination_object_key = 7;
+}
+
+message AzureBlobStoragePartExportRequestProto {
+  ObjectStorageKeyProto source_object_key = 1;
+  int64 range_start_byte = 2;
+  int64 range_end_byte = 3;
+  ObjectStorageKeyProto destination_object_key = 4;
+  string storage_account_name = 5;
+  string shared_access_signature = 6;
+}
+
+message AwsS3PartsExportProto {
+  repeated AwsS3ObjectPartExportRequestProto parts = 1;
+}
+
+message AzureBlobStoragePartsExportProto {
+  repeated AzureBlobStoragePartExportRequestProto parts = 1;
+}
+
+message ExportToCloudRequestProto {
+  string service = 1;
+  oneof export_request {
+    AwsS3PartsExportProto s3_parts_export = 2;
+    AzureBlobStoragePartsExportProto azure_parts_export = 3;
+  }
+}
+
+message CreateUserRequestProto {
+  string email = 1;
+  bool user_accepted_privacy_policy = 2;
+  bool user_accepted_terms_of_service = 3;
+  optional string full_name = 4;
+  optional string company = 5;
+}
+
+
+/* ##################################### Responses ##################################### */
+
+
+message ProtobufServerResponseProto {
+  oneof response {
+    ComputationResponseProto computation_response = 1;
+    PendingComputationResponseProto pending_computation_response = 2;
+    CreateSessionResponseProto create_session_response = 3;
+    DeleteSessionResponseProto delete_session_response = 4;
+    DataTransferResponseProto data_transfer_response = 5;
+    ImportFromCloudResponseProto import_from_cloud_response = 6;
+    ExportToAzureBlobStorageResponseProto export_to_azure_response = 7;
+    ExportToS3ResponseProto export_to_s3_response = 8;
+    CreateUserResponseProto create_user_response = 9;
+    CreateAnonymousUserResponseProto create_anonymous_user_response = 10;
+    ErrorResponseProto error_response = 11;
+    ClientErrorContextResponseProto client_error_context_response = 12;
+  }
+}
+
+message PendingComputationResponseProto {
+  string pending_computation_id = 1;
+}
+
+message CreateAnonymousUserResponseProto {
+  string user_id = 1;
+  string api_key = 2;
+  string expires_at = 3;  // SerdeMixin
+}
+
+message ExportResponseProto {
+  string path = 1;
+  map<string, string> storage_options = 2;  // values SerdeMixin
+  optional string aws_region = 3;
+  string transfer_id = 4;
+  bool is_folder = 5;
+  bool with_leading_zeros = 6;
+}
+
+message ClientMessageProto {
+  string message = 1;
+  int64 log_level = 2;
+}
+
+message ComputationResponseProto {
+  string result = 1;  // SerdeMixin
+  bool inplace = 2;
+  repeated ClientMessageProto messages = 3;
+  optional string result_to_return = 4;  // SerdeMixin
+}
+
+message TransferConfigLocalProto {
+  string path = 1;
+}
+
+message TransferConfigProto {
+  string default_aws_region = 1;
+  string bucket = 2;
+  string key_prefix = 3;
+}
+
+message OneOfTransferConfigProto {
+  oneof config {
+    TransferConfigProto transfer_config = 1;
+    TransferConfigLocalProto transfer_config_local = 2;
+  }
+}
+
+message CreateSessionResponseProto {
+  string id = 1;
+  OneOfTransferConfigProto download_config = 2;
+  OneOfTransferConfigProto upload_config = 3;
+}
+
+message DeleteSessionResponseProto {}
+
+message AwsCredentialsProto {
+  string access_key_id = 1;
+  string secret_access_key = 2;
+  string session_token = 3;
+}
+
+message DataTransferResponseProto {
+    AwsCredentialsProto temporary_upload_aws_credentials = 1;
+}
+
+message ImportFromCloudResponseProto {
+  string transfer_id = 1;
+}
+
+message UploadedS3PartInfoProto {
+  ObjectStorageKeyProto destination_object_key = 1;
+  string etag = 2;
+  int64 part_number = 3;
+  string multipart_upload_id = 4;
+}
+
+message ExportToS3ResponseProto {
+  repeated UploadedS3PartInfoProto uploaded_parts = 1;
+}
+
+message ExportToAzureBlobStorageResponseProto {}
+
+message CreateUserResponseProto {
+  string api_key = 1;
+}
+
+message ErrorResponseProto {
+  string message = 1;
+}
+
+message ClientErrorContextResponseProto {
+  string status = 1;
+}
