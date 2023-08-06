@@ -1,0 +1,135 @@
+Metadata-Version: 2.1
+Name: pytuber
+Version: 22.5
+Summary: Manage youtube music playlists
+Home-page: https://github.com/tefra/pytuber
+Author: Christodoulos Tsoulloftas
+Author-email: "chris@komposta.net",
+License: MIT
+Project-URL: Source, https://github.com/tefra/pytuber
+Project-URL: Documentation, https://pytuber.readthedocs.io/
+Keywords: youtube,music,playlist,last.fm,cli
+Platform: UNKNOWN
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.6
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: click (>=5.0)
+Requires-Dist: click-completion (>=0.5.1)
+Requires-Dist: google-api-python-client (>=1.7.8)
+Requires-Dist: google-auth (>=1.6.3)
+Requires-Dist: google-auth-oauthlib (>=0.3.0)
+Requires-Dist: lxml (>=4.3.3)
+Requires-Dist: pydrag (>=22.5)
+Requires-Dist: tabulate[widechars] (>=0.8.3)
+Requires-Dist: yaspin (>=0.14.2)
+Provides-Extra: dev
+Requires-Dist: Pygments ; extra == 'dev'
+Requires-Dist: check-manifest ; extra == 'dev'
+Requires-Dist: codecov ; extra == 'dev'
+Requires-Dist: pre-commit ; extra == 'dev'
+Requires-Dist: pytest ; extra == 'dev'
+Requires-Dist: pytest-cov ; extra == 'dev'
+Requires-Dist: tox ; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: sphinx ; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme ; extra == 'docs'
+Requires-Dist: sphinxcontrib-programoutput ; extra == 'docs'
+
+pytuber
+=======
+
+
+.. image:: https://travis-ci.org/tefra/pytuber.svg?branch=master
+    :target: https://travis-ci.org/tefra/pytuber
+
+.. image:: https://readthedocs.org/projects/pytuber/badge
+    :target: https://pytuber.readthedocs.io/en/latest
+
+.. image:: https://codecov.io/gh/tefra/pytuber/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/tefra/pytuber
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/ambv/black
+
+.. image:: https://img.shields.io/github/languages/top/tefra/pytuber.svg
+    :target: https://pytuber.readthedocs.io/
+
+.. image:: https://app.codacy.com/project/badge/Grade/00744926e0c94552857f3320640c7f71
+   :target: https://www.codacy.com/gh/tefra/pytuber/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tefra/pytuber&amp;utm_campaign=Badge_Grade
+
+.. image:: https://img.shields.io/pypi/pyversions/pytuber.svg
+    :target: https://pypi.org/pypi/pytuber/
+
+.. image:: https://img.shields.io/pypi/v/pytuber.svg
+    :target: https://pypi.org/pypi/pytuber/
+
+----
+
+.. image:: https://github.com/tefra/pytuber/raw/master/docs/_static/demo.gif
+    :align: center
+
+----
+
+**pytuber** is a cli tool to manage your music **playlists** on youtube.
+  - Generate playlists from `Last.fm <https://www.last.fm>`_ or
+  - Import from file formats: XSPF, JSPF, M3U
+  - Create with a simple copy paste in a text editor
+  - Search and match tracks to Youtube videos
+  - Sync pytuber playlists (fetch/push)
+  - Update youtube playlist items (add/remove)
+  - Keep track of youtube api quota usage
+
+Check `Documentation <https://pytuber.readthedocs.io/>`__ |  `Changelog <https://pytuber.readthedocs.io/en/latest/changelog.html>`__
+
+Install & Setup
+~~~~~~~~~~~~~~~
+
+.. code-block:: console
+
+    $ pip install pytuber
+    $ pytuber setup autocomplete  # Enable autocomplete
+
+
+Read how to setup youtube `authentication <https://pytuber.readthedocs.io/en/latest/credentials.html>`_
+
+Start creating youtube playlists ✨✨
+
+
+Youtube API Quota
+~~~~~~~~~~~~~~~~~
+
+Youtube api has a daily api `quota <https://developers.google.com/youtube/v3/getting-started#quota>`_ limit which resets at midnight Pacific Time (PT).
+
+pytuber includes a quota calculator
+
+.. code-block:: console
+
+    $ pytuber quota
+
+Additionally to the api quota limit Youtube limits the amount of how many
+playlists you can create per day to only **10**.
+
+In case you reach that number, you can push a new playlist manually.
+  - Create a playlist with `pytuber add` command
+  - View the playlist by using this command `pytuber show xxxx --mime`
+  - This mime string is base64 signature used by pytuber internally to
+    link local to youtube playlists
+  - Add a youtube playlists manually from the web site and add the mime
+    signature at the bottom of the playlist description
+  - Fetch the new playlist info `pytuber fetch youtube --playlists`
+
+Afterwards you will be aple to push tracks like normally.
+
+
