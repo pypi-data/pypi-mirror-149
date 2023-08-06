@@ -1,0 +1,105 @@
+Metadata-Version: 2.1
+Name: SecuenciaAlfanumerica
+Version: 2022.5.8
+Summary: Convierte de un número o números a un grupo de caracteres y viceversa
+Home-page: https://github.com/Xaival/Libreria-Python-Secuenciador-alfanumerico
+Author: Xaival
+Author-email: xaival.dark@gmail.com
+License: MIT
+Keywords: conversions,sequence,alphanumeric,binary
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+# LibrerÃ­a Python / Secuenciador alfanumÃ©rico
+
+## Importar librerÃ­a
+[PyPI](https://pypi.org/project/SecuenciaAlfanumerica/) `pip install Secuenciador-alfanumerico`
+
+```python
+# Todos
+from ConvertDicc import *
+```
+
+## Devolver diccionario predeterminado
+```python
+from ConvertDicc import DiccionarioPreder
+
+# Llamar librerÃ­a predeterminada
+print(DiccionarioPredeter("AZ"))
+# ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+```
+
+## Convertir secuencia numÃ©rica a una alfabÃ©tica
+```python
+from ConvertDicc import NumDiccionario
+
+# Convertir numÃ©rico en lista caracteres
+Diccionario = ["A", "B", "C"] # Array
+Devolver = [0, 4] # Devolver del 1 al 5
+Grupo = 5 # Devolver con 5 caracteres
+print(NumDiccionario(Diccionario, Devolver, Grupo))
+# ['AAAAA', 'AAAAB', 'AAAAC', 'AAABA', 'AAABB']
+```
+
+## Convertir secuencia alfabÃ©tica a una numÃ©rica
+```python
+from ConvertDicc import DiccionarioNum
+
+# Convertir lista a numÃ©rico
+Diccionario = ["A", "B", "C"] # Diccionario de elementos
+Resolver = ['AAAAA', 'AAAAC', 'AACAB'] # Elementos para resolver
+print(DiccionarioNum(Diccionario, Resolver))
+# [0, 2, 19]
+```
+
+## Partes
+### Diccionario
+Puedes llamar a un Diccionario predefinido o declararlo tÃº.
+
+**Declarar diccionario no definido:** En vez de poner el identificador habria que inglesar un array ["a", "b", "c"]
+
+**Diccionarios predefinidos**:
+```
+"01" - ["0", "1"]
+"09" - ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+"AZ" - ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"AÃ±Z" - ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ã‘", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"az" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"aÃ±z" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "Ã±", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"AZaz" - Diccionario = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"AÃ±ZaÃ±z" - ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ã‘", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "Ã±", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"azAZ" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"aÃ±zAÃ±Z" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "Ã±", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ã‘", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"0Z" - ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"0Ã±Z" - ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ã‘", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+"0z" - ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"0Ã±z" - ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "Ã±", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+"A0" - ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+"AÃ±0" - ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "Ã‘", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+"a0" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+"aÃ±0" - ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "Ã±", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+```
+
+### Devolver
+Es el conjunto de valores el cual se va a convertir.
+
+`[0, 4]` - Devolver del 1 al 5
+
+`[4]` - Devolver 4
+
+### Grupo
+Cantidad mÃ­nima de caracteres del grupo. Si no se define se devolverÃ¡ la mÃ¡xima a la que llegue.
+
+`5` - AAABA
+
+`1` - BA
+
+`Sin definir` - BA
+
+
+### Resolver
+Valores de los cuales se quiere saber la posiciÃ³n.
+
+`['AAAAA', 'AAAAC', 'AACAB']` - `[1, 3, 19]`
+
+
