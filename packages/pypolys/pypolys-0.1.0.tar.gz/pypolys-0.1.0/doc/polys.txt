@@ -1,0 +1,41 @@
+UNIVARIATE POLYNOMIALS
+----------------------------------------------------------------------
+from pypolys.polys import Poly
+
+n - nonnegative integer
+a, b - numbers
+p, q - polynomials
+
+p = Poly(a, n)
+p = Poly(a)   # Poly(a, 0)
+p = Poly()   # Poly(0, 0)
+p = Poly.fromiterable(iterable)
+
+p.cancel()   # remove zero terms
+repr(p)   # string representation, uses p.cancel()
+p == q, p != q   # comparisons
++q, -q
+p + q, p + a, a + q
+p - q, p - a, a - q
+p * q, p * a, a * q
+p / q   # for monomials only
+p / a   # uses p.cancel()
+p.is_zero()
+p.degree()
+p.key_deg()
+p.key_lex()
+p.key_deglex()
+p[k]   # k-th coefficient
+len(p)   # the number of terms (from dict)
+p(q), p.combine(q)
+p(a), p.eval(a)   # Horner
+p ∗∗ n, pow(p, n)
+p.iterterms()   # uses p.cancel()
+p.diff()
+p.integrate()
+p.leading_term(key)
+p.leading_monomial(key)
+p.leading_coefficient(key)
+p.lcm(q)   # the least common multiple of two monomials; uses p.cancel()
+----------------------------------------------------------------------
+EOF
