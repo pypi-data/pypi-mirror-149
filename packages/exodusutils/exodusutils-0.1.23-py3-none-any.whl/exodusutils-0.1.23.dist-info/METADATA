@@ -1,0 +1,79 @@
+Metadata-Version: 2.1
+Name: exodusutils
+Version: 0.1.23
+Summary: Utility functions and helper classes for Exodus project
+License: Apache-2.0
+Author: Tsung-Ju Lii
+Author-email: andylii@mobagel.com
+Requires-Python: >=3.8.0,<4.0.0
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Internet
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: colorama (>=0.4.4,<0.5.0)
+Requires-Dist: fastapi (>=0.74.1,<0.75.0)
+Requires-Dist: numpy (==1.21)
+Requires-Dist: pandas (>=1.4.0,<2.0.0)
+Requires-Dist: pydantic (>=1.9.0,<2.0.0)
+Requires-Dist: pymongo[encryption] (>=4.0.1,<5.0.0)
+Requires-Dist: python-Levenshtein (>=0.12.2,<0.13.0)
+Requires-Dist: scikit-learn (>=1.0.2,<2.0.0)
+Description-Content-Type: text/markdown
+
+# Exodus common utilities
+
+This is the library defining the schemas for exodus utilities.
+
+## Structure
+
+### `exodusutils`
+
+Contains helpful utility functions.
+
+### `schemas`
+
+In the `schemas` folder you can find the following:
+- Schema definitions for the model algorithm's incoming requests
+- Schema definitions for the model algorithm's responses
+- Definitions for `RegressionScores` and `ClassificationScores`
+- Definitions for types such as `Attribute` and `Column`
+
+### `predict`
+
+The `predict` folder contains helper functions for prediction.
+
+### `enums.py`
+
+Contains enums used by Exodus. Current contains the following:
+- `TimeUnit`, with helper methods to convert timestamps to different formats
+- `DataType`, with helper methods to convert from `Pandas` types
+
+### `feature_engineering.py`
+
+Contains commonly used feature engineering methods. Currently includes:
+- One-hot encoding
+- Label encoding
+- Time component encoding
+It is recommended to use at least 1 method in this file during training.
+
+### `frame_manipulation.py`
+
+Contains multiple frame manipulation methods. Used during prediction, should pick the method that corresponds to the one used during training.
+
+### `frames.py`
+
+Contains definitions and helper functions for the following classes:
+- `SplitFrames`: A 3-tuple with a training dataframe, a testing dataframe, and a validation dataframe.
+- `CVFrames`: A list of `SplitFrames`. Should not be instantiated manually, user should use `CVFrames.iid` helper classmethod.
+
