@@ -1,0 +1,39 @@
+{% extends 'appointment/_common.html' %}
+
+{% block appointment %}
+<!-- ======= Appointment Section ======= -->
+<section id="appointment" class="appointment">
+  <form action="{% url 'home:home' %}" method="post" role="form" class="email-form mt-4">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 form-group">
+        {{ form.name }}
+      </div>
+      <div class="col-md-6 form-group mt-3 mt-md-0">
+        {{ form.phone }}
+      </div>
+      <div class="col-md-4 form-group mt-3 mt-md-0">
+        {{ form.date }}
+      </div>
+    </div>
+    <div class="form-group mt-3">
+      {{ form.message }}
+    </div>
+    {% if post_message %}
+    <div class="mb-3">
+      <div class="alert alert-success alert-dismissible fade show " role="alert">
+        {{ post_message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+    {% endif %}
+    <div class="d-flex justify-content-end">
+      <button type="submit">예약하기</button>
+      {% if naver_link %}
+      <a href="{{ naver_link }}" class="naver-btn mx-2" target="_blank">Link to 네이버예약</a>
+      {% endif %}
+    </div>
+  </form>
+</section>
+<!-- End Appointment Section -->
+{% endblock %}
