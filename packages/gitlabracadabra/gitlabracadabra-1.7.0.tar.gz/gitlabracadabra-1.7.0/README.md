@@ -1,0 +1,227 @@
+# Gitlabracadabra <!-- omit in toc -->
+
+🧹 GitLabracadabra 🧙
+
+:alembic: Adds some magic to GitLab :crystal\_ball:
+
+GitLab'racadabra is a GitOps way to configure a [GitLab](https://gitlab.com/) instance
+from a YAML configuration, using the [API](https://docs.gitlab.com/ce/api/README.html).
+
+It is able to create GitLab's [groups](doc/group.md), [projects](doc/project.md),
+[users](doc/user.md) and [application settings](doc/application_settings.md).
+
+:thumbsup: It's also able to mirror :
+
+- Git repositories, using the `mirrors` parameter in [Mirroring repositories](doc/project.md#mirroring-repositories).
+- container (Docker) images, using the `image_mirrors` parameter. See [Mirroring container images](doc/image_mirrors.md).
+- packages, using the `package_mirrors` parameter. See [Mirroring packages](doc/package_mirrors.md).
+
+It is based on [Python GitLab](https://github.com/python-gitlab/python-gitlab).
+
+## Table of Contents <!-- omit in toc -->
+
+- [Installation](#installation)
+  - [Using Debian packages](#using-debian-packages)
+  - [Using pip](#using-pip)
+  - [Using docker image](#using-docker-image)
+  - [From source](#from-source)
+- [Configuration](#configuration)
+- [Action file(s)](#action-files)
+- [Using gitlabracadabra in GitLab CI](#using-gitlabracadabra-in-gitlab-ci)
+- [Development](#development)
+
+## Installation
+
+### Using Debian packages
+
+Debian package is available [from artefacts](https://gitlab.com/gitlabracadabra/gitlabracadabra/-/jobs/artifacts/master/browse/debian/output?job=build-deb) and can be installed with:
+
+```shell
+apt install gitlabracadabra_*.deb
+
+gitlabracadabra --verbose --dry-run
+```
+
+Note: Debian 10 buster or later is required.
+
+### Using pip
+
+```
+pip install gitlabracadabra
+```
+
+### Using docker image
+
+There are also [Docker/OCI images](https://gitlab.com/gitlabracadabra/gitlabracadabra/container_registry).
+
+Example usage:
+
+```shell
+sudo docker run -ti \
+  -v "$HOME/.python-gitlab.cfg:/home/gitlabracadabra/.python-gitlab.cfg:ro" \
+  -v "$PWD/gitlabracadabra.yml:/app/gitlabracadabra.yml:ro" \
+  registry.gitlab.com/gitlabracadabra/gitlabracadabra:v1.7.0 \
+  --verbose --dry-run
+```
+
+Other images are available. Examples:
+
+- `registry.gitlab.com/gitlabracadabra/gitlabracadabra/master`: Current `master`
+- `registry.gitlab.com/gitlabracadabra/gitlabracadabra/master:a307c3aff01bccacc020b24d2ab39fc7a7d0df45`: A specific commit of `master`
+
+
+### From source
+
+Local installation (in `$HOME/.local`):
+
+```shell
+# On Debian >= 10 (buster) or Ubuntu >= 19.04
+sudo apt install python3-jsonschema python3-gitlab python3-yaml python3-pygit2 python3-coverage python3-vcr
+# On others
+pip install -r requirements.txt
+
+# Build, install and test
+python3 setup.py build
+python3 setup.py install --user
+# python3 setup.py test
+~/.local/bin/gitlabracadabra --verbose --dry-run
+```
+
+## Configuration
+
+GitLabracadabra uses the same configuration file as Python GitLab CLI to store
+connection parameters.
+
+Example `~/.python-gitlab.cfg`:
+
+```ini
+[global]
+default = gitlab
+
+[gitlab]
+url = https://gitlab.com
+private_token = T0K3N
+```
+
+More information in [Python GitLab documentation](https://python-gitlab.readthedocs.io/en/stable/cli-usage.html#content).
+
+## Action file(s)
+
+GitLabracadabra *actions* are configured with a YAML file.
+
+See [GitLabracadabra's own action file](https://gitlab.com/gitlabracadabra/gitlabracadabra/blob/master/gitlabracadabra.yml)
+or read:
+
+- [Action file syntax](doc/action_file.md)
+- list of parameters:
+  - [for projects](doc/project.md)
+  - [for groups](doc/group.md)
+  - [for users](doc/user.md)
+  - [for application settings](doc/application_settings.md)
+
+## Using gitlabracadabra in GitLab CI
+
+Since job token probably won't have enough permissions, you'll need to use a personal access token:
+
+- [create a personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token)
+- [Define](https://docs.gitlab.com/ee/ci/variables/README.html#create-a-custom-variable-in-the-ui) the
+`GITLAB_PRIVATE_TOKEN` **protected** variable
+- Use it in your jobs to configure `python-gitlab`. Example `.gitlab-ci.yml`:
+
+```yaml
+default:
+  image:
+    name: registry.gitlab.com/gitlabracadabra/gitlabracadabra:v1.7.0
+    entrypoint: [""]
+  before_script:
+    - |
+        cat << EOF > ~/.python-gitlab.cfg
+        [global]
+        default = gitlab
+        [gitlab]
+        url = ${CI_SERVER_URL:-https://gitlab.com}
+        private_token = ${GITLAB_PRIVATE_TOKEN}
+        # job_token = ${GITLAB_JOB_TOKEN}
+        EOF
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  script:
+    - gitlabracadabra --verbose --dry-run
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "master"'
+
+apply:
+  stage: deploy
+  script:
+    - gitlabracadabra --verbose
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+```
+
+## Development
+
+Configure `<WORKSPACE>/.vscode/launch.json`:
+
+```json
+{
+    "configurations": [
+        {
+            "name": "Docker: Python - General",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "general"
+            }
+        }
+    ]
+}
+```
+
+Configure `<WORKSPACE>/.vscode/tasks.json`:
+
+```json
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "python",
+			"dockerBuild": {
+				"tag": "gitlabracadabra:latest",
+				"dockerfile": "${workspaceFolder}/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build"
+			],
+			"dockerRun": {
+				"network": "host"
+			},
+			"python": {
+				"module": "gitlabracadabra.cli",
+				"args": [ "-c <CONF_PATH>/.python-gitlab.cfg", "--dry-run",  "-g gitlab", "--debug", "--verbose","<CONF_PATH>/<ACTION_FILE>.yml"]
+			}
+		}
+	]
+}
+```
+
+NOTE: Docker Network `host` is important if you want to apply to a local gitlab.
