@@ -1,0 +1,20 @@
+[package]
+name = "chia_rs"
+version = "0.1.2"
+authors = ["Richard Kiss <him@richardkiss.com>"]
+edition = "2018"
+license = "Apache-2.0"
+description = "Code useful for implementing chia consensus."
+homepage = "https://github.com/Chia-Network/chia_rs/"
+repository = "https://github.com/Chia-Network/chia_rs/"
+readme = "README.md"
+
+[lib]
+name = "chia_rs"
+crate-type = ["cdylib"]
+path = "src/lib.rs"
+
+[dependencies]
+chia = { path = "local_dependencies/chia" }
+clvmr = "=0.1.20"
+pyo3 = { version = "=0.15.1", features = ["abi3-py37", "extension-module"] }
