@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="{{ app_name }}/" />
+    <meta charset="UTF-8">
+    <title>Automation App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            margin: 0;
+            background: #f7f7f7;
+        }
+
+        header {
+            background: #40b7d5;
+            padding: 50px 0;
+            font-family: 'Work Sans', sans-serif;
+        }
+
+        .header__logo {
+            margin: 0 auto 45px;
+            max-width: 200px;
+        }
+
+        img {
+            width: 100%;
+            display: block;
+        }
+
+        .header__buttons {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .header__buttons input,
+        .header__buttons button {
+            background: #FFCA00;
+            border: 1px solid #FFCA00;
+            color: white;
+            cursor: pointer;
+            display: block;
+            text-align: center;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            padding: 7px 25px 7px;
+            font-size: 14px;
+            font-family: 'Work Sans', sans-serif;
+            font-weight: 500;
+            line-height: 1.5;
+            border-radius: 20px;
+            text-transform: uppercase;
+            min-width: 180px;
+            margin: 0 auto 15px;
+        }
+
+        .header__buttons button:disabled,
+        .header__buttons button[disabled] {
+            border-color: #d5a900;
+            background: #d5a900;
+        }
+
+        #upload_file_status {
+            color: #ffffff;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        #upload_file {
+            display: none;
+        }
+
+        main {
+            padding: 50px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        section {
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 4px 4px 20px 0 rgba(17, 33, 49, 0.15);
+            padding: 15px 15px 35px;
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .overview__title {
+            margin-bottom: 40px;
+        }
+
+        .review__title {
+            margin-bottom: 5px;
+        }
+
+        .overview__gauges {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gauge__wrapper {
+            position: relative;
+            width: 180px;
+            height: 150px;
+            margin-bottom: 40px;
+        }
+
+        #gauge_meter_accuracy,
+        #gauge_meter_automation {
+            height: 170px;
+            width: 320px;
+            display: inline-block;
+            position: absolute;
+            left: -60px;
+        }
+
+        #gauge_meter_accuracy_text,
+        #gauge_meter_automation_text {
+            font-weight: 700;
+            font-size: 36px;
+            position: relative;
+            text-align: center;
+            top: 48px;
+        }
+
+        #gauge_meter_label,
+        #gauge_meter_label {
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 13px;
+            position: relative;
+            text-align: center;
+            top: 43px;
+        }
+
+        .overview__summary {
+            marginn: 0 0 20px;
+            font-size: 18px;
+        }
+
+        .overview__point {
+            margin-bottom: 15px;
+        }
+
+        .overview__summary span {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .overview__icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            text-align: center;
+            line-height: 40px;
+            background: black;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .icon__cog { background: #43efc3}
+        .icon__search { background: #ffca00}
+
+        .overview__icon img {
+            width: 26px;
+            display: inline-block;
+            position: relative;
+            top: 6px;
+        }
+
+
+
+        #review__subheader {
+            font-size: 18px;
+            margin: 0 0 40px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tr {
+            border-bottom: 1px solid #dee2e6;
+            border-top: 1px solid #dee2e6;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 15px;
+        }
+
+        tr > td:first-child {
+            font-weight: 700;
+        }
+
+        select {
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid #c3c4c5;
+        }
+
+        /* Loader */
+        .k-loading-ring-container {
+            display: flex;
+            padding: 100px 40px;
+            background: #f7f7f7;
+        }
+
+        .k-loading-ring {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto;
+        }
+
+        .k-loading-ring:after {
+            content: ' ';
+            display: block;
+            width: 46px;
+            height: 46px;
+            margin: 1px;
+            border-radius: 50%;
+            border: 5px solid #82AFBA;
+            border-color: #82AFBA transparent #82AFBA transparent;
+            animation: k-loading-ring 1.2s linear infinite;
+        }
+
+        @keyframes k-loading-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (min-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            section {
+                padding: 30px 30px 45px;
+            }
+
+            .header__buttons input,
+            .header__buttons button {
+                display: inline-block;
+
+            }
+
+            #upload_file_trigger {
+                margin-right: 15px;
+            }
+
+            .overview__summary {
+                margin: 0 0 20px 23%;
+            }
+
+            .overview__gauges {
+                flex-direction: row;
+            }
+
+            select {
+                min-width: 200px;
+            }
+        }
+
+        @media (min-width: 930px) {
+            .overview__summary {
+                margin: 0 0 20px 230px;
+            }
+        }
+    </style>
+    <script>
+        let items = null;
+        let metadata = {};
+        let item_index = -1;
+        let items_remaining = 0;
+        let dataRefresh = false;
+
+        function get_next_item(refresh) {
+            if (refresh) {
+                item_index = -1;
+                items_remaining = 0;
+            }
+
+            if (item_index === metadata['num_for_review']) {
+                document.body.removeChild(document.getElementById("data_table"));
+                return;
+            }
+
+            item_index += 1;
+            items_remaining = metadata['num_for_review'] - item_index;
+
+            let item = {
+                target_value: null,
+                data: {}
+            };
+
+            const columns = items.columns;
+            for (let i = 0; i < columns.length; i++) {
+                if (columns[i] === items.target)
+                    item.target_value = items.data[item_index][i];
+                else if (!columns[i].startsWith('yhat'))
+                    item.data[columns[i]] = items.data[item_index][i];
+            }
+
+            const for_review_summary = document.getElementById("for_review_summary");
+            const review_subheader = document.getElementById("review__subheader");
+            for_review_summary.innerHTML = '<span class="overview__icon icon__search"><img src="static/images/search.png" /></span><span>' + item_index + '</span> out of <span>' + metadata['num_for_review'] + '</span> manually reviewed.';
+            review_subheader.innerHTML = '<span>' + items_remaining + '</span> items to review';
+            const total_summary = document.getElementById("total_summary");
+            total_summary.innerHTML = '<span class="overview__icon icon__check"><img src="static/images/check.png" /></span><span>' + (metadata['num_automated'] + item_index) + '</span> out of <span>' + metadata['total_items'] + '</span> items done.';
+
+            return item;
+        }
+
+        function trigger_on_file_upload() {
+            const upload_data = document.getElementById("upload_file");
+            upload_data.value = "";
+            upload_data.click();
+        }
+
+        function on_file_upload(element) {
+            const status_element = document.getElementById("upload_file_status");
+            const loader = document.getElementById("k-loader");
+            const breakdown = document.getElementById("automation__breakdown");
+            const table = document.getElementById("data_table");
+            status_element.innerText = 'Processing... (This can take a few minutes)';
+            loader.style.display = "flex";
+            breakdown.style.display = "none";
+
+
+            if (typeof(table) != 'undefined' && table != null) {
+              table.remove()
+            }
+
+            const formData = new FormData();
+
+            formData.append('file', element.files[0]);
+
+            fetch('upload_file?api_key={{ api_key }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+        .then(result => {
+                if ("error" in result)
+                    throw result.error
+
+                console.log('upload_file Success:', result);
+                status_element.innerText = "";
+                dataRefresh = true;
+                items = result.items_for_review;
+                metadata['file_id'] = result.file_id;
+                metadata['total_items'] = result.total_items;
+                metadata['num_automated'] = result.num_automated;
+                metadata['num_for_review'] = result.num_for_review;
+                metadata['accuracy'] = result.accuracy;
+                metadata['num_automated_percentage'] = result.num_automated_percentage;
+                metadata['num_for_review_percentage'] = result.num_for_review_percentage;
+
+                draw_guages('gauge_meter_accuracy', result.accuracy); draw_guages('gauge_meter_automation', result.num_automated_percentage)
+
+                const automation_summary = document.getElementById("automation_summary");
+                automation_summary.innerHTML = '<span class="overview__icon icon__cog"><img src="static/images/cog.png" /></span><span>' + result.num_automated + '</span> out of <span>' + result.total_items + '</span> items automated.';
+
+                create_table(get_next_item(dataRefresh));
+
+                const download_element = document.getElementById("download_file");
+                download_element.disabled = false;
+
+                loader.style.display = "none";
+                breakdown.style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                status_element.innerText = 'Error: ' + error;
+                loader.style.display = "none";
+            });
+        }
+
+        function create_table(item) {
+            const table_wrapper = document.getElementById("review__table"), table_element = document.createElement('table');
+            table_element.id = "data_table";
+
+            const select_element = document.createElement("select");
+            for (let i = 0; i < items.labels.length; i++) {
+                const option = document.createElement("option");
+                option.value = items.labels[i];
+                option.text = items.labels[i];
+                select_element.appendChild(option);
+            }
+            select_element.value = item.target_value;
+            select_element.onchange = () => on_answer_selected(select_element);
+            select_element.onfocus = () => select_element.selectedIndex = -1;
+
+            let tr = table_element.insertRow();
+            let td = tr.insertCell();
+            td.appendChild(document.createTextNode(items.target));
+            td = tr.insertCell();
+            td.appendChild(select_element);
+
+            for (const [key, value] of Object.entries(item.data)) {
+                tr = table_element.insertRow();
+                td = tr.insertCell();
+                td.appendChild(document.createTextNode(key));
+                td = tr.insertCell();
+                td.appendChild(document.createTextNode(value));
+            }
+            table_wrapper.appendChild(table_element);
+        }
+
+        function on_answer_selected(element) {
+            element.disabled = true;
+            const download_element = document.getElementById("download_file");
+            download_element.disabled = true;
+
+            // Send request to update the server
+            fetch('update_file_prediction?api_key={{ api_key }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'file_id': metadata['file_id'],
+                    'row_id': item_index,
+                    'answer': element.value
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('update_file_prediction Success:', result);
+
+                element.disabled = false;
+                download_element.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+
+                element.disabled = false;
+            });
+
+            // get next item
+            const item = get_next_item();
+
+            // Update the table
+            element.value = item.target_value;
+            const table_element = document.getElementById("data_table");
+            const rows = table_element.children[0].children;
+            let row_index = 1;
+            for (const [key, value] of Object.entries(item.data)) {
+                rows[row_index].children[1].innerText = value;
+                row_index += 1;
+            }
+        }
+
+        function draw_guages(id, percentage) {
+            var opts = {
+                angle: 0.27, // The span of the gauge arc
+                lineWidth: 0.14, // The line thickness
+                radiusScale: 1, // Relative radius
+                pointer: {
+                    length: 0.6, // // Relative to gauge radius
+                    strokeWidth: 0.035, // The thickness
+                    color: '#000000' // Fill color
+                },
+                limitMax: false,     // If false, max value increases automatically if value > maxValue
+                limitMin: false,     // If true, the min value of the gauge will be fixed
+                colorStart: '#82afba',   // Colors
+                colorStop: '#40b7d5',    // just experiment with them
+                strokeColor: '#fff',  // to see which ones work best for you
+                generateGradient: true,
+                highDpiSupport: true,     // High resolution support
+            };
+            var target = document.getElementById(id); // your canvas element
+            var gauge = new Donut(target).setOptions(opts); // create sexy gauge!
+            gauge.maxValue = 100; // set max gauge value
+            gauge.setMinValue(0);  // Prefer setter over gauge.minValue = 0
+            gauge.animationSpeed = 26; // set animation speed (32 is default value)
+            gauge.set(percentage); // set actual value
+
+            const text_element = document.getElementById(id + "_text");
+            text_element.innerText = Math.round(percentage) + '%';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header__logo">
+            <img src="static/images/k-logo.svg">
+        </div>
+        <div class="header__buttons">
+            <input type="file" id="upload_file" accept=".csv" onchange="on_file_upload(this)">
+            <button id="upload_file_trigger" onclick={trigger_on_file_upload()}>Upload Data</button>
+            <button id="download_file" disabled onclick="location.href='download_file.csv?api_key={{ api_key }}&file_id=' + metadata['file_id'];">Download Data</button>
+            <div id="upload_file_status"></div>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div id="k-loader" class="k-loading-ring-container" style="display: none;">
+                <div class="k-loading-ring"></div>
+            </div>
+            <div id="automation__breakdown" style="display: none;">
+                <section>
+                    <h2 class="overview__title">Automation Overview</h2>
+                    <div class="overview__gauges">
+                        <div class="gauge__wrapper">
+                            <canvas id="gauge_meter_accuracy"></canvas>
+                            <div id="gauge_meter_accuracy_text"></div>
+                            <div id="gauge_meter_label">Accuracy</div>
+                        </div>
+                        <div class="gauge__wrapper">
+                            <canvas id="gauge_meter_automation"></canvas>
+                            <div id="gauge_meter_automation_text"></div>
+                            <div id="gauge_meter_label">Automation</div>
+                        </div>
+                    </div>
+                    <div class="overview__summary">
+                        <div id="automation_summary" class="overview__point"></div>
+                        <div id="for_review_summary" class="overview__point"></div>
+                        <div id="total_summary" class="overview__point"></div>
+                    </div>
+                </section>
+                <section>
+                    <h2 class="review__title">Manual Reviews</h2>
+                    <p id="review__subheader"></p>
+                    <div id="review__table"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

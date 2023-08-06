@@ -1,0 +1,58 @@
+
+
+Steps in basic time series:
+
+split dataset by id
+aggregate data on uniform period
+select rows to generate features from
+create features using windows
+create deltas
+
+
+Order of attack:
+
+1. create tests - 1 test done, a lot more to do
+2. create features using windows - done
+3. select rows to generate features from - uniform time period backward done, still random backwards and at event versions to do
+4. aggregate data on uniform period
+5. split dataset by id
+6. create deltas
+
+
+Performance notes
+
+The best way to attack is probably to start with a sort by id and date or just date if no id present
+Then determine the number of output array elements create that sized a 2D numpy array
+Subsequently iterate through functions populating list, use indices over selectors for speed (ie: if daily and iterating weekly use an index and add 7)
+
+
+2018-12-29 21:00:00    1.0
+2018-12-29 17:17:00    1.0
+2018-12-29 16:03:00    1.0
+2018-12-29 16:03:00    2.0
+2018-12-29 15:15:00    1.0
+2018-12-29 14:45:00    1.0
+2018-12-29 14:45:00    1.0
+2018-12-29 11:50:00    2.0
+2018-12-29 03:00:00    1.0
+2018-12-29 01:10:00    1.0
+
+Sum 12
+start_time = 2018-12-29 23:59:59.999999
+end_time = 2018-12-28 23:59:59.999999
+
+2018-12-29 21:00:00    1.0 1
+2018-12-29 17:17:00    1.0 2
+2018-12-29 16:03:00    1.0 3
+2018-12-29 16:03:00    2.0 5
+2018-12-29 15:15:00    1.0 6
+2018-12-29 14:45:00    1.0 7
+2018-12-29 14:45:00    1.0 8
+2018-12-29 11:50:00    2.0 10
+2018-12-29 03:00:00    1.0 11
+2018-12-29 01:10:00    1.0 12
+
+Sum 11
+start_time = 2018-12-29 23:59:59.999999
+end_time = 2018-12-28 23:59:59.999999
+
