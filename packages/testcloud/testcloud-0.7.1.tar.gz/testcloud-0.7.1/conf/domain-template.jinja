@@ -1,0 +1,55 @@
+<domain type='{{ virt_type }}' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
+  <name>{{ domain_name }}</name>
+  <uuid>{{ uuid }}</uuid>
+  <memory unit='KiB'>{{ memory }}</memory>
+  <currentMemory unit='KiB'>{{ memory }}</currentMemory>
+  <vcpu placement='static'>{{ vcpus }}</vcpu>
+  <os>
+    <type arch='{{ arch }}' machine='{{ model }}'>hvm</type>
+    {{ uefi_loader }}
+    <boot dev='hd'/>
+  </os>
+  {{ cpu }}
+  {{ extra_specs }}
+  <clock offset='utc'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>restart</on_crash>
+  <devices>
+    <emulator>{{ emulator_path }}</emulator>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2' cache='unsafe'/>
+      <source file="{{ disk }}"/>
+      <target dev='vda' bus='virtio'/>
+      {{ boot_drive_address }}
+    </disk>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file="{{ seed }}"/>
+      <target dev='vdb' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </disk>
+    <interface type='{{ network_type }}'>
+      <mac address="{{ mac_address }}"/>
+      {{ network_source }}
+      {{ ip_setup }}
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </interface>
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <input type="keyboard" bus="virtio"/>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+    </rng>
+  </devices>
+  {{ qemu_args }}
+</domain>
