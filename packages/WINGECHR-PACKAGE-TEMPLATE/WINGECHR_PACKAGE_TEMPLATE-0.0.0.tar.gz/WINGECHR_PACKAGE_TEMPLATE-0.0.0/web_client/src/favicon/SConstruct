@@ -1,0 +1,14 @@
+# only run this locally and add created files to repository
+import os
+
+env = Environment(
+    ENV=os.environ
+)
+env.Clean('all', ['build'])
+
+tgt = env.Command(
+    "build/faviconData.json",
+    "faviconDescription.json",
+    'npx --no-install real-favicon generate $SOURCE $TARGET build'
+)
+env.Depends(tgt, 'logo.svg')

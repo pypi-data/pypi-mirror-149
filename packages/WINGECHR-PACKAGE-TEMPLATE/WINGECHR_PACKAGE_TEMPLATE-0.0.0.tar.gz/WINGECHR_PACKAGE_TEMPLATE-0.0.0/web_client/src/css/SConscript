@@ -1,0 +1,28 @@
+import os
+Import("env")
+
+cmd = "npx --no-install sass"
+cmd += " --style " + ("expanded" if env["DEBUG"] else "compressed")
+cmd += " --no-source-map"
+cmd += " $SOURCE"
+cmd += " $TARGET"
+
+
+main_css = env.Command('#/$BLD/css/main.css', "__main__.scss", cmd)
+bootstrap_css = env.Command('#/$BLD/css/bootstrap.css', "bootstrap.scss", cmd)
+
+# add all files as dependencies
+for rt, ds, fs in os.walk('.'):
+    for f in fs:
+        if not f.endswith(".scss"):
+            continue
+        env.Depends(main_css, rt + '/' + f)
+        env.Depends(bootstrap_css, rt + '/' + f)
+
+
+env.Depends(main_css, [
+    '#/package.json',
+])
+env.Depends(bootstrap_css, [
+    '#/package.json',
+])

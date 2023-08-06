@@ -1,0 +1,24 @@
+variables:
+  GIT_STRATEGY: none
+  PATH_CHECKOUT: ""
+
+stages:
+  - checkout
+  - deploy
+
+job_checkout:
+  only:
+    - dev
+    - master
+  stage: checkout
+  script:
+    - test -d $PATH_CHECKOUT || git clone git@$CI_SERVER_HOST:$CI_PROJECT_PATH.git $PATH_CHECKOUT
+    - pushd $PATH_CHECKOUT
+    - git fetch
+    - git checkout -f $CI_BUILD_REF_NAME
+    - git pull
+    - git diff-index --quiet HEAD
+    - test -d .env || virtualenv --system-site-packages -p python3 .env
+    - . .env/bin/activate
+    - pip install -r requirements.txt
+    - popd

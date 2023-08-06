@@ -1,0 +1,34 @@
+Import("env")
+import os
+import json
+
+# find dependencies
+dependencies = ["pages.json", "../vendor.json", "../../package.json"]
+for rt, ds, fs in os.walk("templates"):
+    for f in fs:
+        if not f.endswith(".html"):
+            continue
+        dependencies.append(rt + '/' + f)
+
+# load page index and generate html
+with open('pages.json') as file:
+    pages = json.load(file)["pages"]
+
+for name in pages:
+    cmd = "pystache-cli"
+    cmd += " --partial_paths=$SRC/html/templates"
+    cmd += " --strict --remove-cr"
+    cmd += " $TARGET"
+    cmd += " $SOURCE"
+    cmd += " package.json"
+    cmd += " $SRC/vendor.json"
+    cmd += " $SRC/html/pages.json"
+    cmd += " && npx --no-install prettier"
+    cmd += " --write $TARGET"
+
+    html = env.Command(
+        '#/$BLD/%s.html' % name,
+        '#/$SRC/html/%s.html' % name,
+        cmd
+    )
+    env.Depends(html, dependencies)

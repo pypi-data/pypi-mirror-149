@@ -1,0 +1,24 @@
+import os
+Import("env")
+
+cmd = "npx --no-install webpack"
+cmd += " --mode " + ("development" if env["DEBUG"] else "production")
+cmd += " --output-path $TARGET.dir"
+cmd += " --output-filename $TARGET.file"
+cmd += " ./$SOURCE"
+
+main_js = env.Command('#/$BLD/js/main.js', "__main__.js", cmd)
+
+# add all files as dependencies
+
+env.Depends(main_js, [
+    '#/webpack.config.js',
+    '#/babel.config.json',
+    '#/package.json',
+])
+
+for rt, ds, fs in os.walk('.'):
+    for f in fs:
+        if not f.endswith(".js"):
+            continue
+        env.Depends(main_js, rt + '/' + f)

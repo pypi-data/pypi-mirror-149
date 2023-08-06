@@ -1,0 +1,24 @@
+Import("env")
+import os
+import json
+
+# copy files from static folder
+
+for rt, ds, fs in os.walk('.'):
+    for f in fs:
+        if f not in ['SConscript']:
+            p = os.path.join(rt, f)
+            env.Command('#/$BLD/' + p, p, Copy('$TARGET', '$SOURCE'))
+
+# copy files from vendor
+with open('../vendor.json') as file:
+    vendor_files = json.load(file)
+
+for filegroups in vendor_files.values():
+    for vf in filegroups:
+        f = env.Command(
+            "#/$BLD/" + vf["file"],
+            '#/node_modules/' + vf["source"],
+            Copy('$TARGET', '$SOURCE')
+        )
+        env.Depends(f, '#/package.json')
