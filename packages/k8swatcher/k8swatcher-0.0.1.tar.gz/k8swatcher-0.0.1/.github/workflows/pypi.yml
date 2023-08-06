@@ -1,0 +1,54 @@
+name: Build, test, publish
+on: push
+
+jobs:
+  build-n-publish:
+    name: Build and publish PyPI
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - uses: actions/checkout@master
+      
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Dev build
+        if: startsWith(github.ref, 'refs/tags') == false
+        run: |
+          pip install --upgrade dunamai setuptools setuptools_scm wheel twine
+          export VERSION_NUMBER=$(dunamai from git --format 0.0.0.{timestamp})
+          echo "VERSION_NUMBER: $VERSION_NUMBER"
+          sed -i "s/__VERSION_HERE__/$VERSION_NUMBER/g" setup.py
+          cat setup.py
+          python setup.py sdist bdist_wheel
+
+      - name: Tagged build
+        if: startsWith(github.ref, 'refs/tags') == true
+        run: |
+          pip install --upgrade dunamai setuptools setuptools_scm wheel twine
+          export VERSION_NUMBER=${{ github.ref_name }}
+          echo "VERSION_NUMBER: $VERSION_NUMBER"
+          sed -i "s/__VERSION_HERE__/$VERSION_NUMBER/g" setup.py
+          cat setup.py
+          python setup.py sdist bdist_wheel
+          
+      - name: Upload to test pypi
+        continue-on-error: true
+        env:
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
+        run: 
+          twine upload --non-interactive -r testpypi dist/* 
+
+      - name: Upload to prod pypi
+        if: startsWith(github.ref, 'refs/tags')
+        env:
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_USERNAME: __token__
+        run: 
+          twine upload --non-interactive dist/* 
+
+
+          
