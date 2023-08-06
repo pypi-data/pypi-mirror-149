@@ -1,0 +1,50 @@
+
+name: Python API CLient
+
+on: push
+
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install requirements
+        run: pip install tox twine -r requirements.txt -r test-requirements.txt
+      # Open-api-generator is broken. To be updated when upgrading
+      # - name: test 
+      #   run: tox
+      - name: Check Readme syntax
+        run: |
+          python setup.py sdist
+          twine check dist/*
+
+  release:
+    runs-on: self-hosted
+    needs: test
+    if: contains('
+        refs/heads/master
+        refs/heads/main'
+      , github.ref)
+    concurrency: release
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install ci requirements
+      run: pip install -r ci-requirements.txt
+    - name: Release
+      run: |
+        git config --global user.email "infra@bimdata.io"
+        git config --global user.name "GA"
+        PYTHONPATH=$PWD semantic-release publish
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
