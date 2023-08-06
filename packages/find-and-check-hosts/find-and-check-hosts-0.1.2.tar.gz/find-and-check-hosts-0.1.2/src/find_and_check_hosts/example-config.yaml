@@ -1,0 +1,25 @@
+ip_rules:
+# Only allow private IP addresses
+- status: ok
+  glob: "127.0.0.1"
+- status: ok
+  glob: "0.0.0.0"
+- status: warn
+  glob: "127.*"
+- status: ok
+  glob: "10.*"
+- status: ok
+  regex: "172\\.(1[6-9]|2[0-9]|3[0-1])\\..*"
+- status: ok
+  glob: "192.168.*"
+- status: bad
+  glob: "*"
+hostname_rules:
+- status: ok
+  domain: 
+  - example.com
+  - example.org
+- status: ok
+  glob: "localhost"
+- status: bad
+  glob: "*"
