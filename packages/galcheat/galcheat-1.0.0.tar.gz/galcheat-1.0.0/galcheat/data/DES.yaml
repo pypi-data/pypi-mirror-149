@@ -1,0 +1,67 @@
+name: "DES"
+description: "Dark Energy wide-field Survey (DES) done with the Victor M. Blanco telescope and the Dark Energy CAMera (DECam)"
+pixel_scale: 0.2637
+gain: 4.0
+mirror_diameter: 3.934
+obscuration: 0.17612680
+zeropoint_airmass: 1.3
+filters:
+  g:
+    name: "g"
+    sky_brightness: 22.01
+    full_exposure_time: 900
+    zeropoint: 26.72
+    psf_fwhm: 1.12
+    effective_wavelength: 489.004
+  r:
+    name: "r"
+    sky_brightness: 21.15
+    full_exposure_time: 900
+    zeropoint: 26.99
+    psf_fwhm: 0.96
+    effective_wavelength: 646.962
+  i:
+    name: "i"
+    sky_brightness: 19.89
+    full_exposure_time: 900
+    zeropoint: 26.86
+    psf_fwhm: 0.88
+    effective_wavelength: 784.778
+  z:
+    name: "z"
+    sky_brightness: 18.72
+    full_exposure_time: 900
+    zeropoint: 26.58
+    psf_fwhm: 0.84
+    effective_wavelength: 919.646
+references:
+  pixel_scale:
+    link: "http://www.ctio.noirlab.edu/noao/content/DECam-What"
+    comment: ""
+  gain:
+    link: "http://www.ctio.noirlab.edu/noao/content/DECam-What"
+    comment: ""
+  mirror_diameter:
+    link: "http://www.ctio.noirlab.edu/noao/content/Basic-Optical-Parameters"
+    comment: ""
+  obscuration:
+    link: "http://www.ctio.noirlab.edu/noao/content/Basic-Optical-Parameters"
+    comment: "disk of 1.651m - obscuration is 1.651^2/3.934^2 which returns the right effective area"
+  zeropoint_airmass:
+    link: "https://speclite.readthedocs.io/en/latest/filters.html#decam-2014-filters"
+    comment: ""
+  sky_brightness:
+    link: "https://arxiv.org/abs/1801.03181"
+    comment: "(v3) See table 1"
+  full_exposure_time:
+    link: "https://arxiv.org/abs/1801.03181"
+    comment: "(v3) See section 2.2 page 5. Coadds of 10 x 90s exposures"
+  zeropoint:
+    link: "https://speclite.readthedocs.io/en/latest/filters.html#decam-2014-filters"
+    comment: "computed with speclite – see scripts/check_zeropoints.py"
+  psf_fwhm:
+    link: "https://arxiv.org/abs/1801.03181"
+    comment: "(v3) See table 1"
+  effective_wavelength:
+    link: "https://speclite.readthedocs.io/en/latest/filters.html#decam-2014-filters"
+    comment: "computed with speclite – see scripts/check_effective_wavelength.py"
