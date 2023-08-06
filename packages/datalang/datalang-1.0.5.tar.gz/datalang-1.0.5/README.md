@@ -1,0 +1,46 @@
+# Datalang
+Datalang it's an easy to use language with a similar syntax to YAML.
+
+# How-to Install
+You will need **PIP**
+```sh
+git clone https://github.com/ZSendokame/datalang
+# Or
+pip install datalang
+```
+
+# How-to Use
+```py
+import datalang
+
+load = datalang.load('''
+str string: value
+int integer: 1
+
+list listVariable:
+- value0
+- value1
+
+dict dictVariable:
+- variable0: value0
+- variable1: value1
+''')
+
+print(load)
+{
+    'string': 'value',
+    'integer': 1,
+
+    'listVariable': [
+        'value0',
+        'value1'
+    ],
+    'dictVariable': {
+        'variable0': 'value0',
+        'variable1': 'value1'
+    }
+}
+
+# And vice-versa with
+print(datalang.dump(load))
+```
