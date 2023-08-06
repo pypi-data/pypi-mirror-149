@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-type: [application/json]
+      PRIVATE-TOKEN: [DKkdC5JmKWWZgXZGzg83]
+      User-Agent: [python-requests/2.21.0]
+    method: GET
+    uri: http://localhost/api/v4/users?username=create_user
+  response:
+    body: {string: !!python/unicode '[]'}
+    headers:
+      cache-control: ['max-age=0, private, must-revalidate']
+      connection: [keep-alive]
+      content-length: ['2']
+      content-type: [application/json]
+      date: ['Thu, 25 Apr 2019 21:35:22 GMT']
+      etag: [W/"4f53cda18c2baa0c0354bb5f9a3ecbe5"]
+      link: ['<http://gitlab.example.com/api/v4/users?active=false&blocked=false&external=false&order_by=id&page=1&per_page=20&sort=desc&username=create_user&with_custom_attributes=false>;
+          rel="first", <http://gitlab.example.com/api/v4/users?active=false&blocked=false&external=false&order_by=id&page=1&per_page=20&sort=desc&username=create_user&with_custom_attributes=false>;
+          rel="last"']
+      server: [nginx]
+      strict-transport-security: [max-age=31536000]
+      vary: [Origin]
+      x-content-type-options: [nosniff]
+      x-frame-options: [SAMEORIGIN]
+      x-next-page: ['']
+      x-page: ['1']
+      x-per-page: ['20']
+      x-prev-page: ['']
+      x-request-id: [T4mxrEwDjma]
+      x-runtime: ['0.025697']
+      x-total: ['0']
+      x-total-pages: ['1']
+    status: {code: 200, message: OK}
+- request:
+    body: !!python/unicode '{"username": "create_user", "path": "create_user", "password":
+      "P@ssw0rdNot24get", "email": "create_user@example.org", "name": "Create User"}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['141']
+      Content-type: [application/json]
+      PRIVATE-TOKEN: [DKkdC5JmKWWZgXZGzg83]
+      User-Agent: [python-requests/2.21.0]
+    method: POST
+    uri: http://localhost/api/v4/users
+  response:
+    body: {string: !!python/unicode '{"id":6,"name":"Create User","username":"create_user","state":"active","avatar_url":"https://www.gravatar.com/avatar/ca965701cdfac786049c578077ee7b59?s=80\u0026d=identicon","web_url":"http://gitlab.example.com/create_user","created_at":"2019-04-25T21:35:22.654Z","bio":null,"location":null,"public_email":"","skype":"","linkedin":"","twitter":"","website_url":"","organization":null,"last_sign_in_at":null,"confirmed_at":null,"last_activity_on":null,"email":"create_user@example.org","theme_id":1,"color_scheme_id":1,"projects_limit":100000,"current_sign_in_at":null,"identities":[],"can_create_group":true,"can_create_project":true,"two_factor_enabled":false,"external":false,"private_profile":null}'}
+    headers:
+      cache-control: ['max-age=0, private, must-revalidate']
+      connection: [keep-alive]
+      content-length: ['700']
+      content-type: [application/json]
+      date: ['Thu, 25 Apr 2019 21:35:22 GMT']
+      etag: [W/"6d0cf886284568b08db8483d809f2b61"]
+      server: [nginx]
+      strict-transport-security: [max-age=31536000]
+      vary: [Origin]
+      x-content-type-options: [nosniff]
+      x-frame-options: [SAMEORIGIN]
+      x-request-id: [FxbJOJrAId2]
+      x-runtime: ['0.201259']
+    status: {code: 201, message: Created}
+version: 1

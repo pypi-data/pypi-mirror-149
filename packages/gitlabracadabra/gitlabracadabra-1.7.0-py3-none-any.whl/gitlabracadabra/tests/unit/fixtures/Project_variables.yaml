@@ -1,0 +1,448 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/projects/test%2Fproject_variables
+  response:
+    body:
+      string: '{"id":25,"description":"","name":"project_variables","name_with_namespace":"test
+        / project_variables","path":"project_variables","path_with_namespace":"test/project_variables","created_at":"2019-06-20T12:35:21.702Z","default_branch":null,"tag_list":[],"ssh_url_to_repo":"git@gitlab.example.com:test/project_variables.git","http_url_to_repo":"http://gitlab.example.com/test/project_variables.git","web_url":"http://gitlab.example.com/test/project_variables","readme_url":null,"avatar_url":null,"star_count":0,"forks_count":0,"last_activity_at":"2019-06-20T12:35:21.702Z","namespace":{"id":3,"name":"test","path":"test","kind":"group","full_path":"test","parent_id":null,"avatar_url":null,"web_url":"http://gitlab.example.com/groups/test"},"_links":{"self":"http://gitlab.example.com/api/v4/projects/25","issues":"http://gitlab.example.com/api/v4/projects/25/issues","merge_requests":"http://gitlab.example.com/api/v4/projects/25/merge_requests","repo_branches":"http://gitlab.example.com/api/v4/projects/25/repository/branches","labels":"http://gitlab.example.com/api/v4/projects/25/labels","events":"http://gitlab.example.com/api/v4/projects/25/events","members":"http://gitlab.example.com/api/v4/projects/25/members"},"empty_repo":true,"archived":false,"visibility":"private","resolve_outdated_diff_discussions":false,"container_registry_enabled":true,"issues_enabled":true,"merge_requests_enabled":true,"wiki_enabled":true,"jobs_enabled":true,"snippets_enabled":true,"shared_runners_enabled":true,"lfs_enabled":true,"creator_id":1,"import_status":"none","import_error":null,"open_issues_count":0,"runners_token":"PJ-1YSvehCEkaT_rfgDw","ci_default_git_depth":50,"public_jobs":true,"ci_config_path":null,"shared_with_groups":[],"only_allow_merge_if_pipeline_succeeds":false,"request_access_enabled":false,"only_allow_merge_if_all_discussions_are_resolved":false,"printing_merge_request_link_enabled":true,"merge_method":"merge","external_authorization_classification_label":null,"permissions":{"project_access":null,"group_access":{"access_level":50,"notification_level":3}}}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '2075'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:13 GMT
+      Etag:
+      - W/"390c721c2962eb07cb67514cd07173a9"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - vx23TscDH56
+      X-Runtime:
+      - '0.163577'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/projects/25/variables
+  response:
+    body:
+      string: '[{"variable_type":"env_var","key":"change_me","value":"oldvalue","protected":true,"masked":true}]'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:13 GMT
+      Etag:
+      - W/"7bcb84ec4a85bece126bf40bef4d3eed"
+      Link:
+      - <http://gitlab.example.com/api/v4/projects/25/variables?id=25&page=1&per_page=20>;
+        rel="first", <http://gitlab.example.com/api/v4/projects/25/variables?id=25&page=1&per_page=20>;
+        rel="last"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Next-Page:
+      - ''
+      X-Page:
+      - '1'
+      X-Per-Page:
+      - '20'
+      X-Prev-Page:
+      - ''
+      X-Request-Id:
+      - XPay1IWIz45
+      X-Runtime:
+      - '0.041848'
+      X-Total:
+      - '1'
+      X-Total-Pages:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '42'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/projects/25/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":true,"masked":true}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '96'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:13 GMT
+      Etag:
+      - W/"6819b23ab59f360dc3acab495ef29ab4"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - yCZoCcMxRd5
+      X-Runtime:
+      - '0.080109'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "masked": false}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '59'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/projects/25/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":true,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:13 GMT
+      Etag:
+      - W/"bb4c5edab8981fd2db23f0fc7054e661"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - dppIy3ZD1a5
+      X-Runtime:
+      - '0.052232'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "protected": false}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '62'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/projects/25/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"change_me","value":"new_value","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '98'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:14 GMT
+      Etag:
+      - W/"21ac823c9ba3092d30a95a7f76601324"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - dWlNrCtO34a
+      X-Runtime:
+      - '0.041781'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "change_me", "value": "new_value", "variable_type": "file"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '67'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/projects/25/variables/change_me
+  response:
+    body:
+      string: '{"variable_type":"file","key":"change_me","value":"new_value","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '95'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:14 GMT
+      Etag:
+      - W/"8a8b39c9577621117662177f9557dfe5"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - ZANxpqdsDb4
+      X-Runtime:
+      - '0.056817'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"key": "file_variable", "value": "BEGIN CERTIFICATE", "variable_type":
+      "file"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '79'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://localhost/api/v4/projects/25/variables
+  response:
+    body:
+      string: '{"variable_type":"file","key":"file_variable","value":"BEGIN CERTIFICATE","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '107'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:14 GMT
+      Etag:
+      - W/"40eeb01c0e449420c14e207c23c3b33a"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - mVsTDPPY1w1
+      X-Runtime:
+      - '0.048415'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"key": "simple_var", "value": "simple_value"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '46'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://localhost/api/v4/projects/25/variables
+  response:
+    body:
+      string: '{"variable_type":"env_var","key":"simple_var","value":"simple_value","protected":false,"masked":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '102'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 20 Jun 2019 12:37:14 GMT
+      Etag:
+      - W/"4e69669bdcc999a0ce87688febd8767e"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - 6g6gvz0QOG5
+      X-Runtime:
+      - '0.046151'
+    status:
+      code: 201
+      message: Created
+version: 1

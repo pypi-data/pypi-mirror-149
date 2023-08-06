@@ -1,0 +1,337 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/groups/test%2Fgroup_labels
+  response:
+    body:
+      string: '{"id":24,"web_url":"http://gitlab.example.com/groups/test/group_labels","name":"group_labels","path":"group_labels","description":"","visibility":"internal","lfs_enabled":true,"avatar_url":null,"request_access_enabled":false,"full_name":"test
+        / group_labels","full_path":"test/group_labels","parent_id":3,"projects":[],"shared_projects":[]}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '340'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Etag:
+      - W/"5844c7f026c757b76fcfa5d24285b295"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - s3QFG3z82k6
+      X-Runtime:
+      - '0.067914'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: GET
+    uri: http://localhost/api/v4/groups/24/labels
+  response:
+    body:
+      string: '[{"id":4,"name":"change_this_group_label","color":"#0000FF","description":"Old
+        description","text_color":"#FFFFFF","open_issues_count":0,"closed_issues_count":0,"open_merge_requests_count":0,"subscribed":false},{"id":5,"name":"delete_this_group_label","color":"#000000","description":"Delete
+        me!","text_color":"#FFFFFF","open_issues_count":0,"closed_issues_count":0,"open_merge_requests_count":0,"subscribed":false}]'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '416'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Etag:
+      - W/"ee430368935a5e9d9dec1e9e93b7620d"
+      Link:
+      - <http://gitlab.example.com/api/v4/groups/24/labels?id=24&page=1&per_page=20>;
+        rel="first", <http://gitlab.example.com/api/v4/groups/24/labels?id=24&page=1&per_page=20>;
+        rel="last"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Next-Page:
+      - ''
+      X-Page:
+      - '1'
+      X-Per-Page:
+      - '20'
+      X-Prev-Page:
+      - ''
+      X-Request-Id:
+      - AgSZkDM2Wo3
+      X-Runtime:
+      - '0.132463'
+      X-Total:
+      - '2'
+      X-Total-Pages:
+      - '1'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "change_this_group_label", "color": "green"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '53'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/24/labels
+  response:
+    body:
+      string: '{"id":4,"name":"change_this_group_label","color":"#008000","description":"Old
+        description","text_color":"#FFFFFF","open_issues_count":0,"closed_issues_count":0,"open_merge_requests_count":0,"subscribed":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '209'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Etag:
+      - W/"ce0f5645adacc416cc7886183f89cbc1"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - kgQo36YCOY2
+      X-Runtime:
+      - '0.102525'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "change_this_group_label", "description": "New description"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: PUT
+    uri: http://localhost/api/v4/groups/24/labels
+  response:
+    body:
+      string: '{"id":4,"name":"change_this_group_label","color":"#008000","description":"New
+        description","text_color":"#FFFFFF","open_issues_count":0,"closed_issues_count":0,"open_merge_requests_count":0,"subscribed":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '209'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Etag:
+      - W/"d97c592fed75b5ea7a06093b35a7e39a"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - lxKwNJIst4a
+      X-Runtime:
+      - '0.096243'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: DELETE
+    uri: http://localhost/api/v4/groups/24/labels/delete_this_group_label
+  response:
+    body:
+      string: ''
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - opCVho1mJx8
+      X-Runtime:
+      - '0.106252'
+    status:
+      code: 204
+      message: No Content
+- request:
+    body: '{"name": "new_group_label", "color": "red"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '43'
+      Content-type:
+      - application/json
+      PRIVATE-TOKEN:
+      - DKkdC5JmKWWZgXZGzg83
+      User-Agent:
+      - python-requests/2.22.0
+    method: POST
+    uri: http://localhost/api/v4/groups/24/labels
+  response:
+    body:
+      string: '{"id":6,"name":"new_group_label","color":"#FF0000","description":null,"text_color":"#FFFFFF","open_issues_count":0,"closed_issues_count":0,"open_merge_requests_count":0,"subscribed":false}'
+    headers:
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '188'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 25 Jul 2019 15:09:15 GMT
+      Etag:
+      - W/"247f04a9438f066fcda2ac5c764e46ab"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Request-Id:
+      - np7T0zLhPt8
+      X-Runtime:
+      - '0.095544'
+    status:
+      code: 201
+      message: Created
+version: 1
