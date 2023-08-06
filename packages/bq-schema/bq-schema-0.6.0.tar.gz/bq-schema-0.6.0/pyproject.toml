@@ -1,0 +1,34 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.scripts]
+convert-table = "bq_schema.cli.convert_table:cli"
+migrate-tables = "bq_schema.cli.migrate_tables:cli"
+
+[tool.flit.metadata]
+module = "bq_schema"
+dist-name="bq-schema"
+author = "Limehome GmbH"
+author-email = "raphael.brand@limehome.de"
+home-page = "https://github.com/limehome/bq-schema"
+classifiers = ["License :: OSI Approved :: MIT License"]
+description-file = "README.md"
+requires = [
+    "google-cloud-bigquery>=2,<3",
+    "dacite==1.5.1"
+]
+requires-python = ">=3.7"
+
+[tool.flit.metadata.requires-extra]
+develop = [
+    "invoke==1.4.1"
+]
+test = [
+    "black==22.3.0",
+    "isort==5.6.4",
+    "mypy==0.931",
+    "pylint==2.8.3",
+    "pytest==7.0.1",
+    "pytest-cov==3.0.0"
+]
