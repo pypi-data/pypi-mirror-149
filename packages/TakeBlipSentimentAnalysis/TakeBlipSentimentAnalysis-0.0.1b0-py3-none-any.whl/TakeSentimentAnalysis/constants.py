@@ -1,0 +1,3 @@
+PREPROCESS_OPTION = ['URL', 'EMAIL', 'NUMBER', 'CODE']
+PAD_STRING = '<pad>'
+UNK_STRING = '<unk>'
