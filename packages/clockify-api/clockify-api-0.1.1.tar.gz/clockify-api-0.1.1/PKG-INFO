@@ -1,0 +1,56 @@
+Metadata-Version: 2.1
+Name: clockify-api
+Version: 0.1.1
+Summary: Python wrapper for Clockify's API.
+Home-page: https://github.com/jpweijers/clockify-api
+Author: Jean-Paul Weijers
+Author-email: jpweijers@users.noreply.github.com
+Requires-Python: >=3.8,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: bidict (>=0.22.0,<0.23.0)
+Requires-Dist: marshmallow (>=3.15.0,<4.0.0)
+Requires-Dist: pydantic (>=1.9.0,<2.0.0)
+Requires-Dist: requests (>=2.27.1,<3.0.0)
+Project-URL: Documentation, https://clockify-api.readthedocs.io/
+Project-URL: Repository, https://github.com/jpweijers/clockify-api
+Description-Content-Type: text/markdown
+
+[![Coverage Status](https://coveralls.io/repos/github/jpweijers/clockify-api/badge.svg?branch=main)](https://coveralls.io/github/jpweijers/clockify-api?branch=main)
+[![Documentation Status](https://readthedocs.org/projects/clockify-api/badge/?version=latest)](https://clockify-api.readthedocs.io/en/latest/?badge=latest)
+
+# Clockify
+
+## Documentation
+
+- [Package Documentation](clockify-api.readthedocs.io)
+- [Official Clocify API reference](https://clockify.me/developers-api)
+
+## Installation
+
+```bash
+# Pip
+pip install clockify-api
+
+# Poetry
+poetry add clockify-api
+```
+
+## Example Usage
+
+```python
+from clockify.session import ClockifySession
+
+KEY = "YOUR_API KEY"
+WORKSPACE = "YOUR WORKSPACE ID"
+
+clockify_session = ClockifySession(KEY)
+
+projects = clockify_session.project.get_projects(WORKSPACE)
+
+for project in projects:
+    print(f"Project {project.name}, Client: {project.client_name}")
+```
+
