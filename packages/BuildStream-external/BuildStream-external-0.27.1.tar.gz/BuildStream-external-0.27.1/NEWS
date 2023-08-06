@@ -1,0 +1,288 @@
+============
+bst-external
+============
+
+===================
+bst-external 0.27.1
+===================
+* check_forbidden was incorrectly marked as source and not element so it was
+  not properly exposed
+
+===================
+bst-external 0.27.0
+===================
+* pypi source plugin added for Python sources
+* cpan source plugin added for Perl sources
+* patch_queue plugin for applying directories containining patches using
+  git apply
+* check_forbidden build plugin added to avoid leakage of unintended elements
+  to final artifacts
+* snap_image added to create snap deliverables
+
+===================
+bst-external 0.26.0
+===================
+
+* quilt: Pass patches through QUILT_PATCHES rather than cwd
+* cargo: don't download crates at track time if the checksums are available in the lock file
+* Split output by lines before processing
+
+===================
+bst-external 0.25.0
+===================
+
+* cargo: Fix tracking with aliases and no refs
+* git_tag: Avoid tracking commits that don't match the provided pattern
+
+===================
+bst-external 0.24.0
+===================
+
+* Get rid of warnings during build
+* collect_manifest: define strict rebuild
+* Fix compatibility with Python 3.10
+
+===================
+bst-external 0.23.1
+===================
+* Use the required setuptools-scm to ensure version won't unexpectedly
+  go out of sync
+
+===================
+bst-external 0.23.0
+===================
+* Provides git_module that makes it easier to handle complex recursive
+  submodules
+
+===================
+bst-external 0.22.0
+===================
+* Depends on pytoml instead of toml
+* oci: Docker images contain created timestamp
+* flatpak_repo: Failure when env elements are not depended upon
+
+===================
+bst-external 0.21.0
+===================
+
+o oci: Fix iteration over labels and annotations configuration
+o Fix inconsistent handling of `lfs not specified`
+o git_tag: Fix checking out of workspace when using submodules
+
+===================
+bst-external 0.20.0
+===================
+
+o cargo: Fix when using alias in url
+o git_tag: Add git lfs support
+o Fix tests to use git_tag plugin
+o x86image: Remove test
+o collect_manifest: Fix potential missing information in error message
+o collect_integration: Order the "ignore" items
+
+===================
+bst-external 0.19.1
+===================
+
+o git_tag: Fix submodule relative URLs when main URL does not end with /
+
+===================
+bst-external 0.19.0
+===================
+
+o oci: Multiple fixes
+o git_tag: Add tests
+o git_tag: Fix relative urls #40
+o collect_manifest: Fix cache key ignoring path of manifest
+o collect_manifest: Add support for custom regexp to extract versions
+
+===================
+bst-external 0.18.0
+===================
+
+o git_tag: Several fixes
+
+===================
+bst-external 0.17.0
+===================
+
+o cargo: Added new source plugin to automatically
+         download any sources required by a package's
+	 Cargo.lock file (for projects using cargo and
+	 rust)
+
+===================
+bst-external 0.16.0
+===================
+
+o oci: Several fixes
+o git_tag: Make it compatible with python 3.5
+
+===================
+bst-external 0.15.0
+===================
+
+o oci: Layers are now built in a consistent order
+o flatpak_repo: Improved cache key calculation
+o git_tag: Fetch with shallow clones if possible
+
+===================
+bst-external 0.14.0
+===================
+
+o git_tag: Fix searching for the latest commit not actually getting the latest
+           one.
+o oci: Added a new plugin that can generate OCI and Docker images.
+
+===================
+bst-external 0.13.0
+===================
+
+o git_tag: Cope with race conditions when cloning repeatedly to the same directory
+o x86image: The final image is now generated inside the destination directory,
+            improving performance when the install root is on a different device.
+o flatpak_repo: The ostree repo mode can be specified in the configuration.
+
+===================
+bst-external 0.12.0
+===================
+
+o collect_manifest.py: Uses its own of getting dependencies instead of relying on private APIs.
+o git_tag.py: Fixed the config field "track-extra" not being supported
+
+===================
+bst-external 0.11.0
+===================
+
+o git_tag: Allow pattern matching of tags and tracking multiple branches.
+o git_tag: Don't download unused submodules
+
+===================
+bst-external 0.10.0
+===================
+
+  o Add quilt source plugin for applying patch series.
+
+==================
+bst-external 0.9.0
+==================
+
+  o Add the ability to generate manifest files using the collect_manifest plugin.
+
+==================
+bst-external 0.8.0
+==================
+
+  o flatpak_image plugin now automatically moves all files in /etc into
+    /files/etc
+  o git_tag: Fixed tracking not picking up new changes if the ref is already
+    set
+  o Add flatpak_repo element plugin for creating a flatpak repository from
+    flatpak_image elements.
+
+==================
+bst-external 0.7.1
+==================
+
+  o Fix git_tag plugin not updating tags if the source fetches from multiple
+    repositories
+
+==================
+bst-external 0.7.0
+==================
+
+  o Add tar_element plugin for creating tarballs
+  o Make git_tag plugin resilient to changes in buildstream's built-in git plugin.
+
+==================
+bst-external 0.6.2
+==================
+
+  o Add support for non-annotated tags in git_tag.
+  o Make git_tag plugin fall back to normal behaviour if no tags are found.
+
+==================
+bst-external 0.6.1
+==================
+
+  o Add entrypoint for git_tag plugin
+
+================
+bst-external 0.6
+================
+
+  o New git-tag plugin: An extension to the BuildStream git plugin
+    which allows automatic tracking of the latest tag in a branch.
+  o fastboot_bootimg Element - Uses artifacts generated by buildstream to produce an
+    image that can be flashed to the boot partition using fastboot.
+  o fastboot_ext4 Element - Uses artifacts generated by buildstream to produce an
+    ext4sparse image that can be flashed to userdata partitions or others using fastboot.
+
+==================
+bst-external 0.5.1
+==================
+
+  o collect-integration: Fix the collect-integration plugin not being loadable
+    via pip
+
+================
+bst-external 0.5
+================
+
+  o flatpak-image: Preserve case-sensitivity of flatpak metadata.
+
+================
+bst-external 0.4
+================
+
+  o Introducing James Ennis as co-maintainer
+  o dpkg-build: The debian/rules file no longer has to be made executable
+  o Installation no longer erroneously installs the tests
+  o README.md includes documentation for how to use and install it
+  o The test suite can now be run in versions of buildstream that forbid paths
+    leading outside the project.
+  o The Collect Integration Element has been imported from the freedesktop-sdk
+    project. This plugin collects the integration commands of all its
+    dependencies into a single shell script.
+
+
+==================
+bst-external 0.3.1
+==================
+
+  o Updated the version in setup.py for the latest version, and updated the
+    release process so this is less likely to happen again.
+
+================
+bst-external 0.3
+================
+
+  o The FlatPak Image Element now creates directories for each extension
+    defined in the metadata when built.
+
+================
+bst-external 0.2
+================
+
+  o `url` key of `docker` source plugin is now deprecated. `registry-url`
+    and `image` keys should be used instead. Users of the plugin should
+    either:
+    - update their element definitions (recommended), or
+    - continue using an older version of bst-external.
+
+================
+bst-external 0.1
+================
+
+First release of bst-external. API is not considered stable yet.
+Plugins added in this release:
+
+  o Docker Source - Pulls Docker images from Docker registries.
+  o DPKG Build Element - Builds elements using Debian sources.
+  o DPKG Deploy Element - Uses artifacts generated by buildstream to produce
+    Debian packages.
+  o FlatPak Image Element - Uses artifacts generated by buildstream to produce
+    FlatPak images.
+  o Quilt Source - Runs Quilt on top of previously-staged sources.
+  o X86Image Element - Uses artifacts generated by buildstream to produce a
+    disk image.
