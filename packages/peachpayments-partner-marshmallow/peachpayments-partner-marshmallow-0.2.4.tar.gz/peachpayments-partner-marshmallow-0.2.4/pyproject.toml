@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "peachpayments-partner-marshmallow"
+version = "0.2.4"
+description = "PeachPayments Partner Marshmallow library contains Marshmallow schemas to help integrate PeachPayments with their partners."
+readme = "README.md"
+license = "MIT"
+authors = ["PeachPayments <support@peachpayments.com>"]
+repository = "https://gitlab.com/peachpayments/peachpayments-partner-marshmallow/"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+  "Typing :: Typed"
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+iso4217 = "^1.6.20180829"
+marshmallow = "3.13.0"
+peachpayments-partner = "^0.1.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+mypy = "0.942"
+flake8 = "^4.0.1"
+autoflake = "^1.4"
+black = "^21.9b0"
+isort = "^5.9.3"
+pytest-cov = "^3.0.0"
+pytest-mypy = "^0.8.1"
+pydocstyle = "^6.1.1"
+mock = "^4.0.3"
+types-mock = "^4.0.1"
+freezegun = "^1.1.0"
+types-freezegun = "^1.1.2"
+pre-commit = "^2.15.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+
+[tool.mypy]
+ignore_missing_imports=true
