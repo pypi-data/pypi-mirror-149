@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "pathway_abstract_classifier"
+version = "0.1.0"
+description = "A tool to classify articles containing biological pathway information"
+authors = ["Biofactoid <support@biofactoid.org>"]
+license = "MIT"
+maintainers = ["Biofactoid <support@biofactoid.org>"]
+readme = "README.md"
+repository  = "https://github.com/PathwayCommons/pathway-abstract-classifier"
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT No Attribution License (MIT-0)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+tensorflow = "2.8.0"
+ktrain = "0.30.0"
+cached-path = "^1.1.1"
+
+[tool.poetry.dev-dependencies]
+streamlit = "^1.9.0"
+pytest = "^7.1.2"
+flake8 = "^4.0.1"
+black = "^22.3.0"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.7.0"
+mypy = "^0.950"
+python-semantic-release = "^7.28.1"
+
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+exclude = '''
+(
+      __pycache__
+    | \btutorials\b
+    | \bbuild\b
+    | \.git
+    | \.mypy_cache
+    | \.pytest_cache
+    | \.vscode
+    | \.venv
+    | \bdist\b
+    | \bdoc\b
+)
+'''
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
