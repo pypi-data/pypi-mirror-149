@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: kubeseal-auto
+Version: 0.2.2
+Summary: An interactive wrapper for kubeseal binary
+Home-page: https://github.com/shini4i/kubeseal-auto
+License: MIT
+Author: Vadim Gedz
+Author-email: vadims@linux-tech.io
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Requires-Dist: PyYAML (>=6.0,<7.0)
+Requires-Dist: click (>=8.1.2,<9.0.0)
+Requires-Dist: colorama (>=0.4.4,<0.5.0)
+Requires-Dist: icecream (>=2.1.2,<3.0.0)
+Requires-Dist: kubernetes (>=23.3.0,<24.0.0)
+Requires-Dist: questionary (>=1.10.0,<2.0.0)
+Project-URL: Repository, https://github.com/shini4i/kubeseal-auto
+Description-Content-Type: text/markdown
+
+# kubeseal-auto
+
+The script is an interactive wrapper for kubeseal binary used to encrypt secrets for [sealed-secrets](https://github.com/bitnami-labs/sealed-secrets).
+
+[![asciicast](https://asciinema.org/a/ynpQetDq5gPnKgNhAo5oYH6hK.svg)](https://asciinema.org/a/ynpQetDq5gPnKgNhAo5oYH6hK)
+
+## Installation
+Homebrew can be used to install the script with all dependencies:
+```bash
+pip install kubeseal-auto
+```
+
+## Usage
+
+To run the script in fully interactive mode:
+```bash
+kubeseal-auto
+```
+
+To select kubeconfig context:
+```bash
+kubeseal-auto --select
+```
+
+To append or change key values in existing secret:
+```bash
+kubeseal-auto --edit secret-name.yaml
+```
+
+Additionally, a "detached" mode is supported:
+```bash
+# Download sealed-secrets certificate for local signing
+kubeseal-auto --fetch
+# Generate SealedSecret with local certificate
+kubeseal-auto --cert <kubectl-context>-kubeseal-cert.crt
+```
+
