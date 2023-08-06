@@ -1,0 +1,123 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include 'components/header.html' %}
+
+    <!-- <meta http-equiv="refresh" content="5"> -->
+  </head>
+  
+    <body style="font-family: 'Nunito', sans-serif; background: #F6F8F9; font-size: small;">
+      {% set border_types = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'] %}
+
+      <div class="container code-box" style="min-height: 60vh; min-width: 90%;">
+        
+        
+        {% include 'components/search_bar.html' %}
+
+          <!-- loop through content response -->
+          {% for item in info['response'] %}
+            <!-- STRING -->
+            {% if item['type']=='string' %}
+              {% if item['content'][0:6]=='SELECT' %}
+                <textarea class="form-control" style='overflow: auto; margin-bottom: 5px;' rows="{{ item['content'].split('\n') | length }}">{{ item['content'] }}</textarea>
+              {% else%}
+                
+              {% if item['content'].startswith('%bold%') %}
+                <pre><b>{{ item['content'].replace('%bold%', '') }}</b></pre>
+              
+              {% elif item['content'].startswith('%header%') %}
+                <h4>{{ item['content'].replace('%header%', '') }}</h4>
+            
+              
+              {% elif item['content'] == '%start_border%' %}
+                <div class='border border-{{ border_types | random }} rounded p-2 m-2' style="max-width: 100%;">
+                  
+              {% elif item['content'] == '%end_border%' %}
+                  </div>
+              {% elif item['content'] == '%start_column%' %}
+                <div class="col-md-12" style="max-width: 100%;">
+              {% elif item['content'] == '%end_column%' %}
+                </div>
+              {% elif item['content'] == '%start_row%' %}
+                <div class="row m-0">
+              {% elif item['content'] == '%end_row%' %}
+                </div>
+              {% else%}
+                <pre class="mb-1">{{ item['content'] }}</pre>
+              {% endif %}
+            {% endif %}
+            
+            <!-- ERROR -->
+            {% elif item['type']=='error' %}
+              <div class="alert alert-danger" role="alert">
+                {{ item['content'] }}
+              </div>
+
+            <!-- DICTOFLIST-->
+            {% elif item['type']=='dictoflist' %}
+              <div style="width: 100%; max-height: 80vh; overflow-y: scroll;">
+              <!-- <div class="scroll shadow mb-2" style="overflow: auto; white-space: nowrap;"> -->
+              <table class="table table-hover table-bordered align-middle p-3 bg-white rounded mb-1" style="font-size: x-small;">
+                <thead>
+                  <tr>
+                {% for row in item['content']['columns'] %}
+                  <th>{{ row }}</th>
+                {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                {% for row in item['content']['results'] %}
+                    <tr>
+                        {% for col in row %}
+                          {% if col.startswith('https://') or col.startswith('http://') %}
+                           <td><a href="{{ col }}" target="_blank">{{ col }}</a></td>
+                          {% else%}
+                            <td>{{ col }}</td>
+                          {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              </div>
+            
+            <!-- LIST OF LISTS -->
+            {% elif item['type']=='listoflist' %}
+            <!-- <div class="scroll shadow mb-2" style="overflow: auto; white-space: nowrap;"> -->
+              <table class="table table-bordered shadow p-3 mb-5 bg-white rounded text-center" style="font-size: small;">
+                <tbody>
+                {% for row in item['content'] %}
+                    <tr>
+                        {% for col in row %}
+                          <td>{{ col }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            
+            <!-- LIST -->
+            {% elif item['type']=='list' %}
+              {% for row in item['content'] %}
+                <textarea class="form-control" style='overflow: auto; margin-bottom: 5px;' rows="{{ (row|string).split('\n') | length }}">{{ row }}</textarea>
+              {% endfor %}
+            
+            <!-- ELSE -->
+            {% else%}
+                <p1>not picked up: {{ item['type'] }}</p1>
+            {% endif %}
+
+
+            {% endfor %}
+
+
+         </div>   
+      </div>
+
+  <footer >
+      {% include 'components/footer.html' %}
+  </footer>
+  
+  </body>
+</html>
