@@ -1,0 +1,60 @@
+[project]
+name = "boba-fetch"
+version = "0.2.5"
+readme = "README.md"
+description = "A script for repeatedly polling files on a remote host using SSH and then downloading them using rsync."
+authors = [
+    { name = "Eugene Kovalev", email = "eugene@kovalev.systems" },
+]
+dependencies = [
+    "fabric>=2.6.0",
+    "click>=8.0.3",
+    "click-path>=0.0.5",
+    "secretstorage>=3.3.1",
+    "twine>=3.8.0",
+    "logzero>=1.7.0",
+    "types-setuptools>=57.4.9",
+]
+requires-python = ">=3.8"
+
+[project.license]
+text = "GPL-3.0-or-later"
+
+[project.urls]
+homepage = "https://gitlab.com/abraxos/boba"
+repository = "https://gitlab.com/abraxos/boba"
+documentation = "https://gitlab.com/abraxos/boba"
+
+[project.optional-dependencies]
+
+[project.scripts]
+boba-fetch = "boba_fetch.cli:main"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=6.2.5",
+    "pylint>=2.12.2",
+    "mypy>=0.931",
+    "flake8>=4.0.1",
+    "black>=22.1.0",
+    "bandit>=1.7.2",
+    "pytest-cov>=3.0.0",
+    "typeguard>=2.13.3",
+    "pytest-mock>=3.7.0",
+    "pytest-xdist>=2.5.0",
+]
+
+[tool.pdm.scripts.publish-test]
+cmd = "twine upload -r testpypi dist/*"
+
+[tool.pdm.scripts.publish]
+cmd = "twine upload dist/*"
+
+[tool.pdm.scripts.test-deploy]
+shell = "pdm build && ssh typ-e -t 'rm /home/eugene/boba_fetch-*-py3-none-any.whl'; rsync -Pparvzy dist/boba_fetch-*-py3-none-any.whl typ-e:/home/eugene/ && ssh typ-e -t 'sudo pip3 install --force-reinstall /home/eugene/boba_fetch-*-py3-none-any.whl && sudo supervisorctl restart boba-fetch-general'"
+
+[build-system]
+requires = [
+    "pdm-pep517",
+]
+build-backend = "pdm.pep517.api"
