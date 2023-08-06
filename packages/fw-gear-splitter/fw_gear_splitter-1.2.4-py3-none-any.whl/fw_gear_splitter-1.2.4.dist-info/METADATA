@@ -1,0 +1,70 @@
+Metadata-Version: 2.1
+Name: fw-gear-splitter
+Version: 1.2.4
+Summary: DICOM splitter based on unique tags, or localizers
+License: MIT
+Author: Flywheel
+Author-email: support@flywheel.io
+Requires-Python: >=3.8,<3.11
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Dist: flywheel-gear-toolkit (>=0.5,<0.6)
+Requires-Dist: flywheel-sdk (>=16.0.0,<17.0.0)
+Requires-Dist: fw-file (>=1,<2)
+Requires-Dist: importlib-metadata (>=3.7.0,<4.0.0)
+Requires-Dist: pandas (>=1.2.1,<2.0.0)
+Requires-Dist: pylibjpeg (>=1.1.1,<2.0.0)
+Requires-Dist: pylibjpeg-libjpeg (>=1.1.0,<2.0.0)
+Requires-Dist: pylibjpeg-openjpeg (>=1.0.1,<2.0.0)
+Requires-Dist: scipy (>=1.8.0,<2.0.0)
+Description-Content-Type: text/markdown
+
+# DICOM Splitter
+
+This gear is meant to split DICOM archives into two or more archives.  The main use
+cases for this gear are if,
+
+* There are one or more localizers (scouts, etc.) within the archive
+* There are multiple Series in one archive.
+* Some field varies across the archive and you have reason to the archive based on that
+  field.
+
+The gear is set to do the first two above by default, i.e. it will extract a
+localizer(s) from the archive, and it will extract each unique SeriesInstanceUID into
+its own archive.
+
+## Usage
+
+### Inputs
+
+* __dicom__ : Dicom archive input
+
+### Configuration
+
+* __extract_localizer__ (boolean, default True): Whether or not to extract localizer
+from archive.
+* __group_by__ (string, default "SeriesInstanceUID"): Comma separated list of dicom
+tags to split the archvie on.
+* __tag__ (string, default "splitter"): The tag to be added on input file upon run
+completion.
+* __debug__ (boolean, default False): Include debug output.
+
+### Outputs
+
+The gear will output nothing if no splitting action was taken.  Otherwise it will output
+a variable number of archives depending on the input and configuration named with the
+following pattern:
+
+`series-<SeriesNumber>_<Modality>_<SeriesDescription>[_localizer]`, where
+
+* `SeriesNumber` is the value of the `SeriesNumber` tag across the archive.  By default
+  the largest sized archive (by number of slices) will retain the original
+  `SeriesNumber` and additional archives will be incremented by `1000 + i`, where `i` is
+  the index of the archive in a list of total archives.
+* `SeriesDescription` is the value of the `SeriesDescription` tag across the archive
+* `Modality` is the value of the `Modality` tag across the archive
+* If the series is a localizer, `_localizer` will be appended.
+
