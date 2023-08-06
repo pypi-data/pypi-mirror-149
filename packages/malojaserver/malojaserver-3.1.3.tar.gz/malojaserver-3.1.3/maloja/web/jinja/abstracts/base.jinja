@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="referrer" content="same-origin" />
+
+		<title>{% block title %}{% endblock %}</title>
+		<meta name="description" content='Maloja is a self-hosted music scrobble server.' />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+		<meta name="color-scheme" content="dark" />
+		<meta name="darkreader" content="wat" />
+
+		<link rel="stylesheet" href="/maloja.css" />
+		<link rel="stylesheet" href="/static/css/themes/{{ settings.theme }}.css" />
+		{% for cssf in conf.custom_css_files %}
+			<link rel="stylesheet" href="/static_custom/css/{{ cssf }}" />
+		{% endfor %}
+
+		<script src="/search.js"></script>
+		<script src="/neopolitan.js"></script>
+		<script src="/upload.js"></script>
+		<script src="/notifications.js"></script>
+
+		<link rel="preload" href="/static/ttf/Ubuntu-Regular.ttf" as="font" type="font/woff2" crossorigin />
+
+		{% block scripts %}{% endblock %}
+	</head>
+
+	<body>
+
+		{% block content %}
+
+		<table class="top_info">
+			<tr>
+				<td class="image">
+					<div style="background-image:url('{% block imageurl %}/favicon.png{% endblock %}')"></div>
+				</td>
+				<td class="text">
+					<h1>{% block heading %}{% endblock %}</h1><br/>
+
+
+					{% block top_info %}
+
+					{% endblock %}
+				</td>
+			</tr>
+		</table>
+
+			{% block maincontent %}
+
+			{% endblock %}
+		{% endblock %}
+
+
+
+
+		<div class="footer">
+			<div>
+				<!--<span>Get your own charts on
+					<a target="_blank" rel="noopener noreferrer" href="https://github.com/krateng/maloja">GitHub</a>,
+					<a target="_blank" rel="noopener noreferrer" href="https://pypi.org/project/malojaserver/">PyPI</a> or
+					<a target="_blank" rel="noopener noreferrer" href="https://hub.docker.com/r/krateng/maloja">Dockerhub</a>
+				</span>-->
+				<span><a href="/about">About</a></span>
+			</div>
+			<div>
+				<a href="/"><span style="font-weight:bold;">Maloja {% if settings["DEV_MODE"] %}[Developer Mode]{% endif %}</span></a>
+			</div>
+			<div>
+				<span><input id="searchinput" placeholder="Search for an artist or track..." oninput="search(this)" onblur="clearresults()" /></span>
+			</div>
+
+			<div id="resultwrap" class="hide">
+				<div class="searchresults">
+					<span>Artists</span>
+					<table class="searchresults_artists" id="searchresults_artists">
+					</table>
+					<br/><br/>
+					<span>Tracks</span>
+					<table class="searchresults_tracks" id="searchresults_tracks">
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div id="icon_bar">
+			{% block icon_bar %}{% endblock %}
+			{% include 'icons/settings.jinja' %}
+		</div>
+
+
+		<div id="notification_area">
+
+		</div>
+
+
+	</body>
+</html>
