@@ -1,0 +1,12 @@
+{% for section, entry in sections.items() -%}
+{%- for key, value in entry.items() %}
+{%- if loop.index == 1 %}[{{ section }}{% if value is mapping %} "{{ key }}"{% endif %}]{% endif %}
+{%- if value is mapping %}
+{%- for subkey, subvalue in value.items() %}
+	{{ subkey }} = {{ subvalue }}
+{%- endfor %}
+{%- else %}
+	{{ key }} = {{ value }}
+{%- endif %}
+{%- endfor %}
+{% endfor %}
