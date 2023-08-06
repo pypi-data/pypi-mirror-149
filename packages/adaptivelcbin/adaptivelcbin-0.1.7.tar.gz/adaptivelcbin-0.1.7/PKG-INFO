@@ -1,0 +1,49 @@
+Metadata-Version: 2.1
+Name: adaptivelcbin
+Version: 0.1.7
+Summary: adaptivelcbin
+Home-page: https://gitlab.astro.unige.ch/ferrigno/adaptivelcbin
+Author: C.F.
+Author-email: carlo.ferrigno@unige.ch
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Internet
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+License-File: LICENSE
+
+# adaptivelcbin
+
+__CAUTION__: this is a simple functional project, although it should work as generally expected, do make sanity checks 
+and make sure you understand what the adaptive binning is 
+
+It makes adaptive binning and hardness ratio of two light curves (XMM-Newton input tested)
+
+## Installation
+```bash
+$ pip install adaptivelcbin
+```
+## Help
+```bash
+$ hratio --help
+```
+
+## Example:
+```bash
+$ hratio PNsrc_lc_01s_005-030.fits PNsrc_lc_01s_030-100.fits hratio4.qdp 15.0 --flag_rebin=4
+```
+
+```python
+import hratio
+hratio.hratio_func('data/PNsrc_lc_01s_005-030.fits', 'data/PNsrc_lc_01s_030-100.fits', 'test1.qdp', 15.0)
+```
+
