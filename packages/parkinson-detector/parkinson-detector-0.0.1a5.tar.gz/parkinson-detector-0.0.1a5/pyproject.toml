@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "parkinson-detector"
+version = "0.0.1-alpha.5"
+description = "An Ensemble of CNN Models for Parkinsons Disease Detection"
+license="GPL-3.0-only"
+authors = ["Aleksandr Sinitca <amsinitca@etu.ru>",
+            "Dmitry Kaplun <dikaplun@etu.ru>",
+            "Ankit Kurmi <ankitkurmi152@gmail.com>",
+            "Shibaprasad Sen <shibubiet@gmail.com>",
+            "Shreya Biswas",
+            "Ram Sarkar"
+]
+packages = [
+    { include = "parkinson_detector_app" },
+]
+readme = "README.md"
+repository = "https://gitlab.com/digiratory/biomedimaging/parkinson-detector"
+homepage = "https://gitlab.com/digiratory/biomedimaging/parkinson-detector"
+
+classifiers = [
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Image Recognition"
+]
+
+[tool.poetry.scripts]
+parkinson-detector-app = 'parkinson_detector_app.parkinson_detector_app:main'
+
+[tool.poetry.dependencies]
+python = "^3.6"
+PyQt5 = ""
+requests = ""
+pylibjpeg = ""
+pylibjpeg-libjpeg = ""
+pylibjpeg-openjpeg = ""
+pillow = ""
+tensorflow = "^2.3.1"
+numpy = "^1.20.1"
+pydicom = ""
+appdirs = ""
+opencv-python = ""
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
