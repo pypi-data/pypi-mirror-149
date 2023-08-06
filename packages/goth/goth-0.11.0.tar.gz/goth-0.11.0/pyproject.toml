@@ -1,0 +1,59 @@
+[tool.black]
+target-version = ['py38']
+exclude = '/(\.eggs|\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|venv|\.svn|_build|buck-out|build|dist|model)/' # Default excludes from black and the generated folder model
+
+[tool.poetry]
+name = "goth"
+version = "0.11.0"
+description = "Golem Test Harness - integration testing framework"
+authors = ["Golem Factory <contact@golem.network>"]
+license = "GPL-3.0"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3.8",
+  "Framework :: AsyncIO",
+  "Framework :: Pytest",
+  "Topic :: Software Development :: Testing",
+]
+repository = "https://github.com/golemfactory/goth"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "3.7.4"
+ansicolors = "^1.1.0"
+docker-compose = "^1.29"
+docker = "^5.0"
+dpath = "^2.0"
+func_timeout = "4.3.5"
+markupsafe = "2.0.1"
+mitmproxy = "^5.3"
+pyyaml = "^5.4"
+transitions = "^0.8"
+typing_extensions = "^3.10.0"
+urllib3 = "^1.26"
+ya-aioclient = "^0.6"
+ghapi = "^0.1.16"
+
+[tool.poetry.dev-dependencies]
+black = "21.7b0"
+flake8 = "3.9.0"
+flake8-docstrings = "1.6.0"
+mypy = "^0.812"
+poethepoet = "^0.10"
+pytest-asyncio = "0.14"
+pytest = "^6.2"
+
+[tool.poe.tasks]
+codeformat = "black -v --check --diff ."
+codestyle = "flake8"
+interactive = "python -m goth start goth/default-assets/goth-config.yml"
+unit_test = "pytest -svx test/unit"
+integration_test = "pytest -svx test/integration"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
