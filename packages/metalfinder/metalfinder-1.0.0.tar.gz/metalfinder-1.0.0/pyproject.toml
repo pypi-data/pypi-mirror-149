@@ -1,0 +1,33 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "metalfinder"
+authors = [{name = "Louis-Philippe Véronneau", email = "pollo@debian.org"}]
+readme = "README.rst"
+license = {file = "LICENSE"}
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+dependencies = [
+    "flit_core >=3.7.1",
+    "musicbrainzngs",
+    "requests",
+    "pyxdg",
+    "mutagen",
+    "feedgenerator",
+]
+dynamic = ["version", "description"]
+
+[project.urls]
+Home = "https://gitlab.com/baldurmen/metalfinder"
+
+[project.optional-dependencies]
+doc = [
+	"docutils",
+]
+
+[project.scripts]
+metalfinder = "metalfinder:main"

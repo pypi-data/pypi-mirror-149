@@ -1,0 +1,42 @@
+stages:
+  - lint
+  - build
+#  - test
+
+image: debian:sid
+
+lint:
+  stage: lint
+  script:
+  - apt-get update && apt-get install -y pylint
+  - find . -iname "*.py" | xargs pylint --disable=E0401,W0511
+
+build:flit:
+  stage: build
+  script:
+  - apt-get update && apt-get install -y flit python3-pip
+  - FLIT_ROOT_INSTALL=1 flit install
+  - metalfinder --help
+
+build:man:
+  stage: build
+  script:
+  - apt-get update && apt-get install -y python3-docutils
+  - rst2man manpage.rst metalfinder.1
+  artifacts:
+    paths:
+      - metalfinder.1
+
+#test:unit:
+#  stage: test
+#  script:
+#  - apt-get update && apt-get install -y python3-setuptools flac
+#  - python3 setup.py install
+#  - python3 setup.py test
+#
+#test:integration:
+#  stage: test
+#  script:
+#  - apt-get update && apt-get install -y python3 flac
+#  - python3 rename_flac.py "%a - %b - %c - %d - %g - %n - %t" tests
+#  - test -e "tests/Artist - Album - Composer - Date - Genre - Tracknumber - Title.flac"
