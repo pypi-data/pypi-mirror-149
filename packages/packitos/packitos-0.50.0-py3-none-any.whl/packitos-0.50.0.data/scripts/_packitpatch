@@ -1,0 +1,91 @@
+#!/usr/bin/bash
+
+# Copyright Contributors to the Packit project.
+# SPDX-License-Identifier: MIT
+
+# this script wraps /usr/bin/patch with code which is executed during patch
+# application of `rpmbuild -bp` run, see the RPM macros defined in constants.py
+
+# do set -x for development/debugging
+set -eu
+
+# this will print a path to a git repo
+# correct repo is /path/BUILD/<TOP-LEVEL-DIR-IN-ARCHIVE>
+top_level_git_path=$(git rev-parse --show-toplevel)
+second_to_last_dir=$(basename $(dirname ${top_level_git_path}))
+# we cannot override %__scm_setup_patch b/c it is called from %autosetup
+# and some specs have %setup + %autopatch, so we need to make sure
+# the git repo exists here
+if [ $second_to_last_dir != "BUILD" ]; then
+  git init
+  # we are doing -f to bypass .gitignore which can mask packit.yaml or the specfile
+  # https://github.com/packit/dist-git-to-source-git/issues/66#issuecomment-694284493
+  git add -f .
+  # that PWD magic prints the name of the PWD, which usually is NAME-VERSION
+  git commit -q --allow-empty -a -m "${PWD##*/} base"
+fi
+
+if [ "$1" == "%{1}" ]; then
+  # rpm pipes the patch here
+  # also, Michal Domonkos is a genius
+  patch_path=$(readlink -f /dev/stdin)
+else
+  patch_path=$1
+fi
+patch_name=$(basename $patch_path)
+
+# we process first and second arg above, the rest is for patch
+# and we don't want backup files in our source-git repos
+patch_args=$(echo ${@:3} | sed -e 's/ -b//' -e 's/--backup//')
+
+base_commit=$(git rev-parse HEAD)
+temp_branch="apply-${patch_name}"
+git checkout -b ${temp_branch}
+# Try to apply the patch with 'git am'. This might produce multiple commits.
+# Might succeed OR fail, in which case use 'patch' to apply the patch.
+if ! cat "$patch_path" | git am; then
+    git am --abort
+    cat "$patch_path" | /usr/bin/patch ${patch_args}
+    git add -f .
+    # Patches can be empty, rpmbuild is fine with it.
+    # The subject line is relied on when guessing the author
+    # of this patch!
+    git commit -m"Apply patch ${patch_name}" --allow-empty
+fi
+
+# Let's go back to the ref we were before starting all this.
+git checkout -
+
+trailers="Patch-name: ${patch_name}"
+# when patches are applied with -p0, we need to strip the prefix
+# in packit when creating the patch files
+if echo ${@:3} | grep -E "[-]p0|[-]p 0"; then
+  trailers="$trailers
+No-prefix: true
+"
+fi
+
+# Cherry-pick commits from the temp branch, one-by-one, and amend them
+# to include Git-trailers with patch-metadata.
+for commit in $(git rev-list ${base_commit}..${temp_branch} | tac); do
+    commit_message=$(git show -s --format=%B $commit)
+    has_trailers=$(echo "$commit_message" | git interpret-trailers --parse)
+    # Make sure there is an empty line to separate the trailer block
+    # from the commit message if the commit message has no trailers so far.
+    if [[ -z "$has_trailers" ]]; then
+        # Watch out for the correct indentation!
+        # This seems to be the easiest way to add a newline
+        # at the end of the message.
+        commit_message="$commit_message
+"
+    fi
+    # Watch out for the correct indentation!
+    commit_message="$commit_message
+$trailers
+"
+    git cherry-pick --allow-empty $commit
+    git commit --allow-empty --amend -m"$commit_message"
+done
+
+# Clean up the temporary branch.
+git branch -D ${temp_branch}
