@@ -1,0 +1,60 @@
+{
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+        [
+            "@semantic-release/github",
+            {
+                "assets": [
+                    {
+                        "path": "docs/model.json",
+                        "label": "Model schema"
+                    },
+                    {
+                        "path": "docs/simulation-parameter.json",
+                        "label": "Energy simulation parameters schema"
+                    },
+                    {
+                        "path": "docs/radiance-asset.json",
+                        "label": "Radiance simulation asset schema"
+                    },
+                    {
+                        "path": "docs/model_inheritance.json",
+                        "label": "Model schema with inheritance"
+                    },
+                    {
+                        "path": "docs/simulation-parameter_inheritance.json",
+                        "label": "Energy simulation parameters schema with inheritance"
+                    },
+                    {
+                        "path": "docs/radiance-asset_inheritance.json",
+                        "label": "Radiance simulation asset schema with inheritance"
+                    },
+                    {
+                        "path": "docs/model_mapper.json",
+                        "label": "Model schema mapper"
+                    },
+                    {
+                        "path": "docs/simulation-parameter_mapper.json",
+                        "label": "Energy simulation parameters schema mapper"
+                    },
+                    {
+                        "path": "docs/radiance-asset_mapper.json",
+                        "label": "Radiance simulation asset schema mapper"
+                    },
+                    {
+                        "path": "docs/model_json_schema.json",
+                        "label": "Model JSONSchema"
+                    }
+                ]
+            }
+        ],
+        [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "python docs.py --version ${nextRelease.version}",
+                "publishCmd": "bash deploy.sh"
+            }
+        ]
+    ]
+}
