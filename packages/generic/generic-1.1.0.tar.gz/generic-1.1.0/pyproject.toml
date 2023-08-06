@@ -1,0 +1,100 @@
+[tool.poetry]
+name = "generic"
+version = "1.1.0"
+description = "Generic programming library for Python"
+authors = [
+    "Andrey Popp <8mayday@gmail.com>",
+    "Arjan Molenaar <gaphor@gmail.com>"
+]
+maintainers = [
+    "Arjan Molenaar <gaphor@gmail.com>",
+    "Dan Yeaw <dan@yeaw.me>"
+]
+
+license = "BSD License"
+readme = "README.md"
+homepage = "https://generic.readthedocs.io/"
+repository = "https://github.com/gaphor/generic"
+documentation = "https://generic.readthedocs.io/"
+
+keywords = ["generic", "multi dispatch", "dispatch", "event"]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+exceptiongroup = "^1.0.0-rc.5"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1"
+pytest-cov = "^2.12"
+pytest-runner = "^6.0"
+black = { version = "^22.3", python = "^3.7" }
+mypy = "0.950"
+pre-commit = "^2.19"
+bw_sphinxtheme = "^0.1.8"
+tox = "^3.25"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = true
+envlist = clean, py38, py39, py310, report
+
+[gh-actions]
+python =
+    3.8: py38
+    3.9: py39
+    3.10: py310
+
+[testenv]
+commands =
+    pytest --cov --cov-append --cov-report=term-missing {posargs}
+deps =
+    pytest
+    pytest-cov
+depends =
+    {py38,py39,py310}: clean
+    report: py38,py39,py310
+
+[testenv:report]
+deps = coverage[toml]
+skip_install = true
+commands =
+    coverage report
+    coverage html
+
+[testenv:clean]
+deps = coverage[toml]
+skip_install = true
+commands = coverage erase
+"""
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "docs",
+    ]
+addopts = "--doctest-modules --doctest-glob='*.rst'"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+known_third_party = ["pytest"]
+skip = ".venv,build,dist"
+
+[tool.coverage.run]
+source = ["generic"]
