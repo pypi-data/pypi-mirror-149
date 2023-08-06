@@ -1,0 +1,74 @@
+Metadata-Version: 2.1
+Name: xmos-ai-tools
+Version: 0.1.8.dev93
+Summary: XMOS AI Tools
+Home-page: https://github.com/xmos/ai_tools
+Author: XMOS
+Author-email: support@xmos.com
+License: LICENSE.txt
+Keywords: tensorflow binarized neural networks
+Platform: UNKNOWN
+Classifier: License :: Other/Proprietary License
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: numpy (<2.0)
+
+# XMOS AI Tools
+
+## Usage
+
+### Using xformer
+```python
+from xmos_ai_tools import xformer as xf
+
+xf.convert("source model path", "converted model path", params=None)
+```
+where `params` is a dictionary of compiler flags and paramters and their values.
+
+For example:
+```python
+from xmos_ai_tools import xformer as xf
+
+xf.convert("example_int8_model.tflite", "xcore_optimised_example_int8_model.tflite", {
+    "mlir-disable-threading": None,
+    "xcore-reduce-memory": None,
+})
+```
+
+To see all available parameters, call
+```python
+from xmos_ai_tools import xformer as xf
+
+xf.print_help()
+```
+This will print all options available to pass to xformer. To see hidden options, run `print_help(show_hidden=True)`
+
+
+### Using the xcore tflm host interpreter
+```
+from xmos_ai_tools import xcore_tflm_host_interpreter as xtflm
+
+ie = xtflm.XTFLMInterpreter(model_content=xformed_model)
+ie.set_input_tensor(0, input_tensor)
+ie.invoke()
+xformer_outputs = []
+for i in range(num_of_outputs):
+    xformer_outputs.append(ie.get_output_tensor(i))
+```
+
+
