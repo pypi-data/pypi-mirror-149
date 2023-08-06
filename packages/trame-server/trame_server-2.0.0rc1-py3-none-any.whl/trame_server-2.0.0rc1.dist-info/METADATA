@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: trame-server
+Version: 2.0.0rc1
+Summary: Internal server side implementation of trame
+Home-page: UNKNOWN
+Author: Kitware Inc.
+License: Apache License 2.0
+Keywords: Python,Interactive,Web,Application,Framework
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Description-Content-Type: text/x-rst
+Requires-Dist: wslink (>=1.6.4)
+
+trame-server: Internal implementation of trame for its server side
+===========================================================================
+
+This package is not supposed to be used by iteself but rather should come as a dependency of **trame**.
+For any specificity, please refer to `the trame documentation <https://kitware.github.io/trame/>`_.
+
+
+Community
+-----------------------------------------------------------
+
+* `License: Apache License Version 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_
+* `WebSite <https://kitware.github.io/trame/>`_
+* `Discussions <https://github.com/Kitware/trame/discussions>`_
+* `Issues <https://github.com/Kitware/trame/issues>`_
+* `RoadMap <https://github.com/Kitware/trame/projects/1>`_
+* `Contact Us <https://www.kitware.com/contact-us/>`_
+* .. image:: https://zenodo.org/badge/410108340.svg
+    :target: https://zenodo.org/badge/latestdoi/410108340
+
+
+Enjoying trame?
+-----------------------------------------------------------
+
+Share your experience `with a testimonial <https://github.com/Kitware/trame/issues/18>`_ or `with a brand approval <https://github.com/Kitware/trame/issues/19>`_.
+
+
+Environments variables
+-----------------------------------------------------------
+
+* **TRAME_LOG_NETWORK**     : Path to log file for capturing network exchange. (default: None)
+* **TRAME_WS_MAX_MSG_SIZE** : Maximum size in bytes of any ws message. (default: 10MB)
+* **TRAME_WS_HEART_BEAT**   : Time in second before assuming the server is non-responsive. (default: 30s)
+
+
+Life cycle callbacks
+--------------------------------------------------------------------------
+
+Life cycle events are directly managed on the application controller
+and are prefixed with `on_*`.
+
+* **on_server_ready**     : All protocols initialized and available for client to connect
+* **on_client_connected** : Connection established to server
+* **on_client_exited**    : Linked to browser "beforeunload" event
+* **on_server_exited**    : Trame is exiting its event loop
+
+* **on_server_reload**    : If callback registered it is use for reloading server side modules
+
+
